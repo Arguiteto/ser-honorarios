@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.E.R. — Gestão de Honorários</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#EDE8DC;--surface:#FAF7F1;--surf2:#F2EDE2;
+  --border:rgba(90,60,30,0.12);--border-em:rgba(90,60,30,0.25);
+  --text:#2C1F12;--muted:#7A6A56;--faint:#B0A090;
+  --e:#8B5E3C;--el:#F5EDE2;--eb:#D4B896;
+  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --mono:'Courier New',Courier,monospace;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:system-ui,-apple-system,sans-serif;
+  --r:6px;--rl:10px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1C1710;--surface:#252018;--surf2:#2E2820;
+  --border:rgba(200,160,100,0.12);--border-em:rgba(200,160,100,0.25);
+  --text:#EDE0CC;--muted:#9A8A70;--faint:#5A5040;
+  --e:#C4936A;--el:#2A1E12;--eb:#5A3D22;
+  --err:#C47A7A;--errl:#240E0E;--warn:#C4A84A;
+}}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+
+/* ── AUTH ─────────────────────────────── */
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
+.auth-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rl);padding:2.5rem;width:100%;max-width:360px;box-shadow:0 2px 12px rgba(44,31,18,.06)}
+.auth-brand{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--e);margin-bottom:4px}
+.auth-sub{font-size:11px;color:var(--faint);margin-bottom:2rem;letter-spacing:.3px}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.auth-tab{font-size:12px;padding:6px 16px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--muted);margin-bottom:-1px;transition:all .15s}
+.auth-tab.on{color:var(--e);border-bottom-color:var(--e);font-weight:500}
+.auth-err{font-size:11px;color:var(--err);margin-top:.8rem;text-align:center;min-height:16px}
+
+/* ── APP SHELL ────────────────────────── */
+#app-screen{display:none;min-height:100vh;flex-direction:column}
+.hdr{background:var(--surface);border-bottom:0.5px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.hdr-logo{font-family:var(--serif);font-size:16px;color:var(--e);cursor:pointer}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-user{font-size:11px;color:var(--faint);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── SHARED COMPONENTS ────────────────── */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.field label{font-size:11px;color:var(--muted);letter-spacing:.2px}
+.field .hint{font-size:10px;color:var(--faint)}
+.iw{display:flex;align-items:center;border-bottom:1px solid var(--border-em);transition:border-color .2s;padding-bottom:3px}
+.iw:focus-within{border-bottom-color:var(--e)}
+.iw .pfx{font-size:11px;color:var(--faint);margin-right:5px;white-space:nowrap}
+.iw .sfx{font-size:11px;color:var(--faint);margin-left:5px;white-space:nowrap}
+.iw input,.iw select{border:none;background:none;outline:none;font-family:var(--mono);font-size:13px;color:var(--text);width:100%;padding:4px 0}
+.iw select{font-family:var(--sans);font-size:12px}
+.btn{font-family:var(--sans);font-size:12px;padding:8px 18px;border:0.5px solid var(--eb);border-radius:var(--r);background:var(--el);cursor:pointer;color:var(--e);transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--eb)}
+.btn.ghost{background:none;border-color:var(--border-em);color:var(--muted)}
+.btn.ghost:hover{background:var(--surf2)}
+.btn.solid{background:var(--e);border-color:var(--e);color:#fff}
+.btn.solid:hover{opacity:.85}
+.btn.solid:disabled{opacity:.45;cursor:not-allowed}
+.btn.danger{background:none;border-color:#D4A0A0;color:var(--err)}
+.btn.danger:hover{background:var(--errl)}
+.btn-full{width:100%;padding:10px;font-size:13px}
+.slabel{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin:1.4rem 0 .8rem;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.divider{border:none;border-top:0.5px solid var(--border);margin:1.2rem 0}
+
+/* ── DASHBOARD ────────────────────────── */
+#dash-view{padding:2rem;max-width:960px;margin:0 auto;flex:1}
+.dash-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.dash-title{font-family:var(--serif);font-size:20px;font-weight:400}
+.prop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.prop-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rl);padding:1.2rem;transition:border-color .2s;cursor:pointer}
+.prop-card:hover{border-color:var(--eb)}
+.pc-tipo{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--faint);margin-bottom:.4rem}
+.pc-nome{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px}
+.pc-cli{font-size:12px;color:var(--muted);margin-bottom:.9rem}
+.pc-total{font-family:var(--serif);font-size:24px;color:var(--e);margin-bottom:.3rem}
+.pc-data{font-size:10px;color:var(--faint);letter-spacing:.2px;margin-bottom:.8rem}
+.pc-actions{display:flex;gap:6px;padding-top:.8rem;border-top:0.5px solid var(--border)}
+.empty-state{text-align:center;padding:5rem 2rem}
+.empty-state .em-icon{font-size:32px;margin-bottom:.8rem;opacity:.3}
+.empty-state p{font-size:13px;color:var(--faint);margin-top:.3rem}
+
+/* ── CALCULATOR ───────────────────────── */
+#calc-view{display:none;padding:2rem;max-width:600px;margin:0 auto}
+.calc-top{display:flex;align-items:center;gap:.8rem;margin-bottom:2rem;flex-wrap:wrap;gap:10px}
+.calc-title{font-family:var(--serif);font-size:20px;font-weight:400;flex:1}
+.stepper{display:flex;align-items:center;margin-bottom:2rem}
+.sitem{display:flex;align-items:center;flex:1;cursor:pointer}
+.sitem:last-child{flex:none}
+.sdot{width:26px;height:26px;border-radius:50%;border:1px solid var(--border-em);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--faint);flex-shrink:0;transition:all .2s;background:var(--surface);font-family:var(--mono)}
+.sdot.active{background:var(--e);border-color:var(--e);color:#fff}
+.sdot.done{background:var(--el);border-color:var(--eb);color:var(--e)}
+.sline{flex:1;height:1px;background:var(--border);margin:0 4px;transition:background .2s}
+.sline.done{background:var(--eb)}
+.panel{display:none}
+.panel.active{display:block}
+.mc-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;margin-top:1.4rem;border:0.5px solid var(--eb);border-radius:var(--r);overflow:hidden}
+.mc{padding:.85rem 1rem;background:var(--surf2)}
+.mc.accent{background:var(--el)}
+.mc .l{font-size:10px;color:var(--faint);letter-spacing:.5px;margin-bottom:4px;text-transform:uppercase}
+.mc.accent .l{color:var(--e)}
+.mc .v{font-size:15px;color:var(--text);font-family:var(--mono)}
+.mc.accent .v{color:var(--e)}
+.note{font-size:10px;color:var(--faint);margin-top:.6rem}
+.fase-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.fase-row:last-child{border-bottom:none}
+.fn{font-size:12px;color:var(--muted);flex:1}
+.fi{border:none;border-bottom:1px solid var(--border);background:none;font-family:var(--mono);font-size:12px;color:var(--text);padding:3px 5px;width:52px;outline:none;text-align:right;transition:border-color .2s}
+.fi:focus{border-bottom-color:var(--e)}
+.fu{font-size:10px;color:var(--faint)}
+.fv{font-size:12px;color:var(--faint);width:72px;text-align:right;font-family:var(--mono)}
+.total-strip{display:flex;align-items:baseline;justify-content:space-between;padding:1rem 0 0;margin-top:1rem;border-top:1px solid var(--eb)}
+.total-strip .tl{font-size:11px;color:var(--faint);line-height:1.8}
+.total-strip .tr{font-family:var(--serif);font-size:26px;color:var(--e)}
+.tax-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.tax-row:last-child{border-bottom:none}
+.tn{font-size:12px;color:var(--muted)}
+.tr-right{display:flex;align-items:center;gap:8px}
+.ti{border:none;border-bottom:1px solid var(--border);background:none;font-family:var(--mono);font-size:12px;color:var(--text);padding:3px 5px;width:50px;outline:none;text-align:right;transition:border-color .2s}
+.ti:focus{border-bottom-color:var(--e)}
+.tv{font-size:12px;color:var(--faint);width:72px;text-align:right;font-family:var(--mono)}
+.pill-row{display:flex;border:0.5px solid var(--border-em);border-radius:var(--r);overflow:hidden;width:fit-content;margin-bottom:1rem}
+.pill{font-family:var(--sans);font-size:11px;padding:6px 14px;background:none;border:none;cursor:pointer;color:var(--muted);transition:all .15s;border-right:0.5px solid var(--border)}
+.pill:last-child{border-right:none}
+.pill.on{background:var(--el);color:var(--e);font-weight:500}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1rem;border-top:0.5px solid var(--border);flex-wrap:wrap;gap:8px}
+.rel-box{border:0.5px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem;margin-bottom:.8rem}
+.rel-box h3{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--faint);margin-bottom:.6rem}
+.rel-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.rel-row:last-child{border-bottom:none}
+.rel-row .rv{color:var(--text);font-family:var(--mono)}
+.rel-row .rv.neg{color:var(--err)}
+.rel-row .rv.warn{color:var(--warn)}
+.grand{display:flex;align-items:baseline;justify-content:space-between;padding:1.2rem 0 .5rem;border-top:1px solid var(--eb)}
+.grand .gl{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--e)}
+.grand .gv{font-family:var(--serif);font-size:30px;color:var(--e)}
+.mc2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:1rem}
+.mc2 .m{padding:.8rem 1rem;background:var(--el);border-radius:var(--r)}
+.mc2 .m .l{font-size:10px;color:var(--e);margin-bottom:4px}
+.mc2 .m .v{font-family:var(--mono);font-size:13px;color:var(--e)}
+.save-row{display:flex;align-items:center;gap:10px;margin-top:1.2rem;flex-wrap:wrap}
+.save-status{font-size:11px;color:var(--faint);min-height:16px}
+.save-status.ok{color:#3B6D11}
+.save-status.err{color:var(--err)}
+
+@media(max-width:520px){
+  .g2,.mc-row,.mc2{grid-template-columns:1fr}
+  .mc-row{gap:4px;border:none;background:none}
+  .mc{border:0.5px solid var(--eb);border-radius:var(--r)}
+  .prop-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH SCREEN ══════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">S.E.R.</div>
+    <div class="auth-sub">Gestão de honorários arquitetônicos</div>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="at-login" onclick="authTab('login')">Entrar</button>
+      <button class="auth-tab" id="at-signup" onclick="authTab('signup')">Criar conta</button>
+    </div>
+    <div class="field">
+      <label>E-mail</label>
+      <div class="iw"><input type="email" id="auth-email" placeholder="seu@email.com" autocomplete="email"></div>
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <div class="iw"><input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+    </div>
+    <div class="field" id="confirm-wrap" style="display:none">
+      <label>Confirmar senha</label>
+      <div class="iw"><input type="password" id="auth-confirm" placeholder="••••••••"></div>
+    </div>
+    <button class="btn solid btn-full" id="auth-btn" onclick="authSubmit()">Entrar</button>
+    <div class="auth-err" id="auth-err"></div>
+  </div>
+</div>
+
+<!-- ══ APP SCREEN ════════════════════════════════════ -->
+<div id="app-screen">
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-logo" onclick="showDash()">S.E.R.</div>
+    <div class="hdr-right">
+      <span class="hdr-user" id="hdr-user"></span>
+      <button class="btn ghost" onclick="logout()">Sair</button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div id="dash-view">
+    <div class="dash-top">
+      <div class="dash-title">Propostas</div>
+      <button class="btn solid" onclick="newProposal()">+ Nova proposta</button>
+    </div>
+    <div class="prop-grid" id="prop-grid">
+      <div class="empty-state">
+        <div class="em-icon">◻</div>
+        <div style="font-size:14px;color:var(--muted)">Carregando...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div id="calc-view">
+    <div class="calc-top">
+      <button class="btn ghost" onclick="showDash()">← Dashboard</button>
+      <div class="calc-title" id="calc-title">Nova proposta</div>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+      <div class="sitem" onclick="go(0)"><div class="sdot active" id="sd0">1</div><div class="sline" id="sl0"></div></div>
+      <div class="sitem" onclick="go(1)"><div class="sdot" id="sd1">2</div><div class="sline" id="sl1"></div></div>
+      <div class="sitem" onclick="go(2)"><div class="sdot" id="sd2">3</div><div class="sline" id="sl2"></div></div>
+      <div class="sitem" onclick="go(3)"><div class="sdot" id="sd3">4</div><div class="sline" id="sl3"></div></div>
+      <div class="sitem" onclick="go(4)"><div class="sdot" id="sd4">5</div></div>
+    </div>
+
+    <!-- PAINEL 1 — ESCRITÓRIO -->
+    <div class="panel active" id="p0">
+      <div class="slabel">Custos fixos mensais</div>
+      <div class="g2">
+        <div class="field"><label>Pró-labore</label><div class="iw"><span class="pfx">R$</span><input type="number" id="prolabore" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Contabilidade</label><div class="iw"><span class="pfx">R$</span><input type="number" id="contabilidade" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Telefone / internet</label><div class="iw"><span class="pfx">R$</span><input type="number" id="telefone" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Software / armazenamento</label><div class="iw"><span class="pfx">R$</span><input type="number" id="software" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Aluguel / coworking</label><div class="iw"><span class="pfx">R$</span><input type="number" id="aluguel" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Tarifa bancária</label><div class="iw"><span class="pfx">R$</span><input type="number" id="tarifa" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Marketing / portfólio</label><div class="iw"><span class="pfx">R$</span><input type="number" id="marketing" placeholder="0" min="0" oninput="calc()"></div></div>
+        <div class="field"><label>Outros custos fixos</label><div class="iw"><span class="pfx">R$</span><input type="number" id="outros" placeholder="0" min="0" oninput="calc()"></div></div>
+      </div>
+      <div class="slabel">Capacidade produtiva</div>
+      <div class="g2">
+        <div class="field">
+          <label>Horas produtivas / mês</label>
+          <div class="iw"><input type="number" id="horas" placeholder="160" min="1" oninput="calc()"><span class="sfx">h</span></div>
+          <span class="hint">8h/dia × 20 dias = 160h</span>
+        </div>
+        <div class="field">
+          <label>Margem de lucro</label>
+          <div class="iw"><input type="number" id="margem" placeholder="30" min="0" max="200" oninput="calc()"><span class="sfx">%</span></div>
+          <span class="hint">Recomendado: 30–50%</span>
+        </div>
+      </div>
+      <div class="mc-row">
+        <div class="mc"><div class="l">Custo mensal</div><div class="v" id="r-total">R$ 0</div></div>
+        <div class="mc"><div class="l">Custo / hora</div><div class="v" id="r-ch">R$ 0,00</div></div>
+        <div class="mc accent"><div class="l">Hora técnica</div><div class="v" id="r-hora">R$ 0,00</div></div>
+      </div>
+      <p class="note">Abaixo deste valor, você está pagando para trabalhar.</p>
+      <div class="nav-row"><span></span><button class="btn" onclick="go(1)">Próximo →</button></div>
+    </div>
+
+    <!-- PAINEL 2 — FASES -->
+    <div class="panel" id="p1">
+      <div class="slabel">Horas estimadas por fase</div>
+      <div id="fases">
+        <div class="fase-row"><span class="fn">Levantamento e briefing</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Estudo de viabilidade</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Estudo preliminar</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Layout com decisão</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Anteprojeto</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">3D como validação</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Projeto executivo</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Detalhamento técnico</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Compatibilização</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Especificações e memoriais</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Apresentação e aprovação</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Administração de obra</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Gestão e reuniões</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Deslocamentos internos</span><input class="fi" type="number" placeholder="0" min="0" oninput="calcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:.9rem;padding-top:.9rem;border-top:0.5px dashed var(--border-em)">
+        <span style="font-size:11px;color:var(--faint);flex:1">Visitas técnicas — pacote à parte</span>
+        <div class="iw" style="width:140px"><span class="pfx">R$</span><input type="number" id="visita" placeholder="0" min="0" oninput="calcF()"></div>
+      </div>
+      <div class="total-strip">
+        <div class="tl"><span id="th">0 h</span> estimadas · hora técnica <span id="hr-ref">R$ 0,00</span></div>
+        <div class="tr" id="tf">R$ 0</div>
+      </div>
+      <div class="nav-row"><button class="btn ghost" onclick="go(0)">← Voltar</button><button class="btn" onclick="go(2)">Próximo →</button></div>
+    </div>
+
+    <!-- PAINEL 3 — IMPOSTOS -->
+    <div class="panel" id="p2">
+      <div class="slabel">Incidência sobre o honorário bruto</div>
+      <div class="tax-row"><span class="tn">ISS (serviços municipais)</span><div class="tr-right"><div class="iw" style="width:70px"><input class="ti" type="number" id="t-iss" value="5" min="0" max="100" step="0.5" oninput="calcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="tv-iss">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">IRPJ + CSLL (Simples est.)</span><div class="tr-right"><div class="iw" style="width:70px"><input class="ti" type="number" id="t-ir" value="6" min="0" max="100" step="0.5" oninput="calcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="tv-ir">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">PIS + COFINS</span><div class="tr-right"><div class="iw" style="width:70px"><input class="ti" type="number" id="t-pis" value="3.65" min="0" max="100" step="0.05" oninput="calcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="tv-pis">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">ART / RRT (CAU · CREA)</span><div class="tr-right"><div class="iw" style="width:90px"><span class="pfx">R$</span><input class="ti" type="number" id="t-art" value="0" min="0" oninput="calcT()" style="width:100%"></div><span class="tv" id="tv-art">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">Outros encargos</span><div class="tr-right"><div class="iw" style="width:70px"><input class="ti" type="number" id="t-out" value="0" min="0" step="0.5" oninput="calcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="tv-out">R$ 0</span></div></div>
+      <div class="mc-row" style="grid-template-columns:1fr 1fr;margin-top:1.2rem">
+        <div class="mc"><div class="l">Total de encargos</div><div class="v" id="tax-tot">R$ 0</div></div>
+        <div class="mc accent"><div class="l">% sobre o projeto</div><div class="v" id="tax-pct">0,00%</div></div>
+      </div>
+      <p class="note">Alíquotas para MEI / Simples Nacional. Ajuste conforme seu regime tributário.</p>
+      <div class="nav-row"><button class="btn ghost" onclick="go(1)">← Voltar</button><button class="btn" onclick="go(3)">Próximo →</button></div>
+    </div>
+
+    <!-- PAINEL 4 — DESCONTO -->
+    <div class="panel" id="p3">
+      <div class="slabel">Tipo de desconto</div>
+      <div class="pill-row">
+        <button class="pill on" id="pb-pct" onclick="setD('pct')">Percentual</button>
+        <button class="pill" id="pb-fix" onclick="setD('fix')">Valor fixo</button>
+        <button class="pill" id="pb-no" onclick="setD('no')">Sem desconto</button>
+      </div>
+      <div id="d-pct" class="field" style="max-width:200px">
+        <label>Percentual de desconto</label>
+        <div class="iw"><input type="number" id="desc-pct" placeholder="0" min="0" max="100" step="1" oninput="calcD()"><span class="sfx">%</span></div>
+        <span class="hint">Ex: 10% para cliente recorrente</span>
+      </div>
+      <div id="d-fix" class="field" style="max-width:220px;display:none">
+        <label>Valor de desconto</label>
+        <div class="iw"><span class="pfx">R$</span><input type="number" id="desc-fix" placeholder="0" min="0" oninput="calcD()"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="slabel">Condições de pagamento</div>
+      <div class="g2">
+        <div class="field"><label>Entrada</label><div class="iw"><input type="number" id="pg-ent" placeholder="30" min="0" max="100" oninput="calcD()"><span class="sfx">%</span></div></div>
+        <div class="field"><label>Parcelas restantes</label><div class="iw"><input type="number" id="pg-parc" placeholder="3" min="1" max="36" oninput="calcD()"><span class="sfx">×</span></div></div>
+      </div>
+      <div style="border:0.5px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem;margin-top:1rem">
+        <div class="rel-row"><span>Honorário bruto</span><span class="rv" id="pg-bruto">R$ 0</span></div>
+        <div class="rel-row"><span>Desconto</span><span class="rv neg" id="pg-desc">— R$ 0</span></div>
+        <div class="rel-row"><span>Valor líquido</span><span class="rv" id="pg-liq">R$ 0</span></div>
+        <div class="rel-row" style="padding-top:8px;margin-top:4px;border-top:0.5px solid var(--border)"><span>Entrada</span><span class="rv" id="pg-ev" style="color:var(--e)">R$ 0</span></div>
+        <div class="rel-row"><span>Parcelas mensais</span><span class="rv" id="pg-pv" style="color:var(--e)">R$ 0</span></div>
+      </div>
+      <div class="nav-row"><button class="btn ghost" onclick="go(2)">← Voltar</button><button class="btn" onclick="go(4)">Ver proposta →</button></div>
+    </div>
+
+    <!-- PAINEL 5 — PROPOSTA -->
+    <div class="panel" id="p4">
+      <div class="slabel">Dados do projeto</div>
+      <div class="g2">
+        <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="rel-nome" placeholder="Ex: Residência Silva" oninput="upRel()"></div></div>
+        <div class="field"><label>Cliente</label><div class="iw"><input type="text" id="rel-cli" placeholder="Ex: João Silva" oninput="upRel()"></div></div>
+        <div class="field"><label>Área total</label><div class="iw"><input type="number" id="rel-area" placeholder="0" min="0" oninput="upRel()"><span class="sfx">m²</span></div></div>
+        <div class="field"><label>Tipologia</label><div class="iw"><select id="rel-tipo" onchange="upRel()">
+          <option>Residencial unifamiliar</option>
+          <option>Residencial multifamiliar</option>
+          <option>Comercial</option>
+          <option>Institucional</option>
+          <option>Interiores</option>
+          <option>Urbanismo / paisagismo</option>
+          <option>Reforma</option>
+        </select></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="rel-box">
+        <h3>Honorários</h3>
+        <div class="rel-row"><span>Hora técnica</span><span class="rv" id="rr-hora">R$ 0,00</span></div>
+        <div class="rel-row"><span>Total de horas</span><span class="rv" id="rr-horas">0 h</span></div>
+        <div class="rel-row"><span>Honorário das fases</span><span class="rv" id="rr-fases">R$ 0</span></div>
+        <div class="rel-row"><span>Visitas técnicas</span><span class="rv" id="rr-vis">R$ 0</span></div>
+      </div>
+      <div class="rel-box">
+        <h3>Encargos e impostos</h3>
+        <div class="rel-row"><span>Total de encargos</span><span class="rv warn" id="rr-tax">R$ 0</span></div>
+      </div>
+      <div class="rel-box">
+        <h3>Ajuste</h3>
+        <div class="rel-row"><span>Desconto concedido</span><span class="rv neg" id="rr-desc">— R$ 0</span></div>
+      </div>
+      <div class="grand">
+        <span class="gl">Total da proposta</span>
+        <span class="gv" id="rr-total">R$ 0</span>
+      </div>
+      <div id="rr-m2-row" style="display:none;font-size:11px;color:var(--faint);text-align:right;font-family:var(--mono);margin-top:.3rem"></div>
+      <div class="mc2">
+        <div class="m"><div class="l">Entrada</div><div class="v" id="rr-ent">R$ 0</div></div>
+        <div class="m"><div class="l">Parcela mensal</div><div class="v" id="rr-parc">R$ 0</div></div>
+        <div class="m"><div class="l">Por m²</div><div class="v" id="rr-m2c">—</div></div>
+      </div>
+      <div class="save-row">
+        <button class="btn solid" id="save-btn" onclick="saveProposal()">Salvar proposta</button>
+        <button class="btn ghost" onclick="copyRel()">Copiar resumo</button>
+        <span class="save-status" id="save-status"></span>
+      </div>
+      <div class="nav-row" style="border:none;padding:0;margin-top:.5rem">
+        <button class="btn ghost" onclick="go(3)">← Ajustar</button>
+      </div>
+    </div>
+  </div><!-- /calc-view -->
+</div><!-- /app-screen -->
+
+<script>
+// ═══════════════════════════════════════════════
+//  CONFIGURAÇÃO SUPABASE — substitua as duas linhas abaixo
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = 'https://wbcefatwxorbepbjbokw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BcGStnHOrhs_UHsg8hcLQA_Yt7nahWM';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── STATE ────────────────────────────────────────
+let user = null;
+let proposals = [];
+let currentId = null; // uuid da proposta em edição (null = nova)
+let horaG=0, fasesT=0, visitaV=0, taxT=0, descV=0, totalH=0, dType='pct';
+
+const $  = id => document.getElementById(id);
+const flt = id => parseFloat($(id)?.value) || 0;
+const fmt  = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtI = n => Math.round(n).toLocaleString('pt-BR');
+
+// ── INIT ─────────────────────────────────────────
+async function init(){
+  try {
+    const {data, error} = await sb.auth.getSession();
+    if(error) throw error;
+    const session = data?.session;
+    if(session){ user=session.user; showApp(); }
+    else showAuth();
+    sb.auth.onAuthStateChange((_,s)=>{
+      if(s){ user=s.user; showApp(); }
+      else{ user=null; showAuth(); }
+    });
+  } catch(e){
+    document.getElementById('auth-err').textContent = 'Erro de conexão: ' + e.message;
+    showAuth();
+  }
+}
+
+// ── AUTH ─────────────────────────────────────────
+let authMode = 'login';
+function authTab(m){
+  authMode = m;
+  $('at-login').classList.toggle('on', m==='login');
+  $('at-signup').classList.toggle('on', m==='signup');
+  $('confirm-wrap').style.display = m==='signup'?'block':'none';
+  $('auth-btn').textContent = m==='login'?'Entrar':'Criar conta';
+  $('auth-err').textContent='';
+}
+
+async function authSubmit(){
+  const email=$('auth-email').value.trim();
+  const pass=$('auth-pass').value;
+  $('auth-err').textContent='';
+  if(!email){ setAuthErr('Digite seu e-mail.'); return; }
+  if(pass.length < 6){ setAuthErr('A senha precisa ter pelo menos 6 caracteres.'); return; }
+  const btn=$('auth-btn');
+  btn.disabled=true; btn.textContent='Aguarde...';
+
+  const errPT = (msg) => {
+    if(!msg) return 'Erro desconhecido.';
+    if(msg.includes('Invalid login')) return 'E-mail ou senha incorretos.';
+    if(msg.includes('Email not confirmed')) return 'Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.';
+    if(msg.includes('User already registered')) return 'Este e-mail já está cadastrado. Faça login.';
+    if(msg.includes('Password should')) return 'A senha precisa ter pelo menos 6 caracteres.';
+    if(msg.includes('Unable to validate')) return 'Credenciais do Supabase inválidas. Verifique o index.html.';
+    if(msg.includes('fetch')) return 'Sem conexão com o servidor. Verifique as credenciais do Supabase.';
+    return msg;
+  };
+
+  if(authMode==='login'){
+    const {error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){ setAuthErr(errPT(error.message)); btn.disabled=false; btn.textContent='Entrar'; }
+  } else {
+    const confirmVal=$('auth-confirm').value;
+    if(pass!==confirmVal){ setAuthErr('As senhas não coincidem.'); btn.disabled=false; btn.textContent='Criar conta'; return; }
+    const {error}=await sb.auth.signUp({email,password:pass});
+    if(error){ setAuthErr(errPT(error.message)); btn.disabled=false; btn.textContent='Criar conta'; }
+    else { setAuthErr('✓ Conta criada! Confira seu e-mail para confirmar antes de entrar.'); btn.disabled=false; btn.textContent='Criar conta'; }
+  }
+}
+
+function setAuthErr(msg){ $('auth-err').textContent=msg; }
+
+async function logout(){
+  await sb.auth.signOut();
+}
+
+function showAuth(){
+  $('auth-screen').style.display='flex';
+  $('app-screen').style.display='none';
+}
+
+function showApp(){
+  $('auth-screen').style.display='none';
+  $('app-screen').style.display='flex';
+  $('app-screen').style.flexDirection='column';
+  $('hdr-user').textContent = user?.email || '';
+  loadProposals();
+}
+
+// ── DASHBOARD ─────────────────────────────────────
+async function loadProposals(){
+  const {data,error} = await sb.from('proposals').select('*').order('updated_at',{ascending:false});
+  if(error){ console.error(error); return; }
+  proposals = data || [];
+  renderDash();
+}
+
+function renderDash(){
+  const grid = $('prop-grid');
+  if(!proposals.length){
+    grid.innerHTML=`<div class="empty-state"><div class="em-icon">◻</div><div style="font-size:14px;color:var(--muted)">Nenhuma proposta ainda</div><p>Clique em "+ Nova proposta" para começar</p></div>`;
+    return;
+  }
+  grid.innerHTML = proposals.map(p=>{
+    const dt = new Date(p.updated_at).toLocaleDateString('pt-BR');
+    return `<div class="prop-card" onclick="editProposal('${p.id}')">
+      <div class="pc-tipo">${p.typology||'—'}</div>
+      <div class="pc-nome">${p.name||'Sem título'}</div>
+      <div class="pc-cli">${p.client||'Cliente não informado'}</div>
+      <div class="pc-total">R$ ${fmtI(p.total||0)}</div>
+      <div class="pc-data">Atualizado em ${dt}</div>
+      <div class="pc-actions">
+        <button class="btn" style="font-size:11px;padding:5px 12px" onclick="event.stopPropagation();editProposal('${p.id}')">Editar</button>
+        <button class="btn danger" style="font-size:11px;padding:5px 12px" onclick="event.stopPropagation();deleteProposal('${p.id}')">Excluir</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showDash(){
+  $('dash-view').style.display='block';
+  $('calc-view').style.display='none';
+  loadProposals();
+}
+
+function showCalc(){
+  $('dash-view').style.display='none';
+  $('calc-view').style.display='block';
+}
+
+// ── PROPOSTA CRUD ─────────────────────────────────
+function newProposal(){
+  currentId = null;
+  resetCalc();
+  $('calc-title').textContent='Nova proposta';
+  $('save-status').textContent='';
+  showCalc();
+  go(0);
+}
+
+function editProposal(id){
+  const p = proposals.find(x=>x.id===id);
+  if(!p) return;
+  currentId = id;
+  $('calc-title').textContent = p.name || 'Editar proposta';
+  $('save-status').textContent='';
+  loadCalcData(p.data || {}, p);
+  showCalc();
+  go(0);
+}
+
+async function deleteProposal(id){
+  if(!confirm('Excluir esta proposta? Essa ação não pode ser desfeita.')) return;
+  await sb.from('proposals').delete().eq('id',id);
+  await loadProposals();
+}
+
+async function saveProposal(){
+  const btn=$('save-btn'), status=$('save-status');
+  btn.disabled=true; btn.textContent='Salvando...'; status.className='save-status';
+
+  const nome=$('rel-nome').value||'Sem título';
+  const final = fasesT+taxT-descV;
+
+  const payload={
+    user_id: user.id,
+    name: nome,
+    client: $('rel-cli').value||'',
+    typology: $('rel-tipo').value||'',
+    area: flt('rel-area'),
+    total: Math.round(final),
+    updated_at: new Date().toISOString(),
+    data: getCalcData()
+  };
+
+  let error;
+  if(currentId){
+    ({error} = await sb.from('proposals').update(payload).eq('id',currentId));
+  } else {
+    const res = await sb.from('proposals').insert({...payload,created_at:new Date().toISOString()}).select().single();
+    error = res.error;
+    if(!error) currentId = res.data.id;
+  }
+
+  btn.disabled=false; btn.textContent='Salvar proposta';
+  if(error){
+    status.textContent='Erro ao salvar. Tente novamente.'; status.className='save-status err';
+  } else {
+    status.textContent='✓ Salvo com sucesso'; status.className='save-status ok';
+    $('calc-title').textContent=nome;
+    setTimeout(()=>status.textContent='',3000);
+  }
+}
+
+// ── CALC DATA SERIALIZATION ───────────────────────
+function getCalcData(){
+  const faseInputs=[...document.querySelectorAll('#fases .fi')].map(i=>parseFloat(i.value)||0);
+  return {
+    esc:{
+      prolabore:flt('prolabore'),contabilidade:flt('contabilidade'),
+      telefone:flt('telefone'),software:flt('software'),aluguel:flt('aluguel'),
+      tarifa:flt('tarifa'),marketing:flt('marketing'),outros:flt('outros'),
+      horas:flt('horas')||160, margem:flt('margem')||0
+    },
+    fases: faseInputs,
+    visita: flt('visita'),
+    imp:{iss:flt('t-iss'),ir:flt('t-ir'),pis:flt('t-pis'),art:flt('t-art'),out:flt('t-out')},
+    desc:{tipo:dType,pct:flt('desc-pct'),fix:flt('desc-fix'),entrada:flt('pg-ent')||30,parcelas:flt('pg-parc')||3},
+    proj:{nome:$('rel-nome').value,cli:$('rel-cli').value,area:flt('rel-area'),tipo:$('rel-tipo').value}
+  };
+}
+
+function loadCalcData(d, p){
+  const set=(id,val)=>{ const el=$(id); if(el&&val!==undefined&&val!==null){ el.value=val; }};
+  if(d.esc){
+    set('prolabore',d.esc.prolabore);set('contabilidade',d.esc.contabilidade);
+    set('telefone',d.esc.telefone);set('software',d.esc.software);
+    set('aluguel',d.esc.aluguel);set('tarifa',d.esc.tarifa);
+    set('marketing',d.esc.marketing);set('outros',d.esc.outros);
+    set('horas',d.esc.horas||160);set('margem',d.esc.margem||0);
+  }
+  if(d.fases){
+    const inputs=[...document.querySelectorAll('#fases .fi')];
+    d.fases.forEach((v,i)=>{ if(inputs[i]) inputs[i].value=v||''; });
+  }
+  set('visita',d.visita);
+  if(d.imp){ set('t-iss',d.imp.iss);set('t-ir',d.imp.ir);set('t-pis',d.imp.pis);set('t-art',d.imp.art);set('t-out',d.imp.out); }
+  if(d.desc){
+    setD(d.desc.tipo||'pct');
+    set('desc-pct',d.desc.pct);set('desc-fix',d.desc.fix);
+    set('pg-ent',d.desc.entrada||30);set('pg-parc',d.desc.parcelas||3);
+  }
+  if(d.proj){
+    set('rel-nome',d.proj.nome);set('rel-cli',d.proj.cli);
+    set('rel-area',d.proj.area);
+    if(d.proj.tipo) $('rel-tipo').value=d.proj.tipo;
+  } else if(p){
+    set('rel-nome',p.name);set('rel-cli',p.client);
+    set('rel-area',p.area);
+    if(p.typology) $('rel-tipo').value=p.typology;
+  }
+  calc();
+}
+
+function resetCalc(){
+  ['prolabore','contabilidade','telefone','software','aluguel','tarifa','marketing','outros'].forEach(id=>$(id).value='');
+  $('horas').value=''; $('margem').value='';
+  [...document.querySelectorAll('#fases .fi')].forEach(i=>i.value='');
+  $('visita').value='';
+  $('t-iss').value=5;$('t-ir').value=6;$('t-pis').value=3.65;$('t-art').value=0;$('t-out').value=0;
+  setD('pct');$('desc-pct').value='';$('desc-fix').value='';
+  $('pg-ent').value='';$('pg-parc').value='';
+  $('rel-nome').value='';$('rel-cli').value='';$('rel-area').value='';$('rel-tipo').value='Residencial unifamiliar';
+  horaG=0;fasesT=0;visitaV=0;taxT=0;descV=0;totalH=0;
+  calc();
+}
+
+// ── STEPPER ──────────────────────────────────────
+function go(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+  document.querySelectorAll('.sdot').forEach((d,j)=>{d.classList.toggle('active',j===i);d.classList.toggle('done',j<i)});
+  document.querySelectorAll('.sline').forEach((l,j)=>l.classList.toggle('done',j<i));
+  if(i===4) upRel();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CALC ENGINE ───────────────────────────────────
+function calc(){
+  const s=[flt('prolabore'),flt('contabilidade'),flt('telefone'),flt('software'),flt('aluguel'),flt('tarifa'),flt('marketing'),flt('outros')];
+  const tot=s.reduce((a,b)=>a+b,0);
+  const h=flt('horas')||160, mg=flt('margem')||0;
+  const ch=h>0?tot/h:0, ht=ch*(1+mg/100);
+  horaG=ht;
+  $('r-total').textContent='R$ '+fmtI(tot);
+  $('r-ch').textContent='R$ '+fmt(ch);
+  $('r-hora').textContent='R$ '+fmt(ht);
+  calcF(); calcT(); calcD();
+}
+
+function calcF(){
+  let th=0,tv=0;
+  document.querySelectorAll('#fases .fase-row').forEach(r=>{
+    const h=parseFloat(r.querySelector('.fi').value)||0, val=h*horaG;
+    th+=h; tv+=val;
+    r.querySelector('.fv').textContent='R$ '+fmtI(val);
+  });
+  totalH=th; visitaV=flt('visita'); fasesT=tv+visitaV;
+  $('th').textContent=th+' h';
+  $('hr-ref').textContent='R$ '+fmt(horaG);
+  $('tf').textContent='R$ '+fmtI(fasesT);
+  calcT(); calcD();
+}
+
+function calcT(){
+  const b=fasesT;
+  const iss=b*(flt('t-iss')/100),ir=b*(flt('t-ir')/100),pis=b*(flt('t-pis')/100),art=flt('t-art'),out=b*(flt('t-out')/100);
+  taxT=iss+ir+pis+art+out;
+  $('tv-iss').textContent='R$ '+fmtI(iss);$('tv-ir').textContent='R$ '+fmtI(ir);
+  $('tv-pis').textContent='R$ '+fmtI(pis);$('tv-art').textContent='R$ '+fmtI(art);$('tv-out').textContent='R$ '+fmtI(out);
+  $('tax-tot').textContent='R$ '+fmtI(taxT);
+  $('tax-pct').textContent=b>0?fmt(taxT/b*100)+'%':'0,00%';
+  calcD();
+}
+
+function setD(t){
+  dType=t;
+  ['pct','fix','no'].forEach(x=>$('pb-'+x).classList.toggle('on',x===t));
+  $('d-pct').style.display=t==='pct'?'block':'none';
+  $('d-fix').style.display=t==='fix'?'block':'none';
+  calcD();
+}
+
+function calcD(){
+  const bruto=fasesT+taxT;
+  let desc=0;
+  if(dType==='pct') desc=bruto*(flt('desc-pct')/100);
+  else if(dType==='fix') desc=Math.min(flt('desc-fix'),bruto);
+  descV=desc;
+  const liq=bruto-desc;
+  const ep=(flt('pg-ent')||30)/100, np=Math.max(1,Math.round(flt('pg-parc'))||3);
+  const ev=liq*ep, pv=(liq-ev)/np;
+  $('pg-bruto').textContent='R$ '+fmtI(bruto);
+  $('pg-desc').textContent='— R$ '+fmtI(desc);
+  $('pg-liq').textContent='R$ '+fmtI(liq);
+  $('pg-ev').textContent='R$ '+fmtI(ev);
+  $('pg-pv').textContent='R$ '+fmt(pv)+' ('+np+'×)';
+}
+
+function upRel(){
+  const bruto=fasesT+taxT, final=bruto-descV;
+  const ep=(flt('pg-ent')||30)/100, np=Math.max(1,Math.round(flt('pg-parc'))||3);
+  const ev=final*ep, pv=(final-ev)/np, area=flt('rel-area');
+  $('rr-hora').textContent='R$ '+fmt(horaG);
+  $('rr-horas').textContent=totalH+' h';
+  $('rr-fases').textContent='R$ '+fmtI(fasesT-visitaV);
+  $('rr-vis').textContent='R$ '+fmtI(visitaV);
+  $('rr-tax').textContent='R$ '+fmtI(taxT);
+  $('rr-desc').textContent='— R$ '+fmtI(descV);
+  $('rr-total').textContent='R$ '+fmtI(final);
+  $('rr-ent').textContent='R$ '+fmtI(ev);
+  $('rr-parc').textContent='R$ '+fmt(pv);
+  const m2row=$('rr-m2-row');
+  if(area>0){ $('rr-m2c').textContent='R$ '+fmt(final/area); m2row.textContent='R$ '+fmt(final/area)+' / m²'; m2row.style.display='block'; }
+  else{ $('rr-m2c').textContent='—'; m2row.style.display='none'; }
+}
+
+function copyRel(){
+  const final=fasesT+taxT-descV;
+  const ep=(flt('pg-ent')||30)/100, np=Math.max(1,Math.round(flt('pg-parc'))||3);
+  const ev=final*ep, pv=(final-ev)/np;
+  const txt=`PROPOSTA DE HONORÁRIOS — MÉTODO S.E.R.\nProjeto: ${$('rel-nome').value||'—'}\nCliente: ${$('rel-cli').value||'—'}\n\nHora técnica: R$ ${fmt(horaG)}\nTotal de horas: ${totalH}h\nHonorário das fases: R$ ${fmtI(fasesT)}\nEncargos: R$ ${fmtI(taxT)}\nDesconto: — R$ ${fmtI(descV)}\n${'─'.repeat(34)}\nTOTAL: R$ ${fmtI(final)}\nEntrada: R$ ${fmtI(ev)}\nParcelas: R$ ${fmt(pv)} (${np}×)`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const s=$('save-status'); s.textContent='✓ Resumo copiado'; s.className='save-status ok';
+    setTimeout(()=>{s.textContent='';s.className='save-status';},2500);
+  });
+}
+
+init();
+</script>
+</body>
+</html>
