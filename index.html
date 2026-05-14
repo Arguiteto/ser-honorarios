@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>S.E.R. — Gestão de Honorários</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -384,6 +385,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       </div>
       <div class="save-row">
         <button class="btn solid" id="save-btn" onclick="saveProposal()">Salvar proposta</button>
+        <button class="btn" id="pdf-btn" onclick="exportPDF()">⬇ Baixar PDF</button>
         <button class="btn ghost" onclick="copyRel()">Copiar resumo</button>
         <span class="save-status" id="save-status"></span>
       </div>
@@ -748,6 +750,103 @@ function upRel(){
   const m2row=$('rr-m2-row');
   if(area>0){ $('rr-m2c').textContent='R$ '+fmt(final/area); m2row.textContent='R$ '+fmt(final/area)+' / m²'; m2row.style.display='block'; }
   else{ $('rr-m2c').textContent='—'; m2row.style.display='none'; }
+}
+
+function exportPDF(){
+  const btn = $('pdf-btn');
+  btn.textContent = 'Gerando...';
+  btn.disabled = true;
+
+  const nome = $('rel-nome').value || 'proposta';
+  const cli  = $('rel-cli').value  || '';
+  const final = fasesT + taxT - descV;
+  const ep  = (flt('pg-ent') || 30) / 100;
+  const np  = Math.max(1, Math.round(flt('pg-parc')) || 3);
+  const ev  = final * ep;
+  const pv  = (final - ev) / np;
+  const area = flt('rel-area');
+  const tipo = $('rel-tipo').value || '';
+  const data = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
+
+  const html = `
+  <div style="font-family:Georgia,serif;color:#2C1F12;padding:48px;max-width:680px;margin:0 auto">
+    <div style="border-bottom:2px solid #D4B896;padding-bottom:20px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-size:26px;font-weight:400;color:#8B5E3C;letter-spacing:-0.5px">S.E.R.</div>
+        <div style="font-size:11px;color:#B0A090;margin-top:4px;letter-spacing:0.5px">GESTÃO DE HONORÁRIOS ARQUITETÔNICOS</div>
+      </div>
+      <div style="text-align:right;font-size:11px;color:#B0A090">${data}</div>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <div style="font-size:20px;font-weight:400;color:#2C1F12;margin-bottom:4px">${nome || 'Sem título'}</div>
+      ${cli ? `<div style="font-size:13px;color:#7A6A56">Cliente: ${cli}</div>` : ''}
+      ${tipo ? `<div style="font-size:12px;color:#B0A090;text-transform:uppercase;letter-spacing:1px;margin-top:4px">${tipo}</div>` : ''}
+      ${area > 0 ? `<div style="font-size:12px;color:#B0A090">Área: ${area} m²</div>` : ''}
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+      <tr><td colspan="2" style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;padding:8px 0 4px;border-bottom:1px solid #F2EDE2;font-family:system-ui,sans-serif">HONORÁRIOS</td></tr>
+      <tr><td style="font-size:12px;color:#7A6A56;padding:5px 0;border-bottom:0.5px solid #F2EDE2">Hora técnica</td><td style="text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#2C1F12;border-bottom:0.5px solid #F2EDE2">R$ ${fmt(horaG)}</td></tr>
+      <tr><td style="font-size:12px;color:#7A6A56;padding:5px 0;border-bottom:0.5px solid #F2EDE2">Total de horas estimadas</td><td style="text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#2C1F12;border-bottom:0.5px solid #F2EDE2">${totalH} h</td></tr>
+      <tr><td style="font-size:12px;color:#7A6A56;padding:5px 0;border-bottom:0.5px solid #F2EDE2">Honorário das fases</td><td style="text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#2C1F12;border-bottom:0.5px solid #F2EDE2">R$ ${fmtI(fasesT - visitaV)}</td></tr>
+      <tr><td style="font-size:12px;color:#7A6A56;padding:5px 0;border-bottom:0.5px solid #F2EDE2">Visitas técnicas</td><td style="text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#2C1F12;border-bottom:0.5px solid #F2EDE2">R$ ${fmtI(visitaV)}</td></tr>
+
+      <tr><td colspan="2" style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;padding:16px 0 4px;border-bottom:1px solid #F2EDE2;font-family:system-ui,sans-serif">ENCARGOS E IMPOSTOS</td></tr>
+      <tr><td style="font-size:12px;color:#7A6A56;padding:5px 0;border-bottom:0.5px solid #F2EDE2">Total de encargos</td><td style="text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#854F0B;border-bottom:0.5px solid #F2EDE2">R$ ${fmtI(taxT)}</td></tr>
+
+      <tr><td colspan="2" style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;padding:16px 0 4px;border-bottom:1px solid #F2EDE2;font-family:system-ui,sans-serif">AJUSTE</td></tr>
+      <tr><td style="font-size:12px;color:#7A6A56;padding:5px 0;border-bottom:0.5px solid #F2EDE2">Desconto concedido</td><td style="text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#8B3A3A;border-bottom:0.5px solid #F2EDE2">— R$ ${fmtI(descV)}</td></tr>
+    </table>
+
+    <div style="border-top:2px solid #D4B896;padding-top:16px;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#8B5E3C;font-family:system-ui,sans-serif">TOTAL DA PROPOSTA</div>
+      <div style="font-size:32px;font-weight:400;color:#8B5E3C">R$ ${fmtI(final)}</div>
+    </div>
+
+    ${area > 0 ? `<div style="text-align:right;font-size:11px;color:#B0A090;font-family:'Courier New',monospace;margin-top:-16px;margin-bottom:20px">R$ ${fmt(final/area)} / m²</div>` : ''}
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:32px">
+      <div style="background:#F5EDE2;border-radius:6px;padding:12px 14px">
+        <div style="font-size:10px;color:#8B5E3C;margin-bottom:4px;font-family:system-ui,sans-serif">ENTRADA</div>
+        <div style="font-family:'Courier New',monospace;font-size:14px;color:#8B5E3C;font-weight:500">R$ ${fmtI(ev)}</div>
+      </div>
+      <div style="background:#F5EDE2;border-radius:6px;padding:12px 14px">
+        <div style="font-size:10px;color:#8B5E3C;margin-bottom:4px;font-family:system-ui,sans-serif">PARCELA MENSAL</div>
+        <div style="font-family:'Courier New',monospace;font-size:14px;color:#8B5E3C;font-weight:500">R$ ${fmt(pv)}</div>
+      </div>
+      <div style="background:#F5EDE2;border-radius:6px;padding:12px 14px">
+        <div style="font-size:10px;color:#8B5E3C;margin-bottom:4px;font-family:system-ui,sans-serif">PARCELAS</div>
+        <div style="font-family:'Courier New',monospace;font-size:14px;color:#8B5E3C;font-weight:500">${np}×</div>
+      </div>
+    </div>
+
+    <div style="border-top:0.5px solid #F2EDE2;padding-top:16px;font-size:10px;color:#B0A090;text-align:center;font-family:system-ui,sans-serif;letter-spacing:0.5px">
+      MÉTODO S.E.R. — GESTÃO DE HONORÁRIOS ARQUITETÔNICOS
+    </div>
+  </div>`;
+
+  const el = document.createElement('div');
+  el.innerHTML = html;
+  document.body.appendChild(el);
+
+  const nomearq = (nome || 'proposta').toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
+
+  html2pdf().set({
+    margin: 0,
+    filename: `ser-proposta-${nomearq}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(el).save().then(() => {
+    document.body.removeChild(el);
+    btn.textContent = '⬇ Baixar PDF';
+    btn.disabled = false;
+    const s = $('save-status');
+    s.textContent = '✓ PDF gerado';
+    s.className = 'save-status ok';
+    setTimeout(() => { s.textContent = ''; s.className = 'save-status'; }, 3000);
+  });
 }
 
 function copyRel(){
