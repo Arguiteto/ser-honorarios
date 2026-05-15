@@ -66,10 +66,17 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 
 /* ── APP LAYOUT ─────────────────────────────────── */
 #app-screen{display:none;min-height:100vh;flex-direction:column;padding-bottom:44px}
-.hdr{background:var(--surface);border-bottom:0.5px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
-.hdr-logo{font-family:Georgia,serif;font-size:16px;color:var(--e);cursor:pointer;display:flex;align-items:center;gap:8px}
+.hdr{background:var(--surface);border-bottom:0.5px solid var(--border);padding:.45rem 1.5rem;min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.hdr-logo{font-family:Georgia,serif;font-size:16px;color:var(--e);cursor:pointer;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-logo img{width:28px;height:28px;object-fit:contain;border-radius:3px}
-.hdr-right{display:flex;align-items:center;gap:8px}
+.top-tools{display:flex;align-items:center;gap:6px;flex:1;justify-content:center;min-width:280px}
+.tool-btn{font-family:inherit;font-size:11px;padding:7px 12px;border:0.5px solid transparent;border-radius:999px;background:none;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tool-btn:hover{background:var(--surf2);border-color:var(--border)}
+.tool-btn.active{background:var(--el);border-color:var(--eb);color:var(--e);font-weight:500}
+.tool-btn.primary{background:var(--e);border-color:var(--e);color:#fff}
+.tool-btn.primary:hover{opacity:.86}
+.tool-btn.primary.active{box-shadow:0 0 0 2px var(--el)}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-user{font-size:11px;color:var(--faint);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* ── THEME PICKER ───────────────────────────────── */
@@ -105,6 +112,20 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .slabel{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin:1.4rem 0 .8rem;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .divider{border:none;border-top:0.5px solid var(--border);margin:1.2rem 0}
+
+/* ── HALL / INÍCIO ───────────────────────────────── */
+#hall-view{display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%}
+.hall-hero{background:linear-gradient(135deg,var(--surface),var(--surf2));border:0.5px solid var(--border);border-radius:14px;padding:2rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.hall-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin-bottom:.6rem}
+.hall-title{font-family:Georgia,serif;font-size:28px;font-weight:400;color:var(--text);margin-bottom:.5rem}
+.hall-sub{font-size:13px;color:var(--muted);max-width:620px;line-height:1.6}
+.hall-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.hall-card{font-family:inherit;background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;text-align:left;cursor:pointer;transition:all .18s;min-height:145px;display:flex;flex-direction:column;justify-content:space-between}
+.hall-card:hover{border-color:var(--eb);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.06)}
+.hall-icon{font-size:22px;margin-bottom:.8rem;opacity:.85}
+.hall-card h2{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.35rem}
+.hall-card p{font-size:12px;color:var(--muted);line-height:1.5}
+.hall-card .hall-go{font-size:11px;color:var(--e);margin-top:1rem}
 
 /* ── DASHBOARD ──────────────────────────────────── */
 #dash-view{padding:1.5rem;max-width:980px;margin:0 auto;flex:1}
@@ -247,9 +268,16 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .online-users{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .online-chip{background:var(--greenl);color:var(--green);font-size:10px;padding:2px 8px;border-radius:10px;border:0.5px solid var(--green)}
 
+@media(max-width:720px){
+  .hdr{align-items:flex-start;padding:.6rem 1rem}
+  .top-tools{order:3;width:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:2px;min-width:0}
+  .hdr-right{margin-left:auto}
+}
 @media(max-width:520px){
   .g2,.mc-row,.mc2,.stats-row,.carta-meta{grid-template-columns:1fr}
-  .prop-grid{grid-template-columns:1fr}
+  .prop-grid,.hall-actions{grid-template-columns:1fr}
+  .hall-title{font-size:24px}
+  .hall-hero{padding:1.4rem}
 }
 
 </style>
@@ -276,10 +304,17 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 <div id="app-screen">
   <!-- HEADER -->
   <header class="hdr">
-    <div class="hdr-logo" onclick="showDash()">
+    <div class="hdr-logo" onclick="showHall()">
       <img id="hdr-logo-img" src="" alt="Chaos">
       Chaos
     </div>
+    <nav class="top-tools" aria-label="Ferramentas principais">
+      <button class="tool-btn active" id="tool-home" onclick="showHall()">Início</button>
+      <button class="tool-btn" id="tool-props" onclick="showDash('props')">Propostas</button>
+      <button class="tool-btn" id="tool-chart" onclick="showDash('chart')">Gráficos</button>
+      <button class="tool-btn primary" id="tool-new" onclick="newProposal()">+ Proposta</button>
+      <button class="tool-btn" id="tool-carta" onclick="showCarta()">Carta</button>
+    </nav>
     <div class="hdr-right">
       <div class="theme-picker" title="Escolher tema">
         <div class="tp-dot" onclick="setTheme(0)" id="tp0"></div>
@@ -292,6 +327,49 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <button class="btn ghost" onclick="logout()">Sair</button>
     </div>
   </header>
+
+  <!-- HALL / INÍCIO -->
+  <div id="hall-view" style="display:none">
+    <section class="hall-hero">
+      <div class="hall-kicker">Central de ferramentas</div>
+      <h1 class="hall-title">Chaos — Arquitetura e Urbanismo</h1>
+      <p class="hall-sub">Escolha o que deseja fazer. Assim, ao entrar no sistema, você começa por esta tela inicial e só acessa as propostas quando clicar em “Propostas” ou “Nova proposta”.</p>
+    </section>
+    <div class="hall-actions">
+      <button class="hall-card" onclick="newProposal()">
+        <div>
+          <div class="hall-icon">＋</div>
+          <h2>Nova proposta</h2>
+          <p>Abre a calculadora de honorários para montar uma proposta do zero.</p>
+        </div>
+        <span class="hall-go">Começar →</span>
+      </button>
+      <button class="hall-card" onclick="showDash('props')">
+        <div>
+          <div class="hall-icon">▦</div>
+          <h2>Propostas salvas</h2>
+          <p>Consulta, edita ou exclui propostas já cadastradas no sistema.</p>
+        </div>
+        <span class="hall-go">Abrir lista →</span>
+      </button>
+      <button class="hall-card" onclick="showDash('chart')">
+        <div>
+          <div class="hall-icon">◔</div>
+          <h2>Gráficos</h2>
+          <p>Visualiza totais, ticket médio e distribuição das propostas.</p>
+        </div>
+        <span class="hall-go">Ver indicadores →</span>
+      </button>
+      <button class="hall-card" onclick="showCarta()">
+        <div>
+          <div class="hall-icon">✉</div>
+          <h2>Nova carta</h2>
+          <p>Cria uma carta ou documento simples para baixar em PDF.</p>
+        </div>
+        <span class="hall-go">Escrever carta →</span>
+      </button>
+    </div>
+  </div>
 
   <!-- DASHBOARD -->
   <div id="dash-view" style="display:none">
@@ -342,7 +420,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   <div id="carta-view" style="display:none">
     <div class="dash-top">
       <div class="dash-title">Nova carta / documento</div>
-      <button class="btn ghost" onclick="showDash()">← Dashboard</button>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
     </div>
     <div class="carta-editor">
       <div class="carta-meta">
@@ -363,7 +441,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   <!-- CALCULATOR -->
   <div id="calc-view" style="display:none">
     <div class="calc-top">
-      <button class="btn ghost" onclick="showDash()">← Dashboard</button>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
       <div class="calc-title" id="calc-title">Nova proposta</div>
     </div>
     <div class="stepper">
@@ -627,7 +705,7 @@ function showApp(){
   $('app-screen').style.flexDirection='column';
   $('hdr-user').textContent=user?.email||'';
   loadTheme();
-  showDash();
+  showHall();
   initPresence();
 }
 
@@ -658,23 +736,45 @@ async function initPresence(){
 }
 
 // ── VIEWS ─────────────────────────────────────────
-function showDash(){
+function hideViews(){
+  ['hall-view','dash-view','calc-view','carta-view'].forEach(id=>{
+    const el=$(id);
+    if(el) el.style.display='none';
+  });
+}
+
+function setTool(active){
+  ['home','props','chart','new','carta'].forEach(k=>{
+    const el=$('tool-'+k);
+    if(el) el.classList.toggle('active',k===active);
+  });
+}
+
+function showHall(){
+  hideViews();
+  $('hall-view').style.display='block';
+  setTool('home');
+}
+
+function showDash(tab='props'){
+  hideViews();
   $('dash-view').style.display='block';
-  $('calc-view').style.display='none';
-  $('carta-view').style.display='none';
-  loadProposals();
+  const target = tab==='chart' ? 'chart' : 'props';
+  setTool(target);
+  dashTab(target);
+  loadProposals().then(()=>{ if(target==='chart') renderCharts(); });
 }
 
 function showCalc(){
-  $('dash-view').style.display='none';
+  hideViews();
   $('calc-view').style.display='block';
-  $('carta-view').style.display='none';
+  setTool('new');
 }
 
 function showCarta(){
-  $('dash-view').style.display='none';
-  $('calc-view').style.display='none';
+  hideViews();
   $('carta-view').style.display='block';
+  setTool('carta');
 }
 
 // ── DASH TABS ─────────────────────────────────────
