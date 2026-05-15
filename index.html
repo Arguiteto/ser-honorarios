@@ -71,26 +71,18 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .hdr{background:var(--surface);border-bottom:0.5px solid var(--border);padding:.45rem 1.5rem;min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
 .hdr-logo{font-family:Georgia,serif;font-size:16px;color:var(--e);cursor:pointer;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-logo img{width:28px;height:28px;object-fit:contain;border-radius:3px}
-.top-tools{display:flex;align-items:center;gap:6px;flex:1;justify-content:center;min-width:280px}
-.tool-btn{font-family:inherit;font-size:11px;padding:7px 12px;border:0.5px solid transparent;border-radius:999px;background:none;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-.tool-btn:hover{background:var(--surf2);border-color:var(--border)}
-.tool-btn.active{background:var(--el);border-color:var(--eb);color:var(--e);font-weight:500}
-.tool-btn.primary{background:var(--e);border-color:var(--e);color:#fff}
-.tool-btn.primary:hover{opacity:.86}
-.tool-btn.primary.active{box-shadow:0 0 0 2px var(--el)}
-
-.tool-btn.labeee-accent{background:var(--e);border-color:var(--e);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.tool-btn.labeee-accent:hover{opacity:.9;background:var(--e);border-color:var(--e)}
-.tool-btn.labeee-accent.active{box-shadow:0 0 0 2px var(--el),0 2px 8px rgba(0,0,0,.08)}
-.tool-btn.threejs-accent{background:var(--el);border-color:var(--eb);color:var(--e);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.tool-btn.threejs-accent:hover{background:var(--eb);border-color:var(--eb);color:var(--e)}
-.tool-btn.threejs-accent.active{background:var(--e);border-color:var(--e);color:#fff;box-shadow:0 0 0 2px var(--el),0 2px 8px rgba(0,0,0,.08)}
-.labeee-float{position:fixed;right:12px;bottom:64px;z-index:35;border:none;border-radius:999px;background:var(--e);color:#fff;font-family:inherit;font-size:12px;font-weight:600;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.16);cursor:pointer;display:flex;align-items:center;gap:6px}
-.labeee-float:hover{opacity:.9}
-.threejs-float{position:fixed;right:12px;bottom:112px;z-index:35;border:none;border-radius:999px;background:var(--surface);border:0.5px solid var(--eb);color:var(--e);font-family:inherit;font-size:12px;font-weight:700;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.14);cursor:pointer;display:flex;align-items:center;gap:6px}
-.threejs-float:hover{background:var(--el)}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-user{font-size:11px;color:var(--faint);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── TOOL DOCK / ATALHOS FLUTUANTES ─────────────── */
+.tool-dock{position:fixed;left:14px;top:76px;z-index:45;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none}
+.dock-btn{pointer-events:auto;border:none;border-radius:999px;background:var(--surface);border:0.5px solid var(--border-em);color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.10);cursor:pointer;display:flex;align-items:center;gap:7px;min-width:132px;transition:transform .15s,background .15s,border-color .15s,color .15s,opacity .15s}
+.dock-btn:hover{transform:translateX(2px);background:var(--el);border-color:var(--eb);color:var(--e)}
+.dock-btn.active{background:var(--e);border-color:var(--e);color:#fff;box-shadow:0 10px 26px rgba(0,0,0,.16)}
+.dock-btn.primary{background:var(--el);border-color:var(--eb);color:var(--e)}
+.dock-btn.primary.active{background:var(--e);border-color:var(--e);color:#fff}
+.dock-btn .ico{font-size:14px;line-height:1;width:16px;text-align:center}
+.dock-sep{width:72px;height:1px;background:var(--border);margin:2px 0 2px 20px}
 
 /* ── THEME PICKER ───────────────────────────────── */
 .theme-picker{display:flex;gap:5px;align-items:center}
@@ -127,19 +119,19 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .divider{border:none;border-top:0.5px solid var(--border);margin:1.2rem 0}
 
 /* ── HALL / INÍCIO ───────────────────────────────── */
-#hall-view{display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%}
-.hall-hero{background:linear-gradient(135deg,var(--surface),var(--surf2));border:0.5px solid var(--border);border-radius:14px;padding:2rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-.hall-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin-bottom:.6rem}
-.hall-title{font-family:Georgia,serif;font-size:28px;font-weight:400;color:var(--text);margin-bottom:.5rem}
-.hall-sub{font-size:13px;color:var(--muted);max-width:620px;line-height:1.6}
-.hall-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
-.hall-card{font-family:inherit;background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;text-align:left;cursor:pointer;transition:all .18s;min-height:145px;display:flex;flex-direction:column;justify-content:space-between}
-.hall-card:hover{border-color:var(--eb);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.06)}
-.hall-icon{font-size:22px;margin-bottom:.8rem;opacity:.85}
-.hall-card h2{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.35rem}
-.hall-card p{font-size:12px;color:var(--muted);line-height:1.5}
-.hall-card .hall-go{font-size:11px;color:var(--e);margin-top:1rem}
+#hall-view{display:none;padding:4.5rem 1.5rem 1.5rem;max-width:760px;margin:0 auto;flex:1;width:100%}
+.hall-hero{background:transparent;border:none;border-radius:0;padding:6rem 1rem 3rem;margin-bottom:0;box-shadow:none;text-align:center}
+.hall-kicker{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--faint);margin-bottom:.9rem}
+.hall-title{font-family:Georgia,serif;font-size:38px;font-weight:400;color:var(--text);margin-bottom:.8rem}
+.hall-sub{font-size:13px;color:var(--muted);max-width:520px;line-height:1.75;margin:0 auto}
+.hall-clean-note{margin:1.6rem auto 0;display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);border:0.5px solid var(--border);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.16)}
+.hall-actions{display:none}
 
+
+
+@media(min-width:721px){
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view{padding-left:180px}
+}
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
 #simgeo-view{display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%}
@@ -315,15 +307,20 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .online-chip{background:var(--greenl);color:var(--green);font-size:10px;padding:2px 8px;border-radius:10px;border:0.5px solid var(--green)}
 
 @media(max-width:720px){
-  .hdr{align-items:flex-start;padding:.6rem 1rem}
-  .top-tools{order:3;width:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:2px;min-width:0}
+  #app-screen{padding-bottom:96px}
+  .hdr{align-items:center;padding:.6rem 1rem}
   .hdr-right{margin-left:auto}
+  .tool-dock{left:8px;right:8px;top:auto;bottom:8px;flex-direction:row;align-items:center;overflow-x:auto;padding:6px;background:rgba(250,247,241,.78);backdrop-filter:blur(12px);border:0.5px solid var(--border);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+  .dock-btn{min-width:auto;padding:9px 12px;font-size:11px;box-shadow:none;white-space:nowrap}
+  .dock-btn:hover{transform:none}
+  .dock-sep{display:none}
+  #online-bar{display:none}
 }
 @media(max-width:520px){
   .g2,.mc-row,.mc2,.stats-row,.carta-meta{grid-template-columns:1fr}
-  .prop-grid,.hall-actions{grid-template-columns:1fr}
-  .hall-title{font-size:24px}
-  .hall-hero{padding:1.4rem}
+  .prop-grid{grid-template-columns:1fr}
+  .hall-title{font-size:30px}
+  .hall-hero{padding:4rem .5rem 2rem}
 }
 
 
@@ -436,17 +433,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <img id="hdr-logo-img" src="" alt="Chaos">
       Chaos
     </div>
-    <nav class="top-tools" aria-label="Ferramentas principais">
-      <button class="tool-btn active" id="tool-home" onclick="showHall()">Início</button>
-      <button class="tool-btn" id="tool-props" onclick="showDash('props')">Propostas</button>
-      <button class="tool-btn" id="tool-chart" onclick="showDash('chart')">Gráficos</button>
-      <button class="tool-btn primary" id="tool-new" onclick="newProposal()">+ Proposta</button>
-      <button class="tool-btn threejs-accent" id="tool-threejs" onclick="showThreejs()">▥ Volumetria 3D</button>
-      <button class="tool-btn" id="tool-carta" onclick="showCarta()">Carta</button>
-      <button class="tool-btn labeee-accent" id="tool-labeee" onclick="showLabeee()">☀ LabEEE</button>
-      <button class="tool-btn" id="tool-mapoteca" onclick="showMapoteca()">Mapoteca</button>
-      <button class="tool-btn" id="tool-simgeo" onclick="showSimgeo()">Consulta SIMGEO</button>
-    </nav>
+    <div style="flex:1"></div>
     <div class="hdr-right">
       <div class="theme-picker" title="Escolher tema">
         <div class="tp-dot" onclick="setTheme(0)" id="tp0"></div>
@@ -459,6 +446,20 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <button class="btn ghost" onclick="logout()">Sair</button>
     </div>
   </header>
+
+  <!-- ATALHOS LATERAIS -->
+  <nav class="tool-dock" aria-label="Ferramentas principais">
+    <button class="dock-btn active" id="tool-home" onclick="showHall()"><span class="ico">⌂</span>Início</button>
+    <button class="dock-btn primary" id="tool-new" onclick="newProposal()"><span class="ico">＋</span>Nova proposta</button>
+    <button class="dock-btn" id="tool-props" onclick="showDash('props')"><span class="ico">▦</span>Propostas</button>
+    <button class="dock-btn" id="tool-chart" onclick="showDash('chart')"><span class="ico">◔</span>Gráficos</button>
+    <button class="dock-btn" id="tool-carta" onclick="showCarta()"><span class="ico">✉</span>Carta</button>
+    <div class="dock-sep" aria-hidden="true"></div>
+    <button class="dock-btn" id="tool-threejs" onclick="showThreejs()"><span class="ico">▥</span>Volumetria 3D</button>
+    <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
+    <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
+    <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
+  </nav>
 
   <!-- HALL / INÍCIO -->
   <div id="hall-view" style="display:none">
@@ -924,10 +925,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <div class="nav-row" style="border:none;padding:0;margin-top:.5rem"><button class="btn ghost" onclick="go(3)">← Ajustar</button></div>
     </div>
   </div>
-
-  <!-- ATALHOS FLUTUANTES -->
-  <button class="threejs-float" onclick="showThreejs()" title="Abrir ferramenta Volumetria 3D">▥ Volumetria 3D</button>
-  <button class="labeee-float" onclick="showLabeee()" title="Abrir ferramenta LabEEE">☀ LabEEE</button>
 
   <!-- ONLINE BAR -->
   <div id="online-bar">
