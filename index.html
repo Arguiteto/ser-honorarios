@@ -508,12 +508,14 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     <div class="labeee-wrap">
       <section class="labeee-card">
         <h2>Dados do projeto</h2>
-        <p class="labeee-muted">Ferramenta auxiliar baseada no fluxo LabEEE: latitude → carta solar → fachada → proteção solar → ventilação/estratégia bioclimática. Use como pré-estudo e confira a análise final nos aplicativos e softwares oficiais.</p>
+        <p class="labeee-muted">Ferramenta auxiliar baseada no fluxo LabEEE: CEP do local → latitude aproximada → carta solar → fachada → proteção solar → ventilação/estratégia bioclimática. Use como pré-estudo e confira a análise final nos aplicativos e softwares oficiais.</p>
         <div class="g2">
-          <div class="field"><label>Cidade</label><div class="iw"><input type="text" id="le-cidade" placeholder="Ex: Campo Grande"></div></div>
-          <div class="field"><label>UF</label><div class="iw"><input type="text" id="le-uf" placeholder="MS" maxlength="2"></div></div>
-          <div class="field"><label>Latitude</label><div class="iw"><input type="number" id="le-lat" placeholder="Ex: -20.4697" step="any"></div></div>
-          <div class="field"><label>Longitude</label><div class="iw"><input type="number" id="le-lng" placeholder="Ex: -54.6201" step="any"></div></div>
+          <div class="field"><label>CEP do local</label><div class="iw"><input type="text" id="le-cep" placeholder="Ex: 79034-410" inputmode="numeric" onkeydown="if(event.key==='Enter')gerarLabeee()"></div><span class="hint">Digite só o CEP. O sistema busca o endereço e calcula a latitude aproximada automaticamente.</span></div>
+          <div class="field"><label>Número do imóvel (opcional)</label><div class="iw"><input type="text" id="le-num" placeholder="Ex: 58" onkeydown="if(event.key==='Enter')gerarLabeee()"></div><span class="hint">Ajuda a melhorar a localização quando o CEP cobre um trecho grande.</span></div>
+          <div class="field"><label>Cidade</label><div class="iw"><input type="text" id="le-cidade" placeholder="Preenchido pelo CEP"></div></div>
+          <div class="field"><label>UF</label><div class="iw"><input type="text" id="le-uf" placeholder="UF" maxlength="2"></div></div>
+          <input type="hidden" id="le-lat">
+          <input type="hidden" id="le-lng">
           <div class="field"><label>Zona bioclimática — ZBBR/NBR 15220:2005</label><div class="iw"><select id="le-zb">
             <option value="">Confirmar no ZBBR</option><option value="1">ZB 1</option><option value="2">ZB 2</option><option value="3">ZB 3</option><option value="4">ZB 4</option><option value="5">ZB 5</option><option value="6">ZB 6</option><option value="7">ZB 7</option><option value="8">ZB 8</option>
           </select></div><span class="hint">Use este campo para os cálculos simplificados de ventilação da ficha.</span></div>
@@ -535,7 +537,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
           <div class="field"><label>Distância até obstáculo</label><div class="iw"><input type="number" id="le-obs-d" placeholder="0" min="0" step="any"><span class="sfx">m</span></div></div>
         </div>
         <div class="labeee-actions">
-          <button class="btn solid" onclick="gerarLabeee()">Gerar ficha</button>
+          <button class="btn solid" onclick="gerarLabeee()">Gerar ficha pelo CEP</button>
           <button class="btn ghost" onclick="fillLabeeeFromSimgeo()">Usar local do SIMGEO</button>
           <button class="btn ghost" onclick="abrirLabeeeZoneamento()">Abrir zoneamento</button>
           <button class="btn ghost" onclick="abrirLabeeeSolAr()">Abrir SOL-AR</button>
@@ -546,7 +548,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <section class="labeee-result">
         <h2>Ficha LabEEE</h2>
         <p class="labeee-muted">A ficha aparece aqui. Ela não substitui SOL-AR, Analysis BIO ou ZBBR; serve para organizar o raciocínio técnico e levar dados ao estudo preliminar.</p>
-        <div id="le-result"><div class="labeee-empty">Nenhuma ficha gerada ainda.<br>Preencha latitude, fachada e clique em “Gerar ficha”.</div></div>
+        <div id="le-result"><div class="labeee-empty">Nenhuma ficha gerada ainda.<br>Digite o CEP, escolha a fachada e clique em “Gerar ficha”.</div></div>
       </section>
     </div>
   </div>
@@ -2035,7 +2037,7 @@ async function exportSimgeoPDF(){
 
 
 // ── LABEEE / ANÁLISE AMBIENTAL ───────────────────
-let labeeeLastResult=null, labeeePdfBusy=false;
+let labeeeLastResult=null, labeeePdfBusy=false, labeeeLastGeoKey='';
 const LABEEE_LINKS={
   solAr:'https://labeee.ufsc.br/pt-br/downloads/softwares/analysis-sol-ar',
   bio:'https://labeee.ufsc.br/pt-br/downloads/softwares/analysis-bio',
@@ -2090,9 +2092,45 @@ function labeeeStatus(msg,type=''){
   const el=$('le-status'); if(!el) return;
   el.textContent=msg||''; el.className='labeee-status'+(type?' '+type:'');
 }
+async function geocodeLabeeeCep(force=false){
+  const cep=String($('le-cep')?.value||'').replace(/\D/g,'');
+  const numero=String($('le-num')?.value||'').trim();
+  if(cep.length!==8) throw new Error('Digite um CEP com 8 números para gerar a ficha LabEEE.');
+  const key=cep+'|'+numero;
+  const latNow=parseFloat($('le-lat')?.value), lngNow=parseFloat($('le-lng')?.value);
+  if(!force && labeeeLastGeoKey===key && Number.isFinite(latNow) && Number.isFinite(lngNow)){
+    return {lat:latNow,lng:lngNow,fromCache:true};
+  }
+  labeeeStatus('Buscando endereço pelo CEP e localizando o ponto aproximado...');
+  const viacep=await fetchJson(`https://viacep.com.br/ws/${cep}/json/`,{timeout:10000});
+  if(viacep?.erro) throw new Error('CEP não encontrado no ViaCEP. Confira os números.');
+  const cidade=viacep.localidade||'';
+  const uf=(viacep.uf||'').toUpperCase();
+  if($('le-cidade')) $('le-cidade').value=cidade;
+  if($('le-uf')) $('le-uf').value=uf;
+  const line=[viacep.logradouro,numero,viacep.bairro,cidade,uf,'Brasil'].filter(Boolean).join(', ');
+  const params={f:'json',SingleLine:line,outFields:'Match_addr,Addr_type,Score',maxLocations:1,countryCode:'BRA'};
+  if(uf==='MS' || /campo grande/i.test(cidade)) params.searchExtent='-54.90,-20.75,-54.25,-20.20';
+  const geo=await fetchJson(paramsUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates',params),{timeout:15000});
+  const c=geo?.candidates?.[0];
+  if(!c?.location) throw new Error('Encontrei o CEP, mas não consegui converter o endereço em ponto. Tente informar o número ou usar o local importado do SIMGEO.');
+  const lat=Number(c.location.y), lng=Number(c.location.x);
+  if(!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error('O geocodificador retornou coordenadas inválidas para este CEP.');
+  if($('le-lat')) $('le-lat').value=lat.toFixed(7);
+  if($('le-lng')) $('le-lng').value=lng.toFixed(7);
+  labeeeLastGeoKey=key;
+  if($('le-cep')) $('le-cep').value=cep.replace(/^(\d{5})(\d{3})$/,'$1-$2');
+  const endereco={...viacep,numero,geocodificado:c.address||line,score:c.score};
+  if($('le-lat')) $('le-lat').dataset.endereco=JSON.stringify(endereco);
+  return {lat,lng,address:endereco,fromCache:false};
+}
 function labeeeData(){
   const lat=parseFloat($('le-lat')?.value);
   const lng=parseFloat($('le-lng')?.value);
+  const cep=String($('le-cep')?.value||'').replace(/\D/g,'');
+  const numero=String($('le-num')?.value||'').trim();
+  let endereco=null;
+  try{ endereco=JSON.parse($('le-lat')?.dataset?.endereco||'null'); }catch(e){ endereco=null; }
   const zb=$('le-zb')?.value||'';
   const zb2024=$('le-zb2024')?.value||'';
   const fachada=parseInt($('le-fachada')?.value||0,10);
@@ -2106,23 +2144,29 @@ function labeeeData(){
   const ventMin=(zbi&&area>0)?area*(zbi.vent/100):0;
   const dec={verao:-23.44,equinocio:0,inverno:23.44};
   const alt={verao:solarNoonAltitude(lat,dec.verao),equinocio:solarNoonAltitude(lat,0),inverno:solarNoonAltitude(lat,dec.inverno)};
-  return {when:new Date(),cidade:($('le-cidade')?.value||'').trim(),uf:($('le-uf')?.value||'').trim().toUpperCase(),lat,lng,zb,zbi,zb2024,zbi2024,fachada,fachadaNome:fachadaNome(fachada),estr:estrategiaFachada(fachada),H,gamma,L,beta,pH,pV,area,ventMin,obsH,obsD,alpha,alt};
+  return {when:new Date(),cidade:($('le-cidade')?.value||'').trim(),uf:($('le-uf')?.value||'').trim().toUpperCase(),cep,numero,endereco,lat,lng,zb,zbi,zb2024,zbi2024,fachada,fachadaNome:fachadaNome(fachada),estr:estrategiaFachada(fachada),H,gamma,L,beta,pH,pV,area,ventMin,obsH,obsD,alpha,alt};
 }
-function gerarLabeee(){
+async function gerarLabeee(){
+  try{
+    await geocodeLabeeeCep(false);
+  }catch(e){
+    labeeeStatus(e.message||'Não consegui localizar este CEP.','err');
+    return;
+  }
   const d=labeeeData();
-  if(!Number.isFinite(d.lat) || d.lat<-34 || d.lat>6){ labeeeStatus('Informe uma latitude brasileira aproximada entre -34 e +6.','err'); return; }
+  if(!Number.isFinite(d.lat) || d.lat<-34 || d.lat>6){ labeeeStatus('O CEP foi localizado, mas a latitude ficou fora do intervalo esperado para o Brasil. Confira o endereço.','err'); return; }
   labeeeLastResult=d;
   const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
   const altV=d.alt.verao==null?'—':`${fmt(d.alt.verao)}°`;
   const altI=d.alt.inverno==null?'—':`${fmt(d.alt.inverno)}°`;
-  const cards=`<div class="labeee-kpis"><div class="labeee-kpi"><div class="k">Local</div><div class="v">${esc(loc)}</div></div><div class="labeee-kpi"><div class="k">Latitude</div><div class="v">${fmt(d.lat)}°</div></div><div class="labeee-kpi"><div class="k">Fachada</div><div class="v">${esc(d.fachadaNome)}</div></div><div class="labeee-kpi"><div class="k">ZB</div><div class="v">${d.zb?`ZB ${d.zb}`:'ZBBR'}</div></div></div>`;
+  const cards=`<div class="labeee-kpis"><div class="labeee-kpi"><div class="k">Local</div><div class="v">${esc(loc)}</div></div><div class="labeee-kpi"><div class="k">CEP</div><div class="v">${d.cep?esc(d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2')):'—'}</div></div><div class="labeee-kpi"><div class="k">Fachada</div><div class="v">${esc(d.fachadaNome)}</div></div><div class="labeee-kpi"><div class="k">ZB</div><div class="v">${d.zb?`ZB ${d.zb}`:'ZBBR'}</div></div></div>`;
   const actions=`<div class="labeee-actions"><button class="btn solid" onclick="exportLabeeePDF()">⬇ Baixar ficha PDF</button><button class="btn ghost" onclick="copyLabeeeResult()">Copiar resumo</button><button class="btn ghost" onclick="abrirLabeeeZoneamento()">Abrir zoneamento</button><button class="btn ghost" onclick="abrirLabeeeSolAr()">Abrir SOL-AR</button><button class="btn ghost" onclick="abrirLabeee()">Abrir LabEEE</button></div>`;
   const zbHtml=d.zbi?`<div class="labeee-row"><div class="a">Cidade de referência</div><div class="b">${esc(d.zbi.ref)}</div></div><div class="labeee-row"><div class="a">Estratégia solar</div><div class="b">${esc(d.zbi.solar)}</div></div><div class="labeee-row"><div class="a">Proteção indicada</div><div class="b">${esc(d.zbi.prot)}</div></div><div class="labeee-row"><div class="a">Abertura ventilável mínima</div><div class="b">${d.area>0?`${fmt(d.ventMin)} m² (${d.zbi.vent}% de ${fmt(d.area)} m²)`:d.zbi.vent+'% da área do piso'}</div></div>`:`<div class="labeee-muted">Zona bioclimática não selecionada. Confirme o município no ZBBR antes de fechar estratégia de ventilação e sombreamento.</div>`;
   const zb2024Html=d.zb2024?`<div class="labeee-row"><div class="a">Zona LabEEE 2024</div><div class="b">${esc(d.zb2024)} — ${esc(d.zbi2024||'')}</div></div><div class="labeee-note">A classificação atual do aplicativo LabEEE usa códigos como 1R, 3A, 5B e 6A. Use este campo como registro da consulta oficial no app de zoneamento.</div>`:`<div class="labeee-muted">Zona LabEEE 2024 não informada. Abra o aplicativo de zoneamento para consultar o município e, se quiser, registre o código aqui.</div>`;
   const briseRows=`<div class="labeee-row"><div class="a">Tipo por fachada</div><div class="b">${esc(d.estr.tipo)}</div></div><div class="labeee-row"><div class="a">Leitura</div><div class="b">${esc(d.estr.texto)}</div></div><div class="labeee-row"><div class="a">Brise horizontal</div><div class="b">${d.pH>0?`P = ${fmt(d.pH)} m  · fórmula: P = H / tan(γ)`:'Preencha H e γ para calcular.'}</div></div><div class="labeee-row"><div class="a">Brise vertical</div><div class="b">${d.pV>0?`P = ${fmt(d.pV)} m  · fórmula: P = L / tan(β)`:'Preencha largura e β para calcular.'}</div></div>`;
   const obsRows=`<div class="labeee-row"><div class="a">Ângulo de obstrução</div><div class="b">${d.alpha>0?`${fmt(d.alpha)}°  · α = arctan(H/D)`: 'Preencha altura e distância do obstáculo para calcular.'}</div></div><div class="labeee-row"><div class="a">Leitura rápida</div><div class="b">${d.alpha>60?'Obstrução crítica; verificar insolação e iluminação natural com máscara solar.':d.alpha>45?'Obstrução relevante; conferir carta solar e entorno.':d.alpha>0?'Obstrução moderada/baixa para pré-estudo.':'—'}</div></div>`;
   const body=`${cards}
-    <div class="labeee-block"><h3>Carta solar — leitura inicial</h3><div class="body"><div class="labeee-row"><div class="a">Altitude solar ao meio-dia — verão</div><div class="b">${altV}</div></div><div class="labeee-row"><div class="a">Altitude solar ao meio-dia — equinócio</div><div class="b">${d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'}</div></div><div class="labeee-row"><div class="a">Altitude solar ao meio-dia — inverno</div><div class="b">${altI}</div></div><div class="labeee-note">Valores aproximados de pré-estudo pela latitude. Para máscara, horários e transferidor de ângulos, use o Analysis SOL-AR.</div></div></div>
+    <div class="labeee-block"><h3>Carta solar — leitura inicial</h3><div class="body"><div class="labeee-row"><div class="a">Ponto usado pelo cálculo</div><div class="b">${fmt(d.lat)}°, ${fmt(d.lng)}°</div></div><div class="labeee-row"><div class="a">Endereço aproximado</div><div class="b">${esc(d.endereco?.geocodificado||'Localizado pelo CEP')}</div></div><div class="labeee-row"><div class="a">Altitude solar ao meio-dia — verão</div><div class="b">${altV}</div></div><div class="labeee-row"><div class="a">Altitude solar ao meio-dia — equinócio</div><div class="b">${d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'}</div></div><div class="labeee-row"><div class="a">Altitude solar ao meio-dia — inverno</div><div class="b">${altI}</div></div><div class="labeee-note">Valores aproximados de pré-estudo a partir da latitude estimada pelo CEP. Para máscara, horários e transferidor de ângulos, use o Analysis SOL-AR.</div></div></div>
     <div class="labeee-block"><h3>Estratégia bioclimática — ZBBR 2005</h3><div class="body">${zbHtml}</div></div>
     <div class="labeee-block"><h3>Zoneamento LabEEE 2024</h3><div class="body">${zb2024Html}</div></div>
     <div class="labeee-block"><h3>Proteção solar / brises</h3><div class="body">${briseRows}</div></div>
@@ -2130,13 +2174,14 @@ function gerarLabeee(){
     <div class="labeee-block"><h3>Ferramentas LabEEE recomendadas</h3><div class="body"><ul><li><b>ZBBR</b>: confirmar a zona bioclimática do município.</li><li><b>Analysis SOL-AR</b>: gerar carta solar, transferidor de ângulos e rosa dos ventos.</li><li><b>Analysis BIO</b>: cruzar clima local com estratégias passivas.</li><li><b>Arquivos climáticos</b>: simulação termoenergética em EnergyPlus/OpenStudio/DesignBuilder.</li><li><b>Netuno</b>: estimar aproveitamento de água pluvial.</li></ul><div class="labeee-link-grid"><a href="${LABEEE_LINKS.zoneamento}" target="_blank" rel="noopener">Zoneamento 2024</a><a href="${LABEEE_LINKS.zbbr}" target="_blank" rel="noopener">ZBBR 2005</a><a href="${LABEEE_LINKS.solAr}" target="_blank" rel="noopener">Analysis SOL-AR</a><a href="${LABEEE_LINKS.bio}" target="_blank" rel="noopener">Analysis BIO</a><a href="${LABEEE_LINKS.climaticos}" target="_blank" rel="noopener">Arquivos climáticos</a><a href="${LABEEE_LINKS.netuno}" target="_blank" rel="noopener">Netuno</a><a href="${LABEEE_LINKS.softwares}" target="_blank" rel="noopener">Softwares</a></div></div></div>
     ${actions}<div class="labeee-note">Ficha auxiliar para estudo preliminar. Não substitui laudo, simulação, conferência normativa ou uso dos softwares oficiais do LabEEE/UFSC.</div>`;
   $('le-result').innerHTML=body;
-  labeeeStatus('Ficha gerada.','ok');
+  labeeeStatus('Ficha gerada pelo CEP informado. Confira a precisão do endereço antes de usar em projeto executivo.','ok');
 }
 function labeeePlainText(){
   const d=labeeeLastResult;
   if(!d) return '';
   const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
-  return [`Ficha LabEEE — Chaos`, `Data: ${d.when.toLocaleString('pt-BR')}`, `Local: ${loc}`, `Coordenadas: ${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`, `Zona bioclimática 2005: ${d.zb?`ZB ${d.zb}`:'confirmar no ZBBR'}`, `Zona LabEEE 2024: ${d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'não informada'}`, `Fachada: ${d.fachadaNome} (${d.fachada}°)`, `Altitude solar meio-dia: verão ${d.alt.verao==null?'—':fmt(d.alt.verao)+'°'} · equinócio ${d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'} · inverno ${d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'}`, `Estratégia fachada: ${d.estr.tipo} — ${d.estr.texto}`, `Brise horizontal: ${d.pH>0?fmt(d.pH)+' m':'não calculado'}`, `Brise vertical: ${d.pV>0?fmt(d.pV)+' m':'não calculado'}`, `Ventilação mínima: ${d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'confirmar ZB'}`, `Obstrução: ${d.alpha>0?fmt(d.alpha)+'°':'não calculada'}`, '', 'Ferramentas: ZBBR, Analysis SOL-AR, Analysis BIO, Arquivos Climáticos e Netuno — LabEEE/UFSC.'].join('\n');
+  return [`Ficha LabEEE — Chaos`, `Data: ${d.when.toLocaleString('pt-BR')}`, `Local: ${loc}`, `CEP: ${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`, `Endereço aproximado: ${d.endereco?.geocodificado||'localizado pelo CEP'}`, `Ponto calculado: ${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`, `Zona bioclimática 2005: ${d.zb?`ZB ${d.zb}`:'confirmar no ZBBR'}`, `Zona LabEEE 2024: ${d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'não informada'}`, `Fachada: ${d.fachadaNome} (${d.fachada}°)`, `Altitude solar meio-dia: verão ${d.alt.verao==null?'—':fmt(d.alt.verao)+'°'} · equinócio ${d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'} · inverno ${d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'}`, `Estratégia fachada: ${d.estr.tipo} — ${d.estr.texto}`, `Brise horizontal: ${d.pH>0?fmt(d.pH)+' m':'não calculado'}`, `Brise vertical: ${d.pV>0?fmt(d.pV)+' m':'não calculado'}`, `Ventilação mínima: ${d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'confirmar ZB'}`, `Obstrução: ${d.alpha>0?fmt(d.alpha)+'°':'não calculada'}`, '', 'Ferramentas: ZBBR, Analysis SOL-AR, Analysis BIO, Arquivos Climáticos e Netuno — LabEEE/UFSC.'].join('
+');
 }
 async function copyLabeeeResult(){
   const txt=labeeePlainText();
@@ -2148,14 +2193,18 @@ function abrirLabeee(){ window.open(LABEEE_LINKS.lab,'_blank','noopener'); }
 function abrirLabeeeZoneamento(){ window.open(LABEEE_LINKS.zoneamento,'_blank','noopener,noreferrer'); }
 function abrirLabeeeSolAr(){ window.open(LABEEE_LINKS.solAr,'_blank','noopener,noreferrer'); }
 function fillLabeeeFromSimgeo(){
-  if(!simgeoLastResult?.point){ labeeeStatus('Faça uma consulta SIMGEO antes, ou preencha latitude e longitude manualmente.','err'); return; }
+  if(!simgeoLastResult?.point){ labeeeStatus('Faça uma consulta SIMGEO antes, ou digite o CEP do local.','err'); return; }
   const p=simgeoLastResult.point;
   if($('le-lat')) $('le-lat').value=Number(p.lat).toFixed(7);
   if($('le-lng')) $('le-lng').value=Number(p.lng).toFixed(7);
   const a=p.address||{};
   if($('le-cidade') && a.localidade) $('le-cidade').value=a.localidade;
   if($('le-uf') && a.uf) $('le-uf').value=a.uf;
-  labeeeStatus('Local importado da última consulta SIMGEO. Confira a zona no app de zoneamento do LabEEE.','ok');
+  if($('le-cep') && a.cep) $('le-cep').value=String(a.cep).replace(/^(\d{5})(\d{3})$/,'$1-$2');
+  if($('le-num') && a.numero) $('le-num').value=a.numero;
+  if($('le-lat')) $('le-lat').dataset.endereco=JSON.stringify(a);
+  labeeeLastGeoKey=String($('le-cep')?.value||'').replace(/\D/g,'')+'|'+String($('le-num')?.value||'').trim();
+  labeeeStatus('Local importado da última consulta SIMGEO. Você pode gerar a ficha sem digitar coordenadas.','ok');
 }
 async function exportLabeeePDF(){
   if(labeeePdfBusy) return;
@@ -2164,7 +2213,7 @@ async function exportLabeeePDF(){
   try{
     const d=labeeeLastResult;
     const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
-    const rows=[['Local',loc],['Coordenadas',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
+    const rows=[['Local',loc],['CEP',`${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`],['Endereço aproximado',d.endereco?.geocodificado||'Localizado pelo CEP'],['Ponto usado',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
     const tr=rows.map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(b)}</td></tr>`).join('');
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha LabEEE — Análise Ambiental</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
