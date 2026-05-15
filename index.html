@@ -775,7 +775,7 @@ async function saveProposal(){
   const btn=$('save-btn'),status=$('save-status');
   btn.disabled=true; btn.textContent='Salvando...'; status.className='save-status';
   const nome=$('rel-nome').value||'Sem título';
-  const final=fasesT+taxT-descV;
+  const final=Math.max(0,fasesT+taxT-descV);
   const payload={user_id:user.id,name:nome,client:$('rel-cli').value||'',typology:$('rel-tipo').value||'',area:flt('rel-area'),total:Math.round(final),updated_at:new Date().toISOString(),data:getCalcData()};
   let error;
   if(currentId){
@@ -888,9 +888,10 @@ function calcD(){
   const bruto=fasesT+taxT;
   let desc=0;
   if(dType==='pct')desc=bruto*(flt('desc-pct')/100);
-  else if(dType==='fix')desc=Math.min(flt('desc-fix'),bruto);
+  else if(dType==='fix')desc=flt('desc-fix');
+  desc=Math.max(0,Math.min(desc,bruto));
   descV=desc;
-  const liq=bruto-desc;
+  const liq=Math.max(0,bruto-desc);
   const ep=(flt('pg-ent')||30)/100,np=Math.max(1,Math.round(flt('pg-parc'))||3);
   const ev=liq*ep,pv=(liq-ev)/np;
   $('pg-bruto').textContent='R$ '+fmtI(bruto);
@@ -901,7 +902,7 @@ function calcD(){
 }
 
 function upRel(){
-  const bruto=fasesT+taxT,final=bruto-descV;
+  const bruto=fasesT+taxT,final=Math.max(0,bruto-descV);
   const ep=(flt('pg-ent')||30)/100,np=Math.max(1,Math.round(flt('pg-parc'))||3);
   const ev=final*ep,pv=(final-ev)/np,area=flt('rel-area');
   $('rr-hora').textContent='R$ '+fmt(horaG);
@@ -958,21 +959,35 @@ function notifyStatus(msg,type='ok',ms=3000){
 }
 function createPdfElement(html){
   const el=document.createElement('div');
-  el.style.position='fixed';
-  el.style.left='-10000px';
+  el.style.position='absolute';
+  el.style.left='-9999px';
   el.style.top='0';
   el.style.width='794px';
+  el.style.maxWidth='794px';
   el.style.background='#FAF7F1';
-  el.style.zIndex='-1';
+  el.style.pointerEvents='none';
   el.innerHTML=html;
   document.body.appendChild(el);
   return el;
 }
-function waitForImages(root){
+function waitForImages(root,timeoutMs=3000){
   const imgs=[...root.querySelectorAll('img')];
-  return Promise.all(imgs.map(img=>img.complete ? Promise.resolve() : new Promise(resolve=>{
-    img.onload=resolve; img.onerror=resolve;
-  })));
+  return Promise.all(imgs.map(img=>{
+    if(img.complete) return Promise.resolve();
+    return new Promise(resolve=>{
+      let done=false;
+      const finish=()=>{
+        if(done) return;
+        done=true;
+        img.onload=null;
+        img.onerror=null;
+        resolve();
+      };
+      img.onload=finish;
+      img.onerror=finish;
+      setTimeout(finish,timeoutMs);
+    });
+  }));
 }
 function withTimeout(promise,ms,msg){
   let timer;
@@ -985,38 +1000,85 @@ function renderWhatsAppPreview(text){
 
 // ── COPY MODAL ────────────────────────────────────
 function openCopyModal(){
-  const nome=$('rel-nome').value||'seu projeto';
-  const cli=$('rel-cli').value||'cliente';
-  const final=fasesT+taxT-descV;
-  const ep=(flt('pg-ent')||30)/100,np=Math.max(1,Math.round(flt('pg-parc'))||3);
-  const ev=final*ep,pv=(final-ev)/np;
-  const arq=$('rel-arq')?.value||'Chaos Arquitetura e Urbanismo';
+  const nome=($('rel-nome').value||'seu projeto').trim();
+  const cli=($('rel-cli').value||'cliente').trim();
+  const final=Math.max(0,fasesT+taxT-descV);
+  const ep=(flt('pg-ent')||30)/100;
+  const np=Math.max(1,Math.round(flt('pg-parc'))||3);
+  const ev=final*ep;
+  const pv=(final-ev)/np;
+  const arq=($('rel-arq')?.value||'Chaos Arquitetura e Urbanismo').trim();
   const validade=new Date(Date.now()+30*24*60*60*1000).toLocaleDateString('pt-BR');
+  const parcelasTxt=np===1 ? `1 parcela de R$ ${fmt(pv)}` : `${np} parcelas de R$ ${fmt(pv)}`;
+  const pagamentoTxt=`entrada de R$ ${fmtI(ev)} + ${parcelasTxt}`;
 
   const variants=[
     {
-      label:'Profissional — completo',
-      text:`Olá, ${cli}! Tudo bem?\n\nPreparei a proposta de serviços para o projeto *${nome}*.\n\n*Investimento total:* R$ ${fmtI(final)}\n*Condição de pagamento:* entrada de R$ ${fmtI(ev)} + ${np} parcela(s) de R$ ${fmt(pv)}\n\nEstou enviando o PDF com o detalhamento dos serviços, escopo e condições.\n\nFico à disposição para qualquer ajuste ou dúvida.\n\n_${arq}_`
+      label:'Profissional — para enviar com o PDF',
+      text:`Olá, ${cli}! Tudo bem?
+
+Preparei a proposta para o projeto *${nome}*.
+
+*Valor total:* R$ ${fmtI(final)}
+*Pagamento:* ${pagamentoTxt}
+
+O PDF com o escopo, os serviços e as condições da proposta segue em anexo.
+
+Fico à disposição para qualquer dúvida ou ajuste.
+
+_${arq}_`
     },
     {
-      label:'Objetivo — WhatsApp rápido',
-      text:`Olá, ${cli}!\n\nSegue resumo da proposta para *${nome}*:\n\n• Total: *R$ ${fmtI(final)}*\n• Entrada: R$ ${fmtI(ev)}\n• Parcelamento: ${np}× de R$ ${fmt(pv)}\n\nO PDF com todos os detalhes segue em anexo.\n\n_${arq}_`
+      label:'Objetivo — resumo rápido',
+      text:`Olá, ${cli}!
+
+Segue o resumo da proposta para *${nome}*:
+
+• Valor total: *R$ ${fmtI(final)}*
+• Entrada: R$ ${fmtI(ev)}
+• Saldo: ${parcelasTxt}
+
+Envio também o PDF com o detalhamento completo.
+
+_${arq}_`
     },
     {
       label:'Com validade — mais comercial',
-      text:`Olá, ${cli}!\n\nConforme conversamos, segue a proposta para o projeto *${nome}*.\n\nO investimento previsto é de *R$ ${fmtI(final)}*, com entrada de R$ ${fmtI(ev)} e saldo em ${np} parcela(s) de R$ ${fmt(pv)}.\n\nA proposta tem validade até ${validade}. O detalhamento completo está no PDF anexo.\n\nSerá um prazer desenvolver este projeto com você.\n\n_${arq}_`
+      text:`Olá, ${cli}!
+
+Conforme alinhado, segue a proposta para o projeto *${nome}*.
+
+O investimento é de *R$ ${fmtI(final)}*, com ${pagamentoTxt}.
+
+A proposta tem validade até ${validade}. O detalhamento completo está no PDF.
+
+Será um prazer desenvolver este projeto com você.
+
+_${arq}_`
     },
     {
-      label:'Pós-reunião — tom consultivo',
-      text:`Olá, ${cli}!\n\nApós analisar as necessidades do projeto *${nome}*, organizei a proposta com os serviços indicados para esta etapa.\n\n*Valor total:* R$ ${fmtI(final)}\n*Pagamento:* R$ ${fmtI(ev)} de entrada + ${np}× de R$ ${fmt(pv)}\n\nNo PDF estão o escopo, os valores e as condições de contratação.\n\nQualquer ponto que queira ajustar, posso revisar com você.\n\n_${arq}_`
+      label:'Pós-reunião — consultivo',
+      text:`Olá, ${cli}!
+
+Após analisar as necessidades do projeto *${nome}*, organizei uma proposta com os serviços indicados para esta etapa.
+
+*Investimento:* R$ ${fmtI(final)}
+*Condição de pagamento:* ${pagamentoTxt}
+
+No PDF estão descritos o escopo, os valores e as condições de contratação.
+
+Qualquer ponto que queira ajustar, posso revisar com você.
+
+_${arq}_`
     }
   ];
 
-  $('copy-variants').innerHTML=variants.map((v,i)=>`
+  const wrap=$('copy-variants');
+  wrap.innerHTML=variants.map((v,i)=>`
     <div class="copy-variant">
       <div class="cv-label">${esc(v.label)}</div>
       <div class="cv-text">${renderWhatsAppPreview(v.text)}</div>
-      <button class="btn cv-btn" onclick="copyVariant(${i})" id="cv-btn-${i}">Copiar</button>
+      <button class="btn cv-btn" onclick="copyVariant(${i})" id="cv-btn-${i}">Copiar texto</button>
     </div>`).join('');
   window._copyVariants=variants;
   $('copy-modal').style.display='flex';
@@ -1025,16 +1087,33 @@ function openCopyModal(){
 async function copyVariant(i){
   const text=window._copyVariants?.[i]?.text||'';
   const btn=$('cv-btn-'+i);
+  let copied=false;
   try{
-    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
-    else throw new Error('clipboard indisponível');
-  }catch(e){
-    const ta=document.createElement('textarea');
-    ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px';
-    document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); ta.remove();
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(text);
+      copied=true;
+    }
+  }catch(e){ copied=false; }
+  if(!copied){
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=text;
+      ta.setAttribute('readonly','');
+      ta.style.position='fixed';
+      ta.style.left='-9999px';
+      ta.style.top='0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied=document.execCommand('copy');
+      ta.remove();
+    }catch(e){ copied=false; }
   }
-  btn.textContent='✓ Copiado!';btn.classList.add('solid');
-  setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('solid');},2500);
+  if(btn){
+    btn.textContent=copied?'✓ Copiado!':'Selecione e copie';
+    btn.classList.toggle('solid',copied);
+    setTimeout(()=>{btn.textContent='Copiar texto';btn.classList.remove('solid');},2500);
+  }
 }
 
 function closeCopyModal(){ $('copy-modal').style.display='none'; }
@@ -1052,7 +1131,7 @@ async function exportPDF(){
     const arqRaw=$('rel-arq')?.value||'';
     const area=flt('rel-area');
     const tipoRaw=$('rel-tipo').value||'';
-    const final=fasesT+taxT-descV;
+    const final=Math.max(0,fasesT+taxT-descV);
     const ep=(flt('pg-ent')||30)/100,np=Math.max(1,Math.round(flt('pg-parc'))||3);
     const ev=final*ep,pv=(final-ev)/np;
     const dataBr=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
@@ -1130,7 +1209,7 @@ async function exportPDF(){
     notifyStatus('✓ PDF gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar PDF:',e);
-    notifyStatus('Erro ao gerar PDF. Recarregue a página e tente novamente.','err',6000);
+    notifyStatus('Erro ao gerar PDF. Verifique os dados da proposta e tente novamente.','err',6000);
   }finally{
     if(el?.parentNode) el.parentNode.removeChild(el);
     btn.textContent='⬇ Baixar PDF';
