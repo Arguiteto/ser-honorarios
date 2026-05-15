@@ -1202,17 +1202,31 @@ function notifyStatus(msg,type='ok',ms=3000){
   if(ms) setTimeout(()=>{s.textContent='';s.className='save-status';},ms);
 }
 function createPdfElement(html){
+  // Mantém o conteúdo do PDF visível para o html2canvas.
+  // Alguns navegadores, principalmente Safari/iOS, geram PDF em branco
+  // quando o elemento fica fora da tela com left:-9999px.
   const el=document.createElement('div');
-  el.style.position='absolute';
-  el.style.left='-9999px';
+  el.id='pdf-render-host';
+  el.setAttribute('aria-hidden','true');
+  el.style.position='fixed';
+  el.style.left='0';
   el.style.top='0';
   el.style.width='794px';
   el.style.maxWidth='794px';
+  el.style.minHeight='1123px';
   el.style.background='#FAF7F1';
   el.style.pointerEvents='none';
+  el.style.zIndex='2147483647';
+  el.style.opacity='1';
+  el.style.overflow='visible';
   el.innerHTML=html;
   document.body.appendChild(el);
+  // Força cálculo de layout antes da captura.
+  void el.offsetHeight;
   return el;
+}
+function nextFrame(){
+  return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 }
 function waitForImages(root,timeoutMs=3000){
   const imgs=[...root.querySelectorAll('img')];
@@ -1455,8 +1469,9 @@ async function exportPDF(){
     el=createPdfElement(htmlContent);
     await waitForImages(el);
     if(document.fonts?.ready) await document.fonts.ready;
+    await nextFrame();
     const fn=safeFileName(nomeRaw,'proposta');
-    const opts={margin:0,filename:'chaos-proposta-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-proposta-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar o PDF. Tente novamente com menos conteúdo ou recarregue a página.');
     notifyStatus('✓ PDF gerado','ok',3000);
   }catch(e){
@@ -1517,8 +1532,9 @@ async function exportCarta(){
     el=createPdfElement(htmlContent);
     await waitForImages(el);
     if(document.fonts?.ready) await document.fonts.ready;
+    await nextFrame();
     const fn=safeFileName(assuntoRaw||'carta','carta');
-    const opts={margin:0,filename:'chaos-carta-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-carta-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a carta.');
   }catch(e){
     console.error('Erro ao gerar carta:',e);
