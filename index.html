@@ -82,8 +82,13 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .tool-btn.labeee-accent{background:var(--e);border-color:var(--e);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .tool-btn.labeee-accent:hover{opacity:.9;background:var(--e);border-color:var(--e)}
 .tool-btn.labeee-accent.active{box-shadow:0 0 0 2px var(--el),0 2px 8px rgba(0,0,0,.08)}
+.tool-btn.threejs-accent{background:var(--el);border-color:var(--eb);color:var(--e);font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.tool-btn.threejs-accent:hover{background:var(--eb);border-color:var(--eb);color:var(--e)}
+.tool-btn.threejs-accent.active{background:var(--e);border-color:var(--e);color:#fff;box-shadow:0 0 0 2px var(--el),0 2px 8px rgba(0,0,0,.08)}
 .labeee-float{position:fixed;right:12px;bottom:64px;z-index:35;border:none;border-radius:999px;background:var(--e);color:#fff;font-family:inherit;font-size:12px;font-weight:600;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.16);cursor:pointer;display:flex;align-items:center;gap:6px}
 .labeee-float:hover{opacity:.9}
+.threejs-float{position:fixed;right:12px;bottom:112px;z-index:35;border:none;border-radius:999px;background:var(--surface);border:0.5px solid var(--eb);color:var(--e);font-family:inherit;font-size:12px;font-weight:700;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.14);cursor:pointer;display:flex;align-items:center;gap:6px}
+.threejs-float:hover{background:var(--el)}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-user{font-size:11px;color:var(--faint);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
@@ -436,9 +441,9 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <button class="tool-btn" id="tool-props" onclick="showDash('props')">Propostas</button>
       <button class="tool-btn" id="tool-chart" onclick="showDash('chart')">Gráficos</button>
       <button class="tool-btn primary" id="tool-new" onclick="newProposal()">+ Proposta</button>
+      <button class="tool-btn threejs-accent" id="tool-threejs" onclick="showThreejs()">▥ Volumetria 3D</button>
       <button class="tool-btn" id="tool-carta" onclick="showCarta()">Carta</button>
       <button class="tool-btn labeee-accent" id="tool-labeee" onclick="showLabeee()">☀ LabEEE</button>
-      <button class="tool-btn" id="tool-threejs" onclick="showThreejs()">Volumetria 3D</button>
       <button class="tool-btn" id="tool-mapoteca" onclick="showMapoteca()">Mapoteca</button>
       <button class="tool-btn" id="tool-simgeo" onclick="showSimgeo()">Consulta SIMGEO</button>
     </nav>
@@ -503,7 +508,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
         </div>
         <span class="hall-go">Analisar desempenho →</span>
       </button>
-      <button class="hall-card" onclick="showThreejs()">
+      <button class="hall-card" onclick="showThreejs()" style="border-color:var(--eb);box-shadow:0 4px 16px rgba(0,0,0,.05)">
         <div>
           <div class="hall-icon">▥</div>
           <h2>Volumetria 3D</h2>
@@ -920,9 +925,11 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     </div>
   </div>
 
-  <!-- ONLINE BAR -->
+  <!-- ATALHOS FLUTUANTES -->
+  <button class="threejs-float" onclick="showThreejs()" title="Abrir ferramenta Volumetria 3D">▥ Volumetria 3D</button>
   <button class="labeee-float" onclick="showLabeee()" title="Abrir ferramenta LabEEE">☀ LabEEE</button>
 
+  <!-- ONLINE BAR -->
   <div id="online-bar">
     <div class="online-dot"></div>
     <span style="color:var(--muted);font-weight:500">Online agora:</span>
