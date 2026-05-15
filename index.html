@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://js.arcgis.com/4.30/"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -1470,8 +1471,8 @@ function closeCopyModal(){ $('copy-modal').style.display='none'; }
 const SIMGEO_PORTAL = 'https://simgeoctm.campogrande.ms.gov.br/portal';
 const SIMGEO_APP_ID = 'cc13c124c8414dc7b61d016be3629366';
 const SIMGEO_APP_URL = 'https://simgeoctm.campogrande.ms.gov.br/portal/apps/webappviewer/index.html?id=cc13c124c8414dc7b61d016be3629366';
-const SIMGEO_LAYER_LIMIT = 120;
-let simgeoMode='coords', simgeoLayersCache=null, simgeoLastResult=null, simgeoPdfBusy=false;
+const SIMGEO_LAYER_LIMIT = 260;
+let simgeoMode='coords', simgeoLayersCache=null, simgeoLastResult=null, simgeoPdfBusy=false, simgeoArcgisModules=null;
 
 function setSimgeoMode(mode){
   simgeoMode = mode==='cep' ? 'cep' : 'coords';
@@ -1490,6 +1491,34 @@ function simgeoStatus(msg,type=''){
 
 function abrirSimgeoMapa(){
   window.open(SIMGEO_APP_URL,'_blank','noopener,noreferrer');
+}
+
+function arcgisRequire(mods){
+  return new Promise((resolve,reject)=>{
+    if(typeof window.require!=='function'){
+      reject(new Error('A biblioteca ArcGIS ainda não carregou. Verifique sua conexão e tente novamente.'));
+      return;
+    }
+    try{
+      window.require(mods,(...args)=>resolve(args),reject);
+    }catch(e){ reject(e); }
+  });
+}
+
+async function getArcgisModules(){
+  if(simgeoArcgisModules) return simgeoArcgisModules;
+  const [Portal,PortalItem,WebMap,Point,Extent,webMercatorUtils,IdentifyParameters,identifyRest] = await arcgisRequire([
+    'esri/portal/Portal',
+    'esri/portal/PortalItem',
+    'esri/WebMap',
+    'esri/geometry/Point',
+    'esri/geometry/Extent',
+    'esri/geometry/support/webMercatorUtils',
+    'esri/rest/support/IdentifyParameters',
+    'esri/rest/identify'
+  ]);
+  simgeoArcgisModules={Portal,PortalItem,WebMap,Point,Extent,webMercatorUtils,IdentifyParameters,identifyRest};
+  return simgeoArcgisModules;
 }
 
 async function fetchJson(url, opts={}){
@@ -1543,88 +1572,28 @@ function paramsUrl(base,params){
   return u.toString();
 }
 
-function normalizeLayerUrl(url){
-  if(!url) return '';
-  return String(url).replace(/\/+$/,'');
-}
-
-function parseArcgisLayerUrl(url){
-  const clean=normalizeLayerUrl(url);
-  const m=clean.match(/^(.*\/(FeatureServer|MapServer))(?:\/(\d+))?$/i);
-  if(!m) return null;
-  return {serviceUrl:m[1],serviceType:m[2],layerId:m[3]!==undefined?String(m[3]):'',url:clean};
-}
-
-function isLayerUrl(url){
-  return /\/(FeatureServer|MapServer)\/\d+$/i.test(normalizeLayerUrl(url));
+function normTxt(v){
+  return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 }
 
 function looksUsefulLayer(title){
-  const t=String(title||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const t=normTxt(title);
   return [
     'zone','zona','zon','zoneamento','macrozoneamento','pddua','uso','ocupacao','coeficiente','indice',
     'bairro','regiao','urbana','macro','lote','quadra','imovel','inscricao','matricula','logradouro','via','eixo',
     'ambient','ambiental','zpa','apa','app','preservacao','prote','risco','inundacao','drenagem','corrego','nascente',
-    'corredor','perimetro','setor','fiscal','ctm','cadastro','patrimonio','cultural','aeroporto','restricao'
+    'corredor','perimetro','setor','fiscal','ctm','cadastro','patrimonio','cultural','aeroporto','restricao','uc','unidade'
   ].some(k=>t.includes(k));
 }
 
 function layerScore(layer){
-  const t=String(layer.title||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const t=normTxt(layer.title);
   let score=0;
-  ['zoneamento','zona','zon','ambiental','zpa','apa','app','preservacao','risco','uso','ocupacao','lote','quadra','imovel','bairro','regiao','ctm','cadastro'].forEach((k,i)=>{ if(t.includes(k)) score+=50-i; });
-  if(layer.serviceType==='MapServer') score+=5;
+  ['zoneamento','zona','zon','ambiental','zpa','apa','app','preservacao','risco','uso','ocupacao','lote','quadra','imovel','bairro','regiao','ctm','cadastro','logradouro','via','restricao'].forEach((k,i)=>{ if(t.includes(k)) score+=70-i; });
+  if(layer.kind==='feature') score+=8;
+  if(layer.kind==='map-sublayer') score+=5;
+  if(layer.visible) score+=3;
   return score;
-}
-
-function addLayerCandidate(list,title,url,extra={}){
-  url=normalizeLayerUrl(url);
-  const parsed=parseArcgisLayerUrl(url);
-  if(!parsed || !parsed.layerId) return;
-  if(list.some(l=>l.url===parsed.url)) return;
-  list.push({title:title||parsed.url.split('/').slice(-3).join('/'),url:parsed.url,...parsed,...extra});
-}
-
-function collectLayerCandidates(nodes,list=[]){
-  (nodes||[]).forEach(layer=>{
-    const title=layer.title||layer.name||layer.id||'Camada SIMGEO';
-    const url=normalizeLayerUrl(layer.url);
-    if(url){
-      if(isLayerUrl(url)) addLayerCandidate(list,title,url,{visible:layer.visibility!==false && layer.visible!==false});
-      else if(/\/(FeatureServer|MapServer)$/i.test(url)){
-        // No SIMGEO algumas camadas importantes ficam desligadas por padrão. Ainda assim, elas podem ser consultáveis.
-        (layer.layers||layer.layerInfos||[]).forEach(sl=>{
-          if(sl?.id!==undefined) addLayerCandidate(list,`${title} — ${sl.name||sl.title||sl.id}`,`${url}/${sl.id}`,{visible:sl.visibility!==false && sl.visible!==false});
-        });
-      }
-    }
-    if(layer.featureCollection?.layers){
-      collectLayerCandidates(layer.featureCollection.layers,list);
-    }
-    if(layer.layers){
-      collectLayerCandidates(layer.layers,list);
-    }
-  });
-  return list;
-}
-
-async function expandServiceLayers(layers){
-  const out=[...layers];
-  const bases=new Map();
-  layers.forEach(l=>{
-    const parsed=parseArcgisLayerUrl(l.url);
-    if(parsed) bases.set(parsed.serviceUrl,l.title);
-  });
-  const directBases=[...bases.keys()];
-  for(const base of directBases.slice(0,20)){
-    try{
-      const meta=await fetchJson(paramsUrl(base,{f:'json'}),{timeout:10000});
-      (meta.layers||[]).forEach(sl=>{
-        if(sl?.id!==undefined) addLayerCandidate(out,sl.name||sl.title||`${bases.get(base)} — ${sl.id}`,`${base}/${sl.id}`,{visible:sl.defaultVisibility!==false});
-      });
-    }catch(e){ console.warn('Não foi possível expandir serviço SIMGEO:',base,e); }
-  }
-  return out;
 }
 
 function findWebMapId(appData,itemData){
@@ -1637,27 +1606,67 @@ function findWebMapId(appData,itemData){
     if(typeof obj.itemId==='string' && obj.itemId.length>20) return obj.itemId;
     if(typeof obj.webmap==='string' && obj.webmap.length>20) return obj.webmap;
     if(obj.map && typeof obj.map.itemId==='string') return obj.map.itemId;
+    if(obj.values && typeof obj.values.webmap==='string') return obj.values.webmap;
     Object.values(obj).forEach(v=>{ if(v && typeof v==='object') stack.push(v); });
   }
   return '';
 }
 
+function collectSublayers(parentLayer){
+  const items=[];
+  function walk(sl){
+    if(!sl) return;
+    const children=sl.sublayers?.toArray ? sl.sublayers.toArray() : (Array.isArray(sl.sublayers)?sl.sublayers:[]);
+    if(children.length) children.forEach(walk);
+    if(sl.id!==undefined && !children.length) items.push(sl);
+  }
+  const all=parentLayer.allSublayers?.toArray ? parentLayer.allSublayers.toArray() : [];
+  if(all.length) all.forEach(sl=>{ if(sl.id!==undefined) items.push(sl); });
+  else {
+    const direct=parentLayer.sublayers?.toArray ? parentLayer.sublayers.toArray() : [];
+    direct.forEach(walk);
+  }
+  return [...new Map(items.map(sl=>[String(sl.id),sl])).values()];
+}
+
 async function discoverSimgeoLayers(){
   if(simgeoLayersCache) return simgeoLayersCache;
-  simgeoStatus('Carregando configuração do SIMGEO e descobrindo camadas públicas...');
-  const itemUrl=paramsUrl(`${SIMGEO_PORTAL}/sharing/rest/content/items/${SIMGEO_APP_ID}`,{f:'json'});
-  const dataUrl=paramsUrl(`${SIMGEO_PORTAL}/sharing/rest/content/items/${SIMGEO_APP_ID}/data`,{f:'json'});
-  const [itemData,appData]=await Promise.all([fetchJson(itemUrl),fetchJson(dataUrl)]);
-  const webMapId=findWebMapId(appData,itemData);
-  if(!webMapId) throw new Error('Não encontrei o WebMap vinculado ao aplicativo SIMGEO.');
-  const webMap=await fetchJson(paramsUrl(`${SIMGEO_PORTAL}/sharing/rest/content/items/${webMapId}/data`,{f:'json'}));
-  let layers=collectLayerCandidates(webMap.operationalLayers||[]);
-  layers=await expandServiceLayers(layers);
-  layers=[...new Map(layers.map(l=>[l.url,l])).values()];
-  const useful=layers.filter(l=>looksUsefulLayer(l.title));
-  const chosen=(useful.length?useful:layers).sort((a,b)=>layerScore(b)-layerScore(a)).slice(0,SIMGEO_LAYER_LIMIT);
-  if(!chosen.length) throw new Error('Não encontrei camadas FeatureServer/MapServer consultáveis no mapa.');
-  simgeoLayersCache={webMapId,layers:chosen,totalDiscovered:layers.length};
+  simgeoStatus('Carregando WebMap oficial do SIMGEO pela API ArcGIS...');
+  const m=await getArcgisModules();
+  const portal=new m.Portal({url:SIMGEO_PORTAL});
+  await portal.load().catch(()=>{});
+  const appItem=new m.PortalItem({id:SIMGEO_APP_ID,portal});
+  await appItem.load();
+  const appData=await appItem.fetchData();
+  const webMapId=findWebMapId(appData,{id:appItem.id,type:appItem.type,title:appItem.title});
+  if(!webMapId) throw new Error('Não encontrei o WebMap dentro do aplicativo SIMGEO.');
+  const wmItem=new m.PortalItem({id:webMapId,portal});
+  const webmap=new m.WebMap({portalItem:wmItem});
+  await webmap.loadAll();
+  const allLayers=webmap.allLayers?.toArray ? webmap.allLayers.toArray() : [];
+  const candidates=[];
+  const mapServices=new Map();
+  for(const layer of allLayers){
+    try{ if(layer.load) await layer.load(); }catch(e){}
+    const title=layer.title||layer.id||'Camada SIMGEO';
+    if(layer.type==='feature' && layer.url){
+      candidates.push({kind:'feature',title,url:layer.url,layer,visible:layer.visible!==false,serviceType:'FeatureLayer'});
+    }
+    if(layer.type==='map-image' && layer.url){
+      const sublayers=collectSublayers(layer);
+      const ids=sublayers.map(sl=>Number(sl.id)).filter(n=>Number.isFinite(n));
+      mapServices.set(layer.url,{title,url:layer.url,layer,layerIds:ids,visible:layer.visible!==false});
+      sublayers.forEach(sl=>{
+        const stitle=`${title} — ${sl.title||sl.name||('Camada '+sl.id)}`;
+        candidates.push({kind:'map-sublayer',title:stitle,url:`${layer.url}/${sl.id}`,serviceUrl:layer.url,layerId:Number(sl.id),parent:layer,sublayer:sl,visible:layer.visible!==false && sl.visible!==false,serviceType:'MapImageSublayer'});
+      });
+    }
+  }
+  const sorted=[...new Map(candidates.map(l=>[l.url,l])).values()].sort((a,b)=>layerScore(b)-layerScore(a));
+  const chosen=sorted.slice(0,SIMGEO_LAYER_LIMIT);
+  const services=[...mapServices.values()].filter(s=>s.layerIds.length);
+  if(!chosen.length && !services.length) throw new Error('O WebMap carregou, mas não encontrei camadas consultáveis.');
+  simgeoLayersCache={webMapId,layers:chosen,mapServices:services,totalDiscovered:sorted.length,webmapTitle:wmItem.title||appItem.title||'SIMGEO'};
   return simgeoLayersCache;
 }
 
@@ -1670,102 +1679,77 @@ async function geocodeCep(){
   if(viacep?.erro) throw new Error('CEP não encontrado no ViaCEP.');
   const line=[viacep.logradouro,numero,viacep.bairro,viacep.localidade||'Campo Grande',viacep.uf||'MS','Brasil'].filter(Boolean).join(', ');
   const geocodeUrl=paramsUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates',{
-    f:'json',
-    SingleLine:line,
-    outFields:'Match_addr,Addr_type,Score',
-    maxLocations:1,
-    countryCode:'BRA',
-    searchExtent:'-54.90,-20.75,-54.25,-20.20'
+    f:'json',SingleLine:line,outFields:'Match_addr,Addr_type,Score',maxLocations:1,countryCode:'BRA',searchExtent:'-54.90,-20.75,-54.25,-20.20'
   });
   const geo=await fetchJson(geocodeUrl,{timeout:15000});
   const c=geo?.candidates?.[0];
-  if(!c?.location) throw new Error('Endereço encontrado pelo CEP, mas não consegui transformar em coordenada. Tente informar latitude/longitude.');
-  return {
-    lat:Number(c.location.y),
-    lng:Number(c.location.x),
-    address:{...viacep,numero,complementoConsulta:comp,geocodificado:c.address||line,score:c.score}
-  };
+  if(!c?.location) throw new Error('Endereço encontrado pelo CEP, mas não consegui transformar em coordenada. Tente latitude/longitude.');
+  return {lat:Number(c.location.y),lng:Number(c.location.x),address:{...viacep,numero,complementoConsulta:comp,geocodificado:c.address||line,score:c.score}};
 }
 
 function getSimgeoPoint(){
   let lat=parseFloat($('sg-lat').value), lng=parseFloat($('sg-lng').value);
   if(!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error('Digite latitude e longitude válidas.');
-  // Ajuda quando a pessoa cola longitude/latitude invertido. Campo Grande fica perto de lat -20 e lng -54.
   if(lat<-52 && lat>-56 && lng<-18 && lng>-22){
     const oldLat=lat; lat=lng; lng=oldLat;
-    $('sg-lat').value=lat.toFixed(7);
-    $('sg-lng').value=lng.toFixed(7);
-    simgeoStatus('Inverti automaticamente longitude/latitude para o padrão latitude/longitude.');
+    $('sg-lat').value=lat.toFixed(7); $('sg-lng').value=lng.toFixed(7);
+    simgeoStatus('Inverti automaticamente longitude/latitude para latitude/longitude.');
   }
   if(lat<-90 || lat>90 || lng<-180 || lng>180) throw new Error('As coordenadas parecem fora do padrão latitude/longitude.');
   return {lat,lng,address:null};
 }
 
-async function queryFeatureOrMapLayer(layer,point){
-  const geometry=JSON.stringify({x:point.lng,y:point.lat,spatialReference:{wkid:4326}});
-  const url=paramsUrl(`${layer.url}/query`,{
-    f:'json',
-    where:'1=1',
-    outFields:'*',
-    returnGeometry:'false',
-    geometry,
-    geometryType:'esriGeometryPoint',
-    inSR:4326,
-    spatialRel:'esriSpatialRelIntersects',
-    outSR:4326,
-    resultRecordCount:5
-  });
-  const json=await fetchJson(url,{timeout:12000});
-  return {layer,features:json.features||[],fields:json.fields||[],method:'query'};
+function makeArcPoint(point,m){
+  return new m.Point({longitude:point.lng,latitude:point.lat,spatialReference:{wkid:4326}});
 }
 
-async function identifyMapServerLayer(layer,point){
-  if(!layer.serviceUrl || layer.serviceType!=='MapServer' || !layer.layerId) return {layer,features:[],fields:[],method:'identify'};
-  const delta=0.01;
-  const geometry=JSON.stringify({x:point.lng,y:point.lat,spatialReference:{wkid:4326}});
-  const url=paramsUrl(`${layer.serviceUrl}/identify`,{
-    f:'json',
-    tolerance:5,
-    returnGeometry:'false',
-    imageDisplay:'1200,1200,96',
-    mapExtent:`${point.lng-delta},${point.lat-delta},${point.lng+delta},${point.lat+delta}`,
-    geometry,
-    geometryType:'esriGeometryPoint',
-    sr:4326,
-    layers:`all:${layer.layerId}`
-  });
-  const json=await fetchJson(url,{timeout:12000});
-  const features=(json.results||[]).map(r=>({
-    attributes:r.attributes || r.feature?.attributes || {},
-    layerName:r.layerName,
-    layerId:r.layerId
-  }));
-  return {layer,features,fields:[],method:'identify'};
+async function queryArcLayer(candidate,point,m){
+  const pt=makeArcPoint(point,m);
+  const target=candidate.sublayer || candidate.layer;
+  try{ if(target.load) await target.load(); }catch(e){}
+  if(!target.queryFeatures) throw new Error('Camada sem queryFeatures disponível.');
+  const q=target.createQuery ? target.createQuery() : {};
+  q.geometry=pt;
+  q.spatialRelationship='intersects';
+  q.returnGeometry=false;
+  q.outFields=['*'];
+  q.num=5;
+  q.maxRecordCountFactor=2;
+  const fs=await target.queryFeatures(q);
+  return {layer:candidate,features:fs?.features||[],fields:fs?.fields||[],method:candidate.kind==='feature'?'feature-query':'sublayer-query'};
 }
 
-async function querySimgeoLayer(layer,point){
-  let queryErr=null;
-  try{
-    const q=await queryFeatureOrMapLayer(layer,point);
-    if(q.features?.length || layer.serviceType!=='MapServer') return q;
-  }catch(e){ queryErr=e; }
-  if(layer.serviceType==='MapServer'){
-    try{
-      const id=await identifyMapServerLayer(layer,point);
-      if(id.features?.length) return id;
-      if(!queryErr) return id;
-    }catch(e){
-      if(queryErr) throw new Error(`query: ${queryErr.message}; identify: ${e.message}`);
-      throw e;
-    }
-  }
-  if(queryErr) throw queryErr;
-  return {layer,features:[],fields:[],method:'query'};
+async function identifyArcMapService(service,point,m){
+  const ptGeo=makeArcPoint(point,m);
+  const ptWeb=m.webMercatorUtils.geographicToWebMercator(ptGeo) || ptGeo;
+  const d=350;
+  const extent=new m.Extent({xmin:ptWeb.x-d,ymin:ptWeb.y-d,xmax:ptWeb.x+d,ymax:ptWeb.y+d,spatialReference:ptWeb.spatialReference});
+  const params=new m.IdentifyParameters({
+    geometry:ptWeb,
+    mapExtent:extent,
+    width:1200,
+    height:1200,
+    tolerance:10,
+    returnGeometry:false,
+    layerOption:'all',
+    layerIds:service.layerIds.slice(0,500)
+  });
+  const identifyFn=typeof m.identifyRest==='function'?m.identifyRest:m.identifyRest.identify;
+  if(!identifyFn) throw new Error('Módulo identify indisponível.');
+  const response=await identifyFn(service.url,params);
+  const byLayer=new Map();
+  (response?.results||[]).forEach(r=>{
+    const attrs=r.feature?.attributes || r.attributes || {};
+    const lname=r.layerName || r.layer?.title || `Camada ${r.layerId}`;
+    const key=`${service.url}/${r.layerId ?? lname}`;
+    if(!byLayer.has(key)) byLayer.set(key,{layer:{kind:'map-identify',title:`${service.title} — ${lname}`,url:key,serviceUrl:service.url,layerId:r.layerId},features:[],fields:[],method:'identify-all'});
+    byLayer.get(key).features.push({attributes:attrs,layerName:lname,layerId:r.layerId});
+  });
+  return [...byLayer.values()];
 }
 
 async function runLimited(items,limit,worker){
-  const results=[];
-  let index=0;
+  const results=[]; let index=0;
   async function runner(){
     while(index<items.length){
       const current=index++;
@@ -1776,32 +1760,63 @@ async function runLimited(items,limit,worker){
   return results;
 }
 
+function attrsSignature(attrs){
+  try{return JSON.stringify(Object.entries(attrs||{}).sort(([a],[b])=>String(a).localeCompare(String(b))).slice(0,40));}
+  catch(e){return Math.random().toString(36);}
+}
+
+function dedupeSimgeoResults(results){
+  const out=[]; const seen=new Set();
+  results.forEach(r=>{
+    const good=(r.features||[]).filter(f=>f?.attributes && Object.keys(f.attributes).length);
+    if(!good.length) { out.push(r); return; }
+    const unique=[];
+    good.forEach(f=>{
+      const sig=`${r.layer?.title}|${attrsSignature(f.attributes)}`;
+      if(!seen.has(sig)){ seen.add(sig); unique.push(f); }
+    });
+    if(unique.length) out.push({...r,features:unique});
+  });
+  return out;
+}
+
 async function consultarSimgeo(){
   const btn=$('sg-consultar');
   if(btn.disabled) return;
   btn.disabled=true; btn.textContent='Consultando...';
-  $('sg-result').innerHTML='<div class="simgeo-empty">Consultando camadas públicas do SIMGEO...</div>';
+  $('sg-result').innerHTML='<div class="simgeo-empty">Consultando o WebMap oficial do SIMGEO pela API ArcGIS...</div>';
   simgeoStatus('Preparando consulta...');
   try{
     const point = simgeoMode==='cep' ? await geocodeCep() : getSimgeoPoint();
-    $('sg-lat').value=point.lat.toFixed(7);
-    $('sg-lng').value=point.lng.toFixed(7);
+    $('sg-lat').value=point.lat.toFixed(7); $('sg-lng').value=point.lng.toFixed(7);
+    const m=await getArcgisModules();
     const discovered=await discoverSimgeoLayers();
-    simgeoStatus(`Consultando ${discovered.layers.length} camada(s) públicas. Isso pode levar alguns segundos...`);
-    const results=[];
-    const errors=[];
-    await runLimited(discovered.layers,6,async(layer,i)=>{
-      try{
-        const r=await querySimgeoLayer(layer,point);
-        results.push(r);
-      }catch(e){
-        errors.push({layer,error:e.message});
-      }
-      if((i+1)%12===0) simgeoStatus(`Consultando camadas públicas do SIMGEO... ${i+1}/${discovered.layers.length}`);
+    const results=[]; const errors=[];
+    simgeoStatus(`Varredura ampla: identificando ${discovered.mapServices.length} serviço(s) MapServer...`);
+    await runLimited(discovered.mapServices,3,async(service,i)=>{
+      try{ results.push(...await identifyArcMapService(service,point,m)); }
+      catch(e){ errors.push({layer:{title:service.title,url:service.url},error:'identify serviço: '+e.message}); }
+      simgeoStatus(`Identificando serviços MapServer... ${i+1}/${discovered.mapServices.length}`);
     });
-    simgeoLastResult={point,layers:discovered.layers,results,errors,when:new Date(),webMapId:discovered.webMapId,totalDiscovered:discovered.totalDiscovered};
+    const featureLayers=discovered.layers.filter(l=>l.kind==='feature');
+    simgeoStatus(`Consultando ${featureLayers.length} camada(s) FeatureLayer...`);
+    await runLimited(featureLayers,6,async(layer,i)=>{
+      try{ results.push(await queryArcLayer(layer,point,m)); }
+      catch(e){ errors.push({layer,error:'query feature: '+e.message}); }
+      if((i+1)%10===0) simgeoStatus(`Consultando FeatureLayers... ${i+1}/${featureLayers.length}`);
+    });
+    let foundCount=results.filter(r=>r.features?.length).length;
+    const usefulSublayers=discovered.layers.filter(l=>l.kind==='map-sublayer' && (looksUsefulLayer(l.title) || foundCount===0)).slice(0,160);
+    simgeoStatus(`Conferindo ${usefulSublayers.length} subcamada(s) prioritária(s)...`);
+    await runLimited(usefulSublayers,6,async(layer,i)=>{
+      try{ results.push(await queryArcLayer(layer,point,m)); }
+      catch(e){ errors.push({layer,error:'query subcamada: '+e.message}); }
+      if((i+1)%20===0) simgeoStatus(`Conferindo subcamadas... ${i+1}/${usefulSublayers.length}`);
+    });
+    const cleanResults=dedupeSimgeoResults(results);
+    simgeoLastResult={point,layers:discovered.layers,results:cleanResults,errors,when:new Date(),webMapId:discovered.webMapId,totalDiscovered:discovered.totalDiscovered,mapServices:discovered.mapServices};
     renderSimgeoResult(simgeoLastResult);
-    const found=results.reduce((n,r)=>n+(r.features?.length?1:0),0);
+    const found=cleanResults.reduce((n,r)=>n+(r.features?.length?1:0),0);
     simgeoStatus(`Consulta concluída. ${found} camada(s) retornaram dados.`,found?'ok':'');
   }catch(e){
     console.error('Erro SIMGEO:',e);
@@ -1812,12 +1827,10 @@ async function consultarSimgeo(){
   }
 }
 
-function cleanAttrKey(k){
-  return String(k||'').replace(/_/g,' ').replace(/\s+/g,' ').trim();
-}
+function cleanAttrKey(k){ return String(k||'').replace(/_/g,' ').replace(/\s+/g,' ').trim(); }
 
 function usefulAttrs(attrs){
-  const hidden=/^(objectid|fid|shape|shape_|globalid|created_|creator|edit|st_area|st_length)$/i;
+  const hidden=/^(objectid|fid|shape|shape_|globalid|created_|creator|edit|st_area|st_length|objectid_1)$/i;
   const entries=Object.entries(attrs||{}).filter(([k,v])=>{
     if(hidden.test(k)) return false;
     if(v===null || v===undefined || v==='') return false;
@@ -1828,15 +1841,12 @@ function usefulAttrs(attrs){
     const score=k=>looksUsefulLayer(k)?0:1;
     return score(a[0])-score(b[0]);
   });
-  return entries.slice(0,18);
+  return entries.slice(0,22);
 }
 
 function formatAttrValue(v){
   if(typeof v==='number'){
-    if(Math.abs(v)>1000000000000){
-      const d=new Date(v);
-      if(!isNaN(d)) return d.toLocaleDateString('pt-BR');
-    }
+    if(Math.abs(v)>1000000000000){ const d=new Date(v); if(!isNaN(d)) return d.toLocaleDateString('pt-BR'); }
     return Number.isInteger(v)?String(v):v.toLocaleString('pt-BR',{maximumFractionDigits:4});
   }
   return String(v);
@@ -1855,7 +1865,7 @@ function renderSimgeoResult(data){
     <div class="simgeo-kpis">
       <div class="simgeo-kpi"><div class="k">Latitude</div><div class="v">${data.point.lat.toFixed(7)}</div></div>
       <div class="simgeo-kpi"><div class="k">Longitude</div><div class="v">${data.point.lng.toFixed(7)}</div></div>
-      <div class="simgeo-kpi"><div class="k">Camadas</div><div class="v">${data.results.length}</div></div>
+      <div class="simgeo-kpi"><div class="k">Camadas lidas</div><div class="v">${data.results.length}</div></div>
       <div class="simgeo-kpi"><div class="k">Com dados</div><div class="v">${found.length}</div></div>
     </div>
     <div class="simgeo-address">${esc(simgeoAddressText(data.point.address))}</div>
@@ -1869,28 +1879,21 @@ function renderSimgeoResult(data){
     const feature=r.features[0]||{};
     const attrs=usefulAttrs(feature.attributes);
     const rows=attrs.length?attrs.map(([k,v])=>`<div class="simgeo-attr"><div class="a">${esc(cleanAttrKey(k))}</div><div class="b">${esc(formatAttrValue(v))}</div></div>`).join(''):'<div class="simgeo-muted">A camada retornou feição, mas sem atributos públicos úteis.</div>';
-    return `<details class="simgeo-layer" ${idx<8?'open':''}><summary>${esc(r.layer.title)} <span>${r.features.length} registro(s) · ${esc(r.method||'consulta')}</span></summary><div class="simgeo-attrs">${rows}</div></details>`;
-  }).join('') : `<div class="simgeo-empty">A consulta rodou, mas nenhuma das camadas públicas selecionadas retornou atributos para este ponto.<br><br>Confira se a coordenada está dentro de Campo Grande e se foi informada como latitude/longitude decimal, por exemplo: -20.46, -54.61.</div>`;
-  const err=data.errors.length?`<details class="simgeo-layer" style="margin-top:1rem"><summary>Diagnóstico técnico <span>${data.errors.length} erro(s)</span></summary><div class="simgeo-attrs"><div class="simgeo-muted">Algumas camadas podem bloquear consulta pública, CORS ou atributos.</div>${data.errors.slice(0,18).map(e=>`<div class="simgeo-attr"><div class="a">${esc(e.layer?.title||'Camada')}</div><div class="b">${esc(e.error)}</div></div>`).join('')}</div></details>`:'';
-  $('sg-result').innerHTML=cards+actions+body+err;
+    return `<details class="simgeo-layer" ${idx<10?'open':''}><summary>${esc(r.layer.title)} <span>${r.features.length} registro(s) · ${esc(r.method||'consulta')}</span></summary><div class="simgeo-attrs">${rows}</div></details>`;
+  }).join('') : `<div class="simgeo-empty">A varredura rodou, mas nenhuma camada pública retornou atributos para este ponto.<br><br>Isso costuma acontecer quando o WebMap permite visualizar a camada, mas o serviço bloqueia identificação/consulta externa, ou quando o endereço geocodificado caiu fora do lote correto. Tente clicar no mapa oficial, copiar a coordenada exata do lote e consultar novamente.</div>`;
+  const err=data.errors.length?`<details class="simgeo-layer" style="margin-top:1rem"><summary>Diagnóstico técnico <span>${data.errors.length} aviso(s)</span></summary><div class="simgeo-attrs"><div class="simgeo-muted">A consulta agora usa ArcGIS JS API, identify em MapServer e query em FeatureLayer. Estes avisos indicam camadas que o serviço não deixou consultar.</div>${data.errors.slice(0,25).map(e=>`<div class="simgeo-attr"><div class="a">${esc(e.layer?.title||'Camada')}</div><div class="b">${esc(e.error)}</div></div>`).join('')}</div></details>`:'';
+  const meta=`<div class="simgeo-muted" style="margin-top:1rem">WebMap: ${esc(data.webMapId)} · Camadas descobertas: ${data.totalDiscovered} · Serviços MapServer: ${data.mapServices?.length||0}</div>`;
+  $('sg-result').innerHTML=cards+actions+body+err+meta;
 }
 
 function simgeoPlainText(){
   const d=simgeoLastResult;
   if(!d) return '';
   const found=d.results.filter(r=>r.features?.length);
-  const lines=[
-    'Consulta SIMGEO — Chaos',
-    `Data: ${d.when.toLocaleString('pt-BR')}`,
-    `Coordenadas: ${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`,
-    `Endereço: ${simgeoAddressText(d.point.address)}`,
-    `Camadas consultadas: ${d.results.length}`,
-    `Camadas com dados: ${found.length}`,
-    ''
-  ];
+  const lines=['Consulta SIMGEO — Chaos',`Data: ${d.when.toLocaleString('pt-BR')}`,`Coordenadas: ${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`,`Endereço: ${simgeoAddressText(d.point.address)}`,`Camadas lidas: ${d.results.length}`,`Camadas com dados: ${found.length}`,''];
   found.forEach(r=>{
     lines.push(`• ${r.layer.title}`);
-    usefulAttrs(r.features[0]?.attributes).slice(0,12).forEach(([k,v])=>lines.push(`  - ${cleanAttrKey(k)}: ${formatAttrValue(v)}`));
+    usefulAttrs(r.features[0]?.attributes).slice(0,14).forEach(([k,v])=>lines.push(`  - ${cleanAttrKey(k)}: ${formatAttrValue(v)}`));
     lines.push('');
   });
   return lines.join('\n').trim();
@@ -1899,61 +1902,31 @@ function simgeoPlainText(){
 async function copySimgeoResult(){
   const txt=simgeoPlainText();
   if(!txt){ simgeoStatus('Faça uma consulta antes de copiar.','err'); return; }
-  try{
-    await navigator.clipboard.writeText(txt);
-    simgeoStatus('Resumo copiado para a área de transferência.','ok');
-  }catch(e){
-    const ta=document.createElement('textarea');
-    ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-    simgeoStatus('Resumo copiado.','ok');
-  }
+  try{ await navigator.clipboard.writeText(txt); simgeoStatus('Resumo copiado para a área de transferência.','ok'); }
+  catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); simgeoStatus('Resumo copiado.','ok'); }
 }
 
 async function exportSimgeoPDF(){
   if(simgeoPdfBusy) return;
   if(!simgeoLastResult){ simgeoStatus('Faça uma consulta antes de gerar o PDF.','err'); return; }
-  let el=null;
-  simgeoPdfBusy=true;
+  let el=null; simgeoPdfBusy=true;
   try{
     const d=simgeoLastResult;
     const found=d.results.filter(r=>r.features?.length);
     const layerBlocks=found.length?found.map(r=>{
-      const rows=usefulAttrs(r.features[0]?.attributes).slice(0,16).map(([k,v])=>`
-        <tr><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(cleanAttrKey(k))}</td><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(formatAttrValue(v))}</td></tr>`).join('');
+      const rows=usefulAttrs(r.features[0]?.attributes).slice(0,18).map(([k,v])=>`<tr><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(cleanAttrKey(k))}</td><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(formatAttrValue(v))}</td></tr>`).join('');
       return `<div style="break-inside:avoid;margin-bottom:14px;border:1px solid #F2EDE2;border-radius:8px;overflow:hidden"><div style="background:#F5EDE2;padding:9px 11px;color:#8B5E3C;font-family:system-ui,sans-serif;font-size:11px;font-weight:600">${esc(r.layer.title)}</div><table style="width:100%;border-collapse:collapse">${rows||'<tr><td style="padding:9px;color:#B0A090;font-size:10px;font-family:system-ui,sans-serif">Sem atributos públicos úteis.</td></tr>'}</table></div>`;
     }).join(''):'<div style="font-size:12px;color:#B0A090;font-family:system-ui,sans-serif">Nenhuma camada retornou dados para este ponto.</div>';
-    const htmlContent=`
-      <div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896">
-          <div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div>
-          <div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div>
-        </div>
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div>
-        <div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif">
-          <div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div>
-          <div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div>
-          <div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas consultadas: ${d.results.length} · Camadas com dados: ${found.length}</div>
-        </div>
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>
-        ${layerBlocks}
-        <div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div>
-      </div>`;
-    el=createPdfElement(htmlContent);
-    await waitForImages(el);
-    if(document.fonts?.ready) await document.fonts.ready;
-    await nextFrame();
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
+    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
     simgeoStatus('Ficha PDF gerada.','ok');
-  }catch(e){
-    console.error('Erro PDF SIMGEO:',e);
-    simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err');
-  }finally{
-    if(el?.parentNode) el.parentNode.removeChild(el);
-    simgeoPdfBusy=false;
-  }
+  }catch(e){ console.error('Erro PDF SIMGEO:',e); simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
+  finally{ if(el?.parentNode) el.parentNode.removeChild(el); simgeoPdfBusy=false; }
 }
+
 
 // ── PDF PROPOSTA ──────────────────────────────────
 async function exportPDF(){
