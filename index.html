@@ -77,6 +77,12 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .tool-btn.primary{background:var(--e);border-color:var(--e);color:#fff}
 .tool-btn.primary:hover{opacity:.86}
 .tool-btn.primary.active{box-shadow:0 0 0 2px var(--el)}
+
+.tool-btn.labeee-accent{background:var(--e);border-color:var(--e);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.tool-btn.labeee-accent:hover{opacity:.9;background:var(--e);border-color:var(--e)}
+.tool-btn.labeee-accent.active{box-shadow:0 0 0 2px var(--el),0 2px 8px rgba(0,0,0,.08)}
+.labeee-float{position:fixed;right:12px;bottom:64px;z-index:35;border:none;border-radius:999px;background:var(--e);color:#fff;font-family:inherit;font-size:12px;font-weight:600;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.16);cursor:pointer;display:flex;align-items:center;gap:6px}
+.labeee-float:hover{opacity:.9}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-user{font-size:11px;color:var(--faint);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
@@ -378,8 +384,8 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <button class="tool-btn" id="tool-chart" onclick="showDash('chart')">Gráficos</button>
       <button class="tool-btn primary" id="tool-new" onclick="newProposal()">+ Proposta</button>
       <button class="tool-btn" id="tool-carta" onclick="showCarta()">Carta</button>
+      <button class="tool-btn labeee-accent" id="tool-labeee" onclick="showLabeee()">☀ LabEEE</button>
       <button class="tool-btn" id="tool-simgeo" onclick="showSimgeo()">Consulta SIMGEO</button>
-      <button class="tool-btn" id="tool-labeee" onclick="showLabeee()">LabEEE</button>
     </nav>
     <div class="hdr-right">
       <div class="theme-picker" title="Escolher tema">
@@ -434,6 +440,14 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
         </div>
         <span class="hall-go">Escrever carta →</span>
       </button>
+      <button class="hall-card" onclick="showLabeee()" style="border-color:var(--eb)">
+        <div>
+          <div class="hall-icon">☀</div>
+          <h2>LabEEE</h2>
+          <p>Organiza estudo solar, brises, ventilação e zoneamento com links oficiais do LabEEE/UFSC.</p>
+        </div>
+        <span class="hall-go">Analisar desempenho →</span>
+      </button>
       <button class="hall-card" onclick="showSimgeo()">
         <div>
           <div class="hall-icon">⌖</div>
@@ -441,14 +455,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
           <p>Consulta camadas públicas do SIMGEO por coordenadas ou por CEP/endereço.</p>
         </div>
         <span class="hall-go">Consultar dados →</span>
-      </button>
-      <button class="hall-card" onclick="showLabeee()">
-        <div>
-          <div class="hall-icon">☀</div>
-          <h2>LabEEE</h2>
-          <p>Organiza estudo solar, brises, ventilação e zoneamento com links oficiais do LabEEE/UFSC.</p>
-        </div>
-        <span class="hall-go">Analisar desempenho →</span>
       </button>
     </div>
   </div>
@@ -763,6 +769,8 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   </div>
 
   <!-- ONLINE BAR -->
+  <button class="labeee-float" onclick="showLabeee()" title="Abrir ferramenta LabEEE">☀ LabEEE</button>
+
   <div id="online-bar">
     <div class="online-dot"></div>
     <span style="color:var(--muted);font-weight:500">Online agora:</span>
