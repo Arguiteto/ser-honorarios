@@ -799,51 +799,51 @@ function exportPDF(){
     const nomeS = r.querySelector('.servico-nome')?.value?.trim();
     const descS = r.querySelector('.servico-desc')?.value?.trim();
     if(nomeS || descS){
-      servicosHTML += \`
+      servicosHTML += `
       <tr>
         <td style="padding:10px 0;border-bottom:0.5px solid #F2EDE2;vertical-align:top;width:28px">
-          <div style="width:22px;height:22px;border-radius:50%;background:#F5EDE2;border:1px solid #D4B896;display:flex;align-items:center;justify-content:center;font-size:10px;color:#8B5E3C;font-family:'Courier New',monospace;font-weight:500">\${servicoIdx}</div>
+          <div style="width:22px;height:22px;border-radius:50%;background:#F5EDE2;border:1px solid #D4B896;display:flex;align-items:center;justify-content:center;font-size:10px;color:#8B5E3C;font-family:'Courier New',monospace;font-weight:500">${servicoIdx}</div>
         </td>
         <td style="padding:10px 0 10px 12px;border-bottom:0.5px solid #F2EDE2;vertical-align:top">
-          \${nomeS ? \`<div style="font-size:13px;font-weight:500;color:#2C1F12;margin-bottom:3px">\${nomeS}</div>\` : ''}
-          \${descS ? \`<div style="font-size:12px;color:#7A6A56;line-height:1.6">\${descS}</div>\` : ''}
+          ${nomeS ? `<div style="font-size:13px;font-weight:500;color:#2C1F12;margin-bottom:3px">${nomeS}</div>` : ''}
+          ${descS ? `<div style="font-size:12px;color:#7A6A56;line-height:1.6">${descS}</div>` : ''}
         </td>
-      </tr>\`;
+      </tr>`;
       servicoIdx++;
     }
   });
 
   if(!servicosHTML){
-    servicosHTML = \`<tr><td colspan="2" style="padding:12px 0;font-size:12px;color:#B0A090;font-style:italic">Nenhum serviço cadastrado.</td></tr>\`;
+    servicosHTML = `<tr><td colspan="2" style="padding:12px 0;font-size:12px;color:#B0A090;font-style:italic">Nenhum serviço cadastrado.</td></tr>`;
   }
 
-  const html = \`
+  const html = `
   <div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1">
 
     <!-- CABEÇALHO -->
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #D4B896">
       <div style="display:flex;align-items:center;gap:16px">
-        <img src="\${LOGO_B64}" style="width:56px;height:56px;object-fit:contain;border-radius:4px" />
+        <img src="${LOGO_B64}" style="width:56px;height:56px;object-fit:contain;border-radius:4px" />
         <div>
           <div style="font-size:20px;font-weight:400;color:#8B5E3C;letter-spacing:-0.3px">Chaos</div>
           <div style="font-size:10px;color:#B0A090;letter-spacing:1.5px;text-transform:uppercase;font-family:system-ui,sans-serif">Arquitetura e Urbanismo</div>
-          \${arq ? \`<div style="font-size:11px;color:#7A6A56;margin-top:3px;font-family:system-ui,sans-serif">\${arq}</div>\` : ''}
+          ${arq ? `<div style="font-size:11px;color:#7A6A56;margin-top:3px;font-family:system-ui,sans-serif">${arq}</div>` : ''}
         </div>
       </div>
       <div style="text-align:right">
         <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#B0A090;font-family:system-ui,sans-serif">Proposta de Serviços</div>
-        <div style="font-size:12px;color:#7A6A56;margin-top:4px;font-family:system-ui,sans-serif">\${dataBr}</div>
+        <div style="font-size:12px;color:#7A6A56;margin-top:4px;font-family:system-ui,sans-serif">${dataBr}</div>
       </div>
     </div>
 
     <!-- DADOS DO PROJETO -->
     <div style="margin-bottom:28px">
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px">Projeto</div>
-      <div style="font-size:22px;font-weight:400;color:#2C1F12;margin-bottom:6px">\${nome}</div>
+      <div style="font-size:22px;font-weight:400;color:#2C1F12;margin-bottom:6px">${nome}</div>
       <div style="display:flex;gap:24px;flex-wrap:wrap">
-        \${cli  ? \`<div style="font-size:12px;color:#7A6A56;font-family:system-ui,sans-serif"><span style="color:#B0A090">Cliente:</span> \${cli}</div>\` : ''}
-        \${tipo ? \`<div style="font-size:12px;color:#7A6A56;font-family:system-ui,sans-serif"><span style="color:#B0A090">Tipologia:</span> \${tipo}</div>\` : ''}
-        \${area > 0 ? \`<div style="font-size:12px;color:#7A6A56;font-family:system-ui,sans-serif"><span style="color:#B0A090">Área:</span> \${area} m²</div>\` : ''}
+        ${cli  ? `<div style="font-size:12px;color:#7A6A56;font-family:system-ui,sans-serif"><span style="color:#B0A090">Cliente:</span> ${cli}</div>` : ''}
+        ${tipo ? `<div style="font-size:12px;color:#7A6A56;font-family:system-ui,sans-serif"><span style="color:#B0A090">Tipologia:</span> ${tipo}</div>` : ''}
+        ${area > 0 ? `<div style="font-size:12px;color:#7A6A56;font-family:system-ui,sans-serif"><span style="color:#B0A090">Área:</span> ${area} m²</div>` : ''}
       </div>
     </div>
 
@@ -851,7 +851,7 @@ function exportPDF(){
     <div style="margin-bottom:28px">
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Serviços a serem realizados</div>
       <table style="width:100%;border-collapse:collapse">
-        \${servicosHTML}
+        ${servicosHTML}
       </table>
     </div>
 
@@ -860,21 +860,21 @@ function exportPDF(){
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#8B5E3C;font-family:system-ui,sans-serif;margin-bottom:14px">Investimento</div>
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #D4B896">
         <div style="font-size:13px;color:#7A6A56;font-family:system-ui,sans-serif">Valor total do projeto</div>
-        <div style="font-size:28px;font-weight:400;color:#8B5E3C">R$ \${Math.round(final).toLocaleString('pt-BR')}</div>
+        <div style="font-size:28px;font-weight:400;color:#8B5E3C">R$ ${Math.round(final).toLocaleString('pt-BR')}</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
         <div>
           <div style="font-size:10px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Entrada</div>
-          <div style="font-size:15px;color:#8B5E3C;font-family:'Courier New',monospace">R$ \${Math.round(ev).toLocaleString('pt-BR')}</div>
+          <div style="font-size:15px;color:#8B5E3C;font-family:'Courier New',monospace">R$ ${Math.round(ev).toLocaleString('pt-BR')}</div>
         </div>
         <div>
           <div style="font-size:10px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Parcelas</div>
-          <div style="font-size:15px;color:#8B5E3C;font-family:'Courier New',monospace">\${np}× R$ \${pv.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+          <div style="font-size:15px;color:#8B5E3C;font-family:'Courier New',monospace">${np}× R$ ${pv.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
         </div>
-        \${area > 0 ? \`<div>
+        ${area > 0 ? `<div>
           <div style="font-size:10px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Por m²</div>
-          <div style="font-size:15px;color:#8B5E3C;font-family:'Courier New',monospace">R$ \${(final/area).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        </div>\` : ''}
+          <div style="font-size:15px;color:#8B5E3C;font-family:'Courier New',monospace">R$ ${(final/area).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        </div>` : ''}
       </div>
     </div>
 
@@ -886,9 +886,9 @@ function exportPDF(){
     <!-- RODAPÉ -->
     <div style="border-top:1px solid #F2EDE2;padding-top:14px;display:flex;justify-content:space-between;align-items:center">
       <div style="font-size:10px;color:#D4B896;font-family:system-ui,sans-serif;letter-spacing:0.5px;text-transform:uppercase">Chaos Arquitetura e Urbanismo</div>
-      \${arq ? \`<div style="font-size:10px;color:#D4B896;font-family:system-ui,sans-serif">\${arq}</div>\` : ''}
+      ${arq ? `<div style="font-size:10px;color:#D4B896;font-family:system-ui,sans-serif">${arq}</div>` : ''}
     </div>
-  </div>\`;
+  </div>`;
 
   const el = document.createElement('div');
   el.innerHTML = html;
@@ -898,7 +898,7 @@ function exportPDF(){
 
   html2pdf().set({
     margin:0,
-    filename:\`chaos-proposta-\${nomearq}.pdf\`,
+    filename:`chaos-proposta-${nomearq}.pdf`,
     image:{type:'jpeg',quality:0.98},
     html2canvas:{scale:2,useCORS:true,allowTaint:true},
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
@@ -920,13 +920,13 @@ function addServico(nomeVal='', descVal=''){
   const div = document.createElement('div');
   div.className = 'servico-row';
   div.id = id;
-  div.innerHTML = \`
+  div.innerHTML = `
     <div style="flex:1;display:flex;flex-direction:column;gap:6px">
-      <input class="servico-nome" type="text" placeholder="Nome do serviço (ex: Projeto Executivo)" value="\${nomeVal.replace(/"/g,'&quot;')}">
-      <textarea class="servico-desc" rows="2" placeholder="Descrição detalhada do que está incluso neste serviço...">\${descVal}</textarea>
+      <input class="servico-nome" type="text" placeholder="Nome do serviço (ex: Projeto Executivo)" value="${nomeVal.replace(/"/g,'&quot;')}">
+      <textarea class="servico-desc" rows="2" placeholder="Descrição detalhada do que está incluso neste serviço...">${descVal}</textarea>
     </div>
-    <button class="servico-del" onclick="document.getElementById('\${id}').remove()" title="Remover">✕</button>
-  \`;
+    <button class="servico-del" onclick="document.getElementById('${id}').remove()" title="Remover">✕</button>
+  `;
   document.getElementById('servicos-list').appendChild(div);
 }
 
