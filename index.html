@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="https://js.arcgis.com/4.30/"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -381,6 +382,27 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .mapoteca-file em{display:block;font-size:10px;color:var(--muted);font-style:normal;margin-top:4px}
 @media(max-width:760px){.mapoteca-wrap{grid-template-columns:1fr}.mapoteca-kpis{grid-template-columns:1fr 1fr}.mapoteca-row{grid-template-columns:1fr}}
 
+
+/* ── THREE.JS / VOLUMETRIA 3D ───────────────────── */
+#threejs-view{display:none;padding:1.5rem;max-width:1100px;margin:0 auto;flex:1;width:100%}
+.threejs-wrap{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:14px;align-items:start}
+.threejs-card,.threejs-stage{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)}
+.threejs-card h2,.threejs-stage h2{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem}
+.threejs-muted{font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem}
+.threejs-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.threejs-status{font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem}
+.threejs-status.ok{color:var(--green)}
+.threejs-status.err{color:var(--err)}
+.threejs-canvas{height:520px;min-height:360px;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;background:linear-gradient(180deg,var(--surf2),var(--surface));position:relative}
+.threejs-canvas canvas{display:block;width:100%;height:100%}
+.threejs-help{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.45);color:#fff;border-radius:999px;padding:5px 10px;font-size:10px;pointer-events:none}
+.threejs-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:.9rem 0 1rem}
+.threejs-kpi{background:var(--surf2);border-radius:8px;padding:.75rem}
+.threejs-kpi .k{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.threejs-kpi .v{font-size:13px;color:var(--e);font-family:monospace;word-break:break-word}
+.threejs-note{font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem}
+@media(max-width:860px){.threejs-wrap{grid-template-columns:1fr}.threejs-kpis{grid-template-columns:1fr 1fr}.threejs-canvas{height:420px}}
+
 </style>
 </head>
 <body>
@@ -416,6 +438,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <button class="tool-btn primary" id="tool-new" onclick="newProposal()">+ Proposta</button>
       <button class="tool-btn" id="tool-carta" onclick="showCarta()">Carta</button>
       <button class="tool-btn labeee-accent" id="tool-labeee" onclick="showLabeee()">☀ LabEEE</button>
+      <button class="tool-btn" id="tool-threejs" onclick="showThreejs()">Volumetria 3D</button>
       <button class="tool-btn" id="tool-mapoteca" onclick="showMapoteca()">Mapoteca</button>
       <button class="tool-btn" id="tool-simgeo" onclick="showSimgeo()">Consulta SIMGEO</button>
     </nav>
@@ -480,6 +503,14 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
         </div>
         <span class="hall-go">Analisar desempenho →</span>
       </button>
+      <button class="hall-card" onclick="showThreejs()">
+        <div>
+          <div class="hall-icon">▥</div>
+          <h2>Volumetria 3D</h2>
+          <p>Cria uma massa arquitetônica simples em Three.js com terreno, pavimentos, recuos e indicadores urbanísticos.</p>
+        </div>
+        <span class="hall-go">Modelar volume →</span>
+      </button>
       <button class="hall-card" onclick="showMapoteca()">
         <div>
           <div class="hall-icon">▣</div>
@@ -499,6 +530,52 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     </div>
   </div>
 
+
+
+  <!-- THREE.JS / VOLUMETRIA 3D -->
+  <div id="threejs-view" style="display:none">
+    <div class="dash-top">
+      <div class="dash-title">Volumetria 3D — Estudo rápido</div>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+    </div>
+    <div class="threejs-wrap">
+      <section class="threejs-card">
+        <h2>Parâmetros do volume</h2>
+        <p class="threejs-muted">Ferramenta criada a partir do pacote de skills de Three.js: cena, geometria, materiais, iluminação e interação. Use como estudo preliminar de massa e proporção.</p>
+        <div class="g2">
+          <div class="field"><label>Largura do terreno</label><div class="iw"><input type="number" id="tj-terreno-l" value="20" min="1" step="0.5" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Profundidade do terreno</label><div class="iw"><input type="number" id="tj-terreno-p" value="30" min="1" step="0.5" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Largura construída</label><div class="iw"><input type="number" id="tj-vol-l" value="12" min="1" step="0.5" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Profundidade construída</label><div class="iw"><input type="number" id="tj-vol-p" value="18" min="1" step="0.5" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Pavimentos</label><div class="iw"><input type="number" id="tj-pav" value="2" min="1" max="30" step="1" oninput="updateThreejsModel()"><span class="sfx">un.</span></div></div>
+          <div class="field"><label>Altura por pavimento</label><div class="iw"><input type="number" id="tj-alt" value="3" min="2" max="6" step="0.1" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Recuo frontal</label><div class="iw"><input type="number" id="tj-recuo-f" value="4" min="0" step="0.5" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Recuo lateral esquerdo</label><div class="iw"><input type="number" id="tj-recuo-l" value="2" min="0" step="0.5" oninput="updateThreejsModel()"><span class="sfx">m</span></div></div>
+          <div class="field"><label>Rotação do volume</label><div class="iw"><input type="number" id="tj-rot" value="0" min="-180" max="180" step="5" oninput="updateThreejsModel()"><span class="sfx">°</span></div></div>
+          <div class="field"><label>Material</label><div class="iw"><select id="tj-mat" onchange="updateThreejsModel()"><option value="concreto">Concreto claro</option><option value="terracota">Terracota</option><option value="vidro">Vidro translúcido</option><option value="madeira">Madeira</option></select></div></div>
+        </div>
+        <div class="threejs-actions">
+          <button class="btn solid" onclick="updateThreejsModel()">Atualizar modelo</button>
+          <button class="btn ghost" onclick="threejsView('persp')">Perspectiva</button>
+          <button class="btn ghost" onclick="threejsView('top')">Vista superior</button>
+          <button class="btn ghost" onclick="exportThreejsPNG()">Baixar PNG</button>
+        </div>
+        <div class="threejs-status" id="tj-status"></div>
+        <p class="threejs-note">Controles: arraste o mouse para girar a vista e use a roda do mouse para aproximar/afastar. O modelo é conceitual, não substitui conferência legal ou projeto executivo.</p>
+      </section>
+      <section class="threejs-stage">
+        <h2>Modelo</h2>
+        <p class="threejs-muted">O volume é montado com geometria Box/Plane, luz direcional e grade de escala para leitura espacial rápida.</p>
+        <div class="threejs-kpis">
+          <div class="threejs-kpi"><div class="k">Área terreno</div><div class="v" id="tj-k-terreno">—</div></div>
+          <div class="threejs-kpi"><div class="k">Área construída</div><div class="v" id="tj-k-construida">—</div></div>
+          <div class="threejs-kpi"><div class="k">Taxa ocupação</div><div class="v" id="tj-k-to">—</div></div>
+          <div class="threejs-kpi"><div class="k">Gabarito</div><div class="v" id="tj-k-altura">—</div></div>
+        </div>
+        <div class="threejs-canvas" id="tj-canvas"><div class="threejs-help">arraste para orbitar · roda para zoom</div></div>
+      </section>
+    </div>
+  </div>
 
   <!-- MAPOTECA / TERRENO -->
   <div id="mapoteca-view" style="display:none">
@@ -1083,14 +1160,14 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','threejs-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -1135,10 +1212,260 @@ function showLabeee(){
   setTool('labeee');
 }
 
+function showThreejs(){
+  hideViews();
+  $('threejs-view').style.display='block';
+  setTool('threejs');
+  setTimeout(initThreejsTool, 60);
+}
+
 function showMapoteca(){
   hideViews();
   $('mapoteca-view').style.display='block';
   setTool('mapoteca');
+}
+
+
+// ── THREE.JS / VOLUMETRIA 3D ─────────────────────
+const threejsState = {
+  renderer:null, scene:null, camera:null, root:null, canvas:null,
+  ready:false, dragging:false, lastX:0, lastY:0, theta:0.78, phi:0.92, radius:55,
+  resizeHandler:null
+};
+
+function tjNum(id, fallback=0){
+  const n = parseFloat($(id)?.value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function tjSetStatus(msg,type='ok'){
+  const el=$('tj-status');
+  if(!el) return;
+  el.textContent=msg||'';
+  el.className='threejs-status '+(type==='err'?'err':'ok');
+}
+
+function initThreejsTool(){
+  const host=$('tj-canvas');
+  if(!host || threejsState.ready) { updateThreejsModel(); return; }
+  if(!window.THREE){
+    tjSetStatus('Three.js não carregou. Verifique a conexão com o CDN.', 'err');
+    return;
+  }
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  host.appendChild(renderer.domElement);
+
+  const root = new THREE.Group();
+  scene.add(root);
+
+  const amb = new THREE.AmbientLight(0xffffff, 0.55);
+  scene.add(amb);
+  const sun = new THREE.DirectionalLight(0xffffff, 1.15);
+  sun.position.set(22,42,18);
+  sun.castShadow = true;
+  sun.shadow.mapSize.width = 1024;
+  sun.shadow.mapSize.height = 1024;
+  scene.add(sun);
+
+  threejsState.renderer=renderer;
+  threejsState.scene=scene;
+  threejsState.camera=camera;
+  threejsState.root=root;
+  threejsState.canvas=host;
+  threejsState.ready=true;
+
+  host.addEventListener('pointerdown', e=>{
+    threejsState.dragging=true;
+    threejsState.lastX=e.clientX;
+    threejsState.lastY=e.clientY;
+    host.setPointerCapture?.(e.pointerId);
+  });
+  host.addEventListener('pointermove', e=>{
+    if(!threejsState.dragging) return;
+    const dx=e.clientX-threejsState.lastX;
+    const dy=e.clientY-threejsState.lastY;
+    threejsState.lastX=e.clientX;
+    threejsState.lastY=e.clientY;
+    threejsState.theta -= dx*0.008;
+    threejsState.phi = Math.max(0.18, Math.min(1.42, threejsState.phi + dy*0.006));
+    renderThreejs();
+  });
+  host.addEventListener('pointerup', e=>{
+    threejsState.dragging=false;
+    host.releasePointerCapture?.(e.pointerId);
+  });
+  host.addEventListener('wheel', e=>{
+    e.preventDefault();
+    threejsState.radius = Math.max(14, Math.min(150, threejsState.radius + e.deltaY*0.035));
+    renderThreejs();
+  }, {passive:false});
+
+  threejsState.resizeHandler=()=>renderThreejs();
+  window.addEventListener('resize', threejsState.resizeHandler);
+  updateThreejsModel();
+}
+
+function threejsMaterial(kind){
+  const map={
+    concreto:{color:0xd8d2c4, roughness:.82, metalness:0},
+    terracota:{color:0xb46a42, roughness:.72, metalness:0},
+    vidro:{color:0x9fc6d1, roughness:.22, metalness:0, transparent:true, opacity:.58},
+    madeira:{color:0x9a6a3b, roughness:.65, metalness:0}
+  };
+  return new THREE.MeshStandardMaterial(map[kind]||map.concreto);
+}
+
+function clearThreejsRoot(){
+  const root=threejsState.root;
+  if(!root) return;
+  while(root.children.length){
+    const obj=root.children.pop();
+    obj.traverse?.(child=>{
+      child.geometry?.dispose?.();
+      if(child.material){
+        if(Array.isArray(child.material)) child.material.forEach(m=>m.dispose?.());
+        else child.material.dispose?.();
+      }
+    });
+  }
+}
+
+function updateThreejsModel(){
+  if(!threejsState.ready){
+    if($('threejs-view')?.style.display !== 'none') initThreejsTool();
+    return;
+  }
+  const THREE = window.THREE;
+  const terrenoL=Math.max(1,tjNum('tj-terreno-l',20));
+  const terrenoP=Math.max(1,tjNum('tj-terreno-p',30));
+  const volL=Math.min(Math.max(1,tjNum('tj-vol-l',12)), terrenoL*1.4);
+  const volP=Math.min(Math.max(1,tjNum('tj-vol-p',18)), terrenoP*1.4);
+  const pav=Math.max(1,Math.min(30,Math.round(tjNum('tj-pav',2))));
+  const altPav=Math.max(2,tjNum('tj-alt',3));
+  const altura=pav*altPav;
+  const recuoF=Math.max(0,tjNum('tj-recuo-f',4));
+  const recuoL=Math.max(0,tjNum('tj-recuo-l',2));
+  const rot=THREE.MathUtils.degToRad(tjNum('tj-rot',0));
+  const matKind=$('tj-mat')?.value||'concreto';
+
+  clearThreejsRoot();
+  const root=threejsState.root;
+
+  const groundMat = new THREE.MeshStandardMaterial({color:0xe8dcc8, roughness:.95});
+  const ground = new THREE.Mesh(new THREE.BoxGeometry(terrenoL, .12, terrenoP), groundMat);
+  ground.position.y=-.06;
+  ground.receiveShadow=true;
+  root.add(ground);
+
+  const grid = new THREE.GridHelper(Math.max(terrenoL,terrenoP), Math.max(2, Math.round(Math.max(terrenoL,terrenoP)/2)), 0x8b5e3c, 0xc8bca8);
+  grid.position.y=.015;
+  root.add(grid);
+
+  const maxX = terrenoL/2 - volL/2;
+  const maxZ = terrenoP/2 - volP/2;
+  const x = Math.max(-terrenoL/2 + volL/2, Math.min(maxX, -terrenoL/2 + recuoL + volL/2));
+  const z = Math.max(-terrenoP/2 + volP/2, Math.min(maxZ, terrenoP/2 - recuoF - volP/2));
+
+  const building = new THREE.Mesh(new THREE.BoxGeometry(volL, altura, volP), threejsMaterial(matKind));
+  building.position.set(x, altura/2, z);
+  building.rotation.y=rot;
+  building.castShadow=true;
+  building.receiveShadow=true;
+  root.add(building);
+
+  const edges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(volL, altura, volP)),
+    new THREE.LineBasicMaterial({color:0x3b2a1a, transparent:true, opacity:.55})
+  );
+  edges.position.copy(building.position);
+  edges.rotation.y=rot;
+  root.add(edges);
+
+  for(let i=1;i<pav;i++){
+    const slab = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(volL+.04, .05, volP+.04)),
+      new THREE.LineBasicMaterial({color:0xffffff, transparent:true, opacity:.7})
+    );
+    slab.position.set(x, i*altPav, z);
+    slab.rotation.y=rot;
+    root.add(slab);
+  }
+
+  const setbackMat = new THREE.LineBasicMaterial({color:0x8b5e3c, transparent:true, opacity:.85});
+  const setbackGeo = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-terrenoL/2+recuoL, .08, -terrenoP/2),
+    new THREE.Vector3(-terrenoL/2+recuoL, .08, terrenoP/2),
+    new THREE.Vector3(-terrenoL/2, .08, terrenoP/2-recuoF),
+    new THREE.Vector3(terrenoL/2, .08, terrenoP/2-recuoF)
+  ]);
+  root.add(new THREE.Line(setbackGeo,setbackMat));
+
+  const areaTerr=terrenoL*terrenoP;
+  const areaProj=volL*volP;
+  const areaConst=areaProj*pav;
+  const to=areaTerr?areaProj/areaTerr*100:0;
+  const ca=areaTerr?areaConst/areaTerr:0;
+  $('tj-k-terreno').textContent = fmtAreaValue(areaTerr)+' m²';
+  $('tj-k-construida').textContent = fmtAreaValue(areaConst)+' m²';
+  $('tj-k-to').textContent = to.toLocaleString('pt-BR',{maximumFractionDigits:1})+'% · CA '+ca.toLocaleString('pt-BR',{maximumFractionDigits:2});
+  $('tj-k-altura').textContent = altura.toLocaleString('pt-BR',{maximumFractionDigits:1})+' m';
+
+  const fora = volL > terrenoL || volP > terrenoP;
+  tjSetStatus(fora ? 'Atenção: o volume informado é maior que o terreno em uma das dimensões.' : 'Modelo atualizado.', fora?'err':'ok');
+  renderThreejs();
+}
+
+function renderThreejs(){
+  if(!threejsState.ready) return;
+  const host=threejsState.canvas;
+  const renderer=threejsState.renderer;
+  const camera=threejsState.camera;
+  const w=Math.max(1,host.clientWidth);
+  const h=Math.max(1,host.clientHeight);
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h;
+  const r=threejsState.radius;
+  const theta=threejsState.theta;
+  const phi=threejsState.phi;
+  camera.position.set(
+    r*Math.sin(phi)*Math.sin(theta),
+    r*Math.cos(phi)+12,
+    r*Math.sin(phi)*Math.cos(theta)
+  );
+  camera.lookAt(0,4,0);
+  camera.updateProjectionMatrix();
+  renderer.render(threejsState.scene,camera);
+}
+
+function threejsView(mode){
+  if(!threejsState.ready) initThreejsTool();
+  if(mode==='top'){
+    threejsState.theta=0;
+    threejsState.phi=0.02;
+    threejsState.radius=70;
+  }else{
+    threejsState.theta=0.78;
+    threejsState.phi=0.92;
+    threejsState.radius=55;
+  }
+  renderThreejs();
+}
+
+function exportThreejsPNG(){
+  if(!threejsState.ready){ initThreejsTool(); return; }
+  renderThreejs();
+  const a=document.createElement('a');
+  a.href=threejsState.renderer.domElement.toDataURL('image/png');
+  a.download='volumetria-3d-chaos.png';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  tjSetStatus('Imagem PNG gerada.', 'ok');
 }
 
 // ── DASH TABS ─────────────────────────────────────
