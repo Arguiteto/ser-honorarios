@@ -350,6 +350,37 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .labeee-note{font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem}
 @media(max-width:760px){.labeee-wrap{grid-template-columns:1fr}.labeee-kpis{grid-template-columns:1fr 1fr}.labeee-row{grid-template-columns:1fr}}
 
+
+/* ── MAPOTECA / TERRENO ─────────────────────────── */
+#mapoteca-view{display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%}
+.mapoteca-wrap{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:14px;align-items:start}
+.mapoteca-card,.mapoteca-result{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)}
+.mapoteca-card h2,.mapoteca-result h2{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem}
+.mapoteca-muted{font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem}
+.mapoteca-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.mapoteca-status{font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem}
+.mapoteca-status.ok{color:var(--green)}
+.mapoteca-status.err{color:var(--err)}
+.mapoteca-note{font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem}
+.mapoteca-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:.9rem 0 1rem}
+.mapoteca-kpi{background:var(--surf2);border-radius:8px;padding:.75rem}
+.mapoteca-kpi .k{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.mapoteca-kpi .v{font-size:13px;color:var(--e);font-family:monospace;word-break:break-word}
+.mapoteca-address{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:1rem;border-left:2px solid var(--eb);padding-left:.8rem}
+.mapoteca-block{border:0.5px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;background:var(--surface)}
+.mapoteca-block h3{padding:.75rem .85rem;font-size:12px;color:var(--text);background:var(--surf2);font-weight:500;border-bottom:0.5px solid var(--border)}
+.mapoteca-block .body{padding:.75rem .85rem;font-size:12px;color:var(--muted);line-height:1.65}
+.mapoteca-row{display:grid;grid-template-columns:minmax(130px,210px) 1fr;gap:10px;border-bottom:0.5px solid var(--border);padding:5px 0;font-size:11px}
+.mapoteca-row:last-child{border-bottom:none}
+.mapoteca-row .a{color:var(--faint);word-break:break-word}
+.mapoteca-row .b{color:var(--text);word-break:break-word;font-family:monospace}
+.mapoteca-empty{padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6}
+.mapoteca-file{display:block;border:0.5px solid var(--border);border-radius:8px;padding:.8rem;margin:.6rem 0;background:var(--surf2);text-decoration:none;color:var(--text)}
+.mapoteca-file strong{display:block;font-size:12px;color:var(--e);margin-bottom:3px;word-break:break-word}
+.mapoteca-file span{display:block;font-size:10px;color:var(--faint);word-break:break-all;line-height:1.5}
+.mapoteca-file em{display:block;font-size:10px;color:var(--muted);font-style:normal;margin-top:4px}
+@media(max-width:760px){.mapoteca-wrap{grid-template-columns:1fr}.mapoteca-kpis{grid-template-columns:1fr 1fr}.mapoteca-row{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -385,6 +416,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <button class="tool-btn primary" id="tool-new" onclick="newProposal()">+ Proposta</button>
       <button class="tool-btn" id="tool-carta" onclick="showCarta()">Carta</button>
       <button class="tool-btn labeee-accent" id="tool-labeee" onclick="showLabeee()">☀ LabEEE</button>
+      <button class="tool-btn" id="tool-mapoteca" onclick="showMapoteca()">Mapoteca</button>
       <button class="tool-btn" id="tool-simgeo" onclick="showSimgeo()">Consulta SIMGEO</button>
     </nav>
     <div class="hdr-right">
@@ -448,6 +480,14 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
         </div>
         <span class="hall-go">Analisar desempenho →</span>
       </button>
+      <button class="hall-card" onclick="showMapoteca()">
+        <div>
+          <div class="hall-icon">▣</div>
+          <h2>Mapoteca</h2>
+          <p>Busca o terreno por CEP, tenta identificar bairro/lote/quadra/área e procura a prancha oficial correspondente.</p>
+        </div>
+        <span class="hall-go">Buscar arquivo →</span>
+      </button>
       <button class="hall-card" onclick="showSimgeo()">
         <div>
           <div class="hall-icon">⌖</div>
@@ -456,6 +496,39 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
         </div>
         <span class="hall-go">Consultar dados →</span>
       </button>
+    </div>
+  </div>
+
+
+  <!-- MAPOTECA / TERRENO -->
+  <div id="mapoteca-view" style="display:none">
+    <div class="dash-top">
+      <div class="dash-title">Mapoteca — Busca de terreno</div>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+    </div>
+    <div class="mapoteca-wrap">
+      <section class="mapoteca-card">
+        <h2>Localizar arquivo do terreno</h2>
+        <p class="mapoteca-muted">Informe o CEP do local. O sistema busca o endereço, geocodifica o ponto, tenta coletar bairro/lote/quadra/área no SIMGEO e procura a prancha correspondente na Mapoteca oficial.</p>
+        <div class="g2">
+          <div class="field"><label>CEP do local</label><div class="iw"><input type="text" id="mt-cep" placeholder="Ex: 79034-410" inputmode="numeric" onkeydown="if(event.key==='Enter')buscarMapoteca()"></div></div>
+          <div class="field"><label>Número</label><div class="iw"><input type="text" id="mt-num" placeholder="Ex: 58" onkeydown="if(event.key==='Enter')buscarMapoteca()"></div><span class="hint">Ajuda a posicionar o lote dentro do CEP.</span></div>
+          <div class="field"><label>Complemento / referência</label><div class="iw"><input type="text" id="mt-comp" placeholder="Opcional"></div></div>
+          <div class="field"><label>Bairro/loteamento conhecido</label><div class="iw"><input type="text" id="mt-termo" placeholder="Opcional, ex: Jardim Columbia"></div><span class="hint">Use só se souber; ajuda quando a Mapoteca usa nome antigo.</span></div>
+        </div>
+        <div class="mapoteca-actions">
+          <button class="btn solid" id="mt-buscar" onclick="buscarMapoteca()">Buscar terreno</button>
+          <button class="btn ghost" onclick="fillMapotecaFromSimgeo()">Usar último local do SIMGEO</button>
+          <button class="btn ghost" onclick="abrirMapoteca()">Abrir Mapoteca</button>
+        </div>
+        <div class="mapoteca-status" id="mt-status"></div>
+        <p class="mapoteca-note">Observação: a Mapoteca pode publicar PDFs por bairro, loteamento, setor ou folha. Quando não houver API pública suficiente para confirmar o lote exato, o sistema mostra o arquivo mais provável e alternativas.</p>
+      </section>
+      <section class="mapoteca-result">
+        <h2>Resultado</h2>
+        <p class="mapoteca-muted">A ficha aparece aqui com área identificada, dados do terreno e link do arquivo encontrado.</p>
+        <div id="mt-result"><div class="mapoteca-empty">Nenhuma busca realizada ainda.<br>Digite o CEP e clique em “Buscar terreno”.</div></div>
+      </section>
     </div>
   </div>
 
@@ -923,14 +996,14 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -973,6 +1046,12 @@ function showLabeee(){
   hideViews();
   $('labeee-view').style.display='block';
   setTool('labeee');
+}
+
+function showMapoteca(){
+  hideViews();
+  $('mapoteca-view').style.display='block';
+  setTool('mapoteca');
 }
 
 // ── DASH TABS ─────────────────────────────────────
@@ -2036,6 +2115,329 @@ async function exportSimgeoPDF(){
 }
 
 
+
+// ── MAPOTECA / BUSCA DE TERRENO ───────────────────
+const MAPOTECA_URL='https://www.campogrande.ms.gov.br/semades/mapoteca/';
+const MAPOTECA_ALT_URL='https://www.campogrande.ms.gov.br/semadur/mapoteca/';
+let mapotecaLastResult=null, mapotecaPdfBusy=false;
+
+function mapotecaStatus(msg,type=''){
+  const el=$('mt-status');
+  if(!el) return;
+  el.textContent=msg||'';
+  el.className='mapoteca-status '+(type||'');
+}
+
+function abrirMapoteca(){
+  window.open(MAPOTECA_URL,'_blank','noopener,noreferrer');
+}
+
+function stripHtml(s){
+  const div=document.createElement('div');
+  div.innerHTML=String(s||'');
+  return (div.textContent||div.innerText||'').replace(/\s+/g,' ').trim();
+}
+
+function cleanCep(v){ return String(v||'').replace(/\D/g,''); }
+function normalizeFileTerm(v){ return normTxt(v).replace(/\b(jardim|jd|bairro|conjunto|conj|residencial|res|vila|vl|loteamento|lot|parque|pq|portal|setor|folha|quadra|lote)\b/g,' ').replace(/[^a-z0-9]+/g,' ').trim(); }
+function compactTerm(v){ return normalizeFileTerm(v).replace(/\s+/g,'-'); }
+
+async function geocodeMapotecaCep(){
+  const cep=cleanCep($('mt-cep').value);
+  const numero=String($('mt-num').value||'').trim();
+  const comp=String($('mt-comp').value||'').trim();
+  if(cep.length!==8) throw new Error('Digite um CEP com 8 números.');
+  const viacep=await fetchJson(`https://viacep.com.br/ws/${cep}/json/`,{timeout:10000});
+  if(viacep?.erro) throw new Error('CEP não encontrado no ViaCEP.');
+  const line=[viacep.logradouro,numero,viacep.bairro,viacep.localidade||'Campo Grande',viacep.uf||'MS','Brasil'].filter(Boolean).join(', ');
+  const geo=await fetchJson(paramsUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates',{
+    f:'json',SingleLine:line,outFields:'Match_addr,Addr_type,Score',maxLocations:1,countryCode:'BRA',searchExtent:'-54.90,-20.75,-54.25,-20.20'
+  }),{timeout:15000});
+  const c=geo?.candidates?.[0];
+  if(!c?.location) throw new Error('Encontrei o CEP, mas não consegui localizar o ponto. Tente informar o número ou usar o SIMGEO.');
+  return {lat:Number(c.location.y),lng:Number(c.location.x),address:{...viacep,numero,complementoConsulta:comp,geocodificado:c.address||line,score:c.score}};
+}
+
+async function querySimgeoForMapoteca(point){
+  const m=await getArcgisModules();
+  const discovered=await discoverSimgeoLayers();
+  const results=[]; const errors=[];
+  const keyrx=/(lote|quadra|im[oó]vel|inscri|cadastro|bairro|loteamento|parcelamento|setor|folha|logradouro|face|area|área|testada|mapoteca|planta)/i;
+  mapotecaStatus('Consultando dados públicos do SIMGEO para identificar o terreno...');
+  await runLimited(discovered.mapServices.slice(0,20),3,async(service)=>{
+    try{ results.push(...await identifyArcMapService(service,point,m)); }
+    catch(e){ errors.push({title:service.title,error:e.message}); }
+  });
+  const prioritized=discovered.layers.filter(l=>keyrx.test(l.title)).slice(0,160);
+  await runLimited(prioritized,6,async(layer)=>{
+    try{ results.push(await queryArcLayer(layer,point,m)); }
+    catch(e){ errors.push({title:layer.title,error:e.message}); }
+  });
+  return {results:dedupeSimgeoResults(results),errors,discovered};
+}
+
+function scoreAttrKey(k){
+  const t=normTxt(k);
+  if(/area|área|m2|m²|metr/.test(t)) return 1;
+  if(/loteamento|parcelamento|empreendimento|condominio|condom/.test(t)) return 2;
+  if(/bairro/.test(t)) return 3;
+  if(/quadra|qd\b/.test(t)) return 4;
+  if(/lote\b|lt\b/.test(t)) return 5;
+  if(/inscri|cadastro|imovel|imob/.test(t)) return 6;
+  if(/setor|folha|planta|mapoteca/.test(t)) return 7;
+  if(/logradouro|endereco|rua|avenida/.test(t)) return 8;
+  return 99;
+}
+
+function getFirstAttrMatch(results,patterns){
+  const candidates=[];
+  for(const r of results||[]){
+    for(const f of r.features||[]){
+      for(const [k,v] of Object.entries(f.attributes||{})){
+        if(v===null || v===undefined || v==='') continue;
+        const kk=normTxt(k);
+        if(patterns.some(p=>p.test(kk))) candidates.push({k,v,layer:r.layer?.title||'',score:scoreAttrKey(k)});
+      }
+    }
+  }
+  candidates.sort((a,b)=>a.score-b.score || String(a.v).length-String(b.v).length);
+  return candidates[0]||null;
+}
+
+function fmtAreaValue(v){
+  if(v===null || v===undefined || v==='') return '';
+  let n=Number(String(v).replace(/\./g,'').replace(',','.').replace(/[^0-9.\-]/g,''));
+  if(Number.isFinite(n) && n>0){
+    if(n>1000000 && String(v).length>9) n=n/100; // proteção para campos em centésimos, quando ocorrer
+    return n.toLocaleString('pt-BR',{maximumFractionDigits:2})+' m²';
+  }
+  return String(v);
+}
+
+function extractTerrenoInfo(sim){
+  const results=sim?.results||[];
+  const area=getFirstAttrMatch(results,[/area.*(lote|terreno|imovel|m2|m²|total)?/,/metr.*quad/,/^area$/]);
+  const bairro=getFirstAttrMatch(results,[/bairro/,/nome.*bairro/]);
+  const loteamento=getFirstAttrMatch(results,[/loteamento/,/parcelamento/,/empreendimento/,/condominio/,/conjunto/]);
+  const quadra=getFirstAttrMatch(results,[/quadra/,/^qd$/,/(^|\s)qd/]);
+  const lote=getFirstAttrMatch(results,[/^lote$/,/(^|\s)lt/,/lote\b/]);
+  const cadastro=getFirstAttrMatch(results,[/inscri/,/cadastro/,/imovel/,/imobili/]);
+  const setor=getFirstAttrMatch(results,[/setor/,/folha/,/planta/,/mapoteca/]);
+  const logradouro=getFirstAttrMatch(results,[/logradouro/,/endereco/,/rua/,/avenida/]);
+  return {
+    area: area?fmtAreaValue(area.v):'', areaFonte:area?.layer||'',
+    bairro: bairro?String(bairro.v):'', loteamento:loteamento?String(loteamento.v):'', quadra:quadra?String(quadra.v):'', lote:lote?String(lote.v):'', cadastro:cadastro?String(cadastro.v):'', setor:setor?String(setor.v):'', logradouro:logradouro?String(logradouro.v):''
+  };
+}
+
+async function fetchTextDirect(url){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),12000);
+  try{
+    const res=await fetch(url,{signal:controller.signal,mode:'cors',cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.text();
+  }finally{ clearTimeout(timer); }
+}
+
+async function fetchTextAny(url){
+  try{ return await fetchTextDirect(url); }
+  catch(e){
+    const proxy='https://api.allorigins.win/raw?url='+encodeURIComponent(url);
+    return await fetchTextDirect(proxy);
+  }
+}
+
+function extractLinksFromHtml(html,sourceLabel){
+  const links=[];
+  const rx=/<a\s+[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m;
+  while((m=rx.exec(html))){
+    let href=m[1];
+    if(!href || href.startsWith('#') || href.startsWith('mailto:')) continue;
+    try{ href=new URL(href,MAPOTECA_URL).toString(); }catch(e){}
+    const label=stripHtml(m[2]) || decodeURIComponent((href.split('/').pop()||'arquivo').replace(/[-_]+/g,' '));
+    if(/\.(pdf|dwg|dxf|zip|rar|jpg|jpeg|png)(\?|#|$)/i.test(href) || /uploads\/sites\/24|mapoteca/i.test(href+label)){
+      links.push({title:label,url:href,source:sourceLabel,type:(href.match(/\.([a-z0-9]+)(?:\?|#|$)/i)||[])[1]?.toUpperCase()||'LINK'});
+    }
+  }
+  return links;
+}
+
+function mediaToCandidate(item,source){
+  const url=item.source_url || item.link || item.guid?.rendered || '';
+  const title=stripHtml(item.title?.rendered || item.slug || (url.split('/').pop()||'Arquivo'));
+  return {title,url,source,type:(item.mime_type||url.split('.').pop()||'arquivo').replace('application/','').toUpperCase(),excerpt:stripHtml(item.caption?.rendered||item.description?.rendered||'')};
+}
+
+async function searchWpMedia(term){
+  const clean=normalizeFileTerm(term);
+  if(!clean || clean.length<3) return [];
+  const endpoints=[
+    `https://www.campogrande.ms.gov.br/semades/wp-json/wp/v2/media?search=${encodeURIComponent(clean)}&per_page=30`,
+    `https://www.campogrande.ms.gov.br/semadur/wp-json/wp/v2/media?search=${encodeURIComponent(clean)}&per_page=30`
+  ];
+  const out=[];
+  for(const url of endpoints){
+    try{
+      const data=await fetchJson(url,{timeout:12000});
+      if(Array.isArray(data)) data.forEach(item=>out.push(mediaToCandidate(item,url.includes('/semadur/')?'SEMADUR media':'SEMADES media')));
+    }catch(e){}
+  }
+  return out;
+}
+
+function rankMapotecaCandidate(c,terms,info){
+  const text=normTxt([c.title,c.url,c.excerpt,c.source].join(' '));
+  let score=0;
+  terms.forEach(t=>{
+    const nt=normalizeFileTerm(t);
+    if(!nt || nt.length<3) return;
+    const words=nt.split(/\s+/).filter(w=>w.length>2);
+    if(text.includes(nt)) score+=60;
+    if(text.includes(nt.replace(/\s+/g,'-'))) score+=60;
+    if(text.includes(nt.replace(/\s+/g,''))) score+=40;
+    words.forEach(w=>{ if(text.includes(w)) score+=12; });
+  });
+  if(info?.quadra && text.includes(normTxt(info.quadra))) score+=12;
+  if(info?.lote && text.includes(normTxt(info.lote))) score+=10;
+  if(/\.pdf(\?|#|$)/i.test(c.url)) score+=10;
+  if(/uploads\/sites\/24/i.test(c.url)) score+=8;
+  if(/mapoteca|folha|setor|bairro|lote/i.test(c.title+c.url)) score+=6;
+  return score;
+}
+
+async function searchMapotecaFiles(info,point){
+  const manual=String($('mt-termo')?.value||'').trim();
+  const terms=[manual,info.loteamento,info.bairro,info.setor,info.logradouro,point.address?.bairro,point.address?.logradouro].filter(Boolean);
+  const uniqueTerms=[...new Set(terms.map(t=>String(t).trim()).filter(t=>t.length>2))];
+  const candidates=[];
+  const notes=[];
+  mapotecaStatus('Procurando arquivos na Mapoteca e mídias do portal...');
+  for(const t of uniqueTerms.slice(0,6)){
+    try{ candidates.push(...await searchWpMedia(t)); }
+    catch(e){ notes.push(`Mídias WordPress (${t}): ${e.message}`); }
+  }
+  for(const page of [MAPOTECA_URL,MAPOTECA_ALT_URL]){
+    try{
+      const html=await fetchTextAny(page);
+      candidates.push(...extractLinksFromHtml(html,page.includes('/semadur/')?'Página Mapoteca SEMADUR':'Página Mapoteca SEMADES'));
+    }catch(e){ notes.push(`Página ${page}: ${e.message}`); }
+  }
+  const dedup=[...new Map(candidates.filter(c=>c.url).map(c=>[c.url,c])).values()];
+  const ranked=dedup.map(c=>({...c,score:rankMapotecaCandidate(c,uniqueTerms,info)})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score).slice(0,12);
+  return {candidates:ranked,terms:uniqueTerms,notes};
+}
+
+function mapotecaAddressText(address){
+  if(!address) return '—';
+  const via=[address.logradouro,address.numero,address.bairro,address.localidade,address.uf].filter(Boolean).join(', ');
+  const geo=address.geocodificado?`Ponto geocodificado: ${address.geocodificado}${address.score?` (score ${Math.round(address.score)})`:''}.`:'';
+  return [via,geo].filter(Boolean).join(' · ');
+}
+
+async function buscarMapoteca(){
+  const btn=$('mt-buscar');
+  if(btn.disabled) return;
+  btn.disabled=true; btn.textContent='Buscando...';
+  $('mt-result').innerHTML='<div class="mapoteca-empty">Buscando endereço, terreno e arquivos da Mapoteca...</div>';
+  try{
+    mapotecaStatus('Consultando CEP...');
+    const point=await geocodeMapotecaCep();
+    mapotecaStatus('Identificando terreno no SIMGEO...');
+    const sim=await querySimgeoForMapoteca(point);
+    const info=extractTerrenoInfo(sim);
+    mapotecaStatus('Procurando arquivo correspondente na Mapoteca...');
+    const search=await searchMapotecaFiles(info,point);
+    mapotecaLastResult={point,sim,info,search,when:new Date()};
+    renderMapotecaResult(mapotecaLastResult);
+    mapotecaStatus(search.candidates.length?'Busca concluída. Confira o arquivo mais provável.':'Busca concluída, mas nenhum arquivo direto foi confirmado. Use os links de busca manual.','ok');
+  }catch(e){
+    console.error('Erro Mapoteca:',e);
+    $('mt-result').innerHTML=`<div class="mapoteca-empty">Não consegui concluir a busca.<br><br><span style="color:var(--err)">${esc(e.message)}</span><br><br>Você ainda pode abrir a Mapoteca oficial e pesquisar manualmente.</div>`;
+    mapotecaStatus(e.message,'err');
+  }finally{
+    btn.disabled=false; btn.textContent='Buscar terreno';
+  }
+}
+
+function renderMapotecaResult(d){
+  const info=d.info||{};
+  const best=d.search.candidates[0];
+  const googleQ=['site:cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01',info.loteamento||info.bairro||d.point.address?.bairro,info.quadra?`quadra ${info.quadra}`:'',info.lote?`lote ${info.lote}`:''].filter(Boolean).join(' ');
+  const googleUrl='https://www.google.com/search?q='+encodeURIComponent(googleQ);
+  const kpis=`<div class="mapoteca-kpis">
+    <div class="mapoteca-kpi"><div class="k">Bairro</div><div class="v">${esc(info.bairro||d.point.address?.bairro||'—')}</div></div>
+    <div class="mapoteca-kpi"><div class="k">Quadra</div><div class="v">${esc(info.quadra||'—')}</div></div>
+    <div class="mapoteca-kpi"><div class="k">Lote</div><div class="v">${esc(info.lote||'—')}</div></div>
+    <div class="mapoteca-kpi"><div class="k">Área</div><div class="v">${esc(info.area||'—')}</div></div>
+  </div>`;
+  const dadosRows=[
+    ['Endereço',mapotecaAddressText(d.point.address)],
+    ['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],
+    ['Loteamento / parcelamento',info.loteamento||'—'],
+    ['Bairro',info.bairro||d.point.address?.bairro||'—'],
+    ['Quadra',info.quadra||'—'],
+    ['Lote',info.lote||'—'],
+    ['Área identificada',info.area||'Não retornada nas camadas públicas consultadas'],
+    ['Fonte da área',info.areaFonte||'—'],
+    ['Cadastro / inscrição',info.cadastro||'—'],
+    ['Setor / folha',info.setor||'—']
+  ].map(([a,b])=>`<div class="mapoteca-row"><div class="a">${esc(a)}</div><div class="b">${esc(b)}</div></div>`).join('');
+  const bestBlock=best?`<div class="mapoteca-block"><h3>Arquivo mais provável</h3><div class="body"><a class="mapoteca-file" href="${esc(best.url)}" target="_blank" rel="noopener noreferrer"><strong>${esc(best.title||'Abrir arquivo')}</strong><span>${esc(best.url)}</span><em>Fonte: ${esc(best.source)} · pontuação: ${best.score}</em></a><div class="mapoteca-actions"><button class="btn solid" onclick="window.open('${esc(best.url)}','_blank','noopener,noreferrer')">Abrir arquivo</button><button class="btn ghost" onclick="copyMapotecaResult()">Copiar resumo</button><button class="btn ghost" onclick="exportMapotecaPDF()">⬇ Baixar ficha PDF</button></div></div></div>`:
+  `<div class="mapoteca-block"><h3>Arquivo da Mapoteca</h3><div class="body">Não consegui confirmar um arquivo direto com os dados públicos disponíveis. Abra a Mapoteca oficial ou a busca pronta abaixo para conferir manualmente.<div class="mapoteca-actions"><button class="btn solid" onclick="abrirMapoteca()">Abrir Mapoteca</button><button class="btn ghost" onclick="window.open('${esc(googleUrl)}','_blank','noopener,noreferrer')">Buscar no Google</button><button class="btn ghost" onclick="copyMapotecaResult()">Copiar resumo</button></div></div></div>`;
+  const alternatives=d.search.candidates.slice(1,8).map(c=>`<a class="mapoteca-file" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer"><strong>${esc(c.title||'Arquivo')}</strong><span>${esc(c.url)}</span><em>${esc(c.source)} · pontuação: ${c.score}</em></a>`).join('');
+  const altBlock=alternatives?`<div class="mapoteca-block"><h3>Outras opções próximas</h3><div class="body">${alternatives}</div></div>`:'';
+  const diag=`<details class="mapoteca-block"><summary style="cursor:pointer;padding:.75rem .85rem;font-size:12px;color:var(--text)">Diagnóstico da busca</summary><div class="body"><div class="mapoteca-row"><div class="a">Termos usados</div><div class="b">${esc(d.search.terms.join(' · ')||'—')}</div></div><div class="mapoteca-row"><div class="a">Camadas SIMGEO com dados</div><div class="b">${esc((d.sim.results||[]).filter(r=>r.features?.length).length)}</div></div><div class="mapoteca-row"><div class="a">Avisos</div><div class="b">${esc((d.search.notes||[]).slice(0,6).join(' | ')||'Sem avisos principais')}</div></div><div class="mapoteca-row"><div class="a">Busca manual</div><div class="b"><a class="simgeo-small-link" href="${esc(googleUrl)}" target="_blank" rel="noopener noreferrer">Abrir busca por arquivos do bairro/loteamento</a></div></div></div></details>`;
+  $('mt-result').innerHTML=kpis+`<div class="mapoteca-address">${esc(mapotecaAddressText(d.point.address))}</div>`+`<div class="mapoteca-block"><h3>Dados identificados</h3><div class="body">${dadosRows}</div></div>`+bestBlock+altBlock+diag;
+}
+
+function mapotecaPlainText(){
+  const d=mapotecaLastResult;
+  if(!d) return '';
+  const info=d.info||{}; const best=d.search.candidates[0];
+  return ['Mapoteca — Chaos',`Data: ${d.when.toLocaleString('pt-BR')}`,`Endereço: ${mapotecaAddressText(d.point.address)}`,`Coordenadas: ${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`,`Bairro: ${info.bairro||d.point.address?.bairro||'—'}`,`Loteamento: ${info.loteamento||'—'}`,`Quadra: ${info.quadra||'—'}`,`Lote: ${info.lote||'—'}`,`Área: ${info.area||'—'}`,`Cadastro/inscrição: ${info.cadastro||'—'}`,`Arquivo mais provável: ${best?best.title:'não confirmado'}`,`Link: ${best?best.url:MAPOTECA_URL}`].join('\n');
+}
+
+async function copyMapotecaResult(){
+  const txt=mapotecaPlainText();
+  if(!txt){ mapotecaStatus('Faça uma busca antes de copiar.','err'); return; }
+  try{ await navigator.clipboard.writeText(txt); mapotecaStatus('Resumo copiado para a área de transferência.','ok'); }
+  catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); mapotecaStatus('Resumo copiado.','ok'); }
+}
+
+async function exportMapotecaPDF(){
+  if(mapotecaPdfBusy) return;
+  if(!mapotecaLastResult){ mapotecaStatus('Faça uma busca antes de gerar o PDF.','err'); return; }
+  let el=null; mapotecaPdfBusy=true;
+  try{
+    const d=mapotecaLastResult; const info=d.info||{}; const best=d.search.candidates[0];
+    const rows=[['Endereço',mapotecaAddressText(d.point.address)],['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],['Bairro',info.bairro||d.point.address?.bairro||'—'],['Loteamento',info.loteamento||'—'],['Quadra',info.quadra||'—'],['Lote',info.lote||'—'],['Área',info.area||'—'],['Cadastro/inscrição',info.cadastro||'—'],['Arquivo',best?best.title:'Não confirmado'],['Link',best?best.url:MAPOTECA_URL]].map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:34%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px;word-break:break-word">${esc(b)}</td></tr>`).join('');
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha Mapoteca</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
+    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
+    const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
+    mapotecaStatus('Ficha PDF gerada.','ok');
+  }catch(e){ console.error('Erro PDF Mapoteca:',e); mapotecaStatus('Não consegui gerar o PDF da Mapoteca.','err'); }
+  finally{ if(el?.parentNode) el.parentNode.removeChild(el); mapotecaPdfBusy=false; }
+}
+
+function fillMapotecaFromSimgeo(){
+  if(!simgeoLastResult?.point){ mapotecaStatus('Faça uma consulta SIMGEO por CEP primeiro, ou digite o CEP aqui.','err'); return; }
+  const a=simgeoLastResult.point.address;
+  if(a){
+    if(a.cep) $('mt-cep').value=a.cep;
+    if(a.numero) $('mt-num').value=a.numero;
+    if(a.complementoConsulta) $('mt-comp').value=a.complementoConsulta;
+    if(a.bairro && !$('mt-termo').value) $('mt-termo').value=a.bairro;
+    mapotecaStatus('Dados do último local do SIMGEO preenchidos.','ok');
+  }else{
+    $('mt-termo').value='';
+    mapotecaStatus('O último SIMGEO foi por coordenadas e não tem CEP. Digite o CEP para buscar na Mapoteca.','err');
+  }
+}
+
 // ── LABEEE / ANÁLISE AMBIENTAL ───────────────────
 let labeeeLastResult=null, labeeePdfBusy=false, labeeeLastGeoKey='';
 const LABEEE_LINKS={
@@ -2180,8 +2582,7 @@ function labeeePlainText(){
   const d=labeeeLastResult;
   if(!d) return '';
   const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
-  return [`Ficha LabEEE — Chaos`, `Data: ${d.when.toLocaleString('pt-BR')}`, `Local: ${loc}`, `CEP: ${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`, `Endereço aproximado: ${d.endereco?.geocodificado||'localizado pelo CEP'}`, `Ponto calculado: ${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`, `Zona bioclimática 2005: ${d.zb?`ZB ${d.zb}`:'confirmar no ZBBR'}`, `Zona LabEEE 2024: ${d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'não informada'}`, `Fachada: ${d.fachadaNome} (${d.fachada}°)`, `Altitude solar meio-dia: verão ${d.alt.verao==null?'—':fmt(d.alt.verao)+'°'} · equinócio ${d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'} · inverno ${d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'}`, `Estratégia fachada: ${d.estr.tipo} — ${d.estr.texto}`, `Brise horizontal: ${d.pH>0?fmt(d.pH)+' m':'não calculado'}`, `Brise vertical: ${d.pV>0?fmt(d.pV)+' m':'não calculado'}`, `Ventilação mínima: ${d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'confirmar ZB'}`, `Obstrução: ${d.alpha>0?fmt(d.alpha)+'°':'não calculada'}`, '', 'Ferramentas: ZBBR, Analysis SOL-AR, Analysis BIO, Arquivos Climáticos e Netuno — LabEEE/UFSC.'].join('
-');
+  return [`Ficha LabEEE — Chaos`, `Data: ${d.when.toLocaleString('pt-BR')}`, `Local: ${loc}`, `CEP: ${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`, `Endereço aproximado: ${d.endereco?.geocodificado||'localizado pelo CEP'}`, `Ponto calculado: ${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`, `Zona bioclimática 2005: ${d.zb?`ZB ${d.zb}`:'confirmar no ZBBR'}`, `Zona LabEEE 2024: ${d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'não informada'}`, `Fachada: ${d.fachadaNome} (${d.fachada}°)`, `Altitude solar meio-dia: verão ${d.alt.verao==null?'—':fmt(d.alt.verao)+'°'} · equinócio ${d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'} · inverno ${d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'}`, `Estratégia fachada: ${d.estr.tipo} — ${d.estr.texto}`, `Brise horizontal: ${d.pH>0?fmt(d.pH)+' m':'não calculado'}`, `Brise vertical: ${d.pV>0?fmt(d.pV)+' m':'não calculado'}`, `Ventilação mínima: ${d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'confirmar ZB'}`, `Obstrução: ${d.alpha>0?fmt(d.alpha)+'°':'não calculada'}`, '', 'Ferramentas: ZBBR, Analysis SOL-AR, Analysis BIO, Arquivos Climáticos e Netuno — LabEEE/UFSC.'].join('\n');
 }
 async function copyLabeeeResult(){
   const txt=labeeePlainText();
