@@ -1470,7 +1470,7 @@ function closeCopyModal(){ $('copy-modal').style.display='none'; }
 const SIMGEO_PORTAL = 'https://simgeoctm.campogrande.ms.gov.br/portal';
 const SIMGEO_APP_ID = 'cc13c124c8414dc7b61d016be3629366';
 const SIMGEO_APP_URL = 'https://simgeoctm.campogrande.ms.gov.br/portal/apps/webappviewer/index.html?id=cc13c124c8414dc7b61d016be3629366';
-const SIMGEO_LAYER_LIMIT = 32;
+const SIMGEO_LAYER_LIMIT = 120;
 let simgeoMode='coords', simgeoLayersCache=null, simgeoLastResult=null, simgeoPdfBusy=false;
 
 function setSimgeoMode(mode){
@@ -1548,20 +1548,41 @@ function normalizeLayerUrl(url){
   return String(url).replace(/\/+$/,'');
 }
 
+function parseArcgisLayerUrl(url){
+  const clean=normalizeLayerUrl(url);
+  const m=clean.match(/^(.*\/(FeatureServer|MapServer))(?:\/(\d+))?$/i);
+  if(!m) return null;
+  return {serviceUrl:m[1],serviceType:m[2],layerId:m[3]!==undefined?String(m[3]):'',url:clean};
+}
+
 function isLayerUrl(url){
   return /\/(FeatureServer|MapServer)\/\d+$/i.test(normalizeLayerUrl(url));
 }
 
 function looksUsefulLayer(title){
   const t=String(title||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-  return ['zone','uso','ocupacao','bairro','regiao','urbana','macro','lote','quadra','imovel','inscricao','logradouro','via','eixo','ambient','app','risco','corredor','perimetro','setor','fiscal','ctm','cadastro'].some(k=>t.includes(k));
+  return [
+    'zone','zona','zon','zoneamento','macrozoneamento','pddua','uso','ocupacao','coeficiente','indice',
+    'bairro','regiao','urbana','macro','lote','quadra','imovel','inscricao','matricula','logradouro','via','eixo',
+    'ambient','ambiental','zpa','apa','app','preservacao','prote','risco','inundacao','drenagem','corrego','nascente',
+    'corredor','perimetro','setor','fiscal','ctm','cadastro','patrimonio','cultural','aeroporto','restricao'
+  ].some(k=>t.includes(k));
 }
 
-function addLayerCandidate(list,title,url){
+function layerScore(layer){
+  const t=String(layer.title||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  let score=0;
+  ['zoneamento','zona','zon','ambiental','zpa','apa','app','preservacao','risco','uso','ocupacao','lote','quadra','imovel','bairro','regiao','ctm','cadastro'].forEach((k,i)=>{ if(t.includes(k)) score+=50-i; });
+  if(layer.serviceType==='MapServer') score+=5;
+  return score;
+}
+
+function addLayerCandidate(list,title,url,extra={}){
   url=normalizeLayerUrl(url);
-  if(!url || !isLayerUrl(url)) return;
-  if(list.some(l=>l.url===url)) return;
-  list.push({title:title||url.split('/').slice(-3).join('/'),url});
+  const parsed=parseArcgisLayerUrl(url);
+  if(!parsed || !parsed.layerId) return;
+  if(list.some(l=>l.url===parsed.url)) return;
+  list.push({title:title||parsed.url.split('/').slice(-3).join('/'),url:parsed.url,...parsed,...extra});
 }
 
 function collectLayerCandidates(nodes,list=[]){
@@ -1569,11 +1590,11 @@ function collectLayerCandidates(nodes,list=[]){
     const title=layer.title||layer.name||layer.id||'Camada SIMGEO';
     const url=normalizeLayerUrl(layer.url);
     if(url){
-      if(isLayerUrl(url)) addLayerCandidate(list,title,url);
-      else if(/\/(FeatureServer|MapServer)$/i.test(url) && Array.isArray(layer.layers)){
-        layer.layers.forEach(sl=>{
-          const visible = sl.visibility !== false && sl.visible !== false;
-          if(visible && sl.id!==undefined) addLayerCandidate(list,`${title} — ${sl.name||sl.title||sl.id}`,`${url}/${sl.id}`);
+      if(isLayerUrl(url)) addLayerCandidate(list,title,url,{visible:layer.visibility!==false && layer.visible!==false});
+      else if(/\/(FeatureServer|MapServer)$/i.test(url)){
+        // No SIMGEO algumas camadas importantes ficam desligadas por padrão. Ainda assim, elas podem ser consultáveis.
+        (layer.layers||layer.layerInfos||[]).forEach(sl=>{
+          if(sl?.id!==undefined) addLayerCandidate(list,`${title} — ${sl.name||sl.title||sl.id}`,`${url}/${sl.id}`,{visible:sl.visibility!==false && sl.visible!==false});
         });
       }
     }
@@ -1591,15 +1612,15 @@ async function expandServiceLayers(layers){
   const out=[...layers];
   const bases=new Map();
   layers.forEach(l=>{
-    const m=normalizeLayerUrl(l.url).match(/^(.*\/(?:FeatureServer|MapServer))(?:\/\d+)?$/i);
-    if(m) bases.set(m[1],l.title);
+    const parsed=parseArcgisLayerUrl(l.url);
+    if(parsed) bases.set(parsed.serviceUrl,l.title);
   });
-  const directBases=[...bases.keys()].filter(b=>!out.some(l=>normalizeLayerUrl(l.url)===b));
-  for(const base of directBases.slice(0,6)){
+  const directBases=[...bases.keys()];
+  for(const base of directBases.slice(0,20)){
     try{
-      const meta=await fetchJson(paramsUrl(base,{f:'json'}),{timeout:8000});
+      const meta=await fetchJson(paramsUrl(base,{f:'json'}),{timeout:10000});
       (meta.layers||[]).forEach(sl=>{
-        if(sl?.id!==undefined) addLayerCandidate(out,sl.name||sl.title||`${bases.get(base)} — ${sl.id}`,`${base}/${sl.id}`);
+        if(sl?.id!==undefined) addLayerCandidate(out,sl.name||sl.title||`${bases.get(base)} — ${sl.id}`,`${base}/${sl.id}`,{visible:sl.defaultVisibility!==false});
       });
     }catch(e){ console.warn('Não foi possível expandir serviço SIMGEO:',base,e); }
   }
@@ -1632,8 +1653,9 @@ async function discoverSimgeoLayers(){
   const webMap=await fetchJson(paramsUrl(`${SIMGEO_PORTAL}/sharing/rest/content/items/${webMapId}/data`,{f:'json'}));
   let layers=collectLayerCandidates(webMap.operationalLayers||[]);
   layers=await expandServiceLayers(layers);
+  layers=[...new Map(layers.map(l=>[l.url,l])).values()];
   const useful=layers.filter(l=>looksUsefulLayer(l.title));
-  const chosen=(useful.length?useful:layers).slice(0,SIMGEO_LAYER_LIMIT);
+  const chosen=(useful.length?useful:layers).sort((a,b)=>layerScore(b)-layerScore(a)).slice(0,SIMGEO_LAYER_LIMIT);
   if(!chosen.length) throw new Error('Não encontrei camadas FeatureServer/MapServer consultáveis no mapa.');
   simgeoLayersCache={webMapId,layers:chosen,totalDiscovered:layers.length};
   return simgeoLayersCache;
@@ -1666,13 +1688,20 @@ async function geocodeCep(){
 }
 
 function getSimgeoPoint(){
-  const lat=parseFloat($('sg-lat').value), lng=parseFloat($('sg-lng').value);
+  let lat=parseFloat($('sg-lat').value), lng=parseFloat($('sg-lng').value);
   if(!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error('Digite latitude e longitude válidas.');
+  // Ajuda quando a pessoa cola longitude/latitude invertido. Campo Grande fica perto de lat -20 e lng -54.
+  if(lat<-52 && lat>-56 && lng<-18 && lng>-22){
+    const oldLat=lat; lat=lng; lng=oldLat;
+    $('sg-lat').value=lat.toFixed(7);
+    $('sg-lng').value=lng.toFixed(7);
+    simgeoStatus('Inverti automaticamente longitude/latitude para o padrão latitude/longitude.');
+  }
   if(lat<-90 || lat>90 || lng<-180 || lng>180) throw new Error('As coordenadas parecem fora do padrão latitude/longitude.');
   return {lat,lng,address:null};
 }
 
-async function querySimgeoLayer(layer,point){
+async function queryFeatureOrMapLayer(layer,point){
   const geometry=JSON.stringify({x:point.lng,y:point.lat,spatialReference:{wkid:4326}});
   const url=paramsUrl(`${layer.url}/query`,{
     f:'json',
@@ -1684,10 +1713,67 @@ async function querySimgeoLayer(layer,point){
     inSR:4326,
     spatialRel:'esriSpatialRelIntersects',
     outSR:4326,
-    resultRecordCount:3
+    resultRecordCount:5
   });
   const json=await fetchJson(url,{timeout:12000});
-  return {layer,features:json.features||[],fields:json.fields||[]};
+  return {layer,features:json.features||[],fields:json.fields||[],method:'query'};
+}
+
+async function identifyMapServerLayer(layer,point){
+  if(!layer.serviceUrl || layer.serviceType!=='MapServer' || !layer.layerId) return {layer,features:[],fields:[],method:'identify'};
+  const delta=0.01;
+  const geometry=JSON.stringify({x:point.lng,y:point.lat,spatialReference:{wkid:4326}});
+  const url=paramsUrl(`${layer.serviceUrl}/identify`,{
+    f:'json',
+    tolerance:5,
+    returnGeometry:'false',
+    imageDisplay:'1200,1200,96',
+    mapExtent:`${point.lng-delta},${point.lat-delta},${point.lng+delta},${point.lat+delta}`,
+    geometry,
+    geometryType:'esriGeometryPoint',
+    sr:4326,
+    layers:`all:${layer.layerId}`
+  });
+  const json=await fetchJson(url,{timeout:12000});
+  const features=(json.results||[]).map(r=>({
+    attributes:r.attributes || r.feature?.attributes || {},
+    layerName:r.layerName,
+    layerId:r.layerId
+  }));
+  return {layer,features,fields:[],method:'identify'};
+}
+
+async function querySimgeoLayer(layer,point){
+  let queryErr=null;
+  try{
+    const q=await queryFeatureOrMapLayer(layer,point);
+    if(q.features?.length || layer.serviceType!=='MapServer') return q;
+  }catch(e){ queryErr=e; }
+  if(layer.serviceType==='MapServer'){
+    try{
+      const id=await identifyMapServerLayer(layer,point);
+      if(id.features?.length) return id;
+      if(!queryErr) return id;
+    }catch(e){
+      if(queryErr) throw new Error(`query: ${queryErr.message}; identify: ${e.message}`);
+      throw e;
+    }
+  }
+  if(queryErr) throw queryErr;
+  return {layer,features:[],fields:[],method:'query'};
+}
+
+async function runLimited(items,limit,worker){
+  const results=[];
+  let index=0;
+  async function runner(){
+    while(index<items.length){
+      const current=index++;
+      results[current]=await worker(items[current],current);
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(limit,items.length)},runner));
+  return results;
 }
 
 async function consultarSimgeo(){
@@ -1704,14 +1790,15 @@ async function consultarSimgeo(){
     simgeoStatus(`Consultando ${discovered.layers.length} camada(s) públicas. Isso pode levar alguns segundos...`);
     const results=[];
     const errors=[];
-    for(const layer of discovered.layers){
+    await runLimited(discovered.layers,6,async(layer,i)=>{
       try{
         const r=await querySimgeoLayer(layer,point);
         results.push(r);
       }catch(e){
         errors.push({layer,error:e.message});
       }
-    }
+      if((i+1)%12===0) simgeoStatus(`Consultando camadas públicas do SIMGEO... ${i+1}/${discovered.layers.length}`);
+    });
     simgeoLastResult={point,layers:discovered.layers,results,errors,when:new Date(),webMapId:discovered.webMapId,totalDiscovered:discovered.totalDiscovered};
     renderSimgeoResult(simgeoLastResult);
     const found=results.reduce((n,r)=>n+(r.features?.length?1:0),0);
@@ -1782,9 +1869,9 @@ function renderSimgeoResult(data){
     const feature=r.features[0]||{};
     const attrs=usefulAttrs(feature.attributes);
     const rows=attrs.length?attrs.map(([k,v])=>`<div class="simgeo-attr"><div class="a">${esc(cleanAttrKey(k))}</div><div class="b">${esc(formatAttrValue(v))}</div></div>`).join(''):'<div class="simgeo-muted">A camada retornou feição, mas sem atributos públicos úteis.</div>';
-    return `<details class="simgeo-layer" ${idx<6?'open':''}><summary>${esc(r.layer.title)} <span>${r.features.length} registro(s)</span></summary><div class="simgeo-attrs">${rows}</div></details>`;
-  }).join('') : '<div class="simgeo-empty">A consulta rodou, mas nenhuma das camadas públicas selecionadas retornou atributos para este ponto.</div>';
-  const err=data.errors.length?`<p class="simgeo-muted" style="margin-top:1rem">Observação: ${data.errors.length} camada(s) não responderam, geralmente por permissão, CORS ou indisponibilidade temporária.</p>`:'';
+    return `<details class="simgeo-layer" ${idx<8?'open':''}><summary>${esc(r.layer.title)} <span>${r.features.length} registro(s) · ${esc(r.method||'consulta')}</span></summary><div class="simgeo-attrs">${rows}</div></details>`;
+  }).join('') : `<div class="simgeo-empty">A consulta rodou, mas nenhuma das camadas públicas selecionadas retornou atributos para este ponto.<br><br>Confira se a coordenada está dentro de Campo Grande e se foi informada como latitude/longitude decimal, por exemplo: -20.46, -54.61.</div>`;
+  const err=data.errors.length?`<details class="simgeo-layer" style="margin-top:1rem"><summary>Diagnóstico técnico <span>${data.errors.length} erro(s)</span></summary><div class="simgeo-attrs"><div class="simgeo-muted">Algumas camadas podem bloquear consulta pública, CORS ou atributos.</div>${data.errors.slice(0,18).map(e=>`<div class="simgeo-attr"><div class="a">${esc(e.layer?.title||'Camada')}</div><div class="b">${esc(e.error)}</div></div>`).join('')}</div></details>`:'';
   $('sg-result').innerHTML=cards+actions+body+err;
 }
 
