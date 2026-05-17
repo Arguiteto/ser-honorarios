@@ -4,10 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Chaos Arquitetura e Urbanismo</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+  // Carrega Supabase com fallback CDN
+  (function(){
+    function tryLoad(urls, idx){
+      if(idx >= urls.length) return;
+      var s = document.createElement('script');
+      s.src = urls[idx];
+      s.onerror = function(){ tryLoad(urls, idx+1); };
+      document.head.appendChild(s);
+    }
+    tryLoad([
+      'https://unpkg.com/@supabase/supabase-js@2.46.1/dist/umd/supabase.js',
+      'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.46.1/dist/umd/supabase.js',
+      'https://esm.sh/@supabase/supabase-js@2.46.1/dist/umd/supabase.js'
+    ], 0);
+  })();
+</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<!-- Three.js via ES Module (r160+: build/three.min.js removido) -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.167.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.167.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  window.THREE = THREE;
+  window._threeReady = true;
+</script>
 <script defer src="https://js.arcgis.com/4.30/"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -54,7 +84,48 @@
   --green:#3B707D;--greenl:#d5eaed;
 }
 
-body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:background .3s,color .3s}
+[data-theme="5"]{
+  --bg:#0f1117;--surface:#1a1d27;--surf2:#222636;
+  --border:rgba(200,180,120,0.15);--border-em:rgba(200,180,120,0.3);
+  --text:#E8E4D4;--muted:#A09880;--faint:#504840;
+  --e:#C8A84A;--el:#1e1a0e;--eb:#5a4a18;
+  --err:#D05050;--errl:#1a0808;--warn:#C8A84A;
+  --green:#4A8A5A;--greenl:#0e1e12;
+}
+[data-theme="6"]{
+  --bg:#e0e8f0;--surface:#f0f5fa;--surf2:#d8e4ee;
+  --border:rgba(40,80,140,0.15);--border-em:rgba(40,80,140,0.28);
+  --text:#0e1e38;--muted:#2a4a7a;--faint:#6080a0;
+  --e:#2A6BB8;--el:#ddeeff;--eb:#88b4e0;
+  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --green:#2A7A5A;--greenl:#d0eedf;
+}
+[data-theme="7"]{
+  --bg:#ece8f5;--surface:#f8f5ff;--surf2:#e8e0f8;
+  --border:rgba(90,60,160,0.14);--border-em:rgba(90,60,160,0.28);
+  --text:#1e1030;--muted:#5a3a90;--faint:#9070c0;
+  --e:#7A4AC0;--el:#f0eaff;--eb:#c0a0e8;
+  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --green:#3A7A5A;--greenl:#d0f0e0;
+}
+[data-theme="8"]{
+  --bg:#0d1e14;--surface:#142010;--surf2:#1c2e18;
+  --border:rgba(80,160,80,0.18);--border-em:rgba(80,160,80,0.32);
+  --text:#d8f0d0;--muted:#80b878;--faint:#406038;
+  --e:#5aA84A;--el:#0e1e0a;--eb:#284820;
+  --err:#D05050;--errl:#1a0808;--warn:#C0A840;
+  --green:#5aA84A;--greenl:#0e1e0a;
+}
+[data-theme="9"]{
+  --bg:#0a1628;--surface:#0f1f3a;--surf2:#162844;
+  --border:rgba(80,180,220,0.18);--border-em:rgba(80,180,220,0.32);
+  --text:#d0e8f8;--muted:#6ab0d8;--faint:#305878;
+  --e:#E07820;--el:#1e1008;--eb:#703808;
+  --err:#D05050;--errl:#1a0808;--warn:#d8a828;
+  --green:#40a870;--greenl:#0a2018;
+}
+
+font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:background .3s,color .3s}
 
 /* ── AUTH ──────────────────────────────────────── */
 #auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
@@ -76,6 +147,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 
 /* ── TOOL DOCK / ATALHOS FLUTUANTES ─────────────── */
 .tool-dock{position:fixed;left:14px;top:76px;z-index:45;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none}
+.tool-dock .dock-btn,.tool-dock .dock-sep{pointer-events:auto}
 .dock-btn{pointer-events:auto;border:none;border-radius:999px;background:var(--surface);border:0.5px solid var(--border-em);color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.10);cursor:pointer;display:flex;align-items:center;gap:7px;min-width:132px;transition:transform .15s,background .15s,border-color .15s,color .15s,opacity .15s}
 .dock-btn:hover{transform:translateX(2px);background:var(--el);border-color:var(--eb);color:var(--e)}
 .dock-btn.active{background:var(--e);border-color:var(--e);color:#fff;box-shadow:0 10px 26px rgba(0,0,0,.16)}
@@ -84,15 +156,30 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .dock-btn .ico{font-size:14px;line-height:1;width:16px;text-align:center}
 .dock-sep{width:72px;height:1px;background:var(--border);margin:2px 0 2px 20px}
 
-/* ── THEME PICKER ───────────────────────────────── */
-.theme-picker{display:flex;gap:5px;align-items:center}
-.tp-dot{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .15s;flex-shrink:0}
-.tp-dot.active{border-color:var(--text);transform:scale(1.2)}
-.tp-dot:nth-child(1){background:linear-gradient(135deg,#8B5E3C,#EDE8DC)}
-.tp-dot:nth-child(2){background:linear-gradient(135deg,#2A6B4F,#D07A3B)}
-.tp-dot:nth-child(3){background:linear-gradient(135deg,#2D4F1E,#E27D60)}
-.tp-dot:nth-child(4){background:linear-gradient(135deg,#FA3A16,#052F3F)}
-.tp-dot:nth-child(5){background:linear-gradient(135deg,#3B707D,#E0783B)}
+/* ── THEME PICKER — botão dropdown ──────────────── */
+.theme-picker{position:relative;display:flex;align-items:center}
+.tp-trigger{display:flex;align-items:center;gap:6px;background:var(--surface);border:0.5px solid var(--border-em);border-radius:20px;padding:5px 10px 5px 7px;cursor:pointer;font-size:11px;color:var(--muted);font-family:inherit;transition:all .15s;white-space:nowrap}
+.tp-trigger:hover{border-color:var(--eb);color:var(--e)}
+.tp-preview{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--border-em)}
+.tp-dropdown{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:0.5px solid var(--border-em);border-radius:14px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:999;width:220px}
+.tp-dropdown.open{display:block}
+.tp-dropdown-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.tp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.tp-dot{width:28px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:all .18s;position:relative}
+.tp-dot:hover{transform:scale(1.12)}
+.tp-dot.active{border-color:var(--text);box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text)}
+.tp-dot[data-t="0"]{background:linear-gradient(135deg,#8B5E3C,#EDE8DC)}
+.tp-dot[data-t="1"]{background:linear-gradient(135deg,#2A6B4F,#D07A3B)}
+.tp-dot[data-t="2"]{background:linear-gradient(135deg,#2D4F1E,#E27D60)}
+.tp-dot[data-t="3"]{background:linear-gradient(135deg,#FA3A16,#052F3F)}
+.tp-dot[data-t="4"]{background:linear-gradient(135deg,#3B707D,#E0783B)}
+.tp-dot[data-t="5"]{background:linear-gradient(135deg,#C8A84A,#0f1117)}
+.tp-dot[data-t="6"]{background:linear-gradient(135deg,#2A6BB8,#e0e8f0)}
+.tp-dot[data-t="7"]{background:linear-gradient(135deg,#7A4AC0,#ece8f5)}
+.tp-dot[data-t="8"]{background:linear-gradient(135deg,#5aA84A,#0d1e14)}
+.tp-dot[data-t="9"]{background:linear-gradient(135deg,#E07820,#0a1628)}
+.tp-names{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:5px}
+.tp-name{font-size:8px;color:var(--faint);text-align:center;line-height:1.2}
 
 /* ── SHARED COMPONENTS ──────────────────────────── */
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
@@ -164,6 +251,27 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .simgeo-empty{padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6}
 .simgeo-small-link{font-size:10px;color:var(--e);text-decoration:none;border-bottom:0.5px solid var(--eb)}
 @media(max-width:760px){.simgeo-wrap{grid-template-columns:1fr}.simgeo-kpis{grid-template-columns:1fr 1fr}.simgeo-attr{grid-template-columns:1fr}}
+
+/* ── PORTAIS NACIONAIS ──────────────────────────── */
+.portal-section-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin:1.2rem 0 .6rem;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
+.portal-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:.5rem}
+.portal-card{border:0.5px solid var(--border);border-radius:8px;padding:.75rem .9rem;background:var(--surf2);display:flex;flex-direction:column;gap:5px;transition:border-color .15s}
+.portal-card:hover{border-color:var(--eb)}
+.portal-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.portal-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.35}
+.portal-card-badge{font-size:9px;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.portal-card-badge.municipal{background:var(--el);color:var(--e);border:0.5px solid var(--eb)}
+.portal-card-badge.estadual{background:var(--greenl);color:var(--green);border:0.5px solid var(--green)}
+.portal-card-badge.federal{background:var(--surf2);color:var(--faint);border:0.5px solid var(--border)}
+.portal-card-orgao{font-size:10px;color:var(--faint)}
+.portal-card-dados{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.portal-chip{font-size:9px;background:var(--surface);border:0.5px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--muted)}
+.portal-card-actions{display:flex;gap:6px;margin-top:4px}
+.portal-btn-link{font-family:inherit;font-size:10px;padding:5px 10px;border:0.5px solid var(--eb);border-radius:5px;background:var(--el);cursor:pointer;color:var(--e);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:background .15s}
+.portal-btn-link:hover{background:var(--eb)}
+.portal-empty-msg{font-size:12px;color:var(--faint);text-align:center;padding:2rem 1rem;line-height:1.6}
+.portal-cidade-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--surf2);border:0.5px solid var(--border);border-radius:6px;padding:5px 10px;margin-bottom:.8rem}
+.portal-cidade-tag strong{color:var(--text)}
 
 /* ── DASHBOARD ──────────────────────────────────── */
 #dash-view{padding:1.5rem;max-width:980px;margin:0 auto;flex:1}
@@ -309,9 +417,39 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 @media(max-width:720px){
   #app-screen{padding-bottom:96px}
   .hdr{align-items:center;padding:.6rem 1rem}
-  .hdr-right{margin-left:auto}
-  .tool-dock{left:8px;right:8px;top:auto;bottom:8px;flex-direction:row;align-items:center;overflow-x:auto;padding:6px;background:rgba(250,247,241,.78);backdrop-filter:blur(12px);border:0.5px solid var(--border);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-  .dock-btn{min-width:auto;padding:9px 12px;font-size:11px;box-shadow:none;white-space:nowrap}
+  .hdr-right{margin-left:auto;gap:6px}
+  .tp-trigger span:last-child{display:none} /* esconde label "Tema" no mobile */
+  .tp-dropdown{right:-60px;width:200px} /* reposiciona dropdown no mobile */
+  .tool-dock{
+    left:0;right:0;top:auto;bottom:0;
+    flex-direction:row;align-items:center;
+    overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+    padding:8px 12px;
+    padding-bottom:max(8px, env(safe-area-inset-bottom));
+    background:rgba(var(--bg-rgb,250,247,241),.92);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-top:0.5px solid var(--border);
+    border-radius:0;
+    box-shadow:0 -4px 20px rgba(0,0,0,.08);
+    gap:6px;
+    pointer-events:auto;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+    z-index:100;
+  }
+  .tool-dock::-webkit-scrollbar{display:none}
+  .dock-btn{
+    min-width:auto;
+    flex-shrink:0;
+    padding:8px 14px;
+    font-size:11px;
+    box-shadow:none;
+    white-space:nowrap;
+    scroll-snap-align:start;
+    pointer-events:auto;
+  }
   .dock-btn:hover{transform:none}
   .dock-sep{display:none}
   #online-bar{display:none}
@@ -382,7 +520,181 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .mapoteca-file strong{display:block;font-size:12px;color:var(--e);margin-bottom:3px;word-break:break-word}
 .mapoteca-file span{display:block;font-size:10px;color:var(--faint);word-break:break-all;line-height:1.5}
 .mapoteca-file em{display:block;font-size:10px;color:var(--muted);font-style:normal;margin-top:4px}
-@media(max-width:760px){.mapoteca-wrap{grid-template-columns:1fr}.mapoteca-kpis{grid-template-columns:1fr 1fr}.mapoteca-row{grid-template-columns:1fr}}
+/* ── NBR CHAT WIDGET ─────────────────────────────────────────────── */
+#notif-toast{position:fixed;top:20px;right:20px;background:#161b27;border:1px solid #f97316;border-radius:12px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:99999;transform:translateX(120%);transition:transform 0.4s cubic-bezier(.34,1.56,.64,1)}
+#notif-toast.show{transform:translateX(0)}
+.nbr-notif-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.nbr-notif-body{flex:1}
+.nbr-notif-body strong{font-size:.8rem;color:#f97316;font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:3px}
+.nbr-notif-body p{font-size:.75rem;color:#94a3b8;line-height:1.4}
+.nbr-notif-close{background:none;border:none;color:#475569;cursor:pointer;font-size:1rem;padding:0;flex-shrink:0}
+.nbr-notif-close:hover{color:#f97316}
+#nbr-notif-bubble{position:fixed;right:22px;bottom:74px;background:#ef4444;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10000;transition:opacity .2s}
+#nbr-notif-bubble.hidden{opacity:0;pointer-events:none}
+#nbr-badge{position:fixed;right:24px;bottom:100px;background:#1e293b;border:1px solid #f97316;color:#f97316;font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:4px 8px;border-radius:6px;letter-spacing:.05em;z-index:9998;transition:opacity .4s}
+#nbr-badge.hidden{opacity:0;pointer-events:none}
+#nbr-toggle{position:fixed;right:28px;bottom:28px;width:62px;height:62px;border-radius:16px;background:linear-gradient(135deg,#f97316,#ea580c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(249,115,22,.45);transition:transform .2s,box-shadow .2s;z-index:9999;animation:nbr-pulse 3s infinite}
+#nbr-toggle:hover{transform:scale(1.08);box-shadow:0 12px 40px rgba(249,115,22,.6)}
+#nbr-toggle.open .nbr-icon-label{opacity:0}
+@keyframes nbr-pulse{0%{box-shadow:0 8px 32px rgba(249,115,22,.45),0 0 0 0 rgba(249,115,22,.25)}60%{box-shadow:0 8px 32px rgba(249,115,22,.45),0 0 0 14px rgba(249,115,22,0)}100%{box-shadow:0 8px 32px rgba(249,115,22,.45),0 0 0 0 rgba(249,115,22,0)}}
+#nbr-panel{position:fixed;right:28px;bottom:104px;width:420px;max-height:660px;background:#0d1117;border:1px solid #1e293b;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.7),0 0 0 1px rgba(249,115,22,.15);z-index:9998;transform:scale(.92) translateY(20px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s ease}
+#nbr-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.nbr-panel-header{padding:16px 18px 12px;border-bottom:1px solid #1e293b;background:linear-gradient(135deg,#111827,#0d1117);display:flex;align-items:center;gap:10px}
+.nbr-header-icon{width:36px;height:36px;background:linear-gradient(135deg,#f97316,#ea580c);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.78rem;color:#fff;letter-spacing:.04em}
+.nbr-header-text h2{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:600;color:#f1f5f9}
+.nbr-header-text p{font-size:.7rem;color:#64748b;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.nbr-header-actions{margin-left:auto;display:flex;gap:6px;align-items:center}
+#nbr-loc-badge{display:none;align-items:center;gap:5px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:3px 9px;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:#22c55e;cursor:pointer;transition:all .18s;white-space:nowrap}
+#nbr-loc-badge:hover{background:rgba(34,197,94,.18)}
+#nbr-loc-badge.visible{display:flex}
+.nbr-status-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px rgba(34,197,94,.6);animation:nbr-blink 2.5s infinite}
+@keyframes nbr-blink{0%,100%{opacity:1}50%{opacity:.4}}
+#nbr-cep-screen{position:absolute;inset:0;z-index:10;background:#0d1117;display:flex;flex-direction:column;overflow-y:auto}
+.nbr-cep-header{padding:18px 18px 12px;border-bottom:1px solid #1e293b;background:linear-gradient(135deg,#111827,#0d1117);display:flex;align-items:center;gap:10px}
+.nbr-cep-title{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:600;color:#f1f5f9}
+.nbr-cep-sub{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#64748b;margin-top:2px}
+.nbr-cep-body{padding:18px 16px;display:flex;flex-direction:column;gap:14px;flex:1}
+.nbr-info-box{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:12px 14px;font-size:.78rem;color:#94a3b8;line-height:1.5}
+.nbr-info-box strong{color:#f97316;display:block;margin-bottom:4px;font-family:'IBM Plex Mono',monospace;font-size:.72rem}
+.nbr-field{display:flex;flex-direction:column;gap:5px}
+.nbr-field label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#475569;letter-spacing:.06em;text-transform:uppercase}
+.nbr-field input{background:#161b27;border:1px solid #2d3748;border-radius:10px;padding:10px 13px;font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:#e2e8f0;outline:none;transition:border-color .2s;letter-spacing:.05em}
+.nbr-field input:focus{border-color:#f97316}
+.nbr-field input::placeholder{color:#334155;letter-spacing:0;font-size:.78rem}
+.nbr-loc-preview{background:#161b27;border:1px solid #1e293b;border-radius:10px;padding:10px 13px;min-height:42px;display:flex;align-items:center;gap:8px;font-size:.78rem;color:#64748b;transition:all .2s}
+.nbr-loc-preview.loaded{border-color:rgba(34,197,94,.3);color:#94a3b8}
+.nbr-loc-text{flex:1;line-height:1.4}
+.nbr-loc-text strong{color:#e2e8f0;display:block;font-size:.82rem}
+.nbr-cep-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.nbr-cep-tag{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:3px 8px;border-radius:20px;border:1px solid #22c55e;color:#22c55e;background:rgba(34,197,94,.06)}
+.nbr-cep-tag.warn{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.06)}
+.nbr-cep-btn{background:linear-gradient(135deg,#f97316,#ea580c);border:none;border-radius:12px;padding:12px;font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600;color:#fff;cursor:pointer;letter-spacing:.04em;transition:opacity .2s,transform .15s}
+.nbr-cep-btn:hover{transform:scale(1.02)}
+.nbr-cep-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.nbr-cep-skip{text-align:center}
+.nbr-cep-skip button{background:none;border:none;color:#334155;font-size:.72rem;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-decoration:underline;transition:color .18s}
+.nbr-cep-skip button:hover{color:#64748b}
+.nbr-tabs{display:flex;border-bottom:1px solid #1e293b;background:#0a0e18}
+.nbr-tab{flex:1;padding:9px 4px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#475569;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px}
+.nbr-tab:hover{color:#94a3b8}
+.nbr-tab.active{color:#f97316;border-bottom-color:#f97316}
+.nbr-tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.nbr-tab-panel.active{display:flex}
+.nbr-obra-section{padding:10px 14px 8px;border-bottom:1px solid #1e293b;background:#0d1117}
+.nbr-obra-label{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:#475569;letter-spacing:.08em;margin-bottom:7px;text-transform:uppercase}
+.nbr-obra-chips{display:flex;gap:6px;flex-wrap:wrap}
+.nbr-obra-chip{font-family:'IBM Plex Mono',monospace;font-size:.67rem;padding:5px 10px;border-radius:20px;border:1px solid #2d3748;color:#94a3b8;background:transparent;cursor:pointer;transition:all .18s;white-space:nowrap}
+.nbr-obra-chip:hover,.nbr-obra-chip.selected{border-color:#f97316;color:#f97316;background:rgba(249,115,22,.08)}
+.nbr-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;scrollbar-color:#1e293b transparent}
+.nbr-messages::-webkit-scrollbar{width:4px}
+.nbr-messages::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}
+.nbr-msg{display:flex;flex-direction:column;max-width:90%;animation:nbr-fadeup .3s ease}
+@keyframes nbr-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.nbr-msg.user{align-self:flex-end;align-items:flex-end}
+.nbr-msg.bot{align-self:flex-start;align-items:flex-start}
+.nbr-bubble{padding:10px 13px;border-radius:14px;font-size:.83rem;line-height:1.55}
+.nbr-msg.user .nbr-bubble{background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border-bottom-right-radius:4px}
+.nbr-msg.bot .nbr-bubble{background:#161b27;border:1px solid #1e293b;color:#cbd5e1;border-bottom-left-radius:4px}
+.nbr-msg.bot .nbr-bubble strong{color:#f97316}
+.nbr-msg.bot .nbr-bubble code{font-family:'IBM Plex Mono',monospace;font-size:.78rem;background:#0d1117;border:1px solid #2d3748;padding:1px 5px;border-radius:4px;color:#fb923c}
+.nbr-msg.bot .nbr-bubble ul{padding-left:16px;margin-top:6px}
+.nbr-msg.bot .nbr-bubble li{margin-bottom:4px}
+.nbr-msg-footer{display:flex;align-items:center;gap:8px;margin-top:4px;padding:0 4px}
+.nbr-msg-time{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:#475569}
+.nbr-fav-btn{background:none;border:none;cursor:pointer;font-size:.75rem;color:#334155;transition:all .2s;padding:0;line-height:1}
+.nbr-fav-btn:hover{color:#fbbf24;transform:scale(1.2)}
+.nbr-fav-btn.starred{color:#fbbf24}
+.nbr-typing-bubble{display:flex;align-items:center;gap:5px;padding:12px 16px;background:#161b27;border:1px solid #1e293b;border-radius:14px;border-bottom-left-radius:4px;width:fit-content}
+.nbr-typing-bubble span{width:6px;height:6px;background:#f97316;border-radius:50%;animation:nbr-bounce 1.2s infinite}
+.nbr-typing-bubble span:nth-child(2){animation-delay:.2s}
+.nbr-typing-bubble span:nth-child(3){animation-delay:.4s}
+@keyframes nbr-bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.nbr-input-area{padding:10px 12px;border-top:1px solid #1e293b;display:flex;gap:8px;align-items:flex-end;background:#0d1117}
+.nbr-input-area textarea{flex:1;background:#161b27;border:1px solid #2d3748;border-radius:12px;padding:9px 13px;font-family:'IBM Plex Sans',sans-serif;font-size:.83rem;color:#e2e8f0;resize:none;max-height:100px;min-height:40px;line-height:1.5;transition:border-color .2s;outline:none}
+.nbr-input-area textarea:focus{border-color:#f97316}
+.nbr-input-area textarea::placeholder{color:#475569}
+.nbr-send-btn{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#f97316,#ea580c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,opacity .15s}
+.nbr-send-btn:hover{transform:scale(1.08)}
+.nbr-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.nbr-fav-list,.nbr-hist-list,.nbr-notif-list{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;scrollbar-color:#1e293b transparent}
+.nbr-fav-item,.nbr-hist-item{background:#161b27;border:1px solid #1e293b;border-radius:12px;padding:10px 13px;cursor:pointer;transition:all .18s;display:flex;align-items:flex-start;gap:10px}
+.nbr-fav-item:hover,.nbr-hist-item:hover{border-color:#f97316;background:rgba(249,115,22,.04)}
+.nbr-fav-star{color:#fbbf24;font-size:.9rem;flex-shrink:0;margin-top:1px}
+.nbr-fav-content,.nbr-hist-content{flex:1;min-width:0}
+.nbr-fav-query,.nbr-hist-q{font-size:.8rem;color:#e2e8f0;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nbr-fav-date,.nbr-hist-meta{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:#475569}
+.nbr-fav-del{background:none;border:none;color:#334155;cursor:pointer;font-size:.85rem;flex-shrink:0;transition:color .18s;padding:0}
+.nbr-fav-del:hover{color:#ef4444}
+.nbr-hist-icon{font-size:.8rem;color:#475569;flex-shrink:0}
+.nbr-hist-header{padding:10px 14px 8px;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between}
+.nbr-hist-header span{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#475569}
+.nbr-hist-clear{background:none;border:1px solid #2d3748;border-radius:6px;color:#475569;font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:3px 8px;cursor:pointer;transition:all .18s}
+.nbr-hist-clear:hover{border-color:#ef4444;color:#ef4444}
+.nbr-hist-fav-btn{background:none;border:none;cursor:pointer;color:#334155;font-size:.78rem;transition:color .18s;padding:0;flex-shrink:0}
+.nbr-hist-fav-btn:hover{color:#fbbf24}
+.nbr-notif-item{background:#161b27;border:1px solid #1e293b;border-radius:12px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start}
+.nbr-notif-item.new{border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.04)}
+.nbr-notif-dot{width:8px;height:8px;background:#f97316;border-radius:50%;flex-shrink:0;margin-top:4px}
+.nbr-notif-dot.read{background:#334155}
+.nbr-notif-nbody{flex:1}
+.nbr-notif-nbody strong{font-size:.78rem;color:#f1f5f9;display:block;margin-bottom:3px;font-family:'IBM Plex Mono',monospace}
+.nbr-notif-nbody p{font-size:.74rem;color:#94a3b8;line-height:1.4}
+.nbr-notif-nbody span{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:#475569;display:block;margin-top:4px}
+.nbr-consult-btn{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);border-radius:6px;color:#f97316;font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 8px;cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0;align-self:center}
+.nbr-consult-btn:hover{background:rgba(249,115,22,.2)}
+#nbr-panel .nbr-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#334155}
+#nbr-panel .nbr-empty span{font-size:2rem}
+#nbr-panel .nbr-empty p{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#475569;text-align:center}
+.nbr-panel-footer{text-align:center;padding:7px;font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:#334155;border-top:1px solid #1e293b}
+/* search */
+.nbr-search-wrap{position:relative;padding:10px 12px 4px}
+.nbr-search-wrap input{width:100%;background:#161b27;border:1px solid #2d3748;border-radius:10px;padding:9px 13px 9px 34px;font-family:'IBM Plex Sans',sans-serif;font-size:.82rem;color:#e2e8f0;outline:none;transition:border-color .2s}
+.nbr-search-wrap input:focus{border-color:#f97316}
+.nbr-search-wrap input::placeholder{color:#475569}
+.nbr-search-icon{position:absolute;left:22px;top:50%;transform:translateY(-30%);font-size:.82rem;pointer-events:none}
+/* results */
+.nbr-results{flex:1;overflow-y:auto;padding:6px 10px 10px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin;scrollbar-color:#1e293b transparent}
+.nbr-results::-webkit-scrollbar{width:3px}
+.nbr-results::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
+/* card */
+.nbr-card{background:#111827;border:1px solid #1e293b;border-radius:12px;overflow:hidden;transition:border-color .18s;cursor:pointer}
+.nbr-card:hover{border-color:#374151}
+.nbr-card.expanded{border-color:rgba(249,115,22,.4)}
+.nbr-card-head{display:flex;align-items:flex-start;gap:10px;padding:10px 12px}
+.nbr-card-badge{font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;color:#f97316;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.25);border-radius:6px;padding:2px 7px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.nbr-card-info{flex:1;min-width:0}
+.nbr-card-title{font-size:.78rem;color:#e2e8f0;line-height:1.35;margin-bottom:3px}
+.nbr-card-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nbr-card-year{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:#475569}
+.nbr-card-cat{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:#334155;background:#161b27;border:1px solid #2d3748;border-radius:4px;padding:1px 5px}
+.nbr-update-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nbr-update-dot.ok{background:#22c55e}
+.nbr-update-dot.warn{background:#f59e0b}
+.nbr-update-dot.checking{background:#475569;animation:nbr-blink 1.2s infinite}
+.nbr-update-dot.unknown{background:#334155}
+.nbr-card-actions{display:flex;gap:5px;margin-left:auto;flex-shrink:0}
+.nbr-icon-btn{background:none;border:none;cursor:pointer;font-size:.8rem;color:#334155;padding:2px;transition:color .18s;line-height:1}
+.nbr-icon-btn:hover{color:#f97316}
+.nbr-icon-btn.starred{color:#fbbf24}
+.nbr-card-body{padding:0 12px 10px;display:none;flex-direction:column;gap:8px;animation:nbr-fadeup .2s ease}
+.nbr-card.expanded .nbr-card-body{display:flex}
+.nbr-card-escopo{font-size:.75rem;color:#94a3b8;line-height:1.5}
+.nbr-card-reqs{display:flex;flex-direction:column;gap:3px}
+.nbr-card-req{font-size:.72rem;color:#64748b;padding-left:10px;position:relative;line-height:1.4}
+.nbr-card-req::before{content:'—';position:absolute;left:0;color:#374151}
+.nbr-card-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.nbr-card-link{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 9px;border-radius:6px;border:1px solid #2d3748;color:#94a3b8;text-decoration:none;transition:all .18s;cursor:pointer;background:none}
+.nbr-card-link:hover{border-color:#f97316;color:#f97316}
+.nbr-card-link.primary{border-color:rgba(249,115,22,.3);color:#f97316;background:rgba(249,115,22,.07)}
+.nbr-update-msg{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:5px 8px;border-radius:6px;margin-top:2px}
+.nbr-update-msg.ok{background:rgba(34,197,94,.08);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
+.nbr-update-msg.warn{background:rgba(245,158,11,.08);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
+.nbr-update-msg.unknown{background:rgba(100,116,139,.08);color:#64748b;border:1px solid #1e293b}
+/* cat header */
+.nbr-cat-header{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:#475569;text-transform:uppercase;padding:8px 10px 4px;border-bottom:1px solid #1e293b;margin-bottom:4px}
+/* empty */
+.nbr-empty-search{text-align:center;padding:2rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#334155;line-height:1.6}
+@media(max-width:480px){#nbr-panel{right:0;bottom:0;width:100vw;max-height:88vh;border-radius:20px 20px 0 0}#nbr-toggle{right:16px;bottom:16px}#nbr-badge{right:12px;bottom:80px}}
 
 
 /* ── THREE.JS / VOLUMETRIA 3D ───────────────────── */
@@ -435,14 +747,41 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     </div>
     <div style="flex:1"></div>
     <div class="hdr-right">
-      <div class="theme-picker" title="Escolher tema">
-        <div class="tp-dot" onclick="setTheme(0)" id="tp0"></div>
-        <div class="tp-dot" onclick="setTheme(1)" id="tp1"></div>
-        <div class="tp-dot" onclick="setTheme(2)" id="tp2"></div>
-        <div class="tp-dot" onclick="setTheme(3)" id="tp3"></div>
-        <div class="tp-dot" onclick="setTheme(4)" id="tp4"></div>
-      </div>
       <span class="hdr-user" id="hdr-user"></span>
+      <div class="theme-picker" id="theme-picker">
+        <button class="tp-trigger" onclick="tpToggle(event)" title="Escolher tema">
+          <div class="tp-preview" id="tp-preview"></div>
+          <span>Tema</span>
+          <span style="font-size:9px;opacity:.5">▾</span>
+        </button>
+        <div class="tp-dropdown" id="tp-dropdown">
+          <div class="tp-dropdown-title">Aparência</div>
+          <div class="tp-grid">
+            <div class="tp-dot" data-t="0" onclick="setTheme(0)" title="Areia"></div>
+            <div class="tp-dot" data-t="1" onclick="setTheme(1)" title="Selva"></div>
+            <div class="tp-dot" data-t="2" onclick="setTheme(2)" title="Cerrado"></div>
+            <div class="tp-dot" data-t="3" onclick="setTheme(3)" title="Brasa"></div>
+            <div class="tp-dot" data-t="4" onclick="setTheme(4)" title="Teal"></div>
+            <div class="tp-dot" data-t="5" onclick="setTheme(5)" title="Midnight"></div>
+            <div class="tp-dot" data-t="6" onclick="setTheme(6)" title="Slate"></div>
+            <div class="tp-dot" data-t="7" onclick="setTheme(7)" title="Lavanda"></div>
+            <div class="tp-dot" data-t="8" onclick="setTheme(8)" title="Floresta"></div>
+            <div class="tp-dot" data-t="9" onclick="setTheme(9)" title="Blueprint"></div>
+          </div>
+          <div class="tp-names">
+            <div class="tp-name">Areia</div>
+            <div class="tp-name">Selva</div>
+            <div class="tp-name">Cerrado</div>
+            <div class="tp-name">Brasa</div>
+            <div class="tp-name">Teal</div>
+            <div class="tp-name">Midnight</div>
+            <div class="tp-name">Slate</div>
+            <div class="tp-name">Lavanda</div>
+            <div class="tp-name">Floresta</div>
+            <div class="tp-name">Blueprint</div>
+          </div>
+        </div>
+      </div>
       <button class="btn ghost" onclick="logout()">Sair</button>
     </div>
   </header>
@@ -459,6 +798,8 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
     <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
+    <div class="dock-sep" aria-hidden="true"></div>
+    <button class="dock-btn" id="tool-nbr" onclick="nbrTogglePanel()"><span class="ico">⚖</span>Normas NBR</button>
   </nav>
 
   <!-- HALL / INÍCIO -->
@@ -629,6 +970,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
         <div class="simgeo-mode">
           <button class="on" id="sg-tab-coords" onclick="setSimgeoMode('coords')">Coordenadas</button>
           <button id="sg-tab-cep" onclick="setSimgeoMode('cep')">CEP / endereço</button>
+          <button id="sg-tab-portal" onclick="setSimgeoMode('portal')">Portal Nacional</button>
         </div>
         <div id="sg-coords-box">
           <div class="field"><label>Latitude</label><div class="iw"><input type="number" id="sg-lat" placeholder="Ex: -20.4697" step="any"></div></div>
@@ -639,9 +981,12 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
           <div class="field"><label>Número</label><div class="iw"><input type="text" id="sg-num" placeholder="Ex: 123"></div></div>
           <div class="field"><label>Complemento / referência</label><div class="iw"><input type="text" id="sg-comp" placeholder="Opcional"></div><span class="hint">CEP sozinho não aponta o lote; use número para melhorar a precisão.</span></div>
         </div>
+        <div id="sg-portal-box" style="display:none">
+          <div class="field"><label>CEP do imóvel</label><div class="iw"><input type="text" id="sg-portal-cep" placeholder="Ex: 01310-100" inputmode="numeric" onkeydown="if(event.key==='Enter')consultarPortalNacional()"></div><span class="hint">O sistema identifica a cidade e lista os portais de geoprocessamento disponíveis para a região.</span></div>
+        </div>
         <div class="simgeo-actions">
-          <button class="btn solid" id="sg-consultar" onclick="consultarSimgeo()">Consultar dados</button>
-          <button class="btn ghost" onclick="abrirSimgeoMapa()">Abrir mapa oficial</button>
+          <button class="btn solid" id="sg-consultar" onclick="sgConsultarDispatch()">Consultar dados</button>
+          <button class="btn ghost" id="sg-btn-mapa" onclick="abrirSimgeoMapa()">Abrir mapa oficial</button>
         </div>
         <div class="simgeo-status" id="sg-status"></div>
       </section>
@@ -950,18 +1295,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 const SUPABASE_URL = 'https://wbcefatwxorbepbjbokw.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BcGStnHOrhs_UHsg8hcLQA_Yt7nahWM';
 const LOGO_B64 = 'logo.png';
-let sb = null;
-
-if (!window.supabase?.createClient) {
-  document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('auth-err');
-    if (el) {
-      el.textContent = 'Erro: Supabase não carregou. Verifique internet/CDN.';
-    }
-  });
-} else {
-  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-}
+let sb = null; // inicializado de forma assíncrona em init() → initSupabaseClient()
 const DOCS_BUCKET = 'proposal-files';
 const DOCS_ALLOWED_EXT = ['dwg','pdf','jpg','jpeg','cdr','ai','psd'];
 
@@ -978,45 +1312,111 @@ const fmt  = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFract
 const fmtI = n => Math.round(n).toLocaleString('pt-BR');
 
 // ── THEME ─────────────────────────────────────────
+const THEME_PREVIEWS=[
+  'linear-gradient(135deg,#8B5E3C,#EDE8DC)',
+  'linear-gradient(135deg,#2A6B4F,#D07A3B)',
+  'linear-gradient(135deg,#2D4F1E,#E27D60)',
+  'linear-gradient(135deg,#FA3A16,#052F3F)',
+  'linear-gradient(135deg,#3B707D,#E0783B)',
+  'linear-gradient(135deg,#C8A84A,#0f1117)',
+  'linear-gradient(135deg,#2A6BB8,#e0e8f0)',
+  'linear-gradient(135deg,#7A4AC0,#ece8f5)',
+  'linear-gradient(135deg,#5aA84A,#0d1e14)',
+  'linear-gradient(135deg,#E07820,#0a1628)',
+];
+
 function themeKey(){
-  return 'chaos-theme' + (user?.id ? '-' + user.id : user?.email ? '-' + user.email : '');
+  return 'chaos-theme'+(user?.id?'-'+user.id:user?.email?'-'+user.email:'');
 }
 function setTheme(n){
-  n = Math.max(0, Math.min(4, parseInt(n,10)||0));
-  document.documentElement.setAttribute('data-theme', n);
-  localStorage.setItem(themeKey(), n);
-  if(!user) localStorage.setItem('chaos-theme', n);
-  document.querySelectorAll('.tp-dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+  n = Math.max(0,Math.min(9,parseInt(n,10)||0));
+  document.documentElement.setAttribute('data-theme',n);
+  localStorage.setItem(themeKey(),n);
+  if(!user) localStorage.setItem('chaos-theme',n);
+  // Atualiza dots
+  document.querySelectorAll('.tp-dot').forEach(d=>{
+    d.classList.toggle('active', Number(d.dataset.t)===n);
+  });
+  // Atualiza preview no botão trigger
+  const prev=$('tp-preview');
+  if(prev) prev.style.background=THEME_PREVIEWS[n]||THEME_PREVIEWS[0];
+  // Fecha dropdown após escolha
+  const dd=$('tp-dropdown');
+  if(dd) dd.classList.remove('open');
 }
 function loadTheme(){
-  const saved = localStorage.getItem(themeKey()) ?? localStorage.getItem('chaos-theme') ?? '0';
+  const saved=localStorage.getItem(themeKey())??localStorage.getItem('chaos-theme')??"0";
   setTheme(saved);
 }
+function tpToggle(e){
+  e.stopPropagation();
+  const dd=$('tp-dropdown');
+  if(dd) dd.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  const picker=$('theme-picker');
+  if(picker&&!picker.contains(e.target)){
+    const dd=$('tp-dropdown');
+    if(dd) dd.classList.remove('open');
+  }
+});
 
 // ── INIT ──────────────────────────────────────────
+async function initSupabaseClient(){
+  // Aguarda até 6s pelo SDK carregar via CDN (inclui fallbacks)
+  for(let i=0; i<60; i++){
+    if(window.supabase?.createClient) break;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  if(!window.supabase?.createClient){
+    console.error('Supabase SDK não carregou após 6s — verifique CDN.');
+    return null;
+  }
+  // Valida formato da chave antes de criar o cliente
+  const keyOk = SUPABASE_KEY.startsWith('eyJ') || SUPABASE_KEY.startsWith('sb_publishable_') || SUPABASE_KEY.startsWith('sb_secret_');
+  if(!SUPABASE_URL || !SUPABASE_KEY || !keyOk){
+    console.error('SUPABASE_KEY com formato inválido. Verifique Settings > API no painel do Supabase.');
+    return null;
+  }
+  try{
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth:{ autoRefreshToken:true, persistSession:true, detectSessionInUrl:false }
+    });
+    return client;
+  }catch(e){
+    console.error('Falha ao criar cliente Supabase:', e);
+    return null;
+  }
+}
+
 async function init(){
   try{
     loadTheme();
-
     const logo = $('hdr-logo-img');
-    if(logo){
-      logo.src = LOGO_B64;
+    if(logo) logo.src = LOGO_B64;
+
+    // Inicializa sb de forma assíncrona com retry de CDN
+    if(!sb) sb = await initSupabaseClient();
+
+    if(!sb){
+      showAuth();
+      const err = $('auth-err');
+      if(err){
+        const keyOk = SUPABASE_KEY.startsWith('eyJ') || SUPABASE_KEY.startsWith('sb_publishable_');
+        err.textContent = !keyOk
+          ? 'Chave do Supabase inválida. Acesse Settings > API no painel e atualize SUPABASE_KEY.'
+          : 'Serviço indisponível. Verifique sua conexão e recarregue.';
+      }
+      return;
     }
 
     const timeout = new Promise((_, reject)=>
-      setTimeout(()=>reject(new Error('Timeout ao conectar')),5000)
+      setTimeout(()=>reject(new Error('Timeout ao conectar')), 6000)
     );
 
-    const sessionRequest = Promise.race([
-      sb.auth.getSession(),
-      timeout
-    ]);
+    const result = await Promise.race([sb.auth.getSession(), timeout]);
 
-    const result = await sessionRequest;
-
-    if(result?.error){
-      throw result.error;
-    }
+    if(result?.error) throw result.error;
 
     if(result?.data?.session){
       user = result.data.session.user;
@@ -1027,12 +1427,13 @@ async function init(){
 
   }catch(e){
     console.error('Erro ao iniciar:', e);
-
     showAuth();
-
     const err = $('auth-err');
     if(err){
-      err.textContent = 'Erro ao iniciar sistema.';
+      const m = e?.message || String(e);
+      err.textContent = m.includes('Timeout') ? 'Conexão lenta. Recarregue e tente novamente.' :
+                        m.includes('Failed to fetch') ? 'Sem conexão com o servidor. Verifique a internet.' :
+                        'Erro ao iniciar. Recarregue a página.';
     }
   }
 }
@@ -1050,79 +1451,67 @@ function authTab(m){
 
 async function authSubmit(){
   const email = $('auth-email').value.trim();
-  const pass = $('auth-pass').value;
-  const btn = $('auth-btn');
+  const pass  = $('auth-pass').value;
+  const btn   = $('auth-btn');
 
   $('auth-err').textContent = '';
 
-  if (!sb) {
-    $('auth-err').textContent = 'Erro: Supabase não carregou. Verifique internet/CDN.';
-    return;
-  }
-
-  if(!email){
-    $('auth-err').textContent = 'Digite seu e-mail.';
-    return;
-  }
-
-  if(pass.length < 6){
-    $('auth-err').textContent = 'Senha precisa ter ao menos 6 caracteres.';
-    return;
-  }
-
-  const ep = m => {
-    m = m || '';
-    return m.includes('Invalid login') ? 'E-mail ou senha incorretos.' :
-      m.includes('Email not confirmed') ? 'Confirme seu e-mail antes de entrar.' :
-      m.includes('already registered') ? 'E-mail já cadastrado. Faça login.' :
-      m.includes('Invalid API key') ? 'Chave do Supabase inválida. Confira SUPABASE_KEY.' :
-      m.includes('Failed to fetch') ? 'Falha de conexão com o Supabase.' :
-      m;
-  };
+  if(!email){ $('auth-err').textContent='Digite seu e-mail.'; return; }
+  if(pass.length < 6){ $('auth-err').textContent='Senha precisa ter ao menos 6 caracteres.'; return; }
 
   btn.disabled = true;
   btn.textContent = 'Aguarde...';
 
-  try {
+  try{
+    // Tenta inicializar sb se ainda não foi (CDN pode ter demorado)
+    if(!sb) sb = await initSupabaseClient();
+
+    if(!sb){
+      $('auth-err').textContent = 'Serviço indisponível. Verifique sua conexão e recarregue.';
+      return;
+    }
+
+    const ep = m => {
+      m = m || '';
+      return m.includes('Invalid login credentials') || m.includes('Invalid login') ? 'E-mail ou senha incorretos.' :
+        m.includes('Email not confirmed')  ? 'Confirme seu e-mail antes de entrar.' :
+        m.includes('already registered')   ? 'E-mail já cadastrado. Faça login.' :
+        m.includes('Invalid API key')      ? 'Chave do sistema inválida. Contate o suporte.' :
+        m.includes('Failed to fetch')      ? 'Sem conexão com o servidor. Verifique a internet.' :
+        m || 'Erro desconhecido.';
+    };
+
     if(authMode === 'login'){
-      const { data, error } = await sb.auth.signInWithPassword({
-        email,
-        password: pass
-      });
-
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
       if(error) throw error;
-
       user = data?.user || data?.session?.user;
-
-      if(user){
-        showApp();
-      } else {
-        $('auth-err').textContent = 'Login feito, mas sessão não retornou. Recarregue a página.';
-      }
+      if(user){ showApp(); }
+      else { $('auth-err').textContent='Login feito, mas sessão não retornou. Recarregue a página.'; }
 
     } else {
       const c = $('auth-confirm').value;
-
-      if(pass !== c){
-        $('auth-err').textContent = 'Senhas não coincidem.';
-        return;
-      }
-
-      const { error } = await sb.auth.signUp({
-        email,
-        password: pass
-      });
-
+      if(pass !== c){ $('auth-err').textContent='Senhas não coincidem.'; return; }
+      const { error } = await sb.auth.signUp({ email, password: pass });
       if(error) throw error;
-
-      $('auth-err').textContent = '✓ Verifique seu e-mail para confirmar a conta.';
+      $('auth-err').style.color='var(--green)';
+      $('auth-err').textContent='✓ Verifique seu e-mail para confirmar a conta.';
     }
 
-  } catch(e) {
-    $('auth-err').textContent = ep(e.message || String(e));
+  }catch(e){
+    $('auth-err').style.color='';
+    $('auth-err').textContent = (() => {
+      const m = e?.message || String(e);
+      return m.includes('Invalid login credentials') || m.includes('Invalid login') ? 'E-mail ou senha incorretos.' :
+        m.includes('Email not confirmed')  ? 'Confirme seu e-mail antes de entrar.' :
+        m.includes('already registered')   ? 'E-mail já cadastrado. Faça login.' :
+        m.includes('Invalid API key')      ? 'Chave do sistema inválida.' :
+        m.includes('Failed to fetch')      ? 'Sem conexão com o servidor.' :
+        m || 'Erro ao entrar. Tente novamente.';
+    })();
 
-  } finally {
-    if($('auth-screen').style.display !== 'none'){
+  }finally{
+    // Sempre reabilita o botão se ainda estiver na tela de auth
+    if($('auth-screen') && $('auth-screen').style.display !== 'none'){
       btn.disabled = false;
       btn.textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
     }
@@ -1130,12 +1519,10 @@ async function authSubmit(){
 }
 
 async function logout(){
-  if (!sb) {
-    showAuth();
-    $('auth-err').textContent = 'Erro: Supabase não carregou. Verifique internet/CDN.';
-    return;
-  }
-  await sb.auth.signOut();
+  if(!sb) sb = await initSupabaseClient();
+  if(!sb){ showAuth(); return; }
+  try{ await sb.auth.signOut(); }catch(e){ console.warn('Erro ao sair:', e); }
+  finally{ showAuth(); }
 }
 
 function showAuth(){
@@ -1155,25 +1542,28 @@ function showApp(){
 
 // ── PRESENCE (online users) ───────────────────────
 async function initPresence(){
-  if(!user?.email) return;
+  if(!user?.email || !sb) return;
   try {
     if(presenceChannel){
-      await sb.removeChannel(presenceChannel);
+      try{ await sb.removeChannel(presenceChannel); }catch(e){ console.warn('removeChannel:',e); }
       presenceChannel=null;
     }
     const ch = sb.channel('presence-global', {config:{presence:{key:user.id||user.email}}});
     presenceChannel=ch;
     ch.on('presence',{event:'sync'},()=>{
-      const state = ch.presenceState();
-      const users = [...new Set(Object.values(state).flat().map(u=>u.email||'?'))];
-      const bar = $('online-users');
-      bar.innerHTML = users.length
-        ? users.map(u=>`<span class="online-chip">${esc(u.split('@')[0])}</span>`).join('')
-        : '<span style="color:var(--faint)">Só você</span>';
+      try{
+        const state = ch.presenceState();
+        const users = [...new Set(Object.values(state).flat().map(u=>u.email||'?'))];
+        const bar = $('online-users');
+        if(bar) bar.innerHTML = users.length
+          ? users.map(u=>`<span class="online-chip">${esc(u.split('@')[0])}</span>`).join('')
+          : '<span style="color:var(--faint)">Só você</span>';
+      }catch(e){ console.warn('presence sync:', e); }
     });
     ch.subscribe(async status=>{
       if(status==='SUBSCRIBED'){
-        await ch.track({email:user.email, online_at:new Date().toISOString()});
+        try{ await ch.track({email:user.email, online_at:new Date().toISOString()}); }
+        catch(e){ console.warn('presence track:', e); }
       }
     });
   } catch(e){ console.warn('Presence error:',e); }
@@ -1237,7 +1627,8 @@ function showThreejs(){
   hideViews();
   $('threejs-view').style.display='block';
   setTool('threejs');
-  setTimeout(initThreejsTool, 60);
+  // Aguarda o módulo ES do Three.js estar disponível (pode chegar após o script principal)
+  waitForThree().then(()=>initThreejsTool());
 }
 
 function showMapoteca(){
@@ -1248,6 +1639,17 @@ function showMapoteca(){
 
 
 // ── THREE.JS / VOLUMETRIA 3D ─────────────────────
+
+// Aguarda o módulo Three.js ES carregar (até 8s, checando a cada 80ms)
+function waitForThree(){
+  return new Promise(resolve=>{
+    if(window.THREE){ resolve(); return; }
+    let tries=0;
+    const check=setInterval(()=>{
+      if(window.THREE || tries++ > 100){ clearInterval(check); resolve(); }
+    }, 80);
+  });
+}
 const threejsState = {
   renderer:null, scene:null, camera:null, root:null, canvas:null,
   ready:false, dragging:false, lastX:0, lastY:0, theta:0.78, phi:0.92, radius:55,
@@ -1270,7 +1672,7 @@ function initThreejsTool(){
   const host=$('tj-canvas');
   if(!host || threejsState.ready) { updateThreejsModel(); return; }
   if(!window.THREE){
-    tjSetStatus('Three.js não carregou. Verifique a conexão com o CDN.', 'err');
+    tjSetStatus('Three.js (ES Module) não carregou. Verifique sua conexão.', 'err');
     return;
   }
   const scene = new THREE.Scene();
@@ -1500,6 +1902,7 @@ function dashTab(t){
 
 // ── LOAD PROPOSALS ────────────────────────────────
 async function loadProposals(){
+  if(!sb){ proposals=[]; renderDash(); return; }
   const {data} = await sb.from('proposals').select('*').order('updated_at',{ascending:false});
   proposals = data||[];
   renderDash();
@@ -1529,6 +1932,7 @@ function renderDash(){
 
 // ── CHARTS ───────────────────────────────────────
 function renderCharts(){
+  if(typeof Chart === 'undefined'){ console.warn('Chart.js ainda não carregou.'); return; }
   const count=proposals.length;
   const total=proposals.reduce((s,p)=>s+(Number(p.total)||0),0);
   const avg=count?total/count:0;
@@ -1602,7 +2006,8 @@ function editProposal(id){
 }
 
 async function deleteProposal(id){
-  if(!confirm('Excluir esta proposta?'))return;
+  if(!id || !confirm('Excluir esta proposta?')) return;
+  if(!sb) return;
   await sb.from('proposals').delete().eq('id',id);
   loadProposals();
 }
@@ -1612,6 +2017,11 @@ async function saveProposal(opts={}){
   const btn=$('save-btn'),status=$('save-status');
   if(btn){btn.disabled=true;if(!silent)btn.textContent='Salvando...';}
   if(status && !silent){status.className='save-status';status.textContent='';}
+  if(!sb){
+    if(btn){btn.disabled=false;btn.textContent='Salvar proposta';}
+    if(status && !silent){status.textContent='Sem conexão com o servidor.';status.className='save-status err';}
+    return {ok:false,error:'sb null'};
+  }
   const nome=$('rel-nome').value||'Sem título';
   const final=Math.max(0,fasesT+taxT-descV);
   const payload={user_id:user.id,name:nome,client:$('rel-cli').value||'',typology:$('rel-tipo').value||'',area:flt('rel-area'),total:Math.round(final),updated_at:new Date().toISOString(),data:getCalcData()};
@@ -1854,6 +2264,12 @@ async function handleDocs(ev){
     const path=`${user.id}/${currentId}/${Date.now()}-${Math.random().toString(36).slice(2,7)}-${clean}.${ext}`;
     const meta={name:file.name,size:file.size,type:file.type||'application/octet-stream',ext,added_at:new Date().toISOString(),path:'',storage:'',status:'metadata'};
     try{
+      if(!sb?.storage){
+        meta.status='metadata_only';
+        failed++;
+        proposalDocs.push(meta);
+        continue;
+      }
       const {error}=await sb.storage.from(DOCS_BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'application/octet-stream'});
       if(error) throw error;
       const {data:pub}=sb.storage.from(DOCS_BUCKET).getPublicUrl(path);
@@ -1878,7 +2294,7 @@ async function handleDocs(ev){
 async function openAnexo(i){
   const d=proposalDocs[i];
   if(!d) return;
-  if(d.path){
+  if(d.path && sb?.storage){
     const {data,error}=await sb.storage.from(DOCS_BUCKET).createSignedUrl(d.path,60*10);
     if(!error && data?.signedUrl){window.open(data.signedUrl,'_blank');return;}
   }
@@ -1891,7 +2307,7 @@ async function removeAnexo(i){
   if(!confirm('Remover este documento da proposta?')) return;
   proposalDocs.splice(i,1);
   renderAnexos();
-  if(d.path){
+  if(d.path && sb?.storage){
     try{await sb.storage.from(DOCS_BUCKET).remove([d.path]);}catch(e){console.warn('Não foi possível remover do storage:',e);}
   }
   if(currentId) await saveProposal({silent:true});
@@ -1959,6 +2375,15 @@ function waitForImages(root,timeoutMs=3000){
     });
   }));
 }
+// Aguarda html2pdf carregar via CDN (até 8s) antes de usar
+async function pdfReady(){
+  for(let i=0;i<80;i++){
+    if(typeof html2pdf==='function') return true;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  return false;
+}
+
 function withTimeout(promise,ms,msg){
   let timer;
   const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(msg)),ms);});
@@ -2096,12 +2521,314 @@ const SIMGEO_APP_URL = 'https://simgeoctm.campogrande.ms.gov.br/portal/apps/weba
 const SIMGEO_LAYER_LIMIT = 260;
 let simgeoMode='coords', simgeoLayersCache=null, simgeoLastResult=null, simgeoPdfBusy=false, simgeoArcgisModules=null;
 
+// ── PORTAIS GEO NACIONAIS ─────────────────────────
+const PORTAIS_BR = {
+  BR: [
+    { nome:'Visualizador IBGE', url:'https://mapas.ibge.gov.br', orgao:'IBGE', tipo:'federal', dados:['setores censitários','municípios','biomas','malha viária'] },
+    { nome:'IBGE Malhas / Downloads', url:'https://www.ibge.gov.br/geociencias/downloads-geociencias.html', orgao:'IBGE', tipo:'federal', dados:['shapefiles municipais','setores censitários','limites territoriais'] },
+    { nome:'INMET — Portal', url:'https://portal.inmet.gov.br', orgao:'INMET', tipo:'federal', dados:['normais climatológicas','estações meteorológicas','dados históricos'] },
+    { nome:'LabEEE / UFSC — Arquivos Climáticos', url:'https://labeee.ufsc.br/downloads/arquivos-climaticos', orgao:'LabEEE / UFSC', tipo:'federal', dados:['TRY','TRY-ABNT','zonas bioclimáticas','dados climáticos por cidade'] },
+    { nome:'CAR — Cadastro Ambiental Rural', url:'https://www.car.gov.br', orgao:'MMA', tipo:'federal', dados:['APPs','reserva legal','dados ambientais rurais'] }
+  ],
+  MS: { 'campo grande': [
+    { nome:'SINGEL', url:'http://singel.campogrande.ms.gov.br', orgao:'SEMADUR', tipo:'municipal', dados:['lotes','zoneamento','quadras','logradouros','índices urbanísticos'] },
+    { nome:'SIMGEO — CTM', url:'https://simgeoctm.campogrande.ms.gov.br/portal/apps/webappviewer/index.html?id=cc13c124c8414dc7b61d016be3629366', orgao:'SEMADUR', tipo:'municipal', dados:['CTM','comparação aérea','infraestrutura','uso do solo'] }
+  ]},
+  GO: { 'goiania': [
+    { nome:'Portal Mapa Fácil / Geo 360°', url:'http://portalmapa.goiania.go.gov.br/mapafacil', orgao:'Prefeitura de Goiânia', tipo:'municipal', dados:['zoneamento','parâmetros urbanísticos','lotes'] }
+  ]},
+  DF: { 'brasilia': [
+    { nome:'GeoPortal SEDUH', url:'https://www.geoportal.seduh.df.gov.br/mapa', orgao:'SEDUH', tipo:'estadual', dados:['lotes','parâmetros construtivos','certidões online','31 Regiões Administrativas','uso e ocupação'] }
+  ]},
+  SP: {
+    'sao paulo': [
+      { nome:'GeoSampa', url:'https://geosampa.prefeitura.sp.gov.br', orgao:'SMDU / Prodam', tipo:'municipal', dados:['lotes vetorizados','zoneamento (LPUOS)','CTM','geotécnica','transporte público','+240 layers'] }
+    ],
+    'sao bernardo do campo': [
+      { nome:'GeoBSB', url:'https://geo.saobernardo.sp.gov.br', orgao:'Prefeitura de São Bernardo do Campo', tipo:'municipal', dados:['lotes','mapas cadastrais','zoneamento'] }
+    ]
+  },
+  MG: {
+    'belo horizonte': [
+      { nome:'SIURBE / BH Digital', url:'https://prefeitura.pbh.gov.br/politica-urbana', orgao:'SMPU', tipo:'municipal', dados:['lotes','zoneamento','licenciamento de obras','certidões urbanísticas'] }
+    ],
+    'contagem': [
+      { nome:'Portal Geoprocessamento Contagem', url:'https://geoprocessamento.contagem.mg.gov.br', orgao:'Prefeitura de Contagem', tipo:'municipal', dados:['lotes','zoneamento','infraestrutura'] }
+    ]
+  },
+  ES: { 'vitoria': [
+    { nome:'GeoWeb Vitória', url:'http://geoweb.vitoria.es.gov.br', orgao:'Prefeitura de Vitória', tipo:'municipal', dados:['cadastro','zoneamento','mapas temáticos'] }
+  ]},
+  RJ: { 'rio de janeiro': [
+    { nome:'Data.Rio', url:'https://www.data.rio', orgao:'IPP', tipo:'municipal', dados:['dados abertos','shapefiles','mapas temáticos','uso do solo'] },
+    { nome:'GeoPAL', url:'https://carioca.rio/servicos/geopal', orgao:'Prefeitura do Rio de Janeiro', tipo:'municipal', dados:['PAL','PAA','lotes','edificações','logradouros reconhecidos'] }
+  ]},
+  PR: { 'curitiba': [
+    { nome:'GeoCuritiba (IPPUC)', url:'https://geocuritiba.ippuc.org.br', orgao:'IPPUC', tipo:'municipal', dados:['mapa cadastral','lotes','zoneamento'] },
+    { nome:'CIL — Consulta Informativa de Lote', url:'https://curitiba.pr.gov.br/servicos/consulta-informativa-de-lote-cil/197', orgao:'Prefeitura de Curitiba', tipo:'municipal', dados:['parâmetros por lote','zoneamento','guia amarela digital'] }
+  ]},
+  RS: {
+    'porto alegre': [
+      { nome:'Mapas Digitais SMAMUS', url:'https://prefeitura.poa.br/carta-de-servicos/mapas-digitais-da-smamus', orgao:'SMAMUS', tipo:'municipal', dados:['PDDUA','zoneamento','APP','AEIS','shapefiles','DWG'] },
+      { nome:'GIS SMAMUS — Zoneamento', url:'https://gis-smamus.portoalegre.rs.gov.br', orgao:'SMAMUS', tipo:'municipal', dados:['zoneamento interativo','uso do solo'] }
+    ],
+    'novo hamburgo': [
+      { nome:'SIGNH', url:'https://signh.novohamburgo.rs.gov.br', orgao:'Prefeitura de Novo Hamburgo', tipo:'municipal', dados:['cadastro','zoneamento','lotes'] }
+    ]
+  },
+  SC: { 'itajai': [
+    { nome:'GeoItajaí — Planta Cadastral', url:'https://geoitajai.github.io/geo/plantacadastral.html', orgao:'SEDUH Itajaí', tipo:'municipal', dados:['planta cadastral','lotes','parâmetros de zona','Plano Diretor 2024'] }
+  ]},
+  PE: { 'recife': [
+    { nome:'ESIG — Informações Geográficas do Recife', url:'http://www.recife.pe.gov.br/ESIG', orgao:'Prefeitura do Recife', tipo:'municipal', dados:['geoinformação','lotes','zoneamento urbano','equipamentos públicos'] }
+  ]},
+  CE: { 'fortaleza': [
+    { nome:'Mapas Fortaleza', url:'https://mapas.fortaleza.ce.gov.br', orgao:'Prefeitura de Fortaleza', tipo:'municipal', dados:['lotes','zoneamento','infraestrutura','uso do solo'] }
+  ]},
+  BA: { 'salvador': [
+    { nome:'Cartografia Salvador', url:'http://cartografia.salvador.ba.gov.br', orgao:'Prefeitura de Salvador', tipo:'municipal', dados:['mapas cadastrais','zoneamento','logradouros'] }
+  ]},
+  PB: { 'joao pessoa': [
+    { nome:'GeoJP', url:'http://geo.joaopessoa.pb.gov.br', orgao:'Prefeitura de João Pessoa', tipo:'municipal', dados:['geoprocessamento municipal','zoneamento','cadastro'] }
+  ]},
+  RN: { 'natal': [
+    { nome:'SEMURB — Mapas e Zoneamento', url:'https://www.natal.rn.gov.br/semurb/paginas/ctd-106.html', orgao:'SEMURB', tipo:'municipal', dados:['mapas','zoneamento','uso do solo'] }
+  ]},
+  AL: { 'maceio': [
+    { nome:'Dados Abertos Alagoas — Maceió', url:'https://dados.al.gov.br/catalogo/dataset/municipio-de-maceio', orgao:'Governo de Alagoas', tipo:'estadual', dados:['dados geoespaciais municipais','shapefiles'] }
+  ]},
+  AM: { 'manaus': [
+    { nome:'Mapa de Manaus', url:'https://mapademanaus.manaus.am.gov.br', orgao:'Prefeitura de Manaus', tipo:'municipal', dados:['zoneamento','infraestrutura','uso do solo'] }
+  ]},
+  PI: { 'teresina': [
+    { nome:'Mapas Interativos SEMPLAN', url:'https://semplan.pmt.pi.gov.br/mapas-interativos', orgao:'SEMPLAN', tipo:'municipal', dados:['zonas','regiões','uso do solo'] },
+    { nome:'PRODATER — Mapas de Teresina', url:'https://prodater.pmt.pi.gov.br/mapas-de-teresina', orgao:'PRODATER', tipo:'municipal', dados:['mapas por região','dados geográficos'] }
+  ]},
+  TO: { 'palmas': [
+    { nome:'GeoPalmas', url:'https://geopalmasweb.wixsite.com/geopalmas', orgao:'Prefeitura de Palmas', tipo:'municipal', dados:['dados geoespaciais municipais','zoneamento'] }
+  ]}
+};
+
+function normPortal(str){
+  return String(str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+
+function getPortaisLocais(uf, cidade){
+  const ufKey  = String(uf||'').trim().toUpperCase();
+  const cidKey = normPortal(cidade);
+  const estadoData = PORTAIS_BR[ufKey] || {};
+  const match = Object.keys(estadoData).find(k => normPortal(k) === cidKey);
+  return {
+    municipais: match ? estadoData[match] : [],
+    federais:   PORTAIS_BR.BR
+  };
+}
+
+// ── ARCGIS CONFIGS — cidades com REST público ─────
+const GEO_ARCGIS_CFG = {
+  'curitiba': {
+    nome: 'GeoCuritiba — IPPUC',
+    mapUrl: 'https://geocuritiba.ippuc.org.br/server/rest/services/GeoCuritiba/Publico_GeoCuritiba_MapaCadastral/MapServer',
+    layerIds: [2, 15, 17, 25, 36], // Bairro, Lote Cadastral, Quadra Cadastral, Zoneamento, Zoneamento Lei 15.511
+    appUrl: 'https://geocuritiba.ippuc.org.br/MapaCadastral/'
+  },
+  'contagem': {
+    nome: 'GeoContagem — SMDUH',
+    mapUrl: 'https://geoprocessamento.contagem.mg.gov.br/arcgis/rest/services/SIGM_BD_Publico/Legislacao_Urbana_Publico/MapServer',
+    layerIds: [9], // Zoneamento LC362_2023
+    appUrl: 'https://geoprocessamento.contagem.mg.gov.br/portal/apps/sites/#/geocontagem'
+  }
+};
+
+// Bboxes para refinar geocodificação por cidade (minLng,minLat,maxLng,maxLat)
+const GEO_CIDADE_BBOX = {
+  'campo grande':  '-54.90,-20.75,-54.25,-20.20',
+  'curitiba':      '-49.45,-25.65,-49.15,-25.30',
+  'contagem':      '-44.20,-20.05,-44.00,-19.85',
+  'goiania':       '-49.45,-16.85,-48.95,-16.55',
+  'belo horizonte':'-44.05,-20.05,-43.85,-19.80',
+  'sao paulo':     '-46.85,-23.80,-46.35,-23.40',
+  'rio de janeiro':'-43.80,-23.10,-43.10,-22.75',
+  'porto alegre':  '-51.35,-30.25,-51.05,-29.95',
+  'recife':        '-35.05,-8.15,-34.85,-7.95',
+  'fortaleza':     '-38.65,-3.90,-38.40,-3.70',
+  'salvador':      '-38.55,-13.05,-38.35,-12.85',
+  'manaus':        '-60.10,-3.20,-59.90,-3.00',
+  'brasilia':      '-48.30,-16.10,-47.70,-15.50'
+};
+
+let geoNacionalLastQuery = null; // { cfg, point }
+
+function sgConsultarDispatch(){
+  if(simgeoMode === 'portal') consultarPortalNacional();
+  else consultarSimgeo();
+}
+
+async function geocodePortalCep(cepRaw, localidade, uf){
+  const cidNorm = normPortal(localidade);
+  const bbox = GEO_CIDADE_BBOX[cidNorm] || '';
+  const viacep = await fetchJson(`https://viacep.com.br/ws/${cepRaw}/json/`, {timeout:10000});
+  if(viacep?.erro) throw new Error('CEP não encontrado no ViaCEP.');
+  const line = [viacep.logradouro, viacep.bairro, localidade, uf, 'Brasil'].filter(Boolean).join(', ');
+  const params = {f:'json', SingleLine:line, outFields:'Match_addr,Score', maxLocations:1, countryCode:'BRA'};
+  if(bbox) params.searchExtent = bbox;
+  const geo = await fetchJson(paramsUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates', params), {timeout:15000});
+  const c = geo?.candidates?.[0];
+  if(!c?.location) throw new Error('Não consegui geocodificar o CEP para esse município.');
+  return {lat: Number(c.location.y), lng: Number(c.location.x), address:{...viacep, geocodificado:c.address||line, score:c.score}};
+}
+
+async function consultarPortalNacional(){
+  const cepRaw = ($('sg-portal-cep')?.value||'').replace(/\D/g,'');
+  if(cepRaw.length !== 8){ simgeoStatus('Informe um CEP válido com 8 dígitos.','err'); return; }
+  simgeoStatus('Consultando ViaCEP…','');
+  $('sg-consultar').disabled = true;
+  try {
+    const res  = await fetch(`https://viacep.com.br/ws/${cepRaw}/json/`);
+    const data = await res.json();
+    if(data.erro) throw new Error('CEP não encontrado.');
+    const { uf, localidade, bairro, logradouro } = data;
+    const portais = getPortaisLocais(uf, localidade);
+    const cidNorm = normPortal(localidade);
+    const arcgisCfg = GEO_ARCGIS_CFG[cidNorm] || null;
+
+    let point = null;
+    if(arcgisCfg){
+      simgeoStatus('Geocodificando endereço…','');
+      try{
+        point = await geocodePortalCep(cepRaw, localidade, uf);
+        geoNacionalLastQuery = { cfg: arcgisCfg, point };
+      }catch(e){
+        console.warn('Geocode parcial:', e.message);
+        geoNacionalLastQuery = { cfg: arcgisCfg, point: null };
+      }
+    } else {
+      geoNacionalLastQuery = null;
+    }
+
+    simgeoStatus(`✓ ${localidade} — ${uf}`, 'ok');
+    renderPortaisNacionais(portais, { cidade: localidade, uf, bairro, logradouro, cep: data.cep }, arcgisCfg, point);
+  } catch(e){
+    simgeoStatus('Erro: '+(e.message||'Falha na consulta ViaCEP.'),'err');
+    $('sg-result').innerHTML=`<div class="simgeo-empty">Não foi possível resolver o CEP.<br>Verifique e tente novamente.</div>`;
+  } finally {
+    $('sg-consultar').disabled = false;
+  }
+}
+
+async function consultarGeoNacionalArcGIS(){
+  if(!geoNacionalLastQuery) return;
+  const { cfg, point } = geoNacionalLastQuery;
+  if(!point){ simgeoStatus('Coordenadas não disponíveis. Use o modo Coordenadas ou CEP/endereço.','err'); return; }
+
+  const btn = document.getElementById('geo-nac-arcgis-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Consultando…'; }
+  simgeoStatus(`Identificando camadas ${cfg.nome}…`,'');
+
+  try{
+    const m = await getArcgisModules();
+    const service = { title: cfg.nome, url: cfg.mapUrl, layerIds: cfg.layerIds };
+    const results = await identifyArcMapService(service, point, m);
+    const cleaned = dedupeSimgeoResults(results);
+
+    simgeoLastResult = {
+      point, layers:[], results:cleaned, errors:[], when:new Date(),
+      webMapId: cfg.nome, totalDiscovered: cfg.layerIds.length, mapServices:[service]
+    };
+
+    renderSimgeoResult(simgeoLastResult);
+
+    // Redireciona botão "Abrir mapa oficial" para o portal correto
+    document.querySelectorAll('#sg-result .btn.ghost').forEach(b=>{
+      if(b.textContent.includes('mapa oficial'))
+        b.onclick = ()=>window.open(cfg.appUrl,'_blank','noopener,noreferrer');
+    });
+
+    const found = cleaned.filter(r=>r.features?.length).length;
+    simgeoStatus(`✓ ${cfg.nome} — ${found} camada(s) com dados.`, found?'ok':'');
+  }catch(e){
+    console.error('Erro GeoNacional ArcGIS:',e);
+    simgeoStatus('Erro: '+e.message,'err');
+    if(btn){ btn.disabled=false; btn.textContent='⌖ Analisar via ArcGIS'; }
+  }
+}
+
+function renderPortaisNacionais(portais, meta, arcgisCfg, point){
+  const { cidade, uf, bairro, logradouro, cep } = meta;
+  const temMunicipal = portais.municipais.length > 0;
+
+  function cardHTML(p){
+    const badge = `<span class="portal-card-badge ${p.tipo}">${p.tipo}</span>`;
+    const chips  = (p.dados||[]).slice(0,5).map(d=>`<span class="portal-chip">${d}</span>`).join('');
+    return `<div class="portal-card">
+      <div class="portal-card-top"><span class="portal-card-name">${p.nome}</span>${badge}</div>
+      <span class="portal-card-orgao">${p.orgao}</span>
+      <div class="portal-card-dados">${chips}</div>
+      <div class="portal-card-actions">
+        <a class="portal-btn-link" href="${p.url}" target="_blank" rel="noopener noreferrer">↗ Abrir portal</a>
+      </div>
+    </div>`;
+  }
+
+  const enderecoLine = [logradouro, bairro, `${cidade} — ${uf}`, cep].filter(Boolean).join(', ');
+  let html = `<div class="portal-cidade-tag">📍 <strong>${cidade} — ${uf}</strong>&nbsp;·&nbsp;${cep}</div>`;
+  if(enderecoLine) html += `<div class="simgeo-address">${enderecoLine}</div>`;
+
+  // Bloco ArcGIS (se disponível para a cidade)
+  if(arcgisCfg){
+    const temCoordenada = point?.lat && point?.lng;
+    html += `<div class="portal-section-label">⌖ Integração ArcGIS — ${arcgisCfg.nome}</div>`;
+    html += `<div class="portal-card" style="border-color:var(--eb)">
+      <div class="portal-card-top">
+        <span class="portal-card-name">Consultar dados urbanísticos via ArcGIS</span>
+        <span class="portal-card-badge municipal">arcgis</span>
+      </div>
+      <span class="portal-card-orgao">${temCoordenada
+        ? `Ponto geocodificado: ${point.lat.toFixed(6)}, ${point.lng.toFixed(6)} · score ${Math.round(point.address?.score||0)}`
+        : 'Geocodificação não disponível para este CEP — use coordenadas manuais'
+      }</span>
+      <div class="portal-card-dados">
+        <span class="portal-chip">lote</span>
+        <span class="portal-chip">zoneamento</span>
+        <span class="portal-chip">quadra</span>
+        <span class="portal-chip">bairro</span>
+      </div>
+      <div class="portal-card-actions">
+        ${temCoordenada
+          ? `<button class="portal-btn-link" id="geo-nac-arcgis-btn" onclick="consultarGeoNacionalArcGIS()">⌖ Analisar lote</button>`
+          : `<span style="font-size:10px;color:var(--faint)">Coordenadas indisponíveis</span>`
+        }
+        <a class="portal-btn-link" href="${arcgisCfg.appUrl}" target="_blank" rel="noopener noreferrer">↗ Abrir mapa</a>
+      </div>
+    </div>`;
+  }
+
+  if(temMunicipal){
+    html += `<div class="portal-section-label">Portais municipais</div>`;
+    html += `<div class="portal-grid">${portais.municipais.map(cardHTML).join('')}</div>`;
+  } else {
+    html += `<div class="portal-empty-msg">Nenhum portal mapeado para <strong>${cidade}</strong>.<br>Os portais federais abaixo cobrem todo o Brasil.</div>`;
+  }
+
+  html += `<div class="portal-section-label">Portais federais — disponíveis para todo o Brasil</div>`;
+  html += `<div class="portal-grid">${portais.federais.map(cardHTML).join('')}</div>`;
+
+  $('sg-result').innerHTML = html;
+}
+
 function setSimgeoMode(mode){
-  simgeoMode = mode==='cep' ? 'cep' : 'coords';
-  $('sg-tab-coords').classList.toggle('on',simgeoMode==='coords');
-  $('sg-tab-cep').classList.toggle('on',simgeoMode==='cep');
-  $('sg-coords-box').style.display = simgeoMode==='coords'?'block':'none';
-  $('sg-cep-box').style.display = simgeoMode==='cep'?'block':'none';
+  simgeoMode = ['cep','portal'].includes(mode) ? mode : 'coords';
+  $('sg-tab-coords').classList.toggle('on', simgeoMode==='coords');
+  $('sg-tab-cep').classList.toggle('on',   simgeoMode==='cep');
+  $('sg-tab-portal').classList.toggle('on', simgeoMode==='portal');
+  $('sg-coords-box').style.display  = simgeoMode==='coords'  ? 'block' : 'none';
+  $('sg-cep-box').style.display     = simgeoMode==='cep'     ? 'block' : 'none';
+  $('sg-portal-box').style.display  = simgeoMode==='portal'  ? 'block' : 'none';
+  const btnMapa = $('sg-btn-mapa');
+  if(btnMapa) btnMapa.style.display = simgeoMode==='portal'  ? 'none'  : '';
+  // Atualiza label do botão principal
+  const btnConsultar = $('sg-consultar');
+  if(btnConsultar) btnConsultar.textContent = simgeoMode==='portal' ? 'Buscar portais' : 'Consultar dados';
 }
 
 function simgeoStatus(msg,type=''){
@@ -2531,6 +3258,7 @@ async function copySimgeoResult(){
 async function exportSimgeoPDF(){
   if(simgeoPdfBusy) return;
   if(!simgeoLastResult){ simgeoStatus('Faça uma consulta antes de gerar o PDF.','err'); return; }
+  if(!await pdfReady()){ simgeoStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err'); return; }
   let el=null; simgeoPdfBusy=true;
   try{
     const d=simgeoLastResult;
@@ -2539,10 +3267,10 @@ async function exportSimgeoPDF(){
       const rows=usefulAttrs(r.features[0]?.attributes).slice(0,18).map(([k,v])=>`<tr><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(cleanAttrKey(k))}</td><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(formatAttrValue(v))}</td></tr>`).join('');
       return `<div style="break-inside:avoid;margin-bottom:14px;border:1px solid #F2EDE2;border-radius:8px;overflow:hidden"><div style="background:#F5EDE2;padding:9px 11px;color:#8B5E3C;font-family:system-ui,sans-serif;font-size:11px;font-weight:600">${esc(r.layer.title)}</div><table style="width:100%;border-collapse:collapse">${rows||'<tr><td style="padding:9px;color:#B0A090;font-size:10px;font-family:system-ui,sans-serif">Sem atributos públicos úteis.</td></tr>'}</table></div>`;
     }).join(''):'<div style="font-size:12px;color:#B0A090;font-family:system-ui,sans-serif">Nenhuma camada retornou dados para este ponto.</div>';
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
     simgeoStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF SIMGEO:',e); simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
@@ -2844,14 +3572,15 @@ async function copyMapotecaResult(){
 async function exportMapotecaPDF(){
   if(mapotecaPdfBusy) return;
   if(!mapotecaLastResult){ mapotecaStatus('Faça uma busca antes de gerar o PDF.','err'); return; }
+  if(!await pdfReady()){ mapotecaStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err'); return; }
   let el=null; mapotecaPdfBusy=true;
   try{
     const d=mapotecaLastResult; const info=d.info||{}; const best=d.search.candidates[0];
     const rows=[['Endereço',mapotecaAddressText(d.point.address)],['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],['Bairro',info.bairro||d.point.address?.bairro||'—'],['Loteamento',info.loteamento||'—'],['Quadra',info.quadra||'—'],['Lote',info.lote||'—'],['Área',info.area||'—'],['Cadastro/inscrição',info.cadastro||'—'],['Arquivo',best?best.title:'Não confirmado'],['Link',best?best.url:MAPOTECA_URL]].map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:34%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px;word-break:break-word">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha Mapoteca</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha Mapoteca</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
     mapotecaStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF Mapoteca:',e); mapotecaStatus('Não consegui gerar o PDF da Mapoteca.','err'); }
@@ -3045,16 +3774,17 @@ function fillLabeeeFromSimgeo(){
 async function exportLabeeePDF(){
   if(labeeePdfBusy) return;
   if(!labeeeLastResult){ labeeeStatus('Gere a ficha antes de baixar PDF.','err'); return; }
+  if(!await pdfReady()){ labeeeStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err'); return; }
   let el=null; labeeePdfBusy=true;
   try{
     const d=labeeeLastResult;
     const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
     const rows=[['Local',loc],['CEP',`${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`],['Endereço aproximado',d.endereco?.geocodificado||'Localizado pelo CEP'],['Ponto usado',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
     const tr=rows.map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_B64}" style="width:48px;height:48px;object-fit:contain"><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha LabEEE — Análise Ambiental</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha LabEEE — Análise Ambiental</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha LabEEE.');
     labeeeStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF LabEEE:',e); labeeeStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
@@ -3065,6 +3795,12 @@ async function exportLabeeePDF(){
 // ── PDF PROPOSTA ──────────────────────────────────
 async function exportPDF(){
   if(pdfBusy) return;
+  if(!await pdfReady()){
+    const btn=$('pdf-btn');
+    if(btn){btn.textContent='Gerar PDF';btn.disabled=false;}
+    notifyStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err',5000);
+    return;
+  }
   const btn=$('pdf-btn');
   let el=null;
   pdfBusy=true;
@@ -3102,13 +3838,11 @@ async function exportPDF(){
 
     const htmlContent=`
     <div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative">
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);opacity:0.04;pointer-events:none;z-index:0">
-        <img src="${LOGO_B64}" style="width:340px;height:340px;object-fit:contain">
-      </div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);opacity:0.04;pointer-events:none;z-index:0;font-family:Georgia,serif;font-size:140px;color:#8B5E3C;white-space:nowrap;user-select:none">CH</div>
       <div style="position:relative;z-index:1">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #D4B896">
         <div style="display:flex;align-items:center;gap:14px">
-          <img src="${LOGO_B64}" style="width:52px;height:52px;object-fit:contain;border-radius:4px">
+          <div style="width:52px;height:52px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:15px;color:#8B5E3C;font-weight:bold;letter-spacing:-0.5px;flex-shrink:0">CH</div>
           <div>
             <div style="font-size:20px;color:#8B5E3C;letter-spacing:-0.3px">Chaos</div>
             <div style="font-size:9px;color:#B0A090;letter-spacing:1.5px;text-transform:uppercase;font-family:system-ui,sans-serif">Arquitetura e Urbanismo</div>
@@ -3153,11 +3887,29 @@ async function exportPDF(){
     </div>`;
 
     el=createPdfElement(htmlContent);
-    await waitForImages(el);
     if(document.fonts?.ready) await document.fonts.ready;
     await nextFrame();
+    await nextFrame();
     const fn=safeFileName(nomeRaw,'proposta');
-    const opts={margin:0,filename:'chaos-proposta-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={
+      margin:0,
+      filename:'chaos-proposta-'+fn+'.pdf',
+      image:{type:'jpeg',quality:0.95},
+      html2canvas:{
+        scale:2,
+        useCORS:false,
+        allowTaint:true,
+        backgroundColor:'#FAF7F1',
+        logging:false,
+        scrollX:0,
+        scrollY:0,
+        x:0,
+        y:0,
+        removeContainer:false,
+      },
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['css','legacy']}
+    };
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar o PDF. Tente novamente com menos conteúdo ou recarregue a página.');
     notifyStatus('✓ PDF gerado','ok',3000);
   }catch(e){
@@ -3174,6 +3926,10 @@ async function exportPDF(){
 // ── CARTA PDF ─────────────────────────────────────
 async function exportCarta(){
   if(cartaPdfBusy) return;
+  if(!await pdfReady()){
+    notifyStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err',5000);
+    return;
+  }
   let el=null;
   cartaPdfBusy=true;
   const btn=document.querySelector('#carta-view .carta-actions .btn.solid');
@@ -3190,13 +3946,11 @@ async function exportCarta(){
 
     const htmlContent=`
     <div style="font-family:Georgia,serif;color:#2C1F12;padding:60px 64px;max-width:680px;margin:0 auto;background:#FAF7F1;position:relative;min-height:900px">
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);opacity:0.04;pointer-events:none">
-        <img src="${LOGO_B64}" style="width:320px;height:320px;object-fit:contain">
-      </div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);opacity:0.04;pointer-events:none;font-family:Georgia,serif;font-size:130px;color:#8B5E3C;white-space:nowrap;user-select:none">CH</div>
       <div style="position:relative">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:16px;border-bottom:1.5px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px">
-          <img src="${LOGO_B64}" style="width:44px;height:44px;object-fit:contain;border-radius:3px">
+          <div style="width:44px;height:44px;border-radius:7px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:13px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div>
           <div>
             <div style="font-size:17px;color:#8B5E3C">Chaos</div>
             <div style="font-size:9px;color:#B0A090;letter-spacing:1.5px;text-transform:uppercase;font-family:system-ui,sans-serif">Arquitetura e Urbanismo</div>
@@ -3216,11 +3970,29 @@ async function exportCarta(){
     </div>`;
 
     el=createPdfElement(htmlContent);
-    await waitForImages(el);
     if(document.fonts?.ready) await document.fonts.ready;
     await nextFrame();
+    await nextFrame();
     const fn=safeFileName(assuntoRaw||'carta','carta');
-    const opts={margin:0,filename:'chaos-carta-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={
+      margin:0,
+      filename:'chaos-carta-'+fn+'.pdf',
+      image:{type:'jpeg',quality:0.95},
+      html2canvas:{
+        scale:2,
+        useCORS:false,
+        allowTaint:true,
+        backgroundColor:'#FAF7F1',
+        logging:false,
+        scrollX:0,
+        scrollY:0,
+        x:0,
+        y:0,
+        removeContainer:false,
+      },
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['css','legacy']}
+    };
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a carta.');
   }catch(e){
     console.error('Erro ao gerar carta:',e);
@@ -3241,5 +4013,513 @@ init();
 
 
 </script>
+<!-- ── NBR CHAT WIDGET ────────────────────────────────────── -->
+<div id="notif-toast">
+  <div class="nbr-notif-icon">🔄</div>
+  <div class="nbr-notif-body">
+    <strong id="nbr-toast-title">NBR ATUALIZADA</strong>
+    <p id="nbr-toast-msg">Uma norma consultada foi revisada.</p>
+  </div>
+  <button class="nbr-notif-close" onclick="nbrCloseToast()">✕</button>
+</div>
+<div id="nbr-notif-bubble" class="hidden">!</div>
+<div id="nbr-badge">NBR ASSISTANT</div>
+<button id="nbr-toggle" title="Assistente NBR">
+  <span class="nbr-icon-label" style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.85rem;color:#fff;letter-spacing:.04em;line-height:1;">NBR</span>
+</button>
+<div id="nbr-panel">
+  <div class="nbr-panel-header">
+    <div class="nbr-header-icon">NBR</div>
+    <div class="nbr-header-text">
+      <h2>ASSISTENTE NBR</h2>
+      <p id="nbr-user-label">Consulta ABNT em tempo real</p>
+    </div>
+    <div class="nbr-header-actions">
+      <div id="nbr-loc-badge" onclick="nbrReopenCep()">📍 <span id="nbr-loc-badge-text"></span></div>
+      <div class="nbr-status-dot"></div>
+    </div>
+  </div>
+  <div id="nbr-cep-screen">
+    <div class="nbr-cep-header">
+      <div class="nbr-header-icon">NBR</div>
+      <div>
+        <div class="nbr-cep-title">LOCALIZAÇÃO DA OBRA</div>
+        <div class="nbr-cep-sub">normas específicas do seu município</div>
+      </div>
+    </div>
+    <div class="nbr-cep-body">
+      <div class="nbr-info-box">
+        <strong>📍 POR QUE ISSO IMPORTA?</strong>
+        Com o CEP da obra identificamos zona bioclimática, legislação municipal, riscos geológicos e normas obrigatórias específicas da sua região.
+      </div>
+      <div class="nbr-field">
+        <label>CEP da Obra</label>
+        <input type="text" id="nbr-cep-input" placeholder="00000-000" maxlength="9" inputmode="numeric">
+      </div>
+      <div class="nbr-loc-preview" id="nbr-cep-preview">
+        <span>📍</span>
+        <span id="nbr-cep-preview-text" style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;">Digite o CEP para identificar a localização</span>
+      </div>
+      <div class="nbr-field">
+        <label>Complemento (opcional)</label>
+        <input type="text" id="nbr-cep-complemento" placeholder="Ex: Lote 5, Quadra 3…">
+      </div>
+      <button class="nbr-cep-btn" id="nbr-cep-confirm" disabled onclick="nbrConfirmCep()">CONFIRMAR E INICIAR CONSULTA →</button>
+      <div class="nbr-cep-skip"><button onclick="nbrSkipCep()">Pular — consultar sem localização</button></div>
+    </div>
+  </div>
+  <div class="nbr-tabs">
+    <button class="nbr-tab active" data-nbrtab="buscar">🔍 Buscar</button>
+    <button class="nbr-tab" data-nbrtab="categorias">📚 Categorias</button>
+    <button class="nbr-tab" data-nbrtab="alertas" id="nbr-notif-tab">🔔 Alertas</button>
+    <button class="nbr-tab" data-nbrtab="favoritos">⭐ Favoritos</button>
+  </div>
+
+  <!-- BUSCAR -->
+  <div class="nbr-tab-panel active" id="nbr-tab-buscar">
+    <div class="nbr-search-wrap">
+      <input type="text" id="nbr-search-input" placeholder="Ex: NBR 9050, acessibilidade, incêndio…" autocomplete="off" oninput="nbrSearch(this.value)">
+      <span class="nbr-search-icon">🔍</span>
+    </div>
+    <div class="nbr-obra-chips" style="padding:8px 12px 4px;gap:5px;flex-wrap:wrap;display:flex">
+      <button class="nbr-obra-chip" data-filtro="">Todas</button>
+      <button class="nbr-obra-chip" data-filtro="residencial">🏠 Residencial</button>
+      <button class="nbr-obra-chip" data-filtro="comercial">🏢 Comercial</button>
+      <button class="nbr-obra-chip" data-filtro="educacional">🏫 Educacional</button>
+      <button class="nbr-obra-chip" data-filtro="hospitalar">🏥 Hospitalar</button>
+    </div>
+    <div class="nbr-results" id="nbr-results"></div>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div class="nbr-tab-panel" id="nbr-tab-categorias">
+    <div class="nbr-results" id="nbr-cat-results" style="padding-top:6px"></div>
+  </div>
+
+  <!-- ALERTAS -->
+  <div class="nbr-tab-panel" id="nbr-tab-alertas">
+    <div style="padding:10px 12px 6px;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#475569">Verificação automática via ABNT</span>
+      <button class="nbr-hist-clear" onclick="nbrCheckAllUpdates()">Verificar agora</button>
+    </div>
+    <div class="nbr-notif-list" id="nbr-alertas-list"></div>
+  </div>
+
+  <!-- FAVORITOS -->
+  <div class="nbr-tab-panel" id="nbr-tab-favoritos">
+    <div class="nbr-fav-list" id="nbr-fav-list"></div>
+  </div>
+
+  <div class="nbr-panel-footer">base local ABNT · verificação via catálogo.abnt.org.br</div>
+</div>
+
 </body>
+<script>
+(function(){
+
+// ═══════════════════════════════════════════════════════
+// BASE LOCAL DE NBRs — ABNT / ARQUITETURA E URBANISMO
+// ═══════════════════════════════════════════════════════
+const NBR_DB = [
+// ── PROJETO E DOCUMENTAÇÃO ──────────────────────────
+{id:'6492',  codigo:'NBR 6492',    ano:1994, titulo:'Representação de projetos de arquitetura', cat:'Projeto e Documentação', usos:[], escopo:'Define convenções gráficas, símbolos, escalas e forma de representação para plantas, cortes, elevações e detalhes arquitetônicos.', req:['Plantas, cortes e fachadas obrigatórios no anteprojeto','Escalas normalizadas: 1:50, 1:100, 1:200, 1:500','Hachuras padronizadas por tipo de material','Cotas sempre em milímetros, exceto topografia (metros)','Indicação de Norte magnético em implantações'], comp:['NBR 13531','NBR 13532','NBR 10647']},
+{id:'13531', codigo:'NBR 13531',   ano:1995, titulo:'Elaboração de projetos de edificações — Atividades técnicas', cat:'Projeto e Documentação', usos:[], escopo:'Estabelece as atividades técnicas que compõem a elaboração de projetos de edificações e suas etapas.', req:['Define 7 etapas: LV, EP, AP, PL, PE, AS, PAS','Levantamento de dados obrigatório antes do EP','Anteprojeto deve incluir concepção estrutural e instalações','Projeto legal exige documentos conforme ABNT e legislação local'], comp:['NBR 13532','NBR 6492']},
+{id:'13532', codigo:'NBR 13532',   ano:1995, titulo:'Elaboração de projetos de edificações — Arquitetura', cat:'Projeto e Documentação', usos:[], escopo:'Especifica os requisitos para elaboração do projeto de arquitetura em cada etapa do processo projetual.', req:['Programa de necessidades deve preceder o EP','Estudo preliminar: plantas esquemáticas sem escala definida','Anteprojeto: escala mínima 1:100','Projeto executivo: todas as informações para execução'], comp:['NBR 13531','NBR 6492','NBR 10647']},
+{id:'10647', codigo:'NBR 10647',   ano:1989, titulo:'Desenho técnico — Nomenclatura', cat:'Projeto e Documentação', usos:[], escopo:'Define termos e expressões técnicas utilizados em desenho técnico.', req:['Terminologia padronizada para comunicação entre projetistas','Aplicável a todas as disciplinas de projeto'], comp:['NBR 6492','NBR 8196']},
+{id:'8196',  codigo:'NBR 8196',    ano:1999, titulo:'Desenho técnico — Emprego de escalas', cat:'Projeto e Documentação', usos:[], escopo:'Estabelece as escalas normalizadas e sua aplicação em desenho técnico.', req:['Série preferencial: 1:1, 1:2, 1:5, 1:10, 1:20, 1:50, 1:100, 1:200, 1:500, 1:1000','Escala de redução para projetos arquitetônicos','Escala de ampliação para detalhes construtivos'], comp:['NBR 10647','NBR 6492']},
+{id:'12298', codigo:'NBR 12298',   ano:1990, titulo:'Representação de área de corte por hachuras em desenho técnico', cat:'Projeto e Documentação', usos:[], escopo:'Define os tipos de hachura para representar materiais cortados em desenho técnico.', req:['Concreto: pontos irregulares','Alvenaria: tijolos em espinha','Madeira: fibras longitudinais e transversais','Aço: hachura densa inclinada 45°','Metal em geral: hachura esparsa'], comp:['NBR 6492']},
+// ── ACESSIBILIDADE ───────────────────────────────────
+{id:'9050',  codigo:'NBR 9050',    ano:2020, titulo:'Acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos', cat:'Acessibilidade', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece critérios e parâmetros técnicos a serem observados quando do projeto, construção, instalação e adaptação do meio urbano e rural, e de edificações às condições de acessibilidade.', req:['Faixa livre mínima em calçadas: 1,20m largura × 2,10m altura','Rampa: inclinação máx 8,33% (1:12), largura mín 1,20m','Vaga PcD: 2,50×5,00m, mínimo 2% do total','Porta acessível: vão livre mínimo 0,80m','Banheiro acessível: área de transferência 0,80×1,20m','Balcão de atendimento: altura 0,75–0,85m'], comp:['NBR 16537','NBR 9284','NBR 16071']},
+{id:'16537', codigo:'NBR 16537',   ano:2016, titulo:'Acessibilidade — Sinalização tátil no piso', cat:'Acessibilidade', usos:['comercial','educacional','hospitalar'], escopo:'Define os requisitos para sinalização tátil de alerta e direcional no piso.', req:['Piso tátil direcional: barras paralelas, cor contrastante','Piso tátil de alerta: superfície com bolotas, cor amarela','Largura mínima da faixa: 0,40m','Obrigatório em calçadas, estações e edificações públicas'], comp:['NBR 9050']},
+// ── DESEMPENHO TÉRMICO ───────────────────────────────
+{id:'15575-1',codigo:'NBR 15575-1',ano:2021, titulo:'Edificações habitacionais — Desempenho — Parte 1: Requisitos gerais', cat:'Desempenho', usos:['residencial'], escopo:'Estabelece os requisitos e critérios de desempenho aplicáveis às edificações habitacionais.', req:['Define 3 níveis: Mínimo (M), Intermediário (I), Superior (S)','Vida útil de projeto mínima: 50 anos para estrutura','Critérios de habitabilidade, sustentabilidade e segurança','Verificação por desempenho, não por prescrição de materiais'], comp:['NBR 15575-2','NBR 15575-4','NBR 15575-5','NBR 15220']},
+{id:'15575-2',codigo:'NBR 15575-2',ano:2021, titulo:'Edificações habitacionais — Desempenho — Parte 2: Sistemas estruturais', cat:'Desempenho', usos:['residencial'], escopo:'Requisitos de desempenho para sistemas estruturais de edificações habitacionais.', req:['Resistência a cargas estáticas e dinâmicas','Estado limite de serviço: deformações admissíveis','Estanqueidade à água em estruturas de concreto'], comp:['NBR 15575-1','NBR 6118','NBR 6120']},
+{id:'15575-4',codigo:'NBR 15575-4',ano:2021, titulo:'Edificações habitacionais — Desempenho — Parte 4: Vedações verticais', cat:'Desempenho', usos:['residencial'], escopo:'Requisitos de desempenho para sistemas de vedações verticais internas e externas.', req:['U máx parede externa: 2,50 W/m²K (ZB 1–5 e 7) ou 3,70 (ZB 6 e 8)','CT mínima: 130 kJ/m²K (ZB 1–6)','FLD mínimo: 0,5% em dormitórios','Estanqueidade à chuva conforme zona de chuva'], comp:['NBR 15575-1','NBR 15220-2','NBR 15220-3']},
+{id:'15575-5',codigo:'NBR 15575-5',ano:2021, titulo:'Edificações habitacionais — Desempenho — Parte 5: Coberturas', cat:'Desempenho', usos:['residencial'], escopo:'Requisitos de desempenho para sistemas de cobertura de edificações habitacionais.', req:['U máx cobertura: 2,30 W/m²K (ZB 1–6), 1,00 (ZB 7–8)','FCS ≤ 6,5% (ZB 4–8) ou conforme zona bioclimática','Impermeabilização obrigatória em lajes planas','Inclinação mínima por tipo de telha'], comp:['NBR 15575-1','NBR 15220-3','NBR 10844']},
+{id:'15575-6',codigo:'NBR 15575-6',ano:2021, titulo:'Edificações habitacionais — Desempenho — Parte 6: Sistemas hidrossanitários', cat:'Desempenho', usos:['residencial'], escopo:'Requisitos de desempenho para os sistemas hidrossanitários de edificações habitacionais.', req:['Pressão mínima nas saídas: 10 kPa','Vida útil mínima de tubulações: 20 anos (componentes)','Estanqueidade total do sistema de esgoto'], comp:['NBR 15575-1','NBR 5626','NBR 8160']},
+{id:'15220-1',codigo:'NBR 15220-1',ano:2005, titulo:'Desempenho térmico de edificações — Parte 1: Definições, símbolos e unidades', cat:'Desempenho Térmico', usos:['residencial'], escopo:'Define termos, símbolos e unidades utilizados nas normas de desempenho térmico.', req:['Transmitância térmica U (W/m²K)','Resistência térmica Rt (m²K/W)','Capacidade térmica CT (kJ/m²K)','Atraso térmico φ (horas)','Fator de calor solar FCS (%)'], comp:['NBR 15220-2','NBR 15220-3']},
+{id:'15220-2',codigo:'NBR 15220-2',ano:2005, titulo:'Desempenho térmico de edificações — Parte 2: Métodos de cálculo', cat:'Desempenho Térmico', usos:['residencial'], escopo:'Estabelece os métodos de cálculo de transmitância, resistência térmica e capacidade térmica de elementos construtivos.', req:['Rc = e/λ para camadas homogêneas','Rt = Rsi + ΣRc + Rse','U = 1/Rt','CT = Σ(e × ρ × c)','Rsi = 0,13 m²K/W (paredes); 0,10 (coberturas)','Rse = 0,04 m²K/W em todos os casos'], comp:['NBR 15220-1','NBR 15220-3','NBR 15575']},
+{id:'15220-3',codigo:'NBR 15220-3',ano:2005, titulo:'Desempenho térmico — Parte 3: Zoneamento bioclimático brasileiro', cat:'Desempenho Térmico', usos:['residencial'], escopo:'Define as 8 zonas bioclimáticas brasileiras e as estratégias de condicionamento passivo recomendadas para cada uma.', req:['8 zonas bioclimáticas (ZB1 a ZB8)','Campo Grande/MS = Zona Bioclimática 6','Estratégias passivas por zona: ventilação, inércia, sombreamento','Parâmetros de U e CT por zona e elemento (parede/cobertura)','Absortância superficial α para coberturas'], comp:['NBR 15220-2','NBR 15575-4','NBR 15575-5']},
+// ── ESTRUTURAS ───────────────────────────────────────
+{id:'6118',  codigo:'NBR 6118',    ano:2023, titulo:'Projeto de estruturas de concreto — Procedimento', cat:'Estruturas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece os requisitos básicos exigíveis para o projeto de estruturas de concreto simples, armado e protendido.', req:['Cobrimento nominal mínimo por classe de agressividade ambiental','CAA I (rural seco): 25mm laje, 30mm viga/pilar','CAA II (urbano): 30mm laje, 40mm viga/pilar','CAA III (marinho/industrial): 40mm laje, 50mm viga/pilar','Fissuração máxima: w ≤ 0,3mm (CAA II)','Revisão 2023: atualizações em fadiga e protensão'], comp:['NBR 6120','NBR 6122','NBR 8953']},
+{id:'6120',  codigo:'NBR 6120',    ano:2019, titulo:'Ações para o cálculo de estruturas de edificações', cat:'Estruturas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Fixa as condições exigíveis na determinação dos valores das ações a serem consideradas nos projetos estruturais.', req:['Residencial: sobrecarga mínima 1,5 kN/m²','Comercial escritório: 2,0 kN/m²','Biblioteca: 4,0 a 6,0 kN/m²','Estacionamento veículos leves: 3,0 kN/m²','Cobertura com acesso: 2,0 kN/m²','Cobertura sem acesso: 0,5 kN/m²'], comp:['NBR 6118','NBR 6123','NBR 6122']},
+{id:'6122',  codigo:'NBR 6122',    ano:2022, titulo:'Projeto e execução de fundações', cat:'Estruturas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece os requisitos para projeto e execução de fundações de estruturas.', req:['Investigação geotécnica obrigatória antes do projeto','Sondagem SPT mínimo: 1 furo por 200m² para edificações','Profundidade mínima: 2m abaixo da camada orgânica','Recalque diferencial máximo admissível: L/600','Revisão 2022: novos requisitos de investigação'], comp:['NBR 6118','NBR 6484','NBR 7250']},
+{id:'6123',  codigo:'NBR 6123',    ano:1988, titulo:'Forças devidas ao vento em edificações', cat:'Estruturas', usos:['residencial','comercial'], escopo:'Determina as forças devidas ao vento que devem ser consideradas no projeto de edificações.', req:['Velocidade básica V0 por região do Brasil','Fator topográfico S1, rugosidade S2, estatístico S3','Pressão dinâmica: q = 0,613 × Vk²','Coeficiente de pressão por forma da edificação'], comp:['NBR 6118','NBR 6120','NBR 15421']},
+{id:'8800',  codigo:'NBR 8800',    ano:2008, titulo:'Projeto de estruturas de aço e mistas de aço e concreto de edifícios', cat:'Estruturas', usos:['comercial','industrial'], escopo:'Estabelece os requisitos para o projeto de estruturas de aço e mistas de aço e concreto para edifícios.', req:['Dimensionamento pelo método dos estados limites','Perfis laminados e soldados: verificação de ELU e ELS','Ligações parafusadas e soldadas','Proteção contra corrosão e incêndio obrigatória'], comp:['NBR 6118','NBR 6120','NBR 14432']},
+{id:'9062',  codigo:'NBR 9062',    ano:2017, titulo:'Projeto e execução de estruturas de concreto pré-moldado', cat:'Estruturas', usos:['industrial','comercial'], escopo:'Estabelece as condições exigíveis para projeto e execução de estruturas de concreto pré-moldado.', req:['Classe de resistência mínima: C25','Tolerâncias dimensionais de peças pré-moldadas','Ligações entre elementos: resistência e ductilidade','Transporte e montagem: verificação de esforços extras'], comp:['NBR 6118','NBR 6120','NBR 14432']},
+{id:'14432', codigo:'NBR 14432',   ano:2001, titulo:'Exigências de resistência ao fogo de elementos construtivos de edificações', cat:'Incêndio e Emergência', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece o tempo requerido de resistência ao fogo (TRRF) para elementos construtivos conforme o tipo e altura da edificação.', req:['TRRF varia de 30min a 120min por tipo de ocupação','Edificações residenciais até 12m: TRRF mínimo 30min','Edificações residenciais 30–80m: TRRF 90min','Elementos estruturais: concreto com cobrimento específico ou revestimento intumescente','Vedações corta-fogo: portas e janelas com classificação CF'], comp:['NBR 9077','NBR 11742','NBR 6118']},
+// ── INCÊNDIO E EMERGÊNCIA ────────────────────────────
+{id:'9077',  codigo:'NBR 9077',    ano:2001, titulo:'Saídas de emergência em edifícios', cat:'Incêndio e Emergência', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Fixa as condições que as edificações devem apresentar a fim de que sua população possa abandoná-las em caso de incêndio.', req:['Largura mínima de escada: 1,20m (uso geral)','Distância máxima a percorrer: 30m (sem sprinkler) / 45m (com sprinkler)','Escada enclausurada obrigatória acima de 12m','Pé-direito mínimo em rotas de saída: 2,20m','Portas de saída: abertura no sentido do fluxo de fuga','Carga de ocupação: residencial 7m²/pessoa, escritório 7m²/pessoa'], comp:['NBR 14432','NBR 11742','NBR 12693','NBR 10898']},
+{id:'11742', codigo:'NBR 11742',   ano:2018, titulo:'Porta corta-fogo para saída de emergência', cat:'Incêndio e Emergência', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece os requisitos para portas corta-fogo utilizadas em saídas de emergência.', req:['Classificação: CF-30, CF-60, CF-90, CF-120','Largura mínima: 0,90m (folha simples)','Fechamento automático obrigatório (mola ou dispositivo hidráulico)','Proibida retenção em aberto por cunha ou similar','Manutenção semestral obrigatória'], comp:['NBR 9077','NBR 14432']},
+{id:'13714', codigo:'NBR 13714',   ano:2000, titulo:'Sistemas de hidrantes e de mangotinhos para combate a incêndio', cat:'Incêndio e Emergência', usos:['comercial','industrial','educacional'], escopo:'Fixa os requisitos mínimos para projeto, instalação e manutenção dos sistemas de hidrantes e mangotinhos.', req:['Reserva técnica de incêndio: mínimo 5m³ (residencial/comercial simples)','Pressão mínima no hidrante mais desfavorável: 100 kPa','Distância máxima entre hidrantes: 30m em áreas internas','Mangueiras: diâmetro 38mm ou 63mm conforme classe'], comp:['NBR 12693','NBR 9077']},
+{id:'12693', codigo:'NBR 12693',   ano:2013, titulo:'Sistemas de proteção por extintores de incêndio', cat:'Incêndio e Emergência', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece os requisitos para projetos, instalação e manutenção de sistemas de proteção por extintores de incêndio.', req:['Extintor a cada 250m² (riscos baixos)','Distância máxima a percorrer até extintor: 20m','Altura de instalação: ≤ 1,60m do piso à alça','Sinalização obrigatória com pictograma normalizado','Recarga anual obrigatória'], comp:['NBR 9077','NBR 13714']},
+{id:'17240', codigo:'NBR 17240',   ano:2010, titulo:'Sistemas de detecção e alarme de incêndio — Projeto, instalação, comissionamento e manutenção', cat:'Incêndio e Emergência', usos:['comercial','educacional','hospitalar'], escopo:'Estabelece os requisitos para sistemas de detecção automática e alarme de incêndio.', req:['Detector de fumaça: cobertura máxima 60m² por unidade','Detector termovelocimétrico: cobertura máxima 25m²','Acionador manual a cada 30m de distância percorrida','Sirene com nível de pressão sonora ≥ 65 dB(A)'], comp:['NBR 9077','NBR 10898']},
+{id:'10898', codigo:'NBR 10898',   ano:2013, titulo:'Sistema de iluminação de emergência', cat:'Incêndio e Emergência', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Fixa as condições exigíveis para o sistema de iluminação de emergência em edificações.', req:['Iluminância mínima de 1 lux em rotas de fuga','Autonomia mínima: 1 hora (bloco autônomo)','Sinalização de saída: pictograma fotoluminescente','Instalação a no máximo 3m de distância entre luminárias de emergência'], comp:['NBR 9077','NBR 14432']},
+// ── INSTALAÇÕES HIDROSSANITÁRIAS ─────────────────────
+{id:'5626',  codigo:'NBR 5626',    ano:2020, titulo:'Sistemas prediais de água fria e água quente — Projeto, execução e operação', cat:'Instalações Hidrossanitárias', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Estabelece os requisitos para projeto, execução, operação e manutenção dos sistemas prediais de água fria e quente.', req:['Pressão mínima nas saídas: 10 kPa (vaso sanitário) / 15 kPa (chuveiro)','Pressão máxima em qualquer ponto: 400 kPa','Reservatório: capacidade mínima consumo de 24h','Consumo per capita: 200 L/dia (residencial)','Revisão 2020: inclui água quente e reuso'], comp:['NBR 8160','NBR 10844','NBR 15575-6']},
+{id:'8160',  codigo:'NBR 8160',    ano:1999, titulo:'Sistemas prediais de esgoto sanitário — Projeto e execução', cat:'Instalações Hidrossanitárias', usos:['residencial','comercial'], escopo:'Estabelece as exigências e critérios necessários à elaboração de projetos e à execução de sistemas prediais de esgoto sanitário.', req:['Declividade mínima para tubos horizontais: 2% (DN75-100) / 1% (DN125+)','Distância máxima entre inspeções: 15m','Caixa de gordura obrigatória em cozinhas','Ventilação primária e secundária do ramal de descarga','Sifão obrigatório em todos os aparelhos sanitários'], comp:['NBR 5626','NBR 7229','NBR 10844']},
+{id:'10844', codigo:'NBR 10844',   ano:1989, titulo:'Instalações prediais de águas pluviais', cat:'Instalações Hidrossanitárias', usos:['residencial','comercial'], escopo:'Fixa as exigências e critérios necessários aos projetos das instalações prediais destinadas a coletar, conduzir e encaminhar as águas pluviais.', req:['Intensidade pluviométrica por região (I, mm/min)','Coeficiente de escoamento por tipo de superfície','Declividade mínima de calha: 0,5%','Área de contribuição máxima por conduto','Saída para logradouro ou rede pública'], comp:['NBR 5626','NBR 8160','NBR 15575-5']},
+{id:'7229',  codigo:'NBR 7229',    ano:1993, titulo:'Projeto, construção e operação de sistemas de tanques sépticos', cat:'Instalações Hidrossanitárias', usos:['residencial'], escopo:'Fixa os critérios para projeto, construção e operação de sistemas de tanques sépticos para tratamento de esgotos domésticos.', req:['Volume mínimo por pessoa: 160L (residências até 5 pessoas)','Sumidouro ou vala de infiltração como pós-tratamento','Distância mínima ao lençol freático: 1,50m','Distância mínima a poços: 15m','Limpeza periódica: a cada 1–3 anos'], comp:['NBR 8160','NBR 5626']},
+// ── INSTALAÇÕES ELÉTRICAS ────────────────────────────
+{id:'5410',  codigo:'NBR 5410',    ano:2004, titulo:'Instalações elétricas de baixa tensão', cat:'Instalações Elétricas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Fixa as condições a que devem satisfazer as instalações elétricas de baixa tensão para proteção de pessoas, animais e bens.', req:['Seção mínima de condutores: 2,5mm² (circuito iluminação)','Circuito de tomadas: máx 1.500W ou 10 pontos','Disjuntor diferencial obrigatório em banheiros, cozinhas e áreas externas','Aterramento obrigatório em toda instalação','Distância mínima de tomada ao piso: 0,30m'], comp:['NBR 5101','NBR 14039']},
+{id:'5101',  codigo:'NBR 5101',    ano:2018, titulo:'Iluminação pública — Procedimento', cat:'Instalações Elétricas', usos:[], escopo:'Fixa os requisitos de iluminância e uniformidade para iluminação pública de vias e espaços urbanos.', req:['Via arterial: iluminância mínima 20 lux','Via coletora: iluminância mínima 10 lux','Via local: iluminância mínima 5 lux','Uniformidade mínima U1: 0,40','Fator de manutenção mínimo: 0,70'], comp:['NBR 5413','NBR 5410']},
+// ── ILUMINAÇÃO ───────────────────────────────────────
+{id:'5413',  codigo:'NBR 5413',    ano:1992, titulo:'Iluminância de interiores', cat:'Iluminação', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Fixa os valores de iluminância médias em serviço para iluminação artificial em interiores. Referência histórica — ver também NBR ISO CIE 8995-1.', req:['Sala de estar: 100–150 lux','Escritório geral: 300–500 lux','Sala de aula: 300–500 lux','Consultório médico: 500 lux','Quadro/lousa: mínimo 500 lux','Centro cirúrgico: 1.000–2.000 lux'], comp:['NBR 5410','NBR 5101']},
+{id:'8995',  codigo:'NBR ISO CIE 8995-1', ano:2013, titulo:'Iluminação de ambientes de trabalho internos', cat:'Iluminação', usos:['comercial','educacional','hospitalar'], escopo:'Define os requisitos de iluminância, uniformidade e limitação de ofuscamento para ambientes de trabalho internos.', req:['Escritório: 500 lux (plano de trabalho)','Sala de reunião: 300 lux','Desenho técnico/CAD: 750 lux','IRC mínimo: 80 para ambientes de trabalho','UGR máximo: 19 (escritório), 16 (CAD)'], comp:['NBR 5413','NBR 5410']},
+// ── ACÚSTICA ─────────────────────────────────────────
+{id:'10151', codigo:'NBR 10151',   ano:2019, titulo:'Acústica — Medição e avaliação de níveis de pressão sonora em áreas habitadas', cat:'Acústica', usos:['residencial','comercial'], escopo:'Fixa as condições exigíveis para avaliação da aceitabilidade do ruído em comunidades.', req:['Zona residencial: LA,eq ≤ 55 dB(A) diurno, 45 dB(A) noturno','Zona mista: LA,eq ≤ 60 dB(A) diurno, 50 dB(A) noturno','Horário diurno: 7h–22h, noturno: 22h–7h','Revisão 2019: novos critérios de avaliação'], comp:['NBR 10152','NBR 15575']},
+{id:'10152', codigo:'NBR 10152',   ano:2017, titulo:'Acústica — Níveis de pressão sonora em ambientes internos a edificações', cat:'Acústica', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Fixa os valores de níveis de ruído compatíveis com o conforto acústico em ambientes internos às edificações.', req:['Dormitório: NC-25 a NC-35 (25–35 dB)','Sala de estar: NC-30 a NC-40','Escritório: NC-35 a NC-45','Sala de aula: NC-30 a NC-40','Centro cirúrgico: NC-25'], comp:['NBR 10151','NBR 15575']},
+// ── URBANISMO E PAISAGISMO ───────────────────────────
+{id:'9284',  codigo:'NBR 9284',    ano:1986, titulo:'Equipamento urbano — Classificação', cat:'Urbanismo e Paisagismo', usos:[], escopo:'Classifica os equipamentos urbanos por categoria funcional.', req:['Equipamentos de circulação: calçadas, estacionamentos, rampas','Equipamentos de lazer: playgrounds, quadras, praças','Equipamentos de serviço: lixeiras, bebedouros, abrigos','Equipamentos de comunicação: totens, painéis informativos'], comp:['NBR 9050','NBR 16071']},
+{id:'16071', codigo:'NBR 16071',   ano:2012, titulo:'Playgrounds — Equipamentos para áreas de recreação', cat:'Urbanismo e Paisagismo', usos:[], escopo:'Série de 7 partes que estabelece requisitos de segurança para equipamentos de playgrounds.', req:['Piso impactante obrigatório sob balanços e escorregadores','Altura máxima de queda livre: 3,00m','Área de segurança ao redor de cada equipamento','Sem arestas vivas ou pontas expostas','Manutenção periódica semestral documentada'], comp:['NBR 9050','NBR 9284']},
+// ── MATERIAIS E COMPONENTES ──────────────────────────
+{id:'6136',  codigo:'NBR 6136',    ano:2016, titulo:'Blocos vazados de concreto simples para alvenaria', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Fixa os requisitos para blocos vazados de concreto simples utilizados em alvenaria.', req:['Resistência à compressão mínima: 4,0 MPa (estrutural) / 2,0 MPa (vedação)','Absorção de água máxima: 10%','Dimensões modulares: 14×19×39cm e 19×19×39cm','Variação dimensional máxima: ±2mm'], comp:['NBR 6118','NBR 15575']},
+{id:'15270', codigo:'NBR 15270',   ano:2017, titulo:'Componentes cerâmicos — Blocos e tijolos para alvenaria', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Define os requisitos para blocos e tijolos cerâmicos utilizados em alvenaria estrutural e de vedação.', req:['Resistência mínima à compressão: 1,5 MPa (vedação) / 3,0 MPa (estrutural)','Absorção de água: 8–22% para vedação','Variação dimensional máxima: ±3mm','Identificação obrigatória do fabricante no produto'], comp:['NBR 6118','NBR 15575']},
+{id:'13276', codigo:'NBR 13276',   ano:2016, titulo:'Argamassa para assentamento e revestimento de paredes e tetos — Preparo da mistura e determinação do índice de consistência', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Fixa os requisitos para argamassas de assentamento e revestimento.', req:['Consistência mínima: 255mm (índice de espalhamento)','Tempo de início de pega mínimo: 1 hora','Argamassa industrializada: data de validade obrigatória'], comp:['NBR 15270','NBR 13818']},
+{id:'13818', codigo:'NBR 13818',   ano:1997, titulo:'Placas cerâmicas para revestimento — Especificação e métodos de ensaio', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Fixa os requisitos para placas cerâmicas destinadas ao revestimento de pisos e paredes.', req:['PEI 0: paredes internas sem tráfego','PEI 3: pisos de uso doméstico normal','PEI 5: pisos de uso comercial intenso','Absorção de água por grupo: BI (<0,5%) a BV (>10%)','Resistência à flexão mínima: 15 MPa'], comp:['NBR 15275','NBR 14081']},
+// ── SEGURANÇA ────────────────────────────────────────
+{id:'15421', codigo:'NBR 15421',   ano:2006, titulo:'Projeto de estruturas resistentes a sismos', cat:'Estruturas', usos:['residencial','comercial'], escopo:'Estabelece os requisitos para o projeto de estruturas resistentes a sismos no território nacional.', req:['Zoneamento sísmico do Brasil: zonas 0 a 4','Maioria do Brasil: zona 0 (aceleração < 0,025g)','Região do AC/RO e litoral: zonas 1–2','Verificação obrigatória em estruturas especiais mesmo em zona 0'], comp:['NBR 6118','NBR 6123']},
+// ── DOCUMENTAÇÃO ACADÊMICA ───────────────────────────
+{id:'14724', codigo:'NBR 14724',   ano:2011, titulo:'Informação e documentação — Trabalhos acadêmicos — Apresentação', cat:'Documentação Acadêmica', usos:[], escopo:'Especifica os princípios gerais para a elaboração de trabalhos acadêmicos, visando sua apresentação à instituição.', req:['Margens: superior e esquerda 3cm, inferior e direita 2cm','Fonte mínima: Times New Roman 12 ou Arial 12','Espaçamento entre linhas: 1,5 (texto) / simples (citações longas, notas)','Numeração: a partir da introdução, algarismos arábicos','Capa, folha de rosto e sumário obrigatórios'], comp:['NBR 10520','NBR 6023','NBR 6028']},
+{id:'10520', codigo:'NBR 10520',   ano:2023, titulo:'Informação e documentação — Citações em documentos', cat:'Documentação Acadêmica', usos:[], escopo:'Especifica as características exigidas para apresentação de citações em documentos.', req:['Citação direta curta (até 3 linhas): entre aspas no texto','Citação direta longa (mais de 3 linhas): recuo 4cm, sem aspas, fonte menor','Sistema autor-data ou numérico','Revisão 2023: atualização de formatos digitais e DOI'], comp:['NBR 6023','NBR 14724']},
+{id:'6023',  codigo:'NBR 6023',    ano:2018, titulo:'Informação e documentação — Referências', cat:'Documentação Acadêmica', usos:[], escopo:'Fixa os elementos a serem incluídos nas referências e estabelece convenções para transcrição e apresentação da informação.', req:['Autoria: SOBRENOME, Nome. para pessoa física','Editora e local obrigatórios para livros','ISSN/ISBN quando disponível','DOI para documentos eletrônicos','Revisão 2018: inclui novos formatos digitais'], comp:['NBR 14724','NBR 10520']},
+// ── ACESSIBILIDADE COMPLEMENTAR ──────────────────────
+{id:'16800', codigo:'NBR 16800',   ano:2020, titulo:'Acessibilidade em edificações, mobiliário, espaços e equipamentos urbanos — Síntese', cat:'Acessibilidade', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Norma de síntese que consolida os principais parâmetros de acessibilidade para rápida consulta.', req:['Complementar à NBR 9050:2020','Referência rápida de dimensionamentos','Tabelas e figuras resumo'], comp:['NBR 9050','NBR 16537']},
+// ── SUSTENTABILIDADE ─────────────────────────────────
+{id:'15112', codigo:'NBR 15112',   ano:2004, titulo:'Resíduos da construção civil e resíduos volumosos — Áreas de transbordo e triagem', cat:'Sustentabilidade', usos:[], escopo:'Define diretrizes para implantação e operação de áreas de transbordo e triagem de resíduos de construção civil.', req:['Resolução CONAMA 307/2002: base legal','Separação obrigatória: Classes A, B, C, D','Plano de Gerenciamento de Resíduos obrigatório para obras >20.000m²'], comp:['NBR 15113','NBR 15114']},
+];
+
+// ─── STATE ───────────────────────────────────────────
+const S = { selectedFiltro:'', pendingAlerts:0, location:null, updateCache:{} };
+
+function getCurrentUser(){
+  if(typeof user !== 'undefined' && user) return user.email || user.id || 'anon';
+  return 'anon';
+}
+function sKey(t){ return `nbr_${getCurrentUser()}_${t}`; }
+function getFavs()   { try{ return JSON.parse(localStorage.getItem(sKey('favs'))||'[]'); }catch{ return []; } }
+function saveFavs(f) { localStorage.setItem(sKey('favs'), JSON.stringify(f)); }
+function getAlerts() { try{ return JSON.parse(localStorage.getItem(sKey('alerts'))||'[]'); }catch{ return []; } }
+function saveAlerts(a){ localStorage.setItem(sKey('alerts'), JSON.stringify(a)); }
+
+// ─── DOM ─────────────────────────────────────────────
+const toggle      = document.getElementById('nbr-toggle');
+const panel       = document.getElementById('nbr-panel');
+const badge       = document.getElementById('nbr-badge');
+const notifBubble = document.getElementById('nbr-notif-bubble');
+
+function togglePanel(){
+  const open = panel.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  badge.classList.toggle('hidden', open);
+  if(open){
+    notifBubble.classList.add('hidden');
+    S.pendingAlerts = 0;
+    nbrSearch('');
+    renderCategorias();
+    renderAlertas();
+    renderFavs();
+  }
+}
+toggle.addEventListener('click', togglePanel);
+
+// ─── TABS ─────────────────────────────────────────────
+document.querySelectorAll('.nbr-tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.nbr-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nbr-tab-panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('nbr-tab-'+t.dataset.nbrtab).classList.add('active');
+    if(t.dataset.nbrtab==='categorias') renderCategorias();
+    if(t.dataset.nbrtab==='alertas')    renderAlertas();
+    if(t.dataset.nbrtab==='favoritos')  renderFavs();
+  });
+});
+
+// ─── FILTRO CHIPS ────────────────────────────────────
+document.querySelectorAll('[data-filtro]').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-filtro]').forEach(x=>x.classList.remove('selected'));
+    c.classList.add('selected');
+    S.selectedFiltro = c.dataset.filtro;
+    nbrSearch(document.getElementById('nbr-search-input').value);
+  });
+});
+// seleciona "Todas" por padrão
+document.querySelector('[data-filtro=""]').classList.add('selected');
+
+// ─── SEARCH ──────────────────────────────────────────
+function nbrSearchFn(q){
+  q = (q||'').toLowerCase().trim();
+  return NBR_DB.filter(n=>{
+    const matchFiltro = !S.selectedFiltro || n.usos.includes(S.selectedFiltro);
+    if(!matchFiltro) return false;
+    if(!q) return true;
+    return n.codigo.toLowerCase().includes(q)
+        || n.titulo.toLowerCase().includes(q)
+        || n.cat.toLowerCase().includes(q)
+        || n.escopo.toLowerCase().includes(q)
+        || n.req.some(r=>r.toLowerCase().includes(q))
+        || String(n.ano).includes(q);
+  });
+}
+
+function nbrSearch(q){
+  const results = nbrSearchFn(q);
+  const container = document.getElementById('nbr-results');
+  if(!results.length){
+    container.innerHTML = `<div class="nbr-empty-search">Nenhuma norma encontrada para<br><strong>"${q}"</strong><br><br>Tente o número (ex: 9050), tema ou palavra-chave.</div>`;
+    return;
+  }
+  container.innerHTML = results.map(n=>cardHTML(n)).join('');
+  bindCards(container);
+}
+
+// ─── CATEGORIAS ──────────────────────────────────────
+function renderCategorias(){
+  const cats = [...new Set(NBR_DB.map(n=>n.cat))];
+  const container = document.getElementById('nbr-cat-results');
+  container.innerHTML = cats.map(cat=>{
+    const normas = NBR_DB.filter(n=>n.cat===cat);
+    return `<div class="nbr-cat-header">${cat} <span style="color:#334155">(${normas.length})</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px;padding:0 2px 6px">${normas.map(n=>cardHTML(n)).join('')}</div>`;
+  }).join('');
+  bindCards(container);
+}
+
+// ─── CARD ────────────────────────────────────────────
+function updateDot(id){
+  const s = S.updateCache[id];
+  if(!s) return `<span class="nbr-update-dot unknown" title="Não verificado"></span>`;
+  if(s==='ok')   return `<span class="nbr-update-dot ok" title="Versão conhecida atual"></span>`;
+  if(s==='warn') return `<span class="nbr-update-dot warn" title="Possível atualização disponível"></span>`;
+  if(s==='checking') return `<span class="nbr-update-dot checking" title="Verificando…"></span>`;
+  return `<span class="nbr-update-dot unknown" title="Verificação indisponível"></span>`;
+}
+
+function updateMsg(id){
+  const s = S.updateCache[id];
+  if(!s) return '';
+  if(s==='ok')   return `<div class="nbr-update-msg ok">✓ Sem atualizações detectadas pelo catálogo ABNT.</div>`;
+  if(s==='warn') return `<div class="nbr-update-msg warn">⚠️ Possível atualização disponível. Confirme em <a href="https://catalogo.abnt.org.br" target="_blank" style="color:#f59e0b">catalogo.abnt.org.br</a></div>`;
+  if(s==='checking') return `<div class="nbr-update-msg unknown">Verificando no catálogo ABNT…</div>`;
+  return `<div class="nbr-update-msg unknown">Não foi possível verificar automaticamente. <a href="https://catalogo.abnt.org.br" target="_blank" style="color:#64748b">Verificar manualmente →</a></div>`;
+}
+
+function isFav(id){ return getFavs().includes(id); }
+
+function cardHTML(n){
+  const favd = isFav(n.id);
+  const compChips = (n.comp||[]).map(c=>`<button class="nbr-card-link" onclick="event.stopPropagation();nbrSearchByCode('${c}')">${c}</button>`).join('');
+  return `<div class="nbr-card" data-id="${n.id}">
+    <div class="nbr-card-head">
+      <span class="nbr-card-badge">${n.codigo}</span>
+      <div class="nbr-card-info">
+        <div class="nbr-card-title">${n.titulo}</div>
+        <div class="nbr-card-meta">
+          <span class="nbr-card-year">${n.ano}</span>
+          <span class="nbr-card-cat">${n.cat}</span>
+          ${updateDot(n.id)}
+        </div>
+      </div>
+      <div class="nbr-card-actions">
+        <button class="nbr-icon-btn ${favd?'starred':''}" data-fav="${n.id}" onclick="event.stopPropagation();nbrToggleFavItem('${n.id}',this)" title="${favd?'Remover favorito':'Favoritar'}">
+          ${favd?'⭐':'☆'}
+        </button>
+        <button class="nbr-icon-btn" onclick="event.stopPropagation();nbrVerificarUm('${n.id}')" title="Verificar atualização no catálogo ABNT">↺</button>
+      </div>
+    </div>
+    <div class="nbr-card-body">
+      <div class="nbr-card-escopo">${n.escopo}</div>
+      <div class="nbr-card-reqs">${(n.req||[]).map(r=>`<div class="nbr-card-req">${r}</div>`).join('')}</div>
+      <div class="nbr-card-links">
+        <a class="nbr-card-link primary" href="https://catalogo.abnt.org.br/catalog/search.do?q=${encodeURIComponent(n.codigo)}" target="_blank" rel="noopener noreferrer">↗ ABNT Catálogo</a>
+        ${compChips}
+      </div>
+      ${updateMsg(n.id)}
+    </div>
+  </div>`;
+}
+
+function bindCards(root){
+  root.querySelectorAll('.nbr-card').forEach(card=>{
+    card.querySelector('.nbr-card-head').addEventListener('click', ()=>{
+      card.classList.toggle('expanded');
+    });
+  });
+}
+
+// ─── FAVORITOS ───────────────────────────────────────
+function nbrToggleFavItemFn(id, btn){
+  const favs = getFavs();
+  const exists = favs.includes(id);
+  if(exists){ saveFavs(favs.filter(f=>f!==id)); if(btn){ btn.textContent='☆'; btn.classList.remove('starred'); } }
+  else       { favs.push(id); saveFavs(favs); if(btn){ btn.textContent='⭐'; btn.classList.add('starred'); } }
+}
+
+function renderFavs(){
+  const favs = getFavs();
+  const list = document.getElementById('nbr-fav-list');
+  if(!favs.length){ list.innerHTML=`<div class="nbr-empty-search">Nenhum favorito.<br>Clique em ☆ em qualquer norma para salvar.</div>`; return; }
+  const normas = favs.map(id=>NBR_DB.find(n=>n.id===id)).filter(Boolean);
+  list.innerHTML = `<div style="display:flex;flex-direction:column;gap:7px;padding:8px 10px">${normas.map(n=>cardHTML(n)).join('')}</div>`;
+  bindCards(list);
+}
+
+// ─── VERIFICAÇÃO ABNT ────────────────────────────────
+const PROXY = 'https://api.allorigins.win/raw?url=';
+
+async function verificarNbr(n){
+  setUpdateCache(n.id, 'checking');
+  refreshCard(n.id);
+  try{
+    const url = `https://catalogo.abnt.org.br/catalog/search.do?q=${encodeURIComponent(n.codigo)}`;
+    const res = await fetch(PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+    if(!res.ok) throw new Error('proxy error');
+    const html = await res.text();
+    // Busca anos após o ano conhecido na resposta do catálogo
+    const anos = (html.match(/\b(20[12]\d)\b/g)||[]).map(Number);
+    const maxAno = anos.length ? Math.max(...anos) : 0;
+    if(maxAno > n.ano){
+      setUpdateCache(n.id, 'warn');
+      addAlerta(n, maxAno);
+    } else {
+      setUpdateCache(n.id, 'ok');
+    }
+  }catch{
+    setUpdateCache(n.id, 'unavailable');
+  }
+  refreshCard(n.id);
+}
+
+function setUpdateCache(id, status){ S.updateCache[id]=status; }
+
+function addAlerta(n, anoDetectado){
+  const alerts = getAlerts();
+  if(alerts.find(a=>a.id===n.id)) return;
+  alerts.unshift({ id:n.id, codigo:n.codigo, titulo:n.titulo, anoBase:n.ano, anoDetectado, date:new Date().toLocaleDateString('pt-BR'), lido:false });
+  saveAlerts(alerts);
+  S.pendingAlerts++;
+  notifBubble.textContent = S.pendingAlerts;
+  notifBubble.classList.remove('hidden');
+  document.getElementById('notif-toast').classList.add('show');
+  document.getElementById('nbr-toast-title').textContent = '🔔 NORMA ATUALIZADA';
+  document.getElementById('nbr-toast-msg').textContent = `${n.codigo} — possível revisão detectada (${anoDetectado}).`;
+  setTimeout(()=>document.getElementById('notif-toast').classList.remove('show'), 7000);
+}
+
+function renderAlertas(){
+  const alerts = getAlerts();
+  const list = document.getElementById('nbr-alertas-list');
+  if(!alerts.length){
+    list.innerHTML=`<div class="nbr-empty-search" style="margin-top:1.5rem">Nenhum alerta ainda.<br><br>Clique em <strong>↺</strong> em qualquer norma<br>ou em <strong>Verificar agora</strong> para checar<br>atualizações no catálogo ABNT.</div>`;
+    return;
+  }
+  list.innerHTML = alerts.map(a=>`
+    <div class="nbr-notif-item ${a.lido?'':'new'}">
+      <div class="nbr-notif-dot ${a.lido?'read':''}"></div>
+      <div class="nbr-notif-nbody">
+        <strong>${a.codigo}</strong>
+        <p>${a.titulo}</p>
+        <span>Base local: ${a.anoBase} · Detectado: ${a.anoDetectado} · ${a.date}</span>
+      </div>
+      <a class="nbr-consult-btn" href="https://catalogo.abnt.org.br/catalog/search.do?q=${encodeURIComponent(a.codigo)}" target="_blank" rel="noopener noreferrer">Verificar</a>
+    </div>`).join('');
+  // marca como lido
+  alerts.forEach(a=>a.lido=true);
+  saveAlerts(alerts);
+}
+
+async function checkAllUpdates(){
+  for(const n of NBR_DB){
+    await verificarNbr(n);
+    await new Promise(r=>setTimeout(r,400)); // throttle para não sobrecarregar o proxy
+  }
+  renderAlertas();
+}
+
+function refreshCard(id){
+  document.querySelectorAll(`.nbr-card[data-id="${id}"]`).forEach(card=>{
+    const dot = card.querySelector('.nbr-update-dot');
+    if(dot) dot.outerHTML = updateDot(id);
+    const msg = card.querySelector('.nbr-update-msg');
+    const body = card.querySelector('.nbr-card-body');
+    if(body){
+      const existing = body.querySelector('.nbr-update-msg');
+      if(existing) existing.outerHTML = updateMsg(id);
+      else body.insertAdjacentHTML('beforeend', updateMsg(id));
+    }
+  });
+}
+
+// ─── CEP SCREEN ──────────────────────────────────────
+const cepInput   = document.getElementById('nbr-cep-input');
+const cepConfirm = document.getElementById('nbr-cep-confirm');
+const cepPreview = document.getElementById('nbr-cep-preview');
+const cepPreviewText = document.getElementById('nbr-cep-preview-text');
+
+cepInput.addEventListener('input', ()=>{
+  let v = cepInput.value.replace(/\D/g,'').slice(0,8);
+  if(v.length>5) v=v.slice(0,5)+'-'+v.slice(5);
+  cepInput.value=v;
+  if(v.replace('-','').length===8) fetchCep(v);
+  else{ cepConfirm.disabled=true; cepPreview.classList.remove('loaded'); cepPreviewText.innerHTML='Digite o CEP para identificar a localização'; S.location=null; }
+});
+cepInput.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!cepConfirm.disabled) confirmCep(); });
+
+async function fetchCep(cep){
+  cepPreviewText.innerHTML='<span style="font-family:\'IBM Plex Mono\',monospace;font-size:.72rem;color:#475569">Buscando...</span>';
+  try{
+    const r=await fetch(`https://viacep.com.br/ws/${cep.replace('-','')}/json/`);
+    const d=await r.json();
+    if(d.erro){ cepPreviewText.innerHTML='❌ CEP não encontrado'; cepConfirm.disabled=true; return; }
+    S.location={cep, logradouro:d.logradouro, bairro:d.bairro, cidade:d.localidade, uf:d.uf};
+    const zbMap={AC:'1',AM:'1',PA:'1',RO:'1',RR:'1',AP:'1',TO:'2',MA:'3',PI:'3',CE:'3',RN:'3',PB:'3',PE:'3',AL:'3',SE:'3',BA:'4',MT:'3',MS:'4',GO:'4',DF:'4',MG:'5',ES:'5',RJ:'5',SP:'5',PR:'5',SC:'6',RS:'6'};
+    S.location.zonaBio = zbMap[d.uf]||'4';
+    cepPreview.classList.add('loaded');
+    cepPreviewText.innerHTML=`<div class="nbr-loc-text"><strong>${d.localidade} — ${d.uf}</strong>${d.logradouro?'<br>'+d.logradouro:''}<div class="nbr-cep-tags" style="margin-top:5px"><span class="nbr-cep-tag">ZB ${S.location.zonaBio}</span>${['SC','RJ','ES','PE','AL','BA'].includes(d.uf)?'<span class="nbr-cep-tag warn">⚠️ Risco Geológico</span>':''}</div></div>`;
+    cepConfirm.disabled=false;
+  }catch{ cepPreviewText.innerHTML='⚠️ Erro ao buscar CEP'; cepConfirm.disabled=true; }
+}
+
+function confirmCep(){
+  const comp=document.getElementById('nbr-cep-complemento').value.trim();
+  if(comp&&S.location) S.location.complemento=comp;
+  closeCepScreen();
+}
+function skipCep(){ S.location=null; closeCepScreen(); }
+function closeCepScreen(){
+  const screen=document.getElementById('nbr-cep-screen');
+  if(!screen) return;
+  screen.style.cssText='opacity:0;transform:translateY(-10px);transition:all .3s ease';
+  setTimeout(()=>screen.remove(),300);
+  if(S.location){
+    const lb=document.getElementById('nbr-loc-badge');
+    document.getElementById('nbr-loc-badge-text').textContent=`${S.location.cidade}/${S.location.uf}`;
+    if(lb) lb.classList.add('visible');
+  }
+}
+function reopenCep(){
+  const inp=document.getElementById('nbr-search-input');
+  if(inp){ inp.value=''; inp.focus(); }
+}
+
+// ─── GLOBAIS ─────────────────────────────────────────
+window.nbrTogglePanel     = togglePanel;
+window.nbrSearch          = nbrSearch;
+window.nbrSearchByCode    = q=>{ nbrSearch(q); document.getElementById('nbr-search-input').value=q; document.querySelectorAll('.nbr-tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.nbr-tab-panel').forEach(x=>x.classList.remove('active')); document.querySelector('[data-nbrtab="buscar"]').classList.add('active'); document.getElementById('nbr-tab-buscar').classList.add('active'); };
+window.nbrToggleFav       = (id,btn)=>nbrToggleFavItemFn(id,btn);
+window.nbrToggleFavItem   = (id,btn)=>nbrToggleFavItemFn(id,btn);
+window.nbrCheckAllUpdates = ()=>checkAllUpdates();
+window.nbrVerificarUm     = id=>{ const n=NBR_DB.find(x=>x.id===id); if(n) verificarNbr(n); };
+window.nbrCloseToast      = ()=>document.getElementById('notif-toast').classList.remove('show');
+window.nbrSkipCep         = skipCep;
+window.nbrConfirmCep      = confirmCep;
+window.nbrReopenCep       = reopenCep;
+
+// Carrega resultados iniciais ao abrir
+nbrSearch('');
+
+})();
+</script>
 </html>
