@@ -591,6 +591,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 .nbr-messages::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}
 .nbr-msg{display:flex;flex-direction:column;max-width:90%;animation:nbr-fadeup .3s ease}
 @keyframes nbr-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .nbr-msg.user{align-self:flex-end;align-items:flex-end}
 .nbr-msg.bot{align-self:flex-start;align-items:flex-start}
 .nbr-bubble{padding:10px 13px;border-radius:14px;font-size:.83rem;line-height:1.55}
@@ -800,6 +801,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
     <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
     <div class="dock-sep" aria-hidden="true"></div>
+    <button class="dock-btn" id="tool-materiais" onclick="showMateriais()"><span class="ico">🧱</span>Materiais</button>
     <button class="dock-btn" id="tool-nbr" onclick="nbrTogglePanel()"><span class="ico">⚖</span>Normas NBR</button>
   </nav>
 
@@ -875,10 +877,114 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
         </div>
         <span class="hall-go">Consultar dados →</span>
       </button>
+      <button class="hall-card" onclick="showMateriais()">
+        <div>
+          <div class="hall-icon">🧱</div>
+          <h2>Materiais</h2>
+          <p>Biblioteca de materiais construtivos com inércia térmica, sustentabilidade, custo e adequação por Zona Bioclimática.</p>
+        </div>
+        <span class="hall-go">Ver biblioteca →</span>
+      </button>
     </div>
   </div>
 
 
+
+  <!-- MATERIAIS -->
+  <div id="materiais-view" style="display:none">
+    <div class="dash-top">
+      <div class="dash-title">Biblioteca de Materiais</div>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+    </div>
+
+    <!-- ZB BAR -->
+    <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint);flex-shrink:0">ZB</span>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;flex:1" id="mat-zb-pills">
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="1" onclick="matSetZB(1)">ZB1</button>
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="2" onclick="matSetZB(2)">ZB2</button>
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="3" onclick="matSetZB(3)">ZB3</button>
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="4" onclick="matSetZB(4)">ZB4</button>
+        <button class="btn solid"  style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="5" onclick="matSetZB(5)">ZB5</button>
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="6" onclick="matSetZB(6)">ZB6</button>
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="7" onclick="matSetZB(7)">ZB7</button>
+        <button class="btn ghost" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:999px" data-zb="8" onclick="matSetZB(8)">ZB8</button>
+      </div>
+      <div style="width:1px;height:18px;background:var(--border);flex-shrink:0"></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap" id="mat-amb-group">
+        <button class="btn solid" style="font-size:10px;padding:4px 10px" data-a="parede"    onclick="matSetAmb('parede')">Parede</button>
+        <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="cobertura" onclick="matSetAmb('cobertura')">Cobertura</button>
+        <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="piso"      onclick="matSetAmb('piso')">Piso</button>
+        <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="todos"     onclick="matSetAmb('todos')">Todos</button>
+      </div>
+    </div>
+
+    <div id="mat-zb-note" style="font-size:11px;color:var(--muted);background:var(--el);border:0.5px solid var(--eb);border-radius:8px;padding:.6rem .9rem;margin-bottom:.9rem;line-height:1.6"></div>
+
+    <!-- FILTROS -->
+    <div style="display:flex;gap:6px;margin-bottom:.9rem;flex-wrap:wrap;align-items:center">
+      <button class="btn solid"  data-fi="todos"  onclick="matSetFilter('todos')"  style="font-size:10px;padding:4px 11px;border-radius:999px">Todos</button>
+      <button class="btn ghost"  data-fi="alta"   onclick="matSetFilter('alta')"   style="font-size:10px;padding:4px 11px;border-radius:999px">Alta inércia</button>
+      <button class="btn ghost"  data-fi="media"  onclick="matSetFilter('media')"  style="font-size:10px;padding:4px 11px;border-radius:999px">Média inércia</button>
+      <button class="btn ghost"  data-fi="baixa"  onclick="matSetFilter('baixa')"  style="font-size:10px;padding:4px 11px;border-radius:999px">Baixa inércia</button>
+      <div style="width:1px;height:16px;background:var(--border)"></div>
+      <button class="btn solid"  data-fc="todas"          onclick="matSetCat('todas')"         style="font-size:10px;padding:4px 11px;border-radius:6px">Todas</button>
+      <button class="btn ghost"  data-fc="Alvenaria"      onclick="matSetCat('Alvenaria')"      style="font-size:10px;padding:4px 11px;border-radius:6px">Alvenaria</button>
+      <button class="btn ghost"  data-fc="Concreto"       onclick="matSetCat('Concreto')"       style="font-size:10px;padding:4px 11px;border-radius:6px">Concreto</button>
+      <button class="btn ghost"  data-fc="Natural"        onclick="matSetCat('Natural')"        style="font-size:10px;padding:4px 11px;border-radius:6px">Natural</button>
+      <button class="btn ghost"  data-fc="Industrializado" onclick="matSetCat('Industrializado')" style="font-size:10px;padding:4px 11px;border-radius:6px">Industrializado</button>
+      <button class="btn ghost"  data-fc="Cobertura"      onclick="matSetCat('Cobertura')"      style="font-size:10px;padding:4px 11px;border-radius:6px">Cobertura</button>
+      <button class="btn ghost"  data-fc="Vidro"          onclick="matSetCat('Vidro')"          style="font-size:10px;padding:4px 11px;border-radius:6px">Vidro</button>
+      <button class="btn ghost"  data-fc="Isolante"       onclick="matSetCat('Isolante')"       style="font-size:10px;padding:4px 11px;border-radius:6px">Isolante</button>
+      <div style="flex:1"></div>
+      <select onchange="matSetSort(this.value)" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none;cursor:pointer">
+        <option value="nome">A–Z</option>
+        <option value="inercia_desc">Maior inércia</option>
+        <option value="inercia_asc">Menor inércia</option>
+        <option value="lambda_asc">Menor condutividade</option>
+        <option value="custo_asc">Menor custo</option>
+        <option value="co2_asc">Menor CO₂</option>
+      </select>
+      <div style="position:relative;display:flex;align-items:center">
+        <span style="position:absolute;left:9px;font-size:12px;color:var(--faint);pointer-events:none">⌕</span>
+        <input type="text" placeholder="buscar..." oninput="matDoSearch(this.value)"
+          style="border:0.5px solid var(--border-em);border-radius:8px;background:var(--surface);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);padding:6px 10px 6px 28px;outline:none;width:160px">
+      </div>
+    </div>
+
+    <div id="mat-stats" style="display:flex;gap:14px;margin-bottom:.9rem;flex-wrap:wrap;font-size:10px;color:var(--faint)"></div>
+    <div id="mat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px"></div>
+
+    <!-- COMPARE TRAY -->
+    <div id="mat-cmp-tray" style="position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border-em);padding:.65rem 1.4rem;display:flex;align-items:center;gap:9px;z-index:110;transform:translateY(100%);transition:transform .3s;flex-wrap:wrap">
+      <span style="font-size:10px;color:var(--muted);white-space:nowrap">Comparar:</span>
+      <div id="mat-cmp-items" style="display:flex;gap:6px;flex:1;flex-wrap:wrap"></div>
+      <button class="btn solid" onclick="matOpenCompare()" style="font-size:11px;padding:6px 15px;white-space:nowrap">Ver comparativo</button>
+      <button class="btn ghost" onclick="matClearCompare()" style="font-size:10px;padding:6px 12px">Limpar</button>
+    </div>
+
+    <!-- COMPARE MODAL -->
+    <div id="mat-cmp-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:55;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s" onclick="if(event.target===this)matCloseCmp()">
+      <div style="background:var(--surface);border-radius:14px;width:100%;max-width:760px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22)">
+        <div style="padding:1rem 1.2rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1">
+          <span style="font-family:Georgia,serif;font-size:15px">Comparativo de Materiais</span>
+          <button onclick="matCloseCmp()" style="background:none;border:none;cursor:pointer;font-size:17px;color:var(--faint);line-height:1">✕</button>
+        </div>
+        <div id="mat-cmp-body" style="padding:1.1rem;overflow-x:auto"></div>
+      </div>
+    </div>
+
+    <!-- WEB SEARCH MODAL -->
+    <div id="mat-ws-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:60;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s" onclick="if(event.target===this)matCloseWS()">
+      <div style="background:var(--surface);border-radius:14px;width:100%;max-width:540px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22)">
+        <div style="padding:1rem 1.2rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1">
+          <span id="mat-ws-title" style="font-family:Georgia,serif;font-size:15px">Verificar no mercado</span>
+          <button onclick="matCloseWS()" style="background:none;border:none;cursor:pointer;font-size:17px;color:var(--faint);line-height:1">✕</button>
+        </div>
+        <div id="mat-ws-body" style="padding:1.1rem"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- THREE.JS / VOLUMETRIA 3D -->
   <div id="threejs-view" style="display:none">
@@ -1572,14 +1678,17 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','threejs-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','threejs-view','materiais-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
+  // Esconde tray de comparação de materiais ao trocar de view
+  const tray=$('mat-cmp-tray');
+  if(tray) tray.style.transform='translateY(100%)';
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs','materiais','nbr'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -1638,6 +1747,237 @@ function showMapoteca(){
   setTool('mapoteca');
 }
 
+
+function showMateriais(){
+  hideViews();
+  $('materiais-view').style.display='block';
+  setTool('materiais');
+  if(!window._matInit){ window._matInit=true; matRenderNote(); matRender(); }
+}
+
+// ── MATERIAIS — BANCO DE DADOS ────────────────────────────────────────────
+const MAT_DB = [
+  {id:'tijolo-ceramico-8f',nome:'Tijolo Cerâmico 8 furos',cat:'Alvenaria',ico:'🧱',icoBg:'#F5EDE2',ct:152,lambda:0.90,rho:1600,c:0.92,alfa:0.65,inercia:'alta',inVal:78,uso:['parede'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:25,max:45,un:'m²'},co2:0.24,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Material tradicional de alta inércia. Amplamente disponível.',recZB:{quente:'Excelente — alta inércia retarda entrada de calor diurno.',frio:'Funcional com isolamento externo.',temperado:'Ótima escolha para climas com amplitude térmica.'},usoRec:'Vedação externa e interna.'},
+  {id:'tijolo-ceramico-6f',nome:'Tijolo Cerâmico 6 furos',cat:'Alvenaria',ico:'🧱',icoBg:'#F5EDE2',ct:128,lambda:0.80,rho:1500,c:0.92,alfa:0.65,inercia:'alta',inVal:68,uso:['parede'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:20,max:38,un:'m²'},co2:0.22,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Versão mais leve e econômica do 8 furos.',recZB:{quente:'Bom; prefira o 8 furos em regiões de alta amplitude.',frio:'Combine com isolamento.',temperado:'Adequado para a maioria dos projetos.'},usoRec:'Vedações internas e externas.'},
+  {id:'tijolo-macico',nome:'Tijolo Maciço',cat:'Alvenaria',ico:'🧱',icoBg:'#ead8c0',ct:220,lambda:1.15,rho:1800,c:0.92,alfa:0.65,inercia:'alta',inVal:88,uso:['parede'],zbRec:[3,4,5,7,8],zbOk:[6],zbNao:[1,2],custo:{min:40,max:70,un:'m²'},co2:0.30,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'media',descricao:'Altíssima capacidade térmica. Exige proteção solar.',recZB:{quente:'Alta inércia positiva; condutividade alta exige proteção solar.',frio:'Não recomendado — dissipa calor interno.',temperado:'Ótimo com sombreamento adequado.'},usoRec:'Paredes de acumulação, lareiras, arquitetura vernacular.'},
+  {id:'bloco-concreto-vazado',nome:'Bloco de Concreto Vazado',cat:'Alvenaria',ico:'🪨',icoBg:'#e8e4dc',ct:179,lambda:1.10,rho:1800,c:1.00,alfa:0.65,inercia:'alta',inVal:65,uso:['parede'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:30,max:55,un:'m²'},co2:0.34,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Alternativa ao tijolo cerâmico. Núcleos ocos reduzem condutividade.',recZB:{quente:'Bom com reboco e pintura clara.',frio:'Preenchimento dos núcleos melhora desempenho.',temperado:'Boa relação custo-benefício.'},usoRec:'Vedações externas e estruturais.'},
+  {id:'bloco-concreto-celular',nome:'Bloco Concreto Celular (AAC)',cat:'Alvenaria',ico:'🪨',icoBg:'#f0f0e8',ct:65,lambda:0.19,rho:500,c:1.00,alfa:0.55,inercia:'media',inVal:42,uso:['parede'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:55,max:90,un:'m²'},co2:0.28,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'boa',descricao:'Bloco autoclavado com células de ar. Levíssimo e bom isolante.',recZB:{quente:'Baixa inércia limita desempenho em climas quentes.',frio:'Excelente isolante — ideal para climas frios.',temperado:'Funcional com paredes de maior massa.'},usoRec:'Vedações em regiões frias, divisórias internas.'},
+  {id:'adobe',nome:'Adobe / Terra Crua',cat:'Natural',ico:'🟫',icoBg:'#f0e0c8',ct:280,lambda:0.65,rho:1700,c:1.00,alfa:0.72,inercia:'alta',inVal:85,uso:['parede'],zbRec:[3,4,7,8],zbOk:[5,6],zbNao:[1,2],custo:{min:10,max:25,un:'m²'},co2:0.02,origem:'Local',disponibilidade:'Media',sustentabilidade:'excelente',descricao:'Alta inércia, baixíssimo impacto ambiental. Exige proteção contra umidade.',recZB:{quente:'Excelente para climas áridos.',frio:'Risco de degradação por umidade.',temperado:'Ótimo em regiões de amplitude térmica diária.'},usoRec:'Construção bioclimática. Sempre com beirais e base impermeável.'},
+  {id:'taipa-pilao',nome:'Taipa de Pilão',cat:'Natural',ico:'🟤',icoBg:'#ead8b8',ct:300,lambda:0.70,rho:1900,c:1.00,alfa:0.72,inercia:'alta',inVal:88,uso:['parede'],zbRec:[3,4,7,8],zbOk:[5,6],zbNao:[1,2],custo:{min:15,max:35,un:'m²'},co2:0.03,origem:'Local',disponibilidade:'Baixa',sustentabilidade:'excelente',descricao:'Terra compactada em formas. Paredes densas, estética única.',recZB:{quente:'Excepcional em climas quentes secos.',frio:'Não recomendado sem proteção.',temperado:'Ótimo com sombreamento.'},usoRec:'Construção sustentável e projetos bioclimáticos de alto padrão.'},
+  {id:'concreto-conv',nome:'Concreto Convencional',cat:'Concreto',ico:'🏗️',icoBg:'#e8e4dc',ct:330,lambda:1.75,rho:2200,c:1.00,alfa:0.65,inercia:'alta',inVal:90,uso:['parede','cobertura','piso'],zbRec:[3,4,5,7,8],zbOk:[6],zbNao:[1,2],custo:{min:60,max:110,un:'m²'},co2:0.82,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'ruim',descricao:'Altíssima capacidade térmica e estrutural. Alta condutividade exige proteção solar.',recZB:{quente:'Ótima inércia; fachadas expostas precisam de proteção.',frio:'Exige isolamento.',temperado:'Combinar com ventilação noturna.'},usoRec:'Estrutura, lajes, paredes de massa térmica.'},
+  {id:'concreto-leve',nome:'Concreto Leve (EPS)',cat:'Concreto',ico:'🏗️',icoBg:'#f0f0e8',ct:120,lambda:0.50,rho:900,c:1.00,alfa:0.60,inercia:'media',inVal:52,uso:['parede','cobertura'],zbRec:[1,2,3,4,5,6],zbOk:[7,8],zbNao:[],custo:{min:55,max:95,un:'m²'},co2:0.55,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'media',descricao:'Concreto com agregados leves. Menor peso e melhor isolamento.',recZB:{quente:'Menor inércia que o convencional, melhor isolamento.',frio:'Boa escolha como vedação.',temperado:'Versátil, bom custo-benefício.'},usoRec:'Lajes de cobertura, painéis pré-fabricados leves.'},
+  {id:'concreto-celular',nome:'Concreto Celular Espumoso',cat:'Concreto',ico:'⬜',icoBg:'#f5f5f0',ct:40,lambda:0.16,rho:400,c:1.00,alfa:0.50,inercia:'baixa',inVal:22,uso:['parede','cobertura'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:35,max:65,un:'m²'},co2:0.40,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'media',descricao:'Baixíssima condutividade. Excelente isolante, sem inércia.',recZB:{quente:'Não recomendado como elemento principal.',frio:'Ótimo como camada isolante.',temperado:'Complemento a materiais de maior massa.'},usoRec:'Contrapisos, enchimentos, camadas de isolamento.'},
+  {id:'fibra-cimento-painel',nome:'Painel Cimentício',cat:'Industrializado',ico:'📋',icoBg:'#f0f0e8',ct:55,lambda:0.65,rho:1500,c:1.00,alfa:0.60,inercia:'media',inVal:35,uso:['parede'],zbRec:[1,2,6],zbOk:[3,4,5,7],zbNao:[8],custo:{min:45,max:85,un:'m²'},co2:0.32,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Resistente à umidade. Baixa inércia isolado.',recZB:{quente:'Usar com isolamento adicional.',frio:'Combinar com isolante.',temperado:'Funcional com composição adequada.'},usoRec:'Fachadas ventiladas, revestimento externo.'},
+  {id:'madeira-eucalipto',nome:'Madeira Eucalipto (tratada)',cat:'Natural',ico:'🪵',icoBg:'#f5ede2',ct:52,lambda:0.14,rho:600,c:1.34,alfa:0.60,inercia:'baixa',inVal:35,uso:['parede','cobertura','piso'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:60,max:120,un:'m²'},co2:0.42,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'boa',descricao:'Baixa condutividade. Ideal para climas frios. Eucalipto de reflorestamento.',recZB:{quente:'Baixa inércia — temperatura interna oscila.',frio:'Ótima — retém calor e é renovável.',temperado:'Bom com proteção solar no verão.'},usoRec:'Paredes, forros, pisos. Tratamento obrigatório.'},
+  {id:'madeira-pinus',nome:'Madeira Pinus (tratada)',cat:'Natural',ico:'🪵',icoBg:'#faf0e0',ct:45,lambda:0.12,rho:500,c:1.38,alfa:0.58,inercia:'baixa',inVal:28,uso:['parede','cobertura','piso'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:45,max:90,un:'m²'},co2:0.38,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'boa',descricao:'Levíssima, boa isolante. Base do wood frame.',recZB:{quente:'Não recomendada como elemento principal.',frio:'Excelente; base do wood frame.',temperado:'Funcional em sistemas compostos.'},usoRec:'Wood frame, forros, decks.'},
+  {id:'bambu-laminado',nome:'Bambu Laminado',cat:'Natural',ico:'🎋',icoBg:'#e8f0e0',ct:38,lambda:0.11,rho:700,c:1.30,alfa:0.55,inercia:'baixa',inVal:25,uso:['parede','piso'],zbRec:[1,2,6,7],zbOk:[3,8],zbNao:[4,5],custo:{min:70,max:150,un:'m²'},co2:0.10,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'excelente',descricao:'Levíssimo, resistente e carbono negativo.',recZB:{quente:'Requer composição com isolante.',frio:'Bom isolante; combinar com fechamento.',temperado:'Ótima opção sustentável.'},usoRec:'Estruturas leves, fechamentos, pisos.'},
+  {id:'cortica',nome:'Cortiça (painel)',cat:'Natural',ico:'🟤',icoBg:'#f0e8d8',ct:25,lambda:0.05,rho:120,c:1.80,alfa:0.55,inercia:'baixa',inVal:18,uso:['parede','cobertura','piso'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:80,max:180,un:'m²'},co2:0.12,origem:'Importado',disponibilidade:'Baixa',sustentabilidade:'excelente',descricao:'Excepcional isolante natural, acústico e higroscópico.',recZB:{quente:'Ótimo isolante mas sem inércia.',frio:'Excelente para coberturas e paredes.',temperado:'Camada complementar ideal.'},usoRec:'Isolamento de coberturas, pisos flutuantes.'},
+  {id:'palha-bale',nome:'Fardo de Palha (straw bale)',cat:'Natural',ico:'🌾',icoBg:'#f8f0d8',ct:15,lambda:0.07,rho:90,c:2.00,alfa:0.65,inercia:'baixa',inVal:12,uso:['parede'],zbRec:[1,2,6],zbOk:[3],zbNao:[4,5,7,8],custo:{min:20,max:50,un:'m²'},co2:0.01,origem:'Local',disponibilidade:'Baixa',sustentabilidade:'excelente',descricao:'Excelente isolante, baixíssimo custo e CO₂. Exige proteção de umidade.',recZB:{quente:'Sem inércia para climas quentes úmidos.',frio:'Excepcional para regiões frias e secas.',temperado:'Funcional em climas frios.'},usoRec:'Construção bioclimática de baixo custo.'},
+  {id:'drywall',nome:'Drywall (gesso acartonado)',cat:'Industrializado',ico:'📋',icoBg:'#f8f5f0',ct:18,lambda:0.35,rho:900,c:0.84,alfa:0.40,inercia:'baixa',inVal:12,uso:['parede'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:40,max:80,un:'m²'},co2:0.38,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Construção rápida e limpa. Baixíssima inércia.',recZB:{quente:'Não recomendado como vedação externa principal.',frio:'Aceitável com isolante embutido.',temperado:'Divisórias internas.'},usoRec:'Divisórias internas, forro, áreas com ar condicionado.'},
+  {id:'eps-painel',nome:'Painel EPS (isopor)',cat:'Isolante',ico:'⬜',icoBg:'#f8f8f0',ct:4,lambda:0.04,rho:15,c:1.45,alfa:0.30,inercia:'baixa',inVal:5,uso:['parede','cobertura'],zbRec:[1,2],zbOk:[6],zbNao:[3,4,5,7,8],custo:{min:18,max:40,un:'m²'},co2:3.20,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'ruim',descricao:'Ótimo isolante, sem inércia, alto impacto ambiental.',recZB:{quente:'Sem inércia — não recomendado sozinho.',frio:'Excelente camada isolante.',temperado:'Útil como isolamento adicional.'},usoRec:'Camada de isolamento em paredes duplas e coberturas.'},
+  {id:'xps-painel',nome:'Painel XPS',cat:'Isolante',ico:'⬜',icoBg:'#f0f5f8',ct:5,lambda:0.032,rho:35,c:1.45,alfa:0.35,inercia:'baixa',inVal:6,uso:['parede','cobertura','piso'],zbRec:[1,2],zbOk:[6],zbNao:[3,4,5,7,8],custo:{min:28,max:55,un:'m²'},co2:3.80,origem:'Nacional/Importado',disponibilidade:'Media',sustentabilidade:'ruim',descricao:'Resistente à umidade e compressão. Ideal para pisos sobre solo.',recZB:{quente:'Somente como isolamento em sistema.',frio:'Excelente para piso sobre solo e coberturas.',temperado:'Cobertura invertida e pisos frios.'},usoRec:'Pisos sobre solo, coberturas invertidas.'},
+  {id:'la-rocha',nome:'Lã de Rocha (mineral)',cat:'Isolante',ico:'🌀',icoBg:'#f0ece8',ct:12,lambda:0.038,rho:90,c:0.84,alfa:0.50,inercia:'baixa',inVal:10,uso:['parede','cobertura'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:30,max:65,un:'m²'},co2:1.20,origem:'Nacional/Importado',disponibilidade:'Media',sustentabilidade:'media',descricao:'Incombustível, boa performance acústica e térmica.',recZB:{quente:'Usar em coberturas ventiladas.',frio:'Excelente em paredes drywall.',temperado:'Aplicar em coberturas.'},usoRec:'Coberturas, paredes drywall, câmaras acústicas.'},
+  {id:'la-vidro',nome:'Lã de Vidro',cat:'Isolante',ico:'🌀',icoBg:'#e8f0f8',ct:10,lambda:0.040,rho:70,c:0.84,alfa:0.50,inercia:'baixa',inVal:8,uso:['parede','cobertura'],zbRec:[1,2,6],zbOk:[3,7],zbNao:[4,5,8],custo:{min:22,max:50,un:'m²'},co2:1.05,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Fibras de vidro. Leve e econômica. Menor resistência ao fogo.',recZB:{quente:'Forros e coberturas para reduzir transmitância.',frio:'Wood frame e coberturas.',temperado:'Forros e coberturas.'},usoRec:'Forros, coberturas residenciais, paredes wood frame.'},
+  {id:'pu-spray',nome:'Poliuretano Spray (PU)',cat:'Isolante',ico:'💨',icoBg:'#f0f8e8',ct:6,lambda:0.025,rho:35,c:1.45,alfa:0.40,inercia:'baixa',inVal:6,uso:['parede','cobertura'],zbRec:[1,2],zbOk:[6],zbNao:[3,4,5,7,8],custo:{min:35,max:80,un:'m²'},co2:4.50,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'ruim',descricao:'Melhor relação espessura/isolamento. Alto CO₂.',recZB:{quente:'Não recomendado como elemento principal.',frio:'Excelente selante para telhados.',temperado:'Aplicações pontuais em vedações.'},usoRec:'Telhados, câmaras frias, vedação de juntas.'},
+  {id:'aerogel',nome:'Aerogel (painel)',cat:'Isolante',ico:'✨',icoBg:'#f8f8fc',ct:3,lambda:0.015,rho:150,c:1.00,alfa:0.30,inercia:'baixa',inVal:4,uso:['parede','cobertura'],zbRec:[1,2],zbOk:[6],zbNao:[3,4,5,7,8],custo:{min:200,max:500,un:'m²'},co2:5.00,origem:'Importado',disponibilidade:'Baixa',sustentabilidade:'media',descricao:'Menor condutividade existente. Ultraleve. Muito caro.',recZB:{quente:'Sem aplicação prática de custo-benefício.',frio:'Onde espessura é muito limitada.',temperado:'Nicho muito específico.'},usoRec:'Retrofit de espaços mínimos, alto padrão.'},
+  {id:'osb',nome:'OSB (painel de madeira)',cat:'Industrializado',ico:'🪵',icoBg:'#f5e8d0',ct:25,lambda:0.13,rho:650,c:1.70,alfa:0.60,inercia:'baixa',inVal:20,uso:['parede'],zbRec:[1,2,6],zbOk:[3],zbNao:[4,5,7,8],custo:{min:35,max:65,un:'m²'},co2:0.55,origem:'Nacional/Importado',disponibilidade:'Media',sustentabilidade:'media',descricao:'Painel estrutural de madeira. Base do wood frame.',recZB:{quente:'Sem inércia para climas quentes.',frio:'Estrutural no wood frame com isolante.',temperado:'Wood frame com lã de vidro.'},usoRec:'Estruturas wood frame, fechamentos externos.'},
+  {id:'acm',nome:'ACM (Alumínio Composto)',cat:'Industrializado',ico:'🔲',icoBg:'#e8e8e8',ct:8,lambda:0.20,rho:3500,c:0.90,alfa:0.15,inercia:'baixa',inVal:8,uso:['parede'],zbRec:[],zbOk:[3,4,5,6,7,8],zbNao:[],custo:{min:150,max:300,un:'m²'},co2:8.20,origem:'Nacional/Importado',disponibilidade:'Media',sustentabilidade:'ruim',descricao:'Fachada ventilada de alumínio. Alta reflexão solar.',recZB:{quente:'Reflexão ajuda; sem inércia.',frio:'Alta condutividade do alumínio.',temperado:'Estética e durabilidade, não desempenho térmico.'},usoRec:'Fachadas ventiladas. Sempre com câmara de ar e isolante.'},
+  {id:'telha-ceramica',nome:'Telha Cerâmica',cat:'Cobertura',ico:'🏠',icoBg:'#f0d8c8',ct:70,lambda:0.90,rho:1900,c:0.84,alfa:0.75,inercia:'media',inVal:48,uso:['cobertura'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:35,max:70,un:'m²'},co2:0.38,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'boa',descricao:'Telha tradicional com boa inércia e durabilidade.',recZB:{quente:'Boa inércia; câmara de ar ventilada obrigatória.',frio:'Funcional com isolante no forro.',temperado:'Excelente com forro adequado.'},usoRec:'Coberturas residenciais. Obrigatório: forro + câmara de ar ventilada.'},
+  {id:'telha-fibrocimento',nome:'Telha Fibrocimento',cat:'Cobertura',ico:'🏠',icoBg:'#e8f0e8',ct:20,lambda:0.95,rho:1800,c:0.84,alfa:0.80,inercia:'baixa',inVal:15,uso:['cobertura'],zbRec:[],zbOk:[1,2,6],zbNao:[3,4,5,7,8],custo:{min:18,max:40,un:'m²'},co2:0.55,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Popular mas péssimo desempenho térmico.',recZB:{quente:'Não recomendada sem forro + isolante + câmara de ar.',frio:'Aceitável com isolante.',temperado:'Sempre use com forro, isolante e ventilação.'},usoRec:'Sempre usar com forro + lã de vidro + câmara de ar ventilada.'},
+  {id:'telha-metalica',nome:'Telha Metálica',cat:'Cobertura',ico:'🏭',icoBg:'#e8e8e8',ct:5,lambda:50,rho:7800,c:0.50,alfa:0.70,inercia:'baixa',inVal:5,uso:['cobertura'],zbRec:[],zbOk:[1,2,6],zbNao:[3,4,5,7,8],custo:{min:25,max:60,un:'m²'},co2:2.80,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Condutividade extremamente alta. Só funciona com sistema completo.',recZB:{quente:'Péssima isolada — câmara de ar e isolante obrigatórios.',frio:'Idem.',temperado:'Somente em sistema sanduíche ou com forro + isolante.'},usoRec:'Galpões com forro + isolante + câmara de ar ventilada.'},
+  {id:'telha-sanduiche',nome:'Telha Sanduíche (EPS)',cat:'Cobertura',ico:'🥪',icoBg:'#f0f0e8',ct:22,lambda:0.038,rho:50,c:1.45,alfa:0.70,inercia:'baixa',inVal:18,uso:['cobertura'],zbRec:[1,2,6],zbOk:[3,4,5],zbNao:[7,8],custo:{min:60,max:120,un:'m²'},co2:2.50,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Metal + EPS + metal. Excelente isolamento, montagem rápida.',recZB:{quente:'EPS perde eficiência em temperaturas muito altas.',frio:'Ótima para ambientes controlados.',temperado:'Boa para construções industrializadas.'},usoRec:'Galpões industriais, câmaras frias.'},
+  {id:'cobertura-verde',nome:'Cobertura Verde',cat:'Cobertura',ico:'🌿',icoBg:'#e0f0d8',ct:250,lambda:0.50,rho:1400,c:1.20,alfa:0.30,inercia:'alta',inVal:75,uso:['cobertura'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:120,max:280,un:'m²'},co2:-0.50,origem:'Local',disponibilidade:'Media',sustentabilidade:'excelente',descricao:'Alta inércia, evapotranspiração, CO₂ negativo. Exige impermeabilização.',recZB:{quente:'Excelente — resfria por evapotranspiração.',frio:'Substrato adiciona isolamento.',temperado:'Ótima opção sustentável.'},usoRec:'Coberturas planas até 30°. Necessita impermeabilização, drenagem, substrato leve.'},
+  {id:'telha-concreto',nome:'Telha de Concreto',cat:'Cobertura',ico:'🏠',icoBg:'#e8e4dc',ct:95,lambda:1.20,rho:2000,c:0.84,alfa:0.70,inercia:'media',inVal:55,uso:['cobertura'],zbRec:[3,4,5,6],zbOk:[7,8],zbNao:[1,2],custo:{min:40,max:75,un:'m²'},co2:0.45,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Maior inércia que a cerâmica. Pesada e durável.',recZB:{quente:'Boa inércia; pintura clara reduz ganho solar.',frio:'Alta condutividade é limitante.',temperado:'Boa com câmara de ar ventilada.'},usoRec:'Coberturas residenciais. Verificar capacidade estrutural.'},
+  {id:'vidro-simples',nome:'Vidro Simples 6mm',cat:'Vidro',ico:'🪟',icoBg:'#e8f4f8',ct:13,lambda:1.00,rho:2500,c:0.84,alfa:0.06,inercia:'baixa',inVal:10,uso:['parede'],zbRec:[],zbOk:[1,2,6],zbNao:[3,4,5,7,8],custo:{min:60,max:100,un:'m²'},co2:0.86,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Altíssima transmitância solar. Péssimo isolante.',recZB:{quente:'Alta transmissão de calor — péssimo sem proteção.',frio:'Perde calor rapidamente.',temperado:'Limitar área e usar proteção solar.'},usoRec:'Pequenas esquadrias. Sempre com proteção: brise, beiral, película.'},
+  {id:'vidro-duplo',nome:'Vidro Duplo (DVH)',cat:'Vidro',ico:'🪟',icoBg:'#ddeeff',ct:18,lambda:0.28,rho:2500,c:0.84,alfa:0.10,inercia:'baixa',inVal:14,uso:['parede'],zbRec:[1,2,6],zbOk:[3,4,5],zbNao:[7,8],custo:{min:200,max:400,un:'m²'},co2:1.20,origem:'Nacional/Importado',disponibilidade:'Media',sustentabilidade:'media',descricao:'Câmara de ar reduz transmitância. Padrão europeu.',recZB:{quente:'Melhor que simples; ainda transmite calor solar.',frio:'Excelente para reduzir perdas.',temperado:'Boa para grandes esquadrias.'},usoRec:'Esquadrias em regiões frias. Combinar com controle solar em climas quentes.'},
+  {id:'vidro-low-e',nome:'Vidro Low-E',cat:'Vidro',ico:'🪟',icoBg:'#e8f8e8',ct:18,lambda:0.18,rho:2500,c:0.84,alfa:0.12,inercia:'baixa',inVal:15,uso:['parede'],zbRec:[1,2,6],zbOk:[3,4,5,7],zbNao:[8],custo:{min:280,max:550,un:'m²'},co2:1.40,origem:'Importado',disponibilidade:'Baixa',sustentabilidade:'media',descricao:'Camada metálica que reflete calor. Reduz ganho e perda.',recZB:{quente:'Excelente para reduzir ganho solar.',frio:'Ótimo para reter calor interno.',temperado:'Melhor opção para grandes esquadrias.'},usoRec:'Grandes esquadrias em climas extremos.'},
+  {id:'vidro-refletivo',nome:'Vidro Refletivo',cat:'Vidro',ico:'🪟',icoBg:'#f0f0f0',ct:13,lambda:0.80,rho:2500,c:0.84,alfa:0.08,inercia:'baixa',inVal:10,uso:['parede'],zbRec:[3,7,8],zbOk:[4,5,6],zbNao:[1,2],custo:{min:120,max:220,un:'m²'},co2:0.95,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Camada reflexiva. Reduz ganho solar.',recZB:{quente:'Reduz ganho solar efetivamente.',frio:'Reflete calor solar desejável.',temperado:'Útil em fachadas oeste e leste.'},usoRec:'Fachadas em climas quentes. Verificar reflexo para vizinhança.'},
+  {id:'sip-painel',nome:'Painel SIP',cat:'Industrializado',ico:'📦',icoBg:'#f0f0e8',ct:30,lambda:0.05,rho:100,c:1.45,alfa:0.55,inercia:'baixa',inVal:22,uso:['parede','cobertura'],zbRec:[1,2,6],zbOk:[3,4,5],zbNao:[7,8],custo:{min:180,max:350,un:'m²'},co2:1.80,origem:'Importado/Nacional',disponibilidade:'Baixa',sustentabilidade:'media',descricao:'Núcleo EPS entre placas OSB. Construção muito rápida.',recZB:{quente:'Baixa inércia limita climas muito quentes.',frio:'Excelente envelope para climas frios.',temperado:'Boa para construção industrializada.'},usoRec:'Construções rápidas, residências em regiões frias.'},
+  {id:'porcelanato',nome:'Porcelanato / Cerâmica',cat:'Industrializado',ico:'⬜',icoBg:'#f8f8f8',ct:80,lambda:1.05,rho:2300,c:0.84,alfa:0.50,inercia:'media',inVal:45,uso:['piso'],zbRec:[3,4,5,7,8],zbOk:[6],zbNao:[1,2],custo:{min:40,max:200,un:'m²'},co2:0.65,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Alta condutividade. Piso frio em climas quentes é confortável.',recZB:{quente:'Piso fresco — agradável em climas quentes.',frio:'Desconfortável ao toque; preferir madeira.',temperado:'Adequado com aquecimento de piso.'},usoRec:'Pisos em áreas molhadas e climas quentes.'},
+  {id:'piso-vinilico',nome:'Piso Vinílico (LVT)',cat:'Industrializado',ico:'▭',icoBg:'#f5ede0',ct:10,lambda:0.19,rho:1300,c:1.00,alfa:0.55,inercia:'baixa',inVal:10,uso:['piso'],zbRec:[1,2,6],zbOk:[3,4,5],zbNao:[7,8],custo:{min:45,max:120,un:'m²'},co2:1.50,origem:'Nacional/Importado',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Confortável ao toque, isolante leve. Fácil instalação.',recZB:{quente:'Menos confortável que cerâmica fria.',frio:'Agradável ao toque; boa opção.',temperado:'Versátil para qualquer ambiente.'},usoRec:'Residências em climas frios, escritórios.'},
+  {id:'piso-madeira-eng',nome:'Piso Madeira Engenheirado',cat:'Natural',ico:'🪵',icoBg:'#f5ede2',ct:28,lambda:0.15,rho:650,c:1.34,alfa:0.60,inercia:'baixa',inVal:22,uso:['piso'],zbRec:[1,2,6],zbOk:[3,4,5],zbNao:[7,8],custo:{min:80,max:200,un:'m²'},co2:0.45,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'boa',descricao:'Camadas de madeira real. Mais estável que maciça.',recZB:{quente:'Aquece levemente; menos adequado.',frio:'Excelente — agradável e isolante.',temperado:'Ótima para dormitórios e salas.'},usoRec:'Salas, dormitórios em climas temperados e frios.'},
+  {id:'pedra-granito',nome:'Pedra Granito',cat:'Natural',ico:'🪨',icoBg:'#e8e4e0',ct:500,lambda:2.90,rho:2600,c:0.89,alfa:0.55,inercia:'alta',inVal:95,uso:['parede','piso'],zbRec:[3,4,5,8],zbOk:[6,7],zbNao:[1,2],custo:{min:80,max:250,un:'m²'},co2:0.70,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Maior capacidade térmica da lista. Alta condutividade exige proteção solar.',recZB:{quente:'Capacidade excepcional; proteção solar rigorosa necessária.',frio:'Alta condutividade dissipa calor interno.',temperado:'Excelente para pisos e elementos de massa.'},usoRec:'Pisos e elementos de massa em projetos bioclimáticos.'},
+  {id:'tijolo-refratario',nome:'Tijolo Refratário',cat:'Alvenaria',ico:'🔥',icoBg:'#fde8d8',ct:420,lambda:1.20,rho:1900,c:1.05,alfa:0.70,inercia:'alta',inVal:82,uso:['parede','piso'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:50,max:100,un:'m²'},co2:0.45,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'media',descricao:'Alta resistência a temperaturas. Usado em fornos, lareiras e sistemas solares passivos.',recZB:{quente:'Excelente massa térmica de acumulação.',frio:'Paredes de Trombe e fornos de calor radiante.',temperado:'Versátil em paredes solares passivas.'},usoRec:'Fornos, lareiras, paredes de acumulação solar.'},
+];
+
+const MAT_ZB={
+  1:{nome:'ZB1 — Sul frio',clima:'frio',txt:'Inverno rigoroso. Priorize alta resistência térmica e baixa condutividade. Inércia alta retém calor noturno.'},
+  2:{nome:'ZB2 — Sul moderado frio',clima:'frio',txt:'Invernos frios e verões amenos. Materiais que retenham calor interno e permitam aquecimento solar passivo.'},
+  3:{nome:'ZB3 — Nordeste/CO semiárido',clima:'quente',txt:'Quente e seco com alta amplitude térmica diária. Inércia muito alta amorte as oscilações.'},
+  4:{nome:'ZB4 — Centro/Sudeste',clima:'temperado',txt:'Verões quentes e invernos amenos. Inércia média-alta com ventilação noturna é a estratégia ideal.'},
+  5:{nome:'ZB5 — Sudeste/litoral',clima:'temperado',txt:'Verões úmidos e quentes, invernos brandos. Inércia alta + ventilação cruzada + sombreamento.'},
+  6:{nome:'ZB6 — Sul temperado',clima:'temperado',txt:'Clima temperado suave. Inércia ainda vantajosa, menor exigência que ZB1/ZB2.'},
+  7:{nome:'ZB7 — Nordeste litoral quente-úmido',clima:'quente',txt:'Quente e úmido o ano todo. Ventilação natural + sombreamento + inércia moderada.'},
+  8:{nome:'ZB8 — Amazônia/litoral Norte',clima:'quente',txt:'Muito quente e muito úmido. Ventilação máxima + sombreamento total. Inércia auxiliar.'},
+};
+
+let _matZB=5, _matAmb='parede', _matFI='todos', _matFC='todas', _matSort='nome', _matQ='', _matCmp=[], _matExpanded=new Set();
+
+function matZBClass(m){ if(m.zbRec.includes(_matZB)) return 'ok'; if(m.zbNao.includes(_matZB)) return 'bad'; return 'neutral'; }
+function matRecText(m){ const c=MAT_ZB[_matZB].clima; if(c==='frio') return m.recZB.frio; if(c==='temperado') return m.recZB.temperado; return m.recZB.quente; }
+function matBarColor(v){ if(v>=70) return '#3B6D11'; if(v>=30) return '#8B6914'; return '#c06060'; }
+
+function matGetList(){
+  let l=[...MAT_DB];
+  if(_matAmb!=='todos') l=l.filter(m=>m.uso.includes(_matAmb));
+  if(_matFI!=='todos') l=l.filter(m=>m.inercia===_matFI);
+  if(_matFC!=='todas') l=l.filter(m=>m.cat===_matFC);
+  if(_matQ) l=l.filter(m=>m.nome.toLowerCase().includes(_matQ)||m.cat.toLowerCase().includes(_matQ));
+  l.sort((a,b)=>{
+    if(_matSort==='nome') return a.nome.localeCompare(b.nome);
+    if(_matSort==='inercia_desc') return b.inVal-a.inVal;
+    if(_matSort==='inercia_asc') return a.inVal-b.inVal;
+    if(_matSort==='lambda_asc') return a.lambda-b.lambda;
+    if(_matSort==='custo_asc') return a.custo.min-b.custo.min;
+    if(_matSort==='co2_asc') return a.co2-b.co2;
+    return 0;
+  });
+  return l;
+}
+
+function matRender(){
+  const grid=$('mat-grid'); if(!grid) return;
+  const list=matGetList();
+  const stats=$('mat-stats');
+  if(stats){
+    const rec=list.filter(m=>matZBClass(m)==='ok').length;
+    stats.innerHTML=`<strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${list.length}</strong> materiais &nbsp;·&nbsp; <strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${rec}</strong> recomendados para ZB${_matZB}`;
+  }
+  if(!list.length){ grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:3rem;font-size:12px;color:var(--faint)">Nenhum material encontrado.</div>`; return; }
+  grid.innerHTML=list.map(m=>{
+    const rc=matZBClass(m);
+    const dotColor=rc==='ok'?'var(--green)':rc==='bad'?'var(--err)':'var(--faint)';
+    const exp=_matExpanded.has(m.id);
+    const inCmp=_matCmp.includes(m.id);
+    const sustLabel=m.sustentabilidade==='excelente'?'♻ Excelente':m.sustentabilidade==='boa'?'♻ Boa':m.sustentabilidade==='media'?'~ Média':'✗ Alta pegada';
+    const sustColor=m.sustentabilidade==='excelente'||m.sustentabilidade==='boa'?'var(--green)':m.sustentabilidade==='media'?'var(--warn)':'var(--err)';
+    const custoMed=(m.custo.min+m.custo.max)/2;
+    const custoColor=custoMed<50?'var(--green)':custoMed<120?'var(--warn)':'var(--err)';
+    const dispColor=m.disponibilidade==='Alta'?'var(--green)':m.disponibilidade==='Media'?'var(--warn)':'var(--faint)';
+
+    return `<div id="matcard-${m.id}" style="background:var(--surface);border:0.5px solid ${rc==='ok'?'rgba(59,109,17,.25)':rc==='bad'?'rgba(139,58,58,.18)':'var(--border)'};border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s;cursor:pointer;position:relative">
+      <div style="position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:50%;background:${dotColor}"></div>
+      <div onclick="matToggleCard('${m.id}')" style="padding:.8rem .9rem .65rem;display:flex;align-items:flex-start;gap:8px">
+        <div style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:${m.icoBg}">${m.ico}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:500;padding-right:14px">${m.nome}</div>
+          <div style="font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--faint);margin-top:1px">${m.cat}</div>
+        </div>
+      </div>
+      <div style="padding:.35rem .9rem .55rem;background:var(--surf2);border-top:0.5px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--faint);margin-bottom:4px"><span>Inércia térmica</span><span style="font-family:'IBM Plex Mono',monospace">${m.ct} kJ/m²K</span></div>
+        <div style="height:4px;background:rgba(90,60,30,.12);border-radius:999px;overflow:hidden"><div style="height:100%;width:${m.inVal}%;background:${matBarColor(m.inVal)};border-radius:999px;transition:width .6s"></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:0.5px solid var(--border);background:var(--surf2)">
+        ${[['λ',m.lambda,'W/m·K'],['ρ',m.rho,'kg/m³'],['c',m.c,'kJ/kg·K'],['α',m.alfa,'solar']].map(([l,v,u])=>`<div style="padding:.45rem .35rem;text-align:center;border-right:0.5px solid var(--border)"><div style="font-size:7px;text-transform:uppercase;color:var(--faint);margin-bottom:2px">${l}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--e)">${v}</div><div style="font-size:7px;color:var(--faint)">${u}</div></div>`).join('')}
+      </div>
+      <div style="display:flex;gap:5px;padding:.5rem .9rem;border-top:0.5px solid var(--border);flex-wrap:wrap">
+        <span style="font-size:8px;padding:2px 7px;border-radius:4px;background:var(--surf2);color:${sustColor};font-family:'IBM Plex Mono',monospace">${sustLabel}</span>
+        <span style="font-size:8px;padding:2px 7px;border-radius:4px;background:var(--surf2);color:${custoColor};font-family:'IBM Plex Mono',monospace">R$${m.custo.min}–${m.custo.max}/${m.custo.un}</span>
+        <span style="font-size:8px;padding:2px 7px;border-radius:4px;background:var(--surf2);color:${dispColor};font-family:'IBM Plex Mono',monospace">${m.disponibilidade} disp.</span>
+      </div>
+      ${exp?`<div style="border-top:0.5px solid var(--border);padding:.85rem .9rem">
+        <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin-bottom:.4rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">Propriedades — NBR 15220</div>
+        ${[['Capacidade térmica (ct)',m.ct+' kJ/(m²·K)'],['Condutividade (λ)',m.lambda+' W/(m·K)'],['Densidade (ρ)',m.rho+' kg/m³'],['Calor específico (c)',m.c+' kJ/(kg·K)'],['Absortância (α)',m.alfa],['CO₂ estimado',(m.co2<0?'−'+Math.abs(m.co2):m.co2)+' kgCO₂eq/kg'],['Origem',m.origem],['Uso',m.usoRec]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:0.5px solid rgba(90,60,30,.05)"><span style="color:var(--muted)">${k}</span><span style="font-family:'IBM Plex Mono',monospace;color:var(--text);font-size:9px;text-align:right;max-width:55%">${v}</span></div>`).join('')}
+        <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin:.7rem 0 .35rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">Recomendação — ZB${_matZB}</div>
+        <div style="font-size:11px;line-height:1.6;padding:.55rem .7rem;border-radius:6px;background:${rc==='ok'?'var(--greenl)':rc==='bad'?'var(--errl)':'var(--surf2)'};border-left:2px solid ${rc==='ok'?'#b8d99a':rc==='bad'?'var(--errb)':'var(--border-em)'};">${matRecText(m)}</div>
+        <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin:.7rem 0 .35rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">Compatibilidade por zona</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">${[1,2,3,4,5,6,7,8].map(z=>{const r=m.zbRec.includes(z)?'ok':m.zbNao.includes(z)?'bad':'';return `<span style="font-size:8px;font-family:'IBM Plex Mono',monospace;padding:2px 6px;border-radius:3px;border:0.5px solid var(--border-em);${r==='ok'?'background:var(--greenl);color:var(--green)':r==='bad'?'background:var(--errl);color:var(--err)':'background:var(--surf2);color:var(--faint)'}">ZB${z}</span>`;}).join('')}</div>
+        <div style="display:flex;justify-content:flex-end;gap:7px;margin-top:.8rem">
+          <button class="btn ghost" onclick="matOpenWS('${m.id}')" style="font-size:10px;padding:5px 11px">🔍 Verificar no mercado</button>
+          <button class="btn ${inCmp?'solid':'ghost'}" onclick="matToggleCmp('${m.id}','${m.nome.replace(/'/g,"\\'")}')" style="font-size:10px;padding:5px 11px">${inCmp?'✓ Selecionado':'+ Comparar'}</button>
+        </div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function matToggleCard(id){
+  if(_matExpanded.has(id)) _matExpanded.delete(id); else _matExpanded.add(id);
+  matRender();
+}
+function matRenderNote(){
+  const n=$('mat-zb-note'); if(!n) return;
+  const z=MAT_ZB[_matZB];
+  n.innerHTML=`<strong style="color:var(--e)">${z.nome}</strong> — ${z.txt}`;
+}
+function matSetZB(n){
+  _matZB=n;
+  document.querySelectorAll('#mat-zb-pills [data-zb]').forEach(b=>{ b.className=+b.dataset.zb===n?'btn solid':'btn ghost'; b.style.fontFamily="'IBM Plex Mono',monospace"; b.style.fontSize='10px'; b.style.padding='4px 10px'; b.style.borderRadius='999px'; });
+  matRenderNote(); matRender();
+}
+function matSetAmb(a){
+  _matAmb=a;
+  document.querySelectorAll('#mat-amb-group [data-a]').forEach(b=>{ b.className=b.dataset.a===a?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 10px'; });
+  matRender();
+}
+function matSetFilter(f){
+  _matFI=f;
+  document.querySelectorAll('[data-fi]').forEach(b=>{ b.className=b.dataset.fi===f?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 11px'; b.style.borderRadius='999px'; });
+  matRender();
+}
+function matSetCat(c){
+  _matFC=c;
+  document.querySelectorAll('[data-fc]').forEach(b=>{ b.className=b.dataset.fc===c?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 11px'; b.style.borderRadius='6px'; });
+  matRender();
+}
+function matSetSort(v){ _matSort=v; matRender(); }
+function matDoSearch(v){ _matQ=v.toLowerCase(); matRender(); }
+
+// COMPARE
+function matToggleCmp(id,nome){
+  if(_matCmp.includes(id)){ _matCmp=_matCmp.filter(x=>x!==id); }
+  else{ if(_matCmp.length>=4){ alert('Máximo 4 materiais.'); return; } _matCmp.push(id); }
+  matRenderTray(); matRender();
+}
+function matRenderTray(){
+  const tray=$('mat-cmp-tray'); const items=$('mat-cmp-items');
+  if(!tray||!items) return;
+  if(!_matCmp.length){ tray.style.transform='translateY(100%)'; return; }
+  tray.style.transform='translateY(0)';
+  items.innerHTML=_matCmp.map(id=>{ const m=MAT_DB.find(x=>x.id===id); return `<span style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--el);border:0.5px solid var(--eb);color:var(--e);display:flex;align-items:center;gap:4px">${m.nome}<button onclick="matToggleCmp('${id}','')" style="background:none;border:none;cursor:pointer;color:var(--faint);font-size:11px;line-height:1;padding:0">✕</button></span>`; }).join('');
+}
+function matClearCompare(){ _matCmp=[]; matRenderTray(); matRender(); }
+function matCloseCmp(){ const m=$('mat-cmp-modal'); if(m){ m.style.opacity='0'; m.style.pointerEvents='none'; } }
+function matOpenCompare(){
+  if(_matCmp.length<2){ alert('Selecione ao menos 2 materiais.'); return; }
+  const mats=_matCmp.map(id=>MAT_DB.find(m=>m.id===id));
+  const rows=[['Categoria',m=>m.cat,false],['Inércia',m=>m.inVal>=70?'Alta':m.inVal>=30?'Média':'Baixa',false],['Cap. térmica ct',m=>m.ct+' kJ/m²K',true,'max'],['Condutividade λ',m=>m.lambda+' W/m·K',true,'min'],['Densidade ρ',m=>m.rho+' kg/m³',false],['Calor específico c',m=>m.c+' kJ/kg·K',false],['Absortância α',m=>''+m.alfa,true,'min'],['CO₂',m=>m.co2+' kgCO₂eq/kg',true,'min'],['Custo mín.',m=>'R$'+m.custo.min+'/m²',true,'min'],['Disponibilidade',m=>m.disponibilidade,false],['Sustentabilidade',m=>m.sustentabilidade,false],[`Rec. ZB${_matZB}`,m=>m.zbRec.includes(_matZB)?'✓ Sim':m.zbNao.includes(_matZB)?'✗ Não':'— Aceitável',false]];
+  const s=`<table style="width:100%;border-collapse:collapse;min-width:400px"><tr><th style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">Propriedade</th>${mats.map(m=>`<th style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">${m.nome}</th>`).join('')}</tr>${rows.map(([lbl,fn,cmp,mode])=>{ const vals=mats.map(fn); const nums=cmp?mats.map(m=>parseFloat(fn(m))):null; const best=nums?(mode==='max'?Math.max(...nums):Math.min(...nums)):null; const worst=nums?(mode==='max'?Math.min(...nums):Math.max(...nums)):null; return `<tr><td style="font-size:10px;color:var(--muted);padding:7px 9px;border-bottom:0.5px solid var(--border);width:34%">${lbl}</td>${mats.map((m,i)=>{ const v=vals[i]; const n=nums?nums[i]:null; const style=n===best?'color:#3B6D11;font-weight:600':n===worst?'color:var(--err)':''; return `<td style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 9px;border-bottom:0.5px solid var(--border);${style}">${v}</td>`; }).join('')}</tr>`; }).join('')}</table><p style="font-size:9px;color:var(--faint);margin-top:.8rem;text-align:center;line-height:1.6"><span style="color:var(--green)">■ Verde</span> = melhor valor &nbsp; <span style="color:var(--err)">■ Vermelho</span> = pior valor<br>Ref.: ABNT NBR 15220, ICE Database, estimativas de mercado.</p>`;
+  const bod=$('mat-cmp-body'); const mod=$('mat-cmp-modal');
+  if(bod) bod.innerHTML=s;
+  if(mod){ mod.style.opacity='1'; mod.style.pointerEvents='auto'; }
+}
+
+// WEB SEARCH
+function matOpenWS(id){
+  const m=MAT_DB.find(x=>x.id===id);
+  const title=$('mat-ws-title'); const body=$('mat-ws-body'); const modal=$('mat-ws-modal');
+  if(title) title.textContent='🔍 '+m.nome;
+  if(body) body.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--faint);font-size:12px"><div style="display:inline-block;width:20px;height:20px;border:2px solid var(--border-em);border-top-color:var(--e);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:.5rem"></div><div>Buscando disponibilidade e novidades...</div></div>`;
+  if(modal){ modal.style.opacity='1'; modal.style.pointerEvents='auto'; }
+  matFetchWS(m);
+}
+function matCloseWS(){ const m=$('mat-ws-modal'); if(m){ m.style.opacity='0'; m.style.pointerEvents='none'; } }
+async function matFetchWS(m){
+  const body=$('mat-ws-body');
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],system:`Consultor de materiais de construção civil brasileiro. Pesquise e responda SOMENTE em JSON válido sem markdown:\n{"resumo":"2-3 frases sobre disponibilidade atual no Brasil","preco_atual":"faixa encontrada em R$","fornecedores":["nome1","nome2"],"novidades":"inovação recente ou null","sustentabilidade_nota":"nota ambiental atual","alerta":"alerta importante ou null"}`,messages:[{role:'user',content:`Pesquise: ${m.nome} material construtivo disponibilidade preço mercado brasileiro 2025`}]})});
+    const data=await resp.json();
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('');
+    let p; try{ p=JSON.parse(text.replace(/```json|```/g,'').trim()); }catch{ p=null; }
+    if(body){
+      if(p){
+        body.innerHTML=`${p.resumo?`<div style="border:0.5px solid var(--border);border-radius:8px;padding:.7rem .85rem;margin-bottom:.6rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">Disponibilidade & Mercado</div><div style="font-size:11px;color:var(--muted);line-height:1.5">${p.resumo}</div></div>`:''}${p.preco_atual?`<div style="border:0.5px solid var(--border);border-radius:8px;padding:.7rem .85rem;margin-bottom:.6rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">💰 Preço encontrado</div><div style="font-size:11px;color:var(--muted)">${p.preco_atual}</div></div>`:''}${p.fornecedores?.length?`<div style="border:0.5px solid var(--border);border-radius:8px;padding:.7rem .85rem;margin-bottom:.6rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">🏪 Fornecedores</div><div style="font-size:11px;color:var(--muted)">${p.fornecedores.join(' · ')}</div></div>`:''}${p.novidades?`<div style="border:0.5px solid var(--border);border-radius:8px;padding:.7rem .85rem;margin-bottom:.6rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">✨ Novidades</div><div style="font-size:11px;color:var(--muted);line-height:1.5">${p.novidades}</div></div>`:''}${p.alerta?`<div style="border:0.5px solid var(--warnb,#e8cc88);border-radius:8px;padding:.7rem .85rem;margin-bottom:.6rem;background:var(--warnl,#fdf3dc)"><div style="font-size:11px;font-weight:500;color:var(--warn);margin-bottom:3px">⚠ Alerta</div><div style="font-size:11px;color:var(--muted);line-height:1.5">${p.alerta}</div></div>`:''}
+        <div style="font-size:9px;color:var(--faint);margin-top:.5rem;text-align:center;line-height:1.5">Dados via busca em tempo real. Confirmar com fornecedores locais.</div>`;
+      } else {
+        body.innerHTML=`<div style="font-size:11px;color:var(--muted);white-space:pre-wrap;line-height:1.5">${text}</div>`;
+      }
+    }
+  }catch(e){
+    if(body) body.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--err);font-size:11px">Não foi possível buscar agora.<br><small>${e.message}</small></div>`;
+  }
+}
 
 // ── THREE.JS / VOLUMETRIA 3D ─────────────────────
 
