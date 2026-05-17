@@ -146,7 +146,8 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 .hdr-user{font-size:11px;color:var(--faint);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* ── TOOL DOCK / ATALHOS FLUTUANTES ─────────────── */
-.tool-dock{position:fixed;left:14px;top:76px;z-index:45;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none}
+.tool-dock{position:fixed;left:14px;top:76px;bottom:8px;z-index:45;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
+.tool-dock::-webkit-scrollbar{display:none}
 .tool-dock .dock-btn,.tool-dock .dock-sep{pointer-events:auto}
 .dock-btn{pointer-events:auto;border:none;border-radius:999px;background:var(--surface);border:0.5px solid var(--border-em);color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.10);cursor:pointer;display:flex;align-items:center;gap:7px;min-width:132px;transition:transform .15s,background .15s,border-color .15s,color .15s,opacity .15s}
 .dock-btn:hover{transform:translateX(2px);background:var(--el);border-color:var(--eb);color:var(--e)}
@@ -2330,26 +2331,24 @@ function notifyStatus(msg,type='ok',ms=3000){
   if(ms) setTimeout(()=>{s.textContent='';s.className='save-status';},ms);
 }
 function createPdfElement(html){
-  // Mantém o conteúdo do PDF visível para o html2canvas.
-  // Alguns navegadores, principalmente Safari/iOS, geram PDF em branco
-  // quando o elemento fica fora da tela com left:-9999px.
+  // Wrapper invisível: esconde da tela mas mantém o elemento pintado pelo browser.
+  // Não usa position:fixed com largura >100vw (quebra no Safari/iOS).
+  // Não usa left:-9999px (alguns browsers não pintam elementos off-screen).
+  // Solução: position:fixed, dentro de um container com overflow:hidden e tamanho 0,
+  // mas o filho tem visibility:visible e opacity:1 para o html2canvas capturar.
+  const wrap=document.createElement('div');
+  wrap.id='pdf-render-wrap';
+  wrap.setAttribute('aria-hidden','true');
+  wrap.style.cssText='position:fixed;top:0;left:0;width:0;height:0;overflow:hidden;z-index:-1;pointer-events:none';
+
   const el=document.createElement('div');
   el.id='pdf-render-host';
-  el.setAttribute('aria-hidden','true');
-  el.style.position='fixed';
-  el.style.left='0';
-  el.style.top='0';
-  el.style.width='794px';
-  el.style.maxWidth='794px';
-  el.style.minHeight='1123px';
-  el.style.background='#FAF7F1';
-  el.style.pointerEvents='none';
-  el.style.zIndex='2147483647';
-  el.style.opacity='1';
-  el.style.overflow='visible';
+  el.style.cssText='position:absolute;top:0;left:0;width:794px;max-width:794px;min-height:1123px;background:#FAF7F1;overflow:visible;opacity:1;pointer-events:none';
   el.innerHTML=html;
-  document.body.appendChild(el);
+  wrap.appendChild(el);
+  document.body.appendChild(wrap);
   // Força cálculo de layout antes da captura.
+  void el.offsetWidth;
   void el.offsetHeight;
   return el;
 }
@@ -3268,13 +3267,13 @@ async function exportSimgeoPDF(){
       return `<div style="break-inside:avoid;margin-bottom:14px;border:1px solid #F2EDE2;border-radius:8px;overflow:hidden"><div style="background:#F5EDE2;padding:9px 11px;color:#8B5E3C;font-family:system-ui,sans-serif;font-size:11px;font-weight:600">${esc(r.layer.title)}</div><table style="width:100%;border-collapse:collapse">${rows||'<tr><td style="padding:9px;color:#B0A090;font-size:10px;font-family:system-ui,sans-serif">Sem atributos públicos úteis.</td></tr>'}</table></div>`;
     }).join(''):'<div style="font-size:12px;color:#B0A090;font-family:system-ui,sans-serif">Nenhuma camada retornou dados para este ponto.</div>';
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
-    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
+    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,width:794,windowWidth:794,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
     simgeoStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF SIMGEO:',e); simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
-  finally{ if(el?.parentNode) el.parentNode.removeChild(el); simgeoPdfBusy=false; }
+  finally{ const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el); simgeoPdfBusy=false; }
 }
 
 
@@ -3578,13 +3577,13 @@ async function exportMapotecaPDF(){
     const d=mapotecaLastResult; const info=d.info||{}; const best=d.search.candidates[0];
     const rows=[['Endereço',mapotecaAddressText(d.point.address)],['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],['Bairro',info.bairro||d.point.address?.bairro||'—'],['Loteamento',info.loteamento||'—'],['Quadra',info.quadra||'—'],['Lote',info.lote||'—'],['Área',info.area||'—'],['Cadastro/inscrição',info.cadastro||'—'],['Arquivo',best?best.title:'Não confirmado'],['Link',best?best.url:MAPOTECA_URL]].map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:34%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px;word-break:break-word">${esc(b)}</td></tr>`).join('');
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha Mapoteca</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
-    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
+    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,width:794,windowWidth:794,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
     mapotecaStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF Mapoteca:',e); mapotecaStatus('Não consegui gerar o PDF da Mapoteca.','err'); }
-  finally{ if(el?.parentNode) el.parentNode.removeChild(el); mapotecaPdfBusy=false; }
+  finally{ const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el); mapotecaPdfBusy=false; }
 }
 
 function fillMapotecaFromSimgeo(){
@@ -3782,13 +3781,13 @@ async function exportLabeeePDF(){
     const rows=[['Local',loc],['CEP',`${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`],['Endereço aproximado',d.endereco?.geocodificado||'Localizado pelo CEP'],['Ponto usado',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
     const tr=rows.map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(b)}</td></tr>`).join('');
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha LabEEE — Análise Ambiental</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
-    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame();
+    el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,width:794,windowWidth:794,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha LabEEE.');
     labeeeStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF LabEEE:',e); labeeeStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
-  finally{ if(el?.parentNode) el.parentNode.removeChild(el); labeeePdfBusy=false; }
+  finally{ const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el); labeeePdfBusy=false; }
 }
 
 
@@ -3890,6 +3889,7 @@ async function exportPDF(){
     if(document.fonts?.ready) await document.fonts.ready;
     await nextFrame();
     await nextFrame();
+    await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName(nomeRaw,'proposta');
     const opts={
       margin:0,
@@ -3905,6 +3905,8 @@ async function exportPDF(){
         scrollY:0,
         x:0,
         y:0,
+        width:794,
+        windowWidth:794,
         removeContainer:false,
       },
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
@@ -3916,7 +3918,7 @@ async function exportPDF(){
     console.error('Erro ao gerar PDF:',e);
     notifyStatus('Erro ao gerar PDF. Verifique os dados da proposta e tente novamente.','err',6000);
   }finally{
-    if(el?.parentNode) el.parentNode.removeChild(el);
+    const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el);
     btn.textContent='⬇ Baixar PDF';
     btn.disabled=false;
     pdfBusy=false;
@@ -3973,6 +3975,7 @@ async function exportCarta(){
     if(document.fonts?.ready) await document.fonts.ready;
     await nextFrame();
     await nextFrame();
+    await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName(assuntoRaw||'carta','carta');
     const opts={
       margin:0,
@@ -3988,6 +3991,8 @@ async function exportCarta(){
         scrollY:0,
         x:0,
         y:0,
+        width:794,
+        windowWidth:794,
         removeContainer:false,
       },
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
@@ -3998,7 +4003,7 @@ async function exportCarta(){
     console.error('Erro ao gerar carta:',e);
     alert('Não foi possível gerar o PDF da carta. Recarregue a página e tente novamente.');
   }finally{
-    if(el?.parentNode) el.parentNode.removeChild(el);
+    const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el);
     if(btn){btn.textContent='⬇ Baixar PDF';btn.disabled=false;}
     cartaPdfBusy=false;
   }
