@@ -797,6 +797,81 @@ body.nbr-open #online-bar{display:none}
 
 
 
+
+
+/* ── PLANURB / TCC STUDIO ───────────────────────── */
+#planurb-view{display:none;padding:1.5rem;max-width:1320px;margin:0 auto;flex:1;width:100%}
+.planurb-sub{font-size:11px;color:var(--faint);line-height:1.5;margin-top:3px}
+.planurb-shell{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}
+.planurb-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.planurb-hero{background:linear-gradient(135deg,var(--surface),var(--surf2));border:0.5px solid var(--border);border-radius:16px;padding:1.1rem 1.2rem;display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:center;box-shadow:0 2px 14px rgba(0,0,0,.04)}
+.planurb-hero h2{font-family:Georgia,serif;font-size:22px;font-weight:400;color:var(--text);margin-bottom:.35rem}
+.planurb-hero p{font-size:12px;color:var(--muted);line-height:1.65;max-width:720px}
+.planurb-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.planurb-badge{font-size:10px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:5px 9px;white-space:nowrap}
+.planurb-card,.planurb-panel,.planurb-package-box{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1rem;box-shadow:0 2px 12px rgba(0,0,0,.035)}
+.planurb-card h2,.planurb-panel h3{font-size:15px;font-weight:600;color:var(--text);margin:0 0 .35rem}
+.planurb-muted{font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem}
+.planurb-config{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:.1rem}
+.planurb-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:.8rem}
+.planurb-section-head p{font-size:11px;color:var(--faint);line-height:1.55;margin-top:3px}
+.planurb-tools-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.planurb-tool-card{position:relative;border:0.5px solid var(--border);border-radius:13px;background:var(--surf2);min-height:168px;padding:.85rem;display:grid;grid-template-rows:auto 1fr auto;gap:8px;cursor:pointer;text-align:left;transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;color:inherit;font-family:inherit;overflow:hidden}
+.planurb-tool-card:hover{border-color:var(--eb);background:var(--el);transform:translateY(-1px)}
+.planurb-tool-card.active{border-color:var(--e);box-shadow:inset 0 0 0 1px var(--e),0 10px 26px rgba(0,0,0,.06)}
+.planurb-tool-card.selected::after{content:'✓';position:absolute;right:10px;top:10px;width:20px;height:20px;border-radius:6px;background:var(--e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.planurb-tool-top{display:flex;gap:10px;align-items:center;padding-right:22px}
+.planurb-tool-num{width:30px;height:30px;border-radius:10px;background:var(--surface);border:0.5px solid var(--border-em);display:flex;align-items:center;justify-content:center;color:var(--e);font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;flex-shrink:0}
+.planurb-tool-title{font-size:13px;color:var(--text);font-weight:700;line-height:1.2}
+.planurb-tool-desc{font-size:10.5px;color:var(--muted);line-height:1.45;max-width:210px}
+.planurb-tool-tags{display:flex;gap:4px;flex-wrap:wrap}
+.planurb-tag{font-size:9px;color:var(--muted);background:var(--surface);border:0.5px solid var(--border);border-radius:999px;padding:2px 7px}
+.planurb-visual{height:56px;border:0.5px solid var(--border);border-radius:10px;background:linear-gradient(135deg,var(--surface),var(--el));position:relative;overflow:hidden;margin-top:2px}
+.planurb-visual::before,.planurb-visual::after{content:'';position:absolute;border-radius:999px;border:1px solid var(--eb);opacity:.8}.planurb-visual::before{width:90px;height:36px;left:16px;top:12px;transform:rotate(-8deg)}.planurb-visual::after{width:70px;height:26px;right:16px;top:17px;transform:rotate(12deg)}
+.planurb-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.8rem}
+.planurb-preview{border:0.5px solid var(--border);border-radius:12px;background:var(--surf2);padding:1rem;margin-bottom:10px}
+.planurb-preview-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:.8rem;flex-wrap:wrap}
+.planurb-kicker{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.planurb-title{font-family:Georgia,serif;font-size:20px;color:var(--text);font-weight:400;line-height:1.2}
+.planurb-desc{font-size:12px;color:var(--muted);line-height:1.65;margin:.55rem 0 .85rem}
+.planurb-mini-list{display:flex;flex-direction:column;gap:6px}
+.planurb-mini-item{border:0.5px solid var(--border);border-radius:9px;padding:.62rem .7rem;background:var(--surface);display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--muted);line-height:1.45}
+.planurb-mini-item .mark{color:var(--e);font-weight:700;flex-shrink:0}.planurb-mini-item input{margin-top:2px;accent-color:var(--e)}
+.planurb-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.planurb-status{font-size:11px;color:var(--faint);min-height:16px;line-height:1.45}
+.planurb-status.ok{color:var(--green)}.planurb-status.err{color:var(--err)}
+.planurb-preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.planurb-preset{border:0.5px solid var(--border-em);border-radius:12px;background:var(--surf2);padding:.9rem;text-align:left;cursor:pointer;color:inherit;font-family:inherit;display:flex;gap:10px;align-items:center;transition:border-color .16s,background .16s,transform .16s}
+.planurb-preset:hover,.planurb-preset.active{border-color:var(--e);background:var(--el);transform:translateY(-1px)}
+.planurb-preset .ico{font-size:22px;color:var(--e);line-height:1}.planurb-preset strong{display:block;font-size:12px;color:var(--text);margin-bottom:3px}.planurb-preset span:last-child{font-size:10px;color:var(--faint);line-height:1.4}
+.planurb-action-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:10px}
+.planurb-action-card{border:0.5px solid var(--border);border-radius:13px;background:var(--surface);padding:.9rem;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.planurb-action-card strong{font-size:12px;color:var(--text)}.planurb-action-card span{display:block;font-size:10px;color:var(--faint);line-height:1.45;margin-top:3px}
+.planurb-side{display:flex;flex-direction:column;gap:10px;position:sticky;top:70px;max-height:calc(100vh - 84px);overflow:auto;padding-right:2px}
+.planurb-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:.4rem}
+.planurb-count{font-family:'IBM Plex Mono',monospace;font-size:9px;background:var(--el);border:0.5px solid var(--eb);color:var(--e);border-radius:999px;padding:3px 8px;white-space:nowrap}
+.planurb-checklist{display:flex;flex-direction:column;gap:5px;margin-top:.8rem}
+.planurb-check-row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;border-bottom:0.5px solid var(--border);padding:6px 0;font-size:11px;color:var(--muted)}
+.planurb-check-row:last-child{border-bottom:none}.planurb-check-row input{accent-color:var(--e)}
+.planurb-check-name{line-height:1.35;color:var(--text)}.planurb-check-meta{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--faint);background:var(--surf2);border-radius:999px;padding:2px 7px;white-space:nowrap}
+.planurb-import-row{grid-template-columns:22px 1fr auto;cursor:pointer}.planurb-import-icon{width:18px;height:18px;border-radius:6px;background:var(--el);border:0.5px solid var(--eb);display:flex;align-items:center;justify-content:center;color:var(--e);font-size:10px;flex-shrink:0}
+.planurb-import-status{font-family:'IBM Plex Mono',monospace;font-size:9px;border-radius:999px;padding:3px 7px;white-space:nowrap;border:0.5px solid var(--border)}
+.planurb-import-status.importado{background:var(--greenl);color:var(--green);border-color:var(--green)}
+.planurb-import-status.pendente{background:var(--warnl);color:var(--warn);border-color:var(--warnb)}
+.planurb-import-status.nao{background:var(--errl);color:var(--err);border-color:var(--errb)}
+.planurb-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:.8rem;font-size:9px;color:var(--faint)}.planurb-legend span{display:flex;align-items:center;gap:4px}.planurb-dot{width:7px;height:7px;border-radius:50%;display:inline-block}.planurb-dot.ok{background:var(--green)}.planurb-dot.warn{background:var(--warn)}.planurb-dot.err{background:var(--err)}
+.planurb-package{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px;margin-top:.9rem}
+.planurb-pack-card{border:0.5px solid var(--border);border-radius:10px;background:var(--surface);padding:.85rem;min-height:106px}
+.planurb-pack-card .tag{display:inline-flex;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:2px 7px;margin-bottom:7px}
+.planurb-pack-card h3{font-size:12px;color:var(--text);line-height:1.35;margin-bottom:5px}.planurb-pack-card p{font-size:10px;color:var(--muted);line-height:1.55}
+.planurb-roadmap{border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1rem;background:var(--surface)}
+.planurb-roadmap-row{display:grid;grid-template-columns:76px 1fr 88px;gap:10px;padding:8px 10px;border-bottom:0.5px solid var(--border);align-items:center;font-size:11px}.planurb-roadmap-row:last-child{border-bottom:none}.planurb-roadmap-row .fase{font-family:'IBM Plex Mono',monospace;color:var(--e);font-size:10px}.planurb-roadmap-row .nome{color:var(--text);font-weight:500}.planurb-roadmap-row .tempo{color:var(--faint);text-align:right;font-size:10px}
+.planurb-summary{border:0.5px solid var(--border);border-radius:10px;background:var(--surf2);padding:.8rem;margin-top:.8rem;font-size:11px;color:var(--muted);line-height:1.55}
+@media(min-width:721px){#planurb-view{padding-left:180px}}
+@media(max-width:1120px){.planurb-shell{grid-template-columns:1fr}.planurb-side{position:static;max-height:none;overflow:visible}.planurb-tools-grid{grid-template-columns:repeat(2,1fr)}.planurb-config{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){#planurb-view{padding:1rem!important}.planurb-hero,.planurb-detail-grid{grid-template-columns:1fr}.planurb-badges{justify-content:flex-start}.planurb-tools-grid,.planurb-config,.planurb-preset-grid,.planurb-action-grid{grid-template-columns:1fr}.planurb-roadmap-row{grid-template-columns:1fr}.planurb-roadmap-row .tempo{text-align:left}}
+
+
 /* ── PLANNER / CALENDÁRIO ───────────────────────── */
 body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #planner-panel,body.auth-mode #planner-hall-card{display:none!important}
 #planner-toggle{position:fixed;right:24px;bottom:86px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--e),var(--eb));border:1px solid var(--border-em);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s,border-color .2s;z-index:9998;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.15rem}
@@ -942,6 +1017,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-threejs" onclick="showThreejs()"><span class="ico">▥</span>Volumetria 3D</button>
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
+    <button class="dock-btn" id="tool-planurb" onclick="showPlanurb()"><span class="ico">▤</span>Planurb/TCC</button>
     <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-materiais" onclick="showMateriais()"><span class="ico">🧱</span>Materiais</button>
@@ -1012,6 +1088,14 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
           <p>Busca o terreno por CEP, tenta identificar bairro/lote/quadra/área e procura a prancha oficial correspondente.</p>
         </div>
         <span class="hall-go">Buscar arquivo →</span>
+      </button>
+      <button class="hall-card" onclick="showPlanurb()" style="border-color:var(--eb)">
+        <div>
+          <div class="hall-icon">▤</div>
+          <h2>Planurb/TCC Studio</h2>
+          <p>Transforma modelagem de terreno, diagramas, pranchas, colagens e caderno em um pacote de serviços e entregáveis para o projeto.</p>
+        </div>
+        <span class="hall-go">Montar pacote →</span>
       </button>
       <button class="hall-card" onclick="showSimgeo()">
         <div>
@@ -1206,6 +1290,133 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <p class="mapoteca-muted">A ficha aparece aqui com área identificada, dados do terreno e link do arquivo encontrado.</p>
         <div id="mt-result"><div class="mapoteca-empty">Nenhuma busca realizada ainda.<br>Digite o CEP e clique em “Buscar terreno”.</div></div>
       </section>
+    </div>
+  </div>
+
+
+
+
+  <!-- PLANURB / TCC STUDIO -->
+  <div id="planurb-view" style="display:none">
+    <div class="dash-top">
+      <div>
+        <div class="dash-title">Planurb / TCC Studio</div>
+        <div class="planurb-sub">Ferramenta para organizar estudos urbanísticos, TCC e entregáveis visuais do projeto.</div>
+      </div>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+    </div>
+
+    <div class="planurb-shell">
+      <main class="planurb-main">
+        <section class="planurb-hero">
+          <div>
+            <h2>Do terreno à entrega final</h2>
+            <p>Use os seis blocos como ferramentas internas: modelagem do terreno, leitura urbana, partido, pranchas, colagens e caderno. Agora o painel separa o que será produzido do que já foi importado para o projeto.</p>
+          </div>
+          <div class="planurb-badges">
+            <span class="planurb-badge">Entregáveis</span>
+            <span class="planurb-badge">Itens importados</span>
+            <span class="planurb-badge">Presets</span>
+            <span class="planurb-badge">Brief</span>
+          </div>
+        </section>
+
+        <section class="planurb-card">
+          <div class="planurb-section-head">
+            <div>
+              <h2>Configuração do pacote</h2>
+              <p>Defina o contexto do projeto. O pacote gerado usa estes dados no brief e na proposta.</p>
+            </div>
+          </div>
+          <div class="planurb-config">
+            <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pl-projeto" placeholder="Ex: Centro Cultural" oninput="planurbRefreshPackage()"></div></div>
+            <div class="field"><label>Etapa</label><div class="iw"><select id="pl-etapa" onchange="planurbRefreshPackage()"><option>TCC / Estudo acadêmico</option><option>Estudo preliminar</option><option>Anteprojeto</option><option>Concurso</option><option>Portfólio</option></select></div></div>
+            <div class="field"><label>Local / bairro</label><div class="iw"><input type="text" id="pl-local" placeholder="Ex: Campo Grande/MS" oninput="planurbRefreshPackage()"></div></div>
+            <div class="field"><label>Formato principal</label><div class="iw"><select id="pl-formato" onchange="planurbRefreshPackage()"><option>Pranchas A1</option><option>Pranchas A2</option><option>Caderno A3</option><option>Caderno A4</option><option>Post carrossel</option></select></div></div>
+          </div>
+        </section>
+
+        <section class="planurb-card">
+          <div class="planurb-section-head">
+            <div>
+              <h2>Ferramentas disponíveis</h2>
+              <p>Selecione uma ferramenta para ver detalhes. Use o botão de seleção no card para marcar todos os entregáveis daquele bloco.</p>
+            </div>
+            <span class="planurb-count" id="pl-tool-count">—</span>
+          </div>
+          <div class="planurb-tools-grid" id="pl-tool-grid"></div>
+        </section>
+
+        <section class="planurb-card">
+          <div class="planurb-section-head">
+            <div>
+              <h2 id="pl-detail-title">Detalhe da ferramenta</h2>
+              <p id="pl-detail-sub">Escolha uma ferramenta para visualizar entregáveis e checklist de produção.</p>
+            </div>
+            <div class="planurb-actions">
+              <button class="btn ghost" onclick="planurbToggleActiveTool()">Selecionar bloco</button>
+            </div>
+          </div>
+          <div id="pl-tool-detail"></div>
+        </section>
+
+        <section class="planurb-card">
+          <div class="planurb-section-head">
+            <div>
+              <h2>Presets rápidos</h2>
+              <p>Carrega uma combinação sugerida de entregáveis para cada tipo de apresentação.</p>
+            </div>
+          </div>
+          <div class="planurb-preset-grid">
+            <button class="planurb-preset active" id="pl-preset-tcc" onclick="planurbApplyPreset('tcc')"><span class="ico">▣</span><span><strong>Preset TCC</strong><span>Completo para banca acadêmica</span></span></button>
+            <button class="planurb-preset" id="pl-preset-cliente" onclick="planurbApplyPreset('cliente')"><span class="ico">◉</span><span><strong>Preset cliente</strong><span>Focado em apresentação clara</span></span></button>
+            <button class="planurb-preset" id="pl-preset-concurso" onclick="planurbApplyPreset('concurso')"><span class="ico">♕</span><span><strong>Preset concurso</strong><span>Material visual e narrativo</span></span></button>
+          </div>
+        </section>
+
+        <section class="planurb-action-grid">
+          <div class="planurb-action-card">
+            <span><strong>Gerar pacote de entregáveis</strong><span>Gera a lista completa dos entregáveis selecionados com base no projeto.</span></span>
+            <button class="btn solid" onclick="planurbBuildPackage(true)">Gerar pacote</button>
+          </div>
+          <div class="planurb-action-card">
+            <span><strong>Copiar brief do projeto</strong><span>Copia o escopo selecionado para colar onde quiser.</span></span>
+            <button class="btn ghost" onclick="planurbCopyBrief()">Copiar</button>
+          </div>
+          <div class="planurb-action-card">
+            <span><strong>Adicionar serviços na proposta</strong><span>Envia os itens selecionados para a proposta ativa.</span></span>
+            <button class="btn solid" onclick="planurbSendToProposal()">＋ Adicionar</button>
+          </div>
+        </section>
+
+        <div class="planurb-status" id="pl-status"></div>
+        <div id="pl-package"></div>
+      </main>
+
+      <aside class="planurb-side">
+        <section class="planurb-panel">
+          <div class="planurb-panel-head">
+            <h3>Checklist de entregáveis</h3>
+            <span class="planurb-count" id="pl-delivery-count">—</span>
+          </div>
+          <p class="planurb-muted">O que será produzido neste projeto.</p>
+          <div class="planurb-checklist" id="pl-delivery-checklist"></div>
+        </section>
+
+        <section class="planurb-panel">
+          <div class="planurb-panel-head">
+            <h3>Checklist de itens importados</h3>
+            <span class="planurb-count" id="pl-import-count">—</span>
+          </div>
+          <p class="planurb-muted">Dados e arquivos que já entraram no sistema. Clique no status para alternar entre importado, pendente e não encontrado.</p>
+          <div class="planurb-checklist" id="pl-import-checklist"></div>
+          <div class="planurb-legend">
+            <span><i class="planurb-dot ok"></i> Importado</span>
+            <span><i class="planurb-dot warn"></i> Pendente</span>
+            <span><i class="planurb-dot err"></i> Não encontrado</span>
+          </div>
+        </section>
+      </aside>
     </div>
   </div>
 
@@ -1906,7 +2117,7 @@ function canUseTool(tool){
   const r=normalizedRole(currentRole);
   if(!r) return true; // evita bloquear enquanto o perfil carrega
   if(r==='dono' || r==='arquiteto') return true;
-  const minionTools=['home','new','props','simgeo','labeee','mapoteca','materiais','nbr'];
+  const minionTools=['home','new','props','simgeo','labeee','mapoteca','planurb','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
   if(r==='minion') return minionTools.includes(tool);
   if(r==='financeiro') return financeiroTools.includes(tool);
@@ -1922,7 +2133,7 @@ function guardTool(tool){
 
 
 function applyRoleUI(){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','planurb','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -2034,7 +2245,7 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','planurb-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -2044,7 +2255,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','planurb','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -2128,6 +2339,300 @@ function showEquipe(){
   equipeLoad();
 }
 
+
+function showPlanurb(){
+  if(guardTool('planurb')) return;
+  hideViews();
+  $('planurb-view').style.display='block';
+  setTool('planurb');
+  planurbInit();
+}
+
+
+// ── PLANURB / TCC STUDIO ─────────────────────────
+const PLANURB_TOOLS=[
+  {
+    id:'terreno',num:'1',title:'Modelagem de Terrenos',icon:'▥',short:'Topografia + entorno',
+    desc:'Transforma levantamento, curvas de nível, lote e contexto imediato em uma base limpa para iniciar implantação, cortes e volumetria.',
+    outputs:[
+      {id:'modelagem-terreno',name:'Modelagem de terreno'},
+      {id:'entorno-imediato',name:'Entorno urbano modelado'},
+      {id:'declividades',name:'Mapa de cotas / declividades'},
+      {id:'base-projeto',name:'Base pronta para inserir o projeto'}
+    ],
+    checklist:['Curvas de nível ou pontos cotados','Limites do lote e testadas','Acessos, calçadas e esquinas','Norte, escala e cotas principais'],
+    prompt:'Base técnica para modelagem do terreno com leitura de topografia, entorno e condicionantes de implantação.'
+  },
+  {
+    id:'area',num:'2',title:'Diagramas da Área',icon:'◎',short:'Diagnóstico urbano',
+    desc:'Organiza mapas de leitura do lugar para justificar o partido: uso do solo, gabaritos, sistema viário, bioclima, hipsometria e áreas verdes.',
+    outputs:[
+      {id:'uso-solo',name:'Uso do solo'},
+      {id:'gabaritos',name:'Gabaritos'},
+      {id:'sistema-viario',name:'Sistema viário'},
+      {id:'bioclimatico',name:'Bioclimático'},
+      {id:'hipsometrico',name:'Hipsométrico'},
+      {id:'areas-verdes',name:'Áreas verdes'}
+    ],
+    checklist:['Raio de análise definido','Legenda cromática consistente','Fonte dos dados anotada','Escala gráfica e norte'],
+    prompt:'Conjunto de diagramas urbanos para explicar contexto, conflitos, potenciais e diretrizes do terreno.'
+  },
+  {
+    id:'projeto',num:'3',title:'Diagramas de Projeto',icon:'⇄',short:'Partido + fluxos',
+    desc:'Converte a ideia arquitetônica em diagramas rápidos para mostrar setorização, circulação, estrutura e evolução volumétrica.',
+    outputs:[
+      {id:'setorizacao',name:'Setorização'},
+      {id:'fluxos',name:'Fluxos'},
+      {id:'estrutura',name:'Estrutura'},
+      {id:'evolucao-forma',name:'Evolução da forma'},
+      {id:'cheio-vazio',name:'Relação cheio-vazio'},
+      {id:'implantacao',name:'Estratégias de implantação'}
+    ],
+    checklist:['Programa agrupado por setores','Fluxos principais separados','Acessos e permanências marcados','Forma explicada em etapas'],
+    prompt:'Diagramas de partido arquitetônico para comunicar decisões de projeto de forma sintética e visual.'
+  },
+  {
+    id:'pranchas',num:'4',title:'Diagramação de Pranchas',icon:'▦',short:'Apresentação organizada',
+    desc:'Monta uma estrutura de apresentação com hierarquia visual, grid, sequência de leitura e espaço para plantas, cortes, diagramas e imagens.',
+    outputs:[
+      {id:'pranchas-finais',name:'Pranchas finais'},
+      {id:'grid-prancha',name:'Grid de prancha A1/A2'},
+      {id:'hierarquia-grafica',name:'Hierarquia de títulos e legendas'},
+      {id:'sequencia-leitura',name:'Sequência de leitura'},
+      {id:'check-exportacao',name:'Checklist de impressão/exportação'}
+    ],
+    checklist:['Formato e margens definidos','Títulos com escala e norte','Peso de linha padronizado','Contraste suficiente para banca'],
+    prompt:'Sistema gráfico de pranchas com leitura clara, ritmo visual e organização para apresentação acadêmica ou cliente.'
+  },
+  {
+    id:'colagens',num:'5',title:'Colagens',icon:'◧',short:'Ambiência sem render pesado',
+    desc:'Cria cenas e atmosfera do projeto usando colagem, pessoas, vegetação, materiais e paleta para comunicar ambiência rapidamente.',
+    outputs:[
+      {id:'colagens',name:'Colagens'},
+      {id:'colagem-fachada',name:'Colagem de fachada/implantação'},
+      {id:'colagem-interna',name:'Colagem interna ou externa'},
+      {id:'paleta-materiais',name:'Paleta de materiais'},
+      {id:'banco-personagens',name:'Banco de personagens e vegetação'}
+    ],
+    checklist:['Imagem-base ou vista escolhida','Paleta cromática definida','Escala humana inserida','Texturas coerentes com conceito'],
+    prompt:'Colagens conceituais para transmitir atmosfera, escala humana e identidade do projeto sem necessidade de renderização realista.'
+  },
+  {
+    id:'caderno',num:'6',title:'Diagramação de Caderno',icon:'▤',short:'Memorial + identidade',
+    desc:'Transforma pesquisa, diagnóstico, conceito, peças gráficas e memorial em um caderno com identidade visual consistente.',
+    outputs:[
+      {id:'caderno-memorial',name:'Caderno / Memorial'},
+      {id:'sumario-caderno',name:'Sumário do caderno'},
+      {id:'grid-paginas',name:'Grid de páginas'},
+      {id:'capa-separadores',name:'Capa e separadores'},
+      {id:'pdf-final',name:'PDF final para banca/cliente'}
+    ],
+    checklist:['Ordem narrativa definida','Estilos de título e texto','Imagens com legenda/fonte','PDF revisado e leve para envio'],
+    prompt:'Caderno final com narrativa visual, memorial e organização profissional para apresentar o processo completo do projeto.'
+  }
+];
+const PLANURB_IMPORTS=[
+  {id:'cep',name:'CEP / endereço do terreno',icon:'⌖',status:'importado'},
+  {id:'coords',name:'Coordenadas geográficas',icon:'◎',status:'importado'},
+  {id:'mapa-base',name:'Mapa base (Google/ArcGIS)',icon:'▤',status:'importado'},
+  {id:'simgeo',name:'Dados SIMGEO / Planurb',icon:'▦',status:'importado'},
+  {id:'entorno',name:'Entorno urbano',icon:'▥',status:'importado'},
+  {id:'zoneamento',name:'Zoneamento / LabEEE',icon:'☀',status:'importado'},
+  {id:'topografia',name:'Topografia',icon:'≋',status:'pendente'},
+  {id:'curvas',name:'Curvas de nível',icon:'≋',status:'pendente'},
+  {id:'referencias',name:'Referências visuais',icon:'□',status:'pendente'},
+  {id:'arquivos',name:'Arquivos PDF / DWG / JPG',icon:'▣',status:'pendente'},
+  {id:'fotos',name:'Levantamento fotográfico',icon:'◉',status:'pendente'},
+  {id:'relatorio-terreno',name:'Relatório do terreno',icon:'☷',status:'pendente'}
+];
+const PLANURB_PRESETS={
+  tcc:['modelagem-terreno','uso-solo','gabaritos','sistema-viario','bioclimatico','hipsometrico','areas-verdes','setorizacao','fluxos','estrutura','evolucao-forma','pranchas-finais','colagens','caderno-memorial','pdf-final'],
+  cliente:['modelagem-terreno','setorizacao','fluxos','implantacao','pranchas-finais','colagens','paleta-materiais','pdf-final'],
+  concurso:['uso-solo','gabaritos','sistema-viario','bioclimatico','areas-verdes','setorizacao','fluxos','evolucao-forma','pranchas-finais','colagens','caderno-memorial','pdf-final']
+};
+let planurbActive='terreno';
+let planurbLastBrief='';
+let planurbReady=false;
+let planurbPreset='tcc';
+let planurbSelected=new Set(PLANURB_PRESETS.tcc);
+let planurbImports={};
+function planurbAllDeliverables(){
+  return PLANURB_TOOLS.flatMap(tool=>tool.outputs.map((o,idx)=>({...o,tool:tool.id,toolNum:tool.num,toolTitle:tool.title,toolPrompt:tool.prompt,order:Number(tool.num)*100+idx})));
+}
+function planurbDeliveryById(id){ return planurbAllDeliverables().find(d=>d.id===id); }
+function planurbTool(){ return PLANURB_TOOLS.find(t=>t.id===planurbActive)||PLANURB_TOOLS[0]; }
+function planurbInit(){
+  if(!Object.keys(planurbImports).length){ PLANURB_IMPORTS.forEach(i=>planurbImports[i.id]=i.status); }
+  planurbSyncImports();
+  planurbReady=true;
+  planurbRenderAll();
+}
+function planurbRenderAll(){
+  planurbRenderTools();
+  planurbRenderDetail();
+  planurbRenderDeliverables();
+  planurbRenderImports();
+  planurbBuildPackage(false);
+}
+function planurbSyncImports(){
+  try{
+    const cep=($('sg-cep')?.value||$('le-cep')?.value||$('mt-cep')?.value||'').replace(/\D/g,'');
+    if(cep.length===8) planurbImports.cep='importado';
+    const lat=parseFloat($('sg-lat')?.value||$('le-lat')?.value||'');
+    const lng=parseFloat($('sg-lng')?.value||$('le-lng')?.value||'');
+    if(Number.isFinite(lat) && Number.isFinite(lng)) planurbImports.coords='importado';
+    if(typeof simgeoLastResult!=='undefined' && simgeoLastResult) planurbImports.simgeo='importado';
+  }catch(_e){}
+}
+function planurbToolSelectionCount(tool){ return tool.outputs.filter(o=>planurbSelected.has(o.id)).length; }
+function planurbRenderTools(){
+  const box=$('pl-tool-grid'); if(!box) return;
+  const total=PLANURB_TOOLS.reduce((n,t)=>n+t.outputs.length,0);
+  const count=$('pl-tool-count'); if(count) count.textContent=`${planurbSelected.size} de ${total} itens`;
+  box.innerHTML=PLANURB_TOOLS.map(t=>{
+    const qtd=planurbToolSelectionCount(t);
+    return `<button class="planurb-tool-card ${t.id===planurbActive?'active':''} ${qtd?'selected':''}" onclick="planurbSelect('${t.id}')" ondblclick="event.preventDefault(); planurbToggleTool('${t.id}')" title="Clique para abrir. Duplo clique seleciona/remove o bloco.">
+      <div class="planurb-tool-top"><span class="planurb-tool-num">${t.num}</span><span class="planurb-tool-title">${esc(t.title)}</span></div>
+      <div><p class="planurb-tool-desc">${esc(t.desc)}</p><div class="planurb-visual" aria-hidden="true"></div></div>
+      <div class="planurb-tool-tags"><span class="planurb-tag">${qtd}/${t.outputs.length} selecionados</span><span class="planurb-tag">${esc(t.short)}</span></div>
+    </button>`;
+  }).join('');
+}
+function planurbSelect(id){
+  planurbActive=id;
+  planurbRenderTools();
+  planurbRenderDetail();
+  planurbRefreshPackage();
+}
+function planurbToggleTool(id){
+  const tool=PLANURB_TOOLS.find(t=>t.id===id); if(!tool) return;
+  const allSelected=tool.outputs.every(o=>planurbSelected.has(o.id));
+  tool.outputs.forEach(o=> allSelected ? planurbSelected.delete(o.id) : planurbSelected.add(o.id));
+  planurbPreset='custom';
+  planurbRenderAll();
+  planurbSetStatus(allSelected?'Bloco removido dos entregáveis.':'Bloco adicionado aos entregáveis.','ok');
+}
+function planurbToggleActiveTool(){ planurbToggleTool(planurbActive); }
+function planurbToggleDelivery(id){
+  if(planurbSelected.has(id)) planurbSelected.delete(id); else planurbSelected.add(id);
+  planurbPreset='custom';
+  planurbRenderAll();
+}
+function planurbRenderDetail(){
+  const t=planurbTool(), box=$('pl-tool-detail'); if(!box) return;
+  const dt=$('pl-detail-title'); if(dt) dt.textContent=t.title;
+  const ds=$('pl-detail-sub'); if(ds) ds.textContent=t.short;
+  box.innerHTML=`<div class="planurb-preview">
+    <div class="planurb-preview-top"><div><div class="planurb-kicker">Ferramenta ${t.num}</div><div class="planurb-title">${esc(t.title)}</div></div><span class="planurb-badge">${planurbToolSelectionCount(t)} de ${t.outputs.length} selecionados</span></div>
+    <p class="planurb-desc">${esc(t.desc)}</p>
+    <div class="planurb-detail-grid">
+      <div><div class="slabel" style="margin-top:0">Entregáveis do bloco</div><div class="planurb-mini-list">${t.outputs.map(o=>`<label class="planurb-mini-item"><input type="checkbox" ${planurbSelected.has(o.id)?'checked':''} onchange="planurbToggleDelivery('${o.id}')"><span>${esc(o.name)}</span></label>`).join('')}</div></div>
+      <div><div class="slabel" style="margin-top:0">Checklist de produção</div><div class="planurb-mini-list">${t.checklist.map(o=>`<div class="planurb-mini-item"><span class="mark">✓</span><span>${esc(o)}</span></div>`).join('')}</div></div>
+    </div>
+    <div class="planurb-summary"><strong>Mini-brief:</strong> ${esc(t.prompt)}</div>
+  </div>`;
+}
+function planurbRenderDeliverables(){
+  const box=$('pl-delivery-checklist'); if(!box) return;
+  const all=planurbAllDeliverables().sort((a,b)=>a.order-b.order);
+  const count=$('pl-delivery-count'); if(count) count.textContent=`${planurbSelected.size} selecionados`;
+  box.innerHTML=all.map(d=>`<label class="planurb-check-row">
+    <input type="checkbox" ${planurbSelected.has(d.id)?'checked':''} onchange="planurbToggleDelivery('${d.id}')">
+    <span class="planurb-check-name">${esc(d.name)}</span>
+    <span class="planurb-check-meta">${esc(d.toolNum)}</span>
+  </label>`).join('');
+}
+function planurbRenderImports(){
+  const box=$('pl-import-checklist'); if(!box) return;
+  const total=PLANURB_IMPORTS.length;
+  const imported=PLANURB_IMPORTS.filter(i=>planurbImports[i.id]==='importado').length;
+  const count=$('pl-import-count'); if(count) count.textContent=`${imported} de ${total}`;
+  box.innerHTML=PLANURB_IMPORTS.map(i=>{
+    const st=planurbImports[i.id]||i.status||'pendente';
+    const label=st==='importado'?'Importado':(st==='nao'?'Não encontrado':'Pendente');
+    return `<div class="planurb-check-row planurb-import-row" onclick="planurbCycleImport('${i.id}')" title="Clique para alterar o status">
+      <span class="planurb-import-icon">${esc(i.icon||'•')}</span>
+      <span class="planurb-check-name">${esc(i.name)}</span>
+      <span class="planurb-import-status ${st}">${label}</span>
+    </div>`;
+  }).join('');
+}
+function planurbCycleImport(id){
+  const order=['importado','pendente','nao'];
+  const current=planurbImports[id]||'pendente';
+  planurbImports[id]=order[(order.indexOf(current)+1)%order.length];
+  planurbRenderImports();
+  planurbRefreshPackage();
+}
+function planurbData(){
+  return {
+    projeto:($('pl-projeto')?.value||'Projeto sem título').trim(),
+    etapa:($('pl-etapa')?.value||'Estudo preliminar').trim(),
+    local:($('pl-local')?.value||'local a definir').trim(),
+    formato:($('pl-formato')?.value||'Pranchas A1').trim()
+  };
+}
+function planurbSelectedOutputs(){
+  return planurbAllDeliverables().filter(d=>planurbSelected.has(d.id)).sort((a,b)=>a.order-b.order);
+}
+function planurbImportedItems(status){
+  return PLANURB_IMPORTS.filter(i=>!status || (planurbImports[i.id]||i.status)===status);
+}
+function planurbSetStatus(msg,type=''){
+  const st=$('pl-status'); if(!st) return;
+  st.textContent=msg||''; st.className='planurb-status'+(type?' '+type:'');
+}
+function planurbBuildPackage(showStatus=true){
+  const data=planurbData();
+  const outs=planurbSelectedOutputs();
+  const packageBox=$('pl-package'); if(!packageBox) return;
+  const imported=planurbImportedItems('importado');
+  const pending=planurbImportedItems('pendente');
+  const missing=planurbImportedItems('nao');
+  const groups=outs.map(o=>`<article class="planurb-pack-card"><span class="tag">${esc(o.toolNum)} · ${esc(o.toolTitle)}</span><h3>${esc(o.name)}</h3><p>${esc(o.toolPrompt)}</p></article>`).join('') || '<div class="planurb-muted">Nenhum entregável selecionado ainda.</div>';
+  const roadmap=[
+    ['Fase 01','Conferir itens importados, pendências e referências','1 dia'],
+    ['Fase 02','Produzir base, diagramas, colagens e peças selecionadas','2–5 dias'],
+    ['Fase 03','Revisar narrativa, diagramar prancha/caderno e fechar PDF','1–2 dias']
+  ].map(r=>`<div class="planurb-roadmap-row"><span class="fase">${r[0]}</span><span class="nome">${r[1]}</span><span class="tempo">${r[2]}</span></div>`).join('');
+  planurbLastBrief=`Pacote Planurb/TCC — ${data.projeto}\nEtapa: ${data.etapa}\nLocal: ${data.local}\nFormato: ${data.formato}\n\nEntregáveis selecionados (${outs.length}):\n${outs.map((o,i)=>`${i+1}. ${o.name} — ${o.toolTitle}`).join('\n') || 'Nenhum entregável selecionado'}\n\nItens importados (${imported.length}/${PLANURB_IMPORTS.length}):\n${imported.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como importado'}\n\nPendências:\n${pending.map(i=>`- ${i.name}`).join('\n') || '- Sem pendências'}\n\nNão encontrados:\n${missing.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como não encontrado'}\n\nFluxo sugerido:\n- Conferir bases e referências\n- Produzir os entregáveis selecionados\n- Revisar narrativa gráfica e fechar PDF`;
+  packageBox.innerHTML=`<section class="planurb-package-box"><div class="planurb-kicker">${esc(data.etapa)} · ${esc(data.formato)}</div><div class="planurb-title">${esc(data.projeto)}</div><p class="planurb-desc">Pacote para ${esc(data.local)}, com ${outs.length} entregável(is) e ${imported.length} item(ns) já importado(s). Use isto como escopo de proposta, checklist de produção ou briefing para equipe.</p><div class="planurb-summary"><strong>Resumo automático:</strong> ${outs.length?`Produzir ${outs.length} entregável(is), começando pelas bases importadas e resolvendo ${pending.length} pendência(s).`:'Selecione entregáveis no painel lateral para gerar o pacote.'}</div><div class="planurb-package">${groups}</div><div class="planurb-roadmap">${roadmap}</div></section>`;
+  if(showStatus) planurbSetStatus('Pacote atualizado com checklist de entregáveis e itens importados.','ok');
+}
+function planurbRefreshPackage(){ if(planurbReady) { planurbRenderDeliverables(); planurbRenderImports(); planurbBuildPackage(false); } }
+function planurbApplyPreset(kind){
+  planurbPreset=kind;
+  planurbSelected=new Set(PLANURB_PRESETS[kind]||PLANURB_PRESETS.tcc);
+  ['tcc','cliente','concurso'].forEach(k=>{ const el=$('pl-preset-'+k); if(el) el.classList.toggle('active',k===kind); });
+  planurbRenderAll();
+  const st={tcc:'Preset TCC aplicado.',cliente:'Preset cliente aplicado.',concurso:'Preset concurso aplicado.'}[kind]||'Preset aplicado.';
+  planurbSetStatus(st,'ok');
+}
+async function planurbCopyBrief(){
+  planurbBuildPackage(false);
+  try{
+    await navigator.clipboard.writeText(planurbLastBrief||'');
+    planurbSetStatus('Brief copiado para a área de transferência.','ok');
+  }catch(e){
+    planurbSetStatus('Não consegui copiar automaticamente. Selecione o texto do pacote e copie manualmente.','err');
+  }
+}
+function planurbSendToProposal(){
+  planurbBuildPackage(false);
+  const data=planurbData();
+  const outs=planurbSelectedOutputs();
+  if(!outs.length){ planurbSetStatus('Selecione pelo menos um entregável antes de adicionar à proposta.','err'); return; }
+  if(typeof newProposal==='function') newProposal();
+  setTimeout(()=>{
+    const tipo=$('rel-tipo'); if(tipo) tipo.value='Urbanismo / paisagismo';
+    const nome=$('rel-nome'); if(nome && (!nome.value || nome.value==='')) nome.value=data.projeto;
+    outs.slice(0,18).forEach(o=>{
+      if(typeof addServico==='function') addServico(o.name,`${o.toolTitle}: ${o.toolPrompt}`);
+    });
+    if(typeof upRel==='function') upRel();
+    const st=$('save-status'); if(st) st.textContent='Serviços do Planurb/TCC adicionados à proposta.';
+  },80);
+}
 
 
 // ── PLANNER / CALENDÁRIO ─────────────────────────
