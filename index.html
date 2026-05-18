@@ -24,6 +24,7 @@
 </script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
 <!-- Three.js via ES Module (r160+: build/three.min.js removido) -->
 <script type="importmap">
 {
@@ -48,23 +49,29 @@
   --border:rgba(90,60,30,0.12);--border-em:rgba(90,60,30,0.25);
   --text:#2C1F12;--muted:#7A6A56;--faint:#B0A090;
   --e:#8B5E3C;--el:#F5EDE2;--eb:#D4B896;
-  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
+  --warn:#8B6914;--warnl:#fdf3dc;--warnb:#e8cc88;
   --green:#3B6D11;--greenl:#EAF3DE;
+  --bg-rgb:237,232,220;
 }
 [data-theme="1"]{
   --bg:#CFE8D6;--surface:#F3E7C9;--surf2:#e8d9b5;
   --border:rgba(42,107,79,0.18);--border-em:rgba(42,107,79,0.35);
   --text:#1a3d2b;--muted:#2A6B4F;--faint:#5AA17A;
   --e:#D07A3B;--el:#fdf0e3;--eb:#e8b88a;
-  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
+  --warn:#8B6914;--warnl:#fdf3dc;--warnb:#e8cc88;
   --green:#2A6B4F;--greenl:#CFE8D6;
+  --bg-rgb:207,232,214;
 }
 [data-theme="2"]{
   --bg:#e8dcc8;--surface:#F5E6CC;--surf2:#ead8b4;
   --border:rgba(45,79,30,0.18);--border-em:rgba(45,79,30,0.32);
   --text:#1a2810;--muted:#2D4F1E;--faint:#5a7a48;
   --e:#E27D60;--el:#fdeee8;--eb:#f0b8a0;
-  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
+  --warn:#8B6914;--warnl:#fdf3dc;--warnb:#e8cc88;
+  --bg-rgb:232,220,200;
   --green:#2D4F1E;--greenl:#d5e8c8;
 }
 [data-theme="3"]{
@@ -72,7 +79,9 @@
   --border:rgba(250,58,22,0.25);--border-em:rgba(250,58,22,0.45);
   --text:#EBEFD6;--muted:#96b8bd;--faint:#4a6a70;
   --e:#FA3A16;--el:#1a1205;--eb:#7a2010;
-  --err:#FA3A16;--errl:#1a0a05;--warn:#c4a84a;
+  --err:#FA3A16;--errl:#1a0a05;--errb:#7a1010;
+  --warn:#c4a84a;--warnl:#1a0e05;--warnb:#7a5010;
+  --bg-rgb:10,37,53;
   --green:#2D6D77;--greenl:#0d2530;
 }
 [data-theme="4"]{
@@ -80,7 +89,9 @@
   --border:rgba(59,112,125,0.15);--border-em:rgba(59,112,125,0.3);
   --text:#1a2e32;--muted:#3B707D;--faint:#7aacb5;
   --e:#E0783B;--el:#fdeee6;--eb:#f0b898;
-  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
+  --warn:#8B6914;--warnl:#fdf3dc;--warnb:#e8cc88;
+  --bg-rgb:235,225,216;
   --green:#3B707D;--greenl:#d5eaed;
 }
 
@@ -89,7 +100,9 @@
   --border:rgba(200,180,120,0.15);--border-em:rgba(200,180,120,0.3);
   --text:#E8E4D4;--muted:#A09880;--faint:#504840;
   --e:#C8A84A;--el:#1e1a0e;--eb:#5a4a18;
-  --err:#D05050;--errl:#1a0808;--warn:#C8A84A;
+  --err:#D05050;--errl:#1a0808;--errb:#a03030;
+  --warn:#C8A84A;--warnl:#1a0808;--warnb:#584818;
+  --bg-rgb:15,17,23;
   --green:#4A8A5A;--greenl:#0e1e12;
 }
 [data-theme="6"]{
@@ -97,7 +110,9 @@
   --border:rgba(40,80,140,0.15);--border-em:rgba(40,80,140,0.28);
   --text:#0e1e38;--muted:#2a4a7a;--faint:#6080a0;
   --e:#2A6BB8;--el:#ddeeff;--eb:#88b4e0;
-  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
+  --warn:#8B6914;--warnl:#fdf3dc;--warnb:#e8cc88;
+  --bg-rgb:224,232,240;
   --green:#2A7A5A;--greenl:#d0eedf;
 }
 [data-theme="7"]{
@@ -105,7 +120,9 @@
   --border:rgba(90,60,160,0.14);--border-em:rgba(90,60,160,0.28);
   --text:#1e1030;--muted:#5a3a90;--faint:#9070c0;
   --e:#7A4AC0;--el:#f0eaff;--eb:#c0a0e8;
-  --err:#8B3A3A;--errl:#F7EAEA;--warn:#8B6914;
+  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
+  --warn:#8B6914;--warnl:#fdf3dc;--warnb:#e8cc88;
+  --bg-rgb:236,232,245;
   --green:#3A7A5A;--greenl:#d0f0e0;
 }
 [data-theme="8"]{
@@ -113,7 +130,9 @@
   --border:rgba(80,160,80,0.18);--border-em:rgba(80,160,80,0.32);
   --text:#d8f0d0;--muted:#80b878;--faint:#406038;
   --e:#5aA84A;--el:#0e1e0a;--eb:#284820;
-  --err:#D05050;--errl:#1a0808;--warn:#C0A840;
+  --err:#D05050;--errl:#1a0808;--errb:#a03030;
+  --warn:#C0A840;--warnl:#1a0808;--warnb:#504818;
+  --bg-rgb:13,30,20;
   --green:#5aA84A;--greenl:#0e1e0a;
 }
 [data-theme="9"]{
@@ -121,15 +140,21 @@
   --border:rgba(80,180,220,0.18);--border-em:rgba(80,180,220,0.32);
   --text:#d0e8f8;--muted:#6ab0d8;--faint:#305878;
   --e:#E07820;--el:#1e1008;--eb:#703808;
-  --err:#D05050;--errl:#1a0808;--warn:#d8a828;
+  --err:#D05050;--errl:#1a0808;--errb:#a03030;
+  --warn:#d8a828;--warnl:#1a0808;--warnb:#705018;
+  --bg-rgb:10,22,40;
   --green:#40a870;--greenl:#0a2018;
 }
 
-font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:background .3s,color .3s}
+body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
+body.auth-mode{background:var(--bg)}
+body.auth-mode #app-screen{display:none!important}
+body.auth-mode #notif-toast,body.auth-mode #nbr-notif-bubble,body.auth-mode #nbr-badge,body.auth-mode #nbr-toggle,body.auth-mode #nbr-panel,body.auth-mode #online-bar{display:none!important}
 
 /* ── AUTH ──────────────────────────────────────── */
-#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
-.auth-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:2.5rem;width:100%;max-width:360px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+#auth-screen{min-height:100dvh;width:100%;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;background:var(--bg)}
+body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-index:1}
+.auth-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:2.5rem;width:min(92vw,380px);max-width:380px;margin:auto;box-shadow:0 8px 32px rgba(0,0,0,.08)}
 .auth-brand{font-family:Georgia,serif;font-size:22px;color:var(--e);margin-bottom:4px}
 .auth-sub{font-size:11px;color:var(--faint);margin-bottom:2rem;letter-spacing:.3px}
 .auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
@@ -140,8 +165,8 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 /* ── APP LAYOUT ─────────────────────────────────── */
 #app-screen{display:none;min-height:100vh;flex-direction:column;padding-bottom:44px}
 .hdr{background:var(--surface);border-bottom:0.5px solid var(--border);padding:.45rem 1.5rem;min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
-.hdr-logo{font-family:Georgia,serif;font-size:16px;color:var(--e);cursor:pointer;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.hdr-logo img{width:28px;height:28px;object-fit:contain;border-radius:3px}
+.hdr-logo{font-family:Georgia,serif;font-size:16px;color:var(--e);cursor:pointer;display:flex;align-items:center;gap:10px;flex-shrink:0;min-width:124px;overflow:visible}
+.hdr-logo img{width:34px;height:34px;object-fit:contain;object-position:center;border-radius:3px;display:block;flex-shrink:0}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-user{font-size:11px;color:var(--faint);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
@@ -208,17 +233,18 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 
 /* ── HALL / INÍCIO ───────────────────────────────── */
 #hall-view{display:none;padding:4.5rem 1.5rem 1.5rem;max-width:760px;margin:0 auto;flex:1;width:100%}
-.hall-hero{background:transparent;border:none;border-radius:0;padding:6rem 1rem 3rem;margin-bottom:0;box-shadow:none;text-align:center}
+.hall-hero{background:transparent;border:none;border-radius:0;padding:5rem 1rem 3rem;margin-bottom:0;box-shadow:none;text-align:center}
+.hall-logo-img{width:78px;height:78px;object-fit:contain;display:block;margin:0 auto 1.2rem;opacity:.95}
 .hall-kicker{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--faint);margin-bottom:.9rem}
 .hall-title{font-family:Georgia,serif;font-size:38px;font-weight:400;color:var(--text);margin-bottom:.8rem}
 .hall-sub{font-size:13px;color:var(--muted);max-width:520px;line-height:1.75;margin:0 auto}
 .hall-clean-note{margin:1.6rem auto 0;display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);border:0.5px solid var(--border);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.16)}
 .hall-actions{display:none}
 
-
+#materiais-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
 
 @media(min-width:721px){
-  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view{padding-left:180px}
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#materiais-view{padding-left:180px}
 }
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
@@ -409,7 +435,8 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 .modal-close{float:right;background:none;border:none;cursor:pointer;font-size:18px;color:var(--faint)}
 
 /* ── ONLINE BAR ─────────────────────────────────── */
-#online-bar{position:fixed;right:12px;bottom:12px;left:auto;min-height:36px;max-width:min(420px,calc(100vw - 24px));background:var(--surface);border:0.5px solid var(--border);border-radius:18px;display:flex;align-items:center;padding:8px 12px;gap:.8rem;z-index:15;font-size:11px;color:var(--faint);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+#online-bar{position:fixed;right:96px;bottom:18px;left:auto;min-height:34px;max-width:min(280px,calc(100vw - 132px));background:var(--surface);border:0.5px solid var(--border);border-radius:18px;display:flex;align-items:center;padding:7px 12px;gap:.6rem;z-index:25;font-size:11px;color:var(--faint);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+body.nbr-open #online-bar{display:none}
 .online-dot{width:7px;height:7px;border-radius:50%;background:#3B6D11;flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .online-users{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -530,15 +557,15 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 .nbr-notif-body p{font-size:.75rem;color:#94a3b8;line-height:1.4}
 .nbr-notif-close{background:none;border:none;color:#475569;cursor:pointer;font-size:1rem;padding:0;flex-shrink:0}
 .nbr-notif-close:hover{color:#f97316}
-#nbr-notif-bubble{position:fixed;right:22px;bottom:74px;background:#ef4444;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10000;transition:opacity .2s}
+#nbr-notif-bubble{position:fixed;right:20px;bottom:70px;background:#ef4444;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10000;transition:opacity .2s}
 #nbr-notif-bubble.hidden{opacity:0;pointer-events:none}
-#nbr-badge{position:fixed;right:24px;bottom:100px;background:#1e293b;border:1px solid #f97316;color:#f97316;font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:4px 8px;border-radius:6px;letter-spacing:.05em;z-index:9998;transition:opacity .4s}
+#nbr-badge{position:fixed;right:20px;bottom:82px;background:#1e293b;border:1px solid #f97316;color:#f97316;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:4px 8px;border-radius:6px;letter-spacing:.05em;z-index:9998;transition:opacity .4s}
 #nbr-badge.hidden{opacity:0;pointer-events:none}
-#nbr-toggle{position:fixed;right:28px;bottom:28px;width:62px;height:62px;border-radius:16px;background:linear-gradient(135deg,#f97316,#ea580c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(249,115,22,.45);transition:transform .2s,box-shadow .2s;z-index:9999;animation:nbr-pulse 3s infinite}
+#nbr-toggle{position:fixed;right:24px;bottom:18px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,#f97316,#ea580c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(249,115,22,.42);transition:transform .2s,box-shadow .2s;z-index:9999;animation:nbr-pulse 3s infinite}
 #nbr-toggle:hover{transform:scale(1.08);box-shadow:0 12px 40px rgba(249,115,22,.6)}
 #nbr-toggle.open .nbr-icon-label{opacity:0}
 @keyframes nbr-pulse{0%{box-shadow:0 8px 32px rgba(249,115,22,.45),0 0 0 0 rgba(249,115,22,.25)}60%{box-shadow:0 8px 32px rgba(249,115,22,.45),0 0 0 14px rgba(249,115,22,0)}100%{box-shadow:0 8px 32px rgba(249,115,22,.45),0 0 0 0 rgba(249,115,22,0)}}
-#nbr-panel{position:fixed;right:28px;bottom:104px;width:420px;max-height:660px;background:#0d1117;border:1px solid #1e293b;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.7),0 0 0 1px rgba(249,115,22,.15);z-index:9998;transform:scale(.92) translateY(20px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s ease}
+#nbr-panel{position:fixed;right:24px;bottom:86px;width:min(360px,calc(100vw - 210px));max-height:min(560px,calc(100vh - 124px));background:#0d1117;border:1px solid #1e293b;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px rgba(249,115,22,.12);z-index:9998;transform:scale(.92) translateY(20px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s ease}
 #nbr-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
 .nbr-panel-header{padding:16px 18px 12px;border-bottom:1px solid #1e293b;background:linear-gradient(135deg,#111827,#0d1117);display:flex;align-items:center;gap:10px}
 .nbr-header-icon{width:36px;height:36px;background:linear-gradient(135deg,#f97316,#ea580c);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.78rem;color:#fff;letter-spacing:.04em}
@@ -696,7 +723,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 .nbr-cat-header{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:#475569;text-transform:uppercase;padding:8px 10px 4px;border-bottom:1px solid #1e293b;margin-bottom:4px}
 /* empty */
 .nbr-empty-search{text-align:center;padding:2rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#334155;line-height:1.6}
-@media(max-width:480px){#nbr-panel{right:0;bottom:0;width:100vw;max-height:88vh;border-radius:20px 20px 0 0}#nbr-toggle{right:16px;bottom:16px}#nbr-badge{right:12px;bottom:80px}}
+@media(max-width:480px){#nbr-panel{right:0;bottom:0;width:100vw;max-height:88vh;border-radius:20px 20px 0 0}#nbr-toggle{right:16px;bottom:16px}#nbr-badge{right:12px;bottom:78px}}
 
 
 /* ── THREE.JS / VOLUMETRIA 3D ───────────────────── */
@@ -721,7 +748,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 
 </style>
 </head>
-<body>
+<body class="auth-mode">
 <!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
@@ -808,6 +835,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
   <!-- HALL / INÍCIO -->
   <div id="hall-view" style="display:none">
     <section class="hall-hero">
+      <img id="hall-logo-img" class="hall-logo-img" src="" alt="Chaos">
       <div class="hall-kicker">Central de ferramentas</div>
       <h1 class="hall-title">Chaos — Arquitetura e Urbanismo</h1>
       <p class="hall-sub">Escolha o que deseja fazer. Assim, ao entrar no sistema, você começa por esta tela inicial e só acessa as propostas quando clicar em “Propostas” ou “Nova proposta”.</p>
@@ -881,7 +909,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
         <div>
           <div class="hall-icon">🧱</div>
           <h2>Materiais</h2>
-          <p>Biblioteca de materiais construtivos com inércia térmica, sustentabilidade, custo e adequação por Zona Bioclimática.</p>
+          <p>Biblioteca de materiais construtivos e paisagismo: inércia térmica, sustentabilidade, custo, sombra e adequação por Zona Bioclimática.</p>
         </div>
         <span class="hall-go">Ver biblioteca →</span>
       </button>
@@ -915,6 +943,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
         <button class="btn solid" style="font-size:10px;padding:4px 10px" data-a="parede"    onclick="matSetAmb('parede')">Parede</button>
         <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="cobertura" onclick="matSetAmb('cobertura')">Cobertura</button>
         <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="piso"      onclick="matSetAmb('piso')">Piso</button>
+        <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="paisagismo" onclick="matSetAmb('paisagismo')">Paisagismo</button>
         <button class="btn ghost" style="font-size:10px;padding:4px 10px" data-a="todos"     onclick="matSetAmb('todos')">Todos</button>
       </div>
     </div>
@@ -936,11 +965,12 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
       <button class="btn ghost"  data-fc="Cobertura"      onclick="matSetCat('Cobertura')"      style="font-size:10px;padding:4px 11px;border-radius:6px">Cobertura</button>
       <button class="btn ghost"  data-fc="Vidro"          onclick="matSetCat('Vidro')"          style="font-size:10px;padding:4px 11px;border-radius:6px">Vidro</button>
       <button class="btn ghost"  data-fc="Isolante"       onclick="matSetCat('Isolante')"       style="font-size:10px;padding:4px 11px;border-radius:6px">Isolante</button>
+      <button class="btn ghost"  data-fc="Paisagismo"    onclick="matSetCat('Paisagismo')"    style="font-size:10px;padding:4px 11px;border-radius:6px">Paisagismo</button>
       <div style="flex:1"></div>
       <select onchange="matSetSort(this.value)" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none;cursor:pointer">
         <option value="nome">A–Z</option>
-        <option value="inercia_desc">Maior inércia</option>
-        <option value="inercia_asc">Menor inércia</option>
+        <option value="inercia_desc">Maior inércia/conforto</option>
+        <option value="inercia_asc">Menor inércia/conforto</option>
         <option value="lambda_asc">Menor condutividade</option>
         <option value="custo_asc">Menor custo</option>
         <option value="co2_asc">Menor CO₂</option>
@@ -1224,6 +1254,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
       <textarea class="carta-body" id="carta-body" placeholder="Escreva o conteúdo da carta aqui. Use Enter para parágrafos...&#10;&#10;Ex: Prezado João Silva,&#10;&#10;Conforme acordado em reunião..."></textarea>
       <div class="carta-actions" style="margin-top:1rem">
         <button class="btn solid" onclick="exportCarta()">⬇ Baixar PDF</button>
+        <button class="btn ghost" onclick="exportCartaDocx()">⬇ Word (.docx)</button>
         <button class="btn ghost" onclick="clearCarta()">Limpar</button>
       </div>
     </div>
@@ -1371,6 +1402,7 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
       <div class="save-row">
         <button class="btn solid" id="save-btn" onclick="saveProposal()">Salvar proposta</button>
         <button class="btn" id="pdf-btn" onclick="exportPDF()">⬇ Baixar PDF</button>
+        <button class="btn ghost" id="docx-btn" onclick="exportPropostaDocx()">⬇ Word (.docx)</button>
         <button class="btn ghost" onclick="openCopyModal()">📋 Copiar para WhatsApp</button>
         <span class="save-status" id="save-status"></span>
       </div>
@@ -1401,7 +1433,9 @@ font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:backg
 // ── CONFIG ────────────────────────────────────────
 const SUPABASE_URL = 'https://wbcefatwxorbepbjbokw.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BcGStnHOrhs_UHsg8hcLQA_Yt7nahWM';
-const LOGO_B64 = 'logo.png';
+const LOGO_ICON = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8IS0tIENyZWF0b3I6IENvcmVsRFJBVyAtLT4NCjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNjkuNjAyNG1tIiBoZWlnaHQ9IjY0LjkzNjZtbSIgdmVyc2lvbj0iMS4xIiBzdHlsZT0ic2hhcGUtcmVuZGVyaW5nOmdlb21ldHJpY1ByZWNpc2lvbjsgdGV4dC1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyBpbWFnZS1yZW5kZXJpbmc6b3B0aW1pemVRdWFsaXR5OyBmaWxsLXJ1bGU6ZXZlbm9kZDsgY2xpcC1ydWxlOmV2ZW5vZGQiDQp2aWV3Qm94PSIwIDAgNjk2MC4yNCA2NDkzLjY2Ig0KIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIg0KIHhtbG5zOnhvZG09Imh0dHA6Ly93d3cuY29yZWwuY29tL2NvcmVsZHJhdy9vZG0vMjAwMyI+DQogPGRlZnM+DQogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQogICA8IVtDREFUQVsNCiAgICAuZmlsMCB7ZmlsbDpibGFja30NCiAgICAuZmlsMSB7ZmlsbDojN0M3QzdDfQ0KICAgXV0+DQogIDwvc3R5bGU+DQogPC9kZWZzPg0KIDxnIGlkPSJDYW1hZGFfeDAwMjBfMSI+DQogIDxtZXRhZGF0YSBpZD0iQ29yZWxDb3JwSURfMENvcmVsLUxheWVyIi8+DQogIDxnIGlkPSJfMjY1Njc1NTg3MTYxNiI+DQogICA8cGF0aCBjbGFzcz0iZmlsMCIgZD0iTTk4OS42NyA0Njk1LjQ2Yy00Ny40NywtMjQuMDEgLTEwMC43NywtOTIuMDEgLTEzNS4xNCwtMTQ4LjEgLTM2LjEsLTU4Ljg5IC02My44NSwtMTI3LjMxIC04Mi45OSwtMTk2LjYgLTE0Ni4zNSwtNTI5LjcgMTUxLjY5LC03NDkuMDcgMzYzLjg3LC02MTcuOTQgNzIuNjEsNDQuODcgOTcuNzgsNzkuODcgMTQ1LjQyLDEzNC4xMSAyOC44NiwzMi44NSA0MC4zNyw0OS44IDYyLjYsODEuMjdsNTYuMTMgODQuOTljMC4wNiwwLjAzIDM1Ni4wNyw0MzYuNjMgNDczLjUsNDAxLjIxIDI0Ljk1LC03MC42NSAtOTguMDgsLTI3OS4xMiAtODYuNywtNTk3LjYzbDIwLjUgMTkuOThjMzcuNiw0MC44OSAzOC4zMSw1NC4wOSA4Ny4zMiw5OS4zOSAyNi4wMywyNC4wNSA4Mi45Niw5OC42OSAxMzAuOTgsNzEuOTcgMTEuNTksLTIxLjExIDQuMDgsLTI5OS42MSAxMS4xNiwtMzYxLjE1bDU0LjIzIC0zMjQuODUgMjgxLjc0IC01Mi4wM2M1NC45OSwxMTMuNDggNDcuNDYsMzM0LjcgMzQ0LjMyLDU0Ni41IDE4NCwxMzEuMjkgNDI1LjM3LDE4NC4wOCA3MDUuNTUsMTU2LjFsOC4zNiAxOC42OGMxOC44MSwzNy4zNSAzOS42Niw0My4zMyA4NC41Niw0My43NSAxNjQuNzMsMS41NSAxNTEuODIsLTEyMC45OSAyNTMuMDEsLTE4OC43MSA1Ni42NCwtMzcuOTEgMTY5LjMxLC02My45NyAyNDEuMDUsLTI3LjA1IDg1Ljc0LDQ0LjEyIDc3Ljc5LDE0NS40IDg2Ljc1LDE3Ny4zNSAxMi42Niw0NS4xMyA4Mi4wMywzNC44NiAxMTkuMTEsMTcuNSAzMy4wNywtMTUuNSAzOC40MiwtNDYuNTYgMzYuMzIsLTg4LjM0IDExOS40MiwzMy40NCAyMTMuMzMsNjYuMTUgMzYwLjQ2LDUzLjY1IDIwOC4xNCwtMTcuNjggMzA4LjcsLTY4LjY5IDQ0Ny44MywtMTc5LjI3IDE2Ny4wNywtMTMyLjc4IDE5NS44OCwtMjU0LjQxIDI2Ny41NSwtMzUxLjAxIDM5Ljc5LDc0LjQ4IDUxLjg2LDM2OC4wOCAzNS4zLDQ2Ni44NyAtMzUuMTksMjA5Ljk0IC0xMC4xMywyNS40MSAxNTguNzUsMzEzLjEgMTMyLjMzLDIyNS40MSAxNDkuNDYsNTY5Ljg5IDU2LjMyLDgzMy43OSAtMTc0LjAxLDQ5My4wMSAtNTk2LjI2LDgwNC41MyAtMTA4NS41OCw5NDYuOTkgLTYwNy45OSwxNzcgLTExOTUuNzMsNTIuMDYgLTE2OTAuMjIsLTE4Ny4yMyAtMzI2Ljg0LC0xNTguMTYgLTYxOS43MiwtNDI1LjM1IC04MjEuNTYsLTcwMi4zNSAtNDguNzQsLTY2Ljg5IC0xNTYuMzUsLTIzNS40OCAtMTgzLjc4LC0zMjUuMTQgLTE1OC41OSwyLjMxIC0yODEuMjksNDMuMjIgLTQ1OC45NSwyMC4xIC0xMTkuODgsLTE1LjYxIC0zMDUuNDgsLTYyLjg1IC0zNDcuNzcsLTEzOS45em0yOTcuNSAtMTE2Ni41M2MzOS4xLC0yMC45MyAyMDEuNzIsLTQ2Ljk0IDI1OC44MywtNTUuNzggLTMuNTYsMzM1LjU2IDQ4Ljc4LDM3Ni42OSA2MC45NSw1NDMuNjQgLTg5LjQ0LC05NC4yNCAtOTcuNjEsLTg4LjY2IC0xODMuOTksLTIxNS44NiAtNDQuNzUsLTY1Ljg5IC0xMTYuNTksLTE4OC4wMSAtMTM1Ljc5LC0yNzJ6bTMzNTIuMjUgMzE4LjQyYy0zMjcuOCw1Mi40NCAtNTgzLjI5LC0xOTguOTYgLTY1OS4xOSwtNDI4LjE0IC0xMzIuNzcsLTQwMC45MiAxMjUuNDIsLTk0NS41MSA1NDYuOTMsLTEwMjAuNiAxODAuMzIsLTMyLjEyIDMyMC41MSwyOC44NCA0MjIuNjgsMTEwLjYzIDI0OS44MywxOTkuOTggMzUyLjczLDY4MC4xIDEyNi4xOSw5ODguNiAtMTIwLjM0LDE2My44NyAtMzgwLjU3LDIzMi43NyAtNTc1Ljk5LDEzMC4yMyAtMTIyLjQ1LC02NC4yNSAtMTk4LjU0LC0xNTYuNyAtMjM2LjEyLC0zMDUuODEgLTM5LjEyLC0xNTUuMjUgMTUuNzgsLTMyOC42MyA5MC42NSwtNDI3LjM2IDIyMy43LC0yOTUgNTkxLjg5LC0xMjkuNzMgNTYyLjEsMjA4LjgyIC0xMi4wNiwxMzcuMTIgLTEwNy40MywzMDYuODggLTI3Mi4xNCwyNDQuNzkgLTE2OS4wNCwtNjMuNzMgLTk5LjE2LC0zNDYuOTcgMTguNTgsLTI5MC41IDIyLjkyLDY2LjgzIC0zNS4xNSw5OS42NyAxLjQ3LDE0My4xOSA5OC4xNSw0NS43NyAxNzAuNDEsLTEwOC4xMyAxMjIuODIsLTIxNi40NyAtMzcuMjMsLTg0Ljc3IC0xMzIuODMsLTEzOS42MyAtMjQ2Ljg1LC04MS4zNSAtMjcxLjUsMTM4LjggLTE5NS40NCw2NTMuNTggMTk0LjI5LDYyOC44OCAzMzguNzgsLTIxLjQ3IDQxOS44NywtNDcwLjk5IDI4NC4wNywtNzM2LjQ4IC0xODkuNzcsLTM3MC45OSAtNzE5LjM0LC0zMjIuNDUgLTg4OC4xNSwxMzcuNDMgLTc0LjQsMjAyLjcxIC01Ni43MSw0NDAuODggNTIuMTEsNjE0LjI2IDQ1LjkxLDczLjE0IDExNi4zMiwxNTAuOTggMTg2LjI4LDE5NC4zMyA0My40NSwyNi45MSA4MS44OCw0OC40OCAxMjguOTgsNjUuNyA0Mi45NSwxNS43IDEwNS4xLDIzLjk2IDE0MS4yOSwzOS44NXptLTcwOS41IC0xNzUuNjZjLTE5OS42MiwtMi40NyAtMjc2LjE5LDExMy4yNyAtNDY2LjA0LDE1My4yIC0xNzEuNDMsMzYuMDUgLTM2NS44MSwzMS41MyAtNTE3Ljg3LC0zOS44NSAtNzA5LjQzLC0zMzMuMDUgLTQyNC42NiwtMTI5NS45MiAxNDguMDgsLTE0NDYuOTYgNTY3LjAyLC0xNDkuNTQgOTQ4Ljc5LDQyOC45OSA2NzcuMTgsOTM4Ljg0IC0yODUuNiw1MzYuMTEgLTEwNTAuNDMsMjQwLjI4IC04ODUuNTksLTM0My4xNyA0MS42OSwtMTQ3LjU0IDE0NSwtMjc0LjggMzE2LjA2LC0yOTQuNTUgMjk5LjU0LC0zNC41OSA0NDIuMTEsMzA2LjY1IDI4OS41MSw1MTAuMDEgLTM3Ljc2LDUwLjMyIC0xMjguMzIsMTA1LjA2IC0yMjAuMTQsNjUuNDcgLTE2MS4yMiwtNjkuNTMgLTEwNy41MSwtMjg3LjQ0IC0xMi42MSwtMjYwLjY3IDQwLjg0LDExLjUzIDMyLjEzLDY0LjczIDUzLjY5LDEwMC43OSA5MS4zMSw2Mi4yNCAxNzAuMSwtMTIxLjYzIDUwLjcsLTIyOC43IC05Ny43NywtODcuNjcgLTIyMS45MiwtNDAuOTUgLTI4Ny4xLDM0LjY5IC02OC4zNiw3OS4zNCAtODUuODMsMjE2LjkxIC00Ni42NSwzMzIuOTQgNzguMjEsMjMxLjY2IDM2MC4yOCwyNzguNjIgNTQwLjk5LDExOC45OCAxOTguNjksLTE3NS41MSAyMzQuNzcsLTY5Ni45IC0xNjUuMDUsLTgyNS4yOSAtNDg2LjYzLC0xNTYuMjggLTg1OC41MSw0MTkuNTcgLTY2My40Myw4NzUuNTcgMTM2LjMsMzE4LjYxIDUzOC44Myw0NTQuMTMgODU2Ljg0LDMwOC4zOSA1MS44MSwtMjMuNzQgODcuNSwtNDYuNTEgMTMwLjY5LC04MC45IDMzLjA4LC0yNi4zNCA3Ny40MiwtODEuNzYgMTA2LjQ3LC0xMDEuNDQgMTcuOTYsMzMuMDMgMjcuMzUsNjQuNjQgNDUuMzIsOTcuODIgMTcuNDYsMzIuMjQgMzcuNTEsNTcuNTUgNDguOTUsODQuODN6bS0xODY5LjA2IC0xOTM0LjQ1bDIuODMgLTE5LjY4Yy01NS40NywtNTQuMTMgLTI5Ny4xMywtMTk2Ljk1IC0zNzAuMTMsLTIzNi4zMmwtMTI1LjQ3IC03Mi41MmMzMTQuNTQsLTcuMzUgNTg3Ljc3LDE3LjggODg2LjgsODEuOTIgNTQuMzQsMTEuNjUgMjE0LjUyLDYxLjU5IDI1Mi4yNiw2MS42MSAtMTMyLjE2LC0zMjAuNzUgLTI5My44MSwtMzkyLjEyIC0zMzYuNDMsLTQ2OC43MSAyMjkuNCw2OS45IDMyMy4yNCwxNzYuNzQgNDUzLjI4LDIzOC4zNyAtMzMuMDUsLTEzMS44NiAtMTE4LjY5LC0yNjcuNTIgLTE4NC44MSwtMzYyLjc0IC0zNy4xOSwtNTMuNTcgLTc1LjI1LC05OC42MSAtMTIzLjM4LC0xNDcuNTEgLTI1LjY0LC0yNi4wNSAtMTA5LjczLC0xMTAuNjggLTEyMy40OCwtMTMyLjU1IDU4LjA2LDE5Ljk0IDI5MC4xLDE0Ny4yIDM1OC42NiwxODUuMzkgMTU3LjQ4LDg3LjcxIDQ4Ni44MSwzMDQuMDYgNTk2LjI2LDM2MC4zOCA1MS42NiwyNi41OSA2Mi4yOSwxMC42NyA5Ni45NywtMTkuMDhsMjk4LjAyIC0yNDMuOThjMTEyLjQ4LC04Mi40NiAxOTcuMjcsLTE0Ni40NCAzMzMuMzMsLTIxNy4xNyAyNzMuMTYsLTE0Mi4wMSA0NzYuMDgsLTIyOS41OCA3NzMuNjEsLTMxNy43MSA3My43MywtMjEuODQgMTM2LC00MS42MyAyMTAuNTYsLTYxLjA2IDc1Ljg5LC0xOS43NyAxNTQuMzMsLTI1LjkgMjIzLjIxLC00My4zNyAtNi40OCwxNS45MyAtMTIyLjA2LDEzMi4wNSAtMTUwLjcyLDE1OC4zMyAtODMuMzUsNzYuNDUgLTE1My42NCwxNjIuNjUgLTIyOC4zMywyNDUuODEgLTY4Ljc5LDc2LjYgLTE2MS4yNCwxNjMuMzcgLTIwNi40NSwyNjMuMjUgMTY3LjkxLC00OC41NyAyODMuMDEsLTEzMy41NCA1MzYuNiwtMTM0LjIgMzEzLjE5LC0wLjgzIDY3Mi44MywyNjcuNzYgODcyLjk4LDQ2Mi41MSA0OS43Myw0OC4zOCAxMTEuMTYsMTEzLjYxIDE1OC4xMSwxNzIuMTcgNDAuOSw1MS4wMiAxMDMuMTgsMTMwLjk4IDEzNS4yMSwxOTAuMTQgLTEzMi44NiwtMjguMjEgLTIyNC4wMiwtNTYuMzggLTM3OC42MywtNjguNTUgLTkwLjQyLC03LjEyIC0zMzQuOTYsLTE1LjcyIC00MTEuNzYsMTUuNDQgMjEuMzgsMjAuOTMgNTQuODIsMzUuMjUgODMuNDMsNTMuNDRsMjQ0LjE1IDE3OS41MWMzMjYuOTgsMjY2LjU2IDU2NC4yNyw2NTAuMzkgNTU0LjgsMTEyMy43NiAtMjQuOSwtMTcuNDIgLTMwNy43NSwtMzAwLjQ0IC00MjkuMzksLTM0Mi45NSAtMTcuNzYsMTc3LjQ1IC0yLjI0LDEzNi42NyAtMzguOTUsMzM5LjI3IC05LjcsNTMuNTggLTUxLjE1LDI2Ny4xMiAtNjguNzcsMzAwLjUyIC0zNS43NywtNDkuNyAtNTguOTYsLTExMi41MyAtOTIuNiwtMTY5LjMxIC0zNS44MywtNjAuNDcgLTEwMS4xMiwtMTAwLjI1IC0xMTkuNTQsLTE0Mi4wNSA3NS4wMiwtMjQuOTQgMTUwLjUsLTU2Ljk0IDIxNS43NSwtOTYuMDggMTMuNTksLTE0NC42MyAtMzYuOSwtNjMwLjEyIC0xMTIuNzEsLTY4NC44NiAtMzYuNjQsLTE5LjQ2IC0zMTIuMTgsOTcuNzkgLTM2OC44NywxMTguOTIgLTYyLjU2LDIzLjMyIC0xMTcuODIsNDIuMDUgLTE4MC4xLDY1LjM1IC01NC4wNiwyMC4yMyAtMTI5LjUxLDUxLjk2IC0xODMuMjQsNjMuOTQgLTQ1LjIzLC02NS4wNyAtMTU0LjgxLC0xMzQuODQgLTI1NC4yLC0xNzUuOTMgLTMwOS4xLC0xMjcuNzcgLTY1MC40MiwxNi4yNiAtODM5LjgxLDI2NS4zMSAtOS42NCwxMi42OSAtMTAuOTYsMTcuODIgLTIwLjc4LDMwLjM0bC0yNi42NCAyMy45N2MtODguNDYsLTExOS42MiAtNzMuNCwtMTU2LjMyIC0yMzIuOTQsLTI4My40MyAtODkuNCwtNzEuMjMgLTIzMC4xOCwtMTI1LjE1IC0zNzIuMjIsLTE0NS40NyAtMzIwLjA4LC00NS44MSAtNTg0LjUzLDEwMC4wOSAtNzQ5LjEyLDI1MS42MiAtMjE3Ljg0LDIwMC41NSAtMTkuMjMsMTQwLjg2IC0zMDcuNTgsMjA4LjY0IC0xNDEuNTksMzMuMjggLTI3MS40OSw2NS4zNSAtNDExLjU0LDk3LjQ2IC0yNTkuMjMsNTkuNDMgLTU4OS4zNSwxNTUuMzEgLTgyNS42MSwyMDQuNjYgLTM1LjE5LC0xNDYuMTEgLTg1LjgsLTI4My41NCAtODIuODYsLTQ1NS42Mmw1MjEuNjcgLTIwNC4wNWM4MC4yNywtMzAuMDMgNDg2LjE4LC0xNjIuMTYgNTIwLjcyLC0xOTguNjQgLTMwLjAyLC02Ni41IC0zMTUuOSwtMjQwLjA3IC00MDIuNDQsLTMwMS4wMiAxMzQuMTksLTE2Ljg0IDI5My45Nyw0LjIyIDQzMC4yOSwtMTcuNDd6bTI1OTQuNTUgLTE0MjEuODZsLTMzOS43NyAxMzYuNTVjLTEwNy45OCw0Ny4zNiAtMjIzLjAxLDEwMy4xOSAtMzI0Ljc5LDE1Ny4zNiAtMTA5LjY3LDU4LjM3IC0yMDcuNDIsMTE1LjE2IC0zMDUuNjUsMTc3LjAyIC04Miw1MS42MyAtMjA2LjQ4LDE0Ny43NyAtMjYwLjgsMjExLjI2bC0yMDguOTIgLTE2NS45N2MtNzIuMTEsLTUzLjU5IC0xMzkuMjgsLTEwMi44OSAtMjE4LjE5LC0xNTQuNTUgLTc3LjE5LC01MC41NCAtMTQ3LjMsLTk0Ljg1IC0yMjkuODQsLTE0Mi41NCAtNDYuNiwtMjYuOTMgLTIxOC40NSwtMTA3LjUxIC0yNDEuMjksLTEzMy4yOWwtMzgwLjg5IC0xNDEuOTRjLTIxMS40NCwtNjMuMjYgLTIwMi42NywtODYuOTMgLTQwOC4xMywxLjYyIC0xMTYuNiw1MC4yNSAtMjM3LjQ2LDExOC4wOSAtMzQwLjk5LDE4My45MiAtNTkuMDksMzcuNTggLTEwMS4xMyw2OC4xNiAtMTU0LjE5LDEwNy45OCAtMzAuNjYsMjMgLTEzOS4xNSw4OS42MyAtMTE0LjMzLDEzOS44IDM2LjksMzUuOTQgMzQzLjksMTI5LjU0IDQyOC4yMiwxNjQuMzkgNzIuMzQsMjkuOSAxMzMuMTEsNjcuNDQgMTkzLjI5LDEwMy4yNiAzMi4wNSwxOS4wNyA1OC41NywzNy4xOCA4Ni42LDU3LjAzbDc1Ljc3IDYwLjc0Yy0zMC42OSwyLjQyIC0yMTYuNzQsLTI5LjI3IC0yNzAuMTMsLTM0LjkzIC0xNjUuNDUsLTE3LjU0IC03MjIuNTgsLTYuMTcgLTgxOC45Miw4MC44OGwtMTQ5LjYyIDE2My43MWMtNDkuNjQsNjkgLTQwNC42NCw1MDMuNiAtMzE1LjYxLDU3MS45NiAzMi4xNSwyNC42OCAzNTcuNiwtOTMuNjUgNTgyLjk0LC02NS4yMSAtMTg5LjMzLDEzMy44MiAtMTk3LjI2LDkxLjI0IC00MDEuNzUsMjk4LjU5IC0yNjIuNSwyNjYuMTkgLTQ3OC41NCw3MTguODcgLTQ0MS4zNywxMDY3LjA2IDEuMzYsMS4wMSAzLjI3LDEuMjUgMy44OCwzLjI5IDAuMSwwLjMgMzYuNTMsNDMuNjUgODguMDMsLTMxLjMyIDcwLjI1LC0xMDIuMjggMTI0LjIxLC0xNzEuNTYgMjM0Ljg4LC0yNDcuMDUgLTIxLjQ5LDM5Ljc2IC00NS4yNCw3MC4wMSAtNzAuNDIsMTE1LjI0IC0xNjcuODIsMzAxLjM3IC0yMDcuNDUsNTg3LjA2IC02Mi45Niw5MDguNTkgNzMuOTksMTY0LjY2IDkxLjI3LDEyOS4yIDEzOS4xNywzOS43OCAxNS41MiwtMjguOTggMzIuOCwtNTguNjUgNTEuMTUsLTg0LjU0IDMxLjUxLC00NC40NSA5MC43MSwtMTExLjI2IDE0MS4xMywtMTMwLjYyIC0xMS4xNSw2MSAtNDEuMTUsMTAwLjU5IC02MS4xMiwyMzYuNiAtMTMuNjEsOTIuNjggLTE0LjQ4LDE5NC4yMyAtMS43NiwyODcuNjEgNDQuNjQsMzI3LjcyIDE5Mi44LDU3Ny4xNSA1MDUuNCw3MDYuNCAxODEuNjUsNzUuMTEgMzI5Ljc3LDYxLjE2IDU0MC45Niw1My45MSA3NS41NSwxODcuNzggMjc0LjIyLDQ0Ny4xNSA0MjQuMzMsNTk3LjcyIDE2OS4zMSwxNjkuODQgMzMxLjEzLDMwNi45MSA1NzYuMDIsNDQ4LjIzIDQ2NC4wMywyNjcuNzcgMTA1MS4wMSw0MDUuMTIgMTY3Ni44NSwyODguNDEgMjc3LjMyLC01MS43MiA1MjQuMzMsLTE2MS4wMyA3MzYuMjEsLTI4Ni45NSA1Mi45NCwtMzEuNDcgMTA3LjcxLC02OS42MiAxNTEuNywtMTAyLjA5IDI1LjcyLC0xOC45OSA1MC4zNywtMzYuOTYgNzEuNzYsLTU1Ljc0IDE1NC40NCwtMTM1LjU3IDE5MC45NCwtMTYwLjgzIDMxOC4wNiwtMzI1LjEgMjQxLjUzLC0zMTIuMTQgMzkzLjc5LC03NjEuMTUgMzA2Ljk3LC0xMTc5LjUyIC0zNC4zNywtMTY1LjY0IC03OS43NiwtMjQyLjgyIC0xNTQuMzQsLTM1OS44OGwtNzUuODcgLTg3LjRjLTIzLjk0LC0yNS41OCAtNTIuMTcsLTUyLjY4IC03OC40OCwtNzkuNTkgMTMuMDQsLTM0LjUxIDM4LjY4LC03NC4zMiA1NS41NywtMTE5LjExIDU3Ljc3LC0xNTMuMTkgNzcuMzYsLTI3MS40MSA4Ni44OSwtNDQwLjE5IDQyLjU2LDMxLjM0IDEwNy4wOCwxMjkuMDQgMTQzLjU0LDE4NS43NyAxMDAuMjUsMTU2LjAzIDg5LjAyLDMwMS42OCAxNzUuMTEsMTYwLjM1IDM1LjE1LC01Ny42OSA4Ny42MSwtMTg4Ljc4IDExMS4xNSwtMjUyLjk2IDM1LjE5LC05NS45NCA5Mi42NiwtMjY5LjE2IDEwNS41LC0zNzcuMTEgNTQuMzUsMjIuNTEgMTk4Ljc2LDE1Ni4zNiAyMjguNzIsMTk2LjM4IDMxLjMxLDQxLjg0IDYzLjA3LDc4LjMxIDkxLjEsMTI4Ljk1IDE4LjkyLDM0LjIgNDcuMjksMTI4LjIgOTkuNTQsMTA4Ljg1IDczLjg4LC02Ni41NCA3OC4wMSwtMzMxLjg1IDc0LjczLC00NTQuOCAtNy41NCwtMjgyLjkyIC0xMDEuMjQsLTU4Ny4zOSAtMjMwLjkzLC04MjUuMDUgLTgyLjc5LC0xNTEuNzIgLTE3Ny4zMywtMjU4LjU0IC0yMTIuMzUsLTMyMC45OCAxMjcuOTcsMjEuOCAzMzMuNSw4Ny4xOCA0NDEuNDIsMTU5Ljc5IDI5LjE5LDE5LjY0IDg1Ljg1LDc1Ljc4IDExOS43OSwzNS4wNCA1NC44NSwtNjcuNTIgLTM4My43MiwtNjE5LjMxIC00NzQuNjIsLTcxMy4yNiAtMjEuMjcsLTIxLjk4IC0zNC4wNywtMzQuOTcgLTUyLjgyLC01Ny4xMiAtNjEuMzcsLTcyLjUyIC0xOTUuODUsLTE3OS45NiAtMjIwLjQ4LC0yMjIuNjcgLTMyLjA2LC05LjMxIC02OC40OSwtNDcuMDEgLTEwMS41NiwtNzMuMzEgLTIwLjg5LC0xNi42MSAtNzkuNDQsLTUyLjc2IC05MC4wOSwtNzUuNzIgLTMwLjI3LC0xMS4wNCAtNzAuMDcsLTMzLjY3IC04OC44NCwtNjEuMTkgLTEwNy4yMSwtMTUuMDEgLTE5Ni45MSwtMTg4LjAzIC02OTMuODYsLTE3Ni4zNyAyNS4yLC02MC41NyAzNTguNzIsLTM0Ni44OSA0NDUuOTcsLTQyMS4yOCA2Ny41NywtNTcuNiAxMzkuMSwtOTQuODcgMTI5LjA3LC0xNDYuODggLTg3LjM0LC00Mi45NCAtNDQ1LjI3LDM1LjIxIC01NDcuMjksNTguMDcgLTIxNi44OCw0OC41OCAtMzI1LjI0LDk5LjE0IC00OTguNDUsMTQ0LjEyeiIvPg0KICAgPHBhdGggY2xhc3M9ImZpbDAiIGQ9Ik0zNDk5LjMzIDQzMzcuMjhjMS42MywxMDguMjkgMjEuMjgsMjIwLjEyIDMwLjc4LDMyNi4xIDE0LjMzLDE1OS44NyAxMDIuMDgsODkxLjk3IDEwMS45MSw5NjMuNjQgLTY2LjI4LC0yNi42MSAtMzY3LjE4LC0yMTkuNzUgLTM5Ni4yNSwtMjYwLjk4IC00MS43MywtNTkuMTYgLTg3Ljg0LC05MTIuNiAtODcuNjcsLTEwMTAuNTFsMzUxLjIzIC0xOC4yNXptMTM2Mi4zOSA1NDYuMDFjLTMuNDgsOS4xNiAtNS4xMSwxNSAtMTAuNTUsMjQuNDIgLTExLjE5LDE5LjM1IC02LjMxLDExLjQ2IC0xNS45MSwyMi44M2wtODUuNjQgLTUxNy44NiAyMjQuNDggNTQuOTFjLTkuMDYsMTAyLjQxIC01Ny4xLDI1OC4wMSAtOTIuNTUsMzU5LjgyIC03LjU2LDIxLjcgLTEyLjk0LDM3LjcyIC0xOS44Myw1NS44OHptLTIxMDkuNDMgLTUwMS4wNmM1Ny4zNSwtMjIuMjYgMTgxLjU2LC0xOS44IDI1Mi41NCwtMjEuMDcgMTEuNjMsMTQ4LjgzIDEyLjg4LDI5NS4xNCAyMy41LDQ0NS44OCA5Ljg0LDEzOS43MyAzMi42LDI4MS40NSA0Mi4xMiw0MTkuMzggLTI0Ljk4LC0xMS45MyAtMy40NiwtMC4xMiAtMTkuNTksLTEyLjM1IC00MS43LC0zMS42MSAtOTUuNjgsLTEwNC4wOSAtMTI1LjMzLC0xNDcuMjUgLTQwLjIzLC01OC41NSAtNjkuMjgsLTExNi42MyAtOTcuOCwtMTg5Ljg2IC0zMC40LC03OC4wMyAtMTA4LjM2LC00MTUuNDQgLTc1LjQ0LC00OTQuNzN6bTE2MTEuODggLTIzLjExYzU1LjUsLTcuODkgMjM4LjU4LDIwLjEyIDI4MC4xOCwzOC44MSAzNi4wNywxMDYuOTEgODAuNDksNDcyLjA1IDkzLjAzLDYwMC4yMiA2LjMxLDY0LjU3IDE2LjMzLDEwNy4xMyAtMTYuMDMsMTUxLjczIC01My42Myw3My45MSAtMTc5LjQ1LDIzOS4yMSAtMjQwLjE2LDI3NS44NSAtMjAuOTQsLTE3NC4yNiAtMzguMzUsLTM1OC4xNSAtNjEuNjksLTUyOS45NWwtODAuOTMgLTUxMS42NmMtNi40NSwtOC41OSAtMS43NSwzLjA3IC0xMC42OSwtMTguOTIgLTUuOTMsLTE0LjYgMC4wNywzLjU4IC0zLjQ1LC0yMS41NmwzOS43NCAxNS40OHptLTc1LjgyIDU2Ni4zNmMxNC43NCwxMzEuMzMgNjYuNzMsNDkzLjMzIDY0LjMxLDYwMi4yOCAtMTk3LjUxLDExMi4zOSAtMjk2Ljc3LDE2Ny44NyAtNTc0LjM3LDE0NC42NmwtMTQzLjcgLTEzMzkuMTljODkuNiwtMTggNDY2LjM2LC01LjggNTY0LjMsMTAuNDYgMzAuOTQsMTk0LjE4IDY2Ljg1LDM4MC40MSA4OS40Niw1ODEuNzl6bS0yMTQ1LjE5IC03MDIuMTJjLTU4LjA3LDE0Ny45NyAxNTQuNTgsNTA2LjIxIDI0OS45Miw2MzkuNCAyMy4wOCwzMi4yNCA0NS4wNiw1NS4zMyA2Ny4zNSw4NS4wNiA3MS43LDk1LjYxIDU3LjgyLDY3LjA5IDEwMi4yNiwxMTcuOGwxMTAuNDggMTE4LjMyYzUwLjUzLDQ1LjkgMTA0LjYyLDkwLjczIDE1OS41MywxMzYuNzUgMTEyLjMyLDk0LjE0IDIxNi42NCwxNzAuODQgMzQzLjcyLDI1Ny4yNCA2NTMuOCw0NDQuNDggMTI1NS4wNSwzMTEuODMgMTY1NC45NywtMjA3Ljg2IDE1Ni4xMSwtMjAyLjg2IDMyOS42NiwtNTAxLjYgMzg2Ljg4LC04MTYuMTUgMzQuNTMsLTE4OS44MiAxOS44OCwtMTc3Ljg1IC02MS43MywtMjEwLjk3IC0yMDAuNzMsLTgxLjQ2IC01MTIuNjgsLTEzNy44MiAtNzMyLjQzLC0xNjUuNTcgLTMzNi4xOCwtNDIuNDcgLTgwOC43OSwtNjEuNDcgLTExNTAuMjQsLTIzLjkgLTE0Ny4wNywxNi4xOCAtMTEwMS45OSw1OC41MiAtMTEzMC43MSw2OS44OHoiLz4NCiAgIDxwYXRoIGNsYXNzPSJmaWwwIiBkPSJNMzE5NC41NiAxNzgxLjYyYzIyLjQxLC0zNS4wNCA5MS4xLC01MC40MyAxMTYuMDQsLTEwMC40MiAzMi41NiwtNjUuMjYgLTUwLjc0LC05My4xNSAtMTE2Ljg2LC05My4xNCAtMjI1LjA3LDAuMDYgLTY1NS43NSwxNjYuMjcgLTg2MC4yNCwyNjcuOTIgLTQyNC42NCwyMTEuMSAzOTkuNTEsMTUyLjE5IDQ3Mi4zLDE1MC41OSAtMjIuODEsMzUgLTQ0Ljc4LDE5Ljk2IC00My40NCw3NS44MyA1OS43Miw0NS45NCAxNzUuODEsMTYuODYgMjUyLjc3LDYuOCAyMzcuNDEsLTMxLjAzIDYyNC4wNywtMTA0LjA2IDgwMS4yMSwtMTE5LjYxIC0zMS42NSw0NC41IC0xMTkuMjYsMTM0LjM4IC0xMjAuMTEsMTk1LjE0IDQ4Ljc1LDEzMS4xNSA4NzAuNjYsLTE4NC40NyA5NzYuNTEsLTIzMC4wOCA5NS4xNywtNDEuMDIgMzUxLjY5LC0xODMuNzkgMzYxLjU0LC0yNzEuNSAxNS4yNywtMTM1LjkyIC00MjUuODEsMTMuOTIgLTQ5NC42NiwyOS42OWw2NC4xMyAtMzguOTljMTQwLjMxLC03NS45NCAzNTcuOTksLTE5NC41NiA0NzQuMzMsLTI3OC45MSA0OS43NCwtMzYuMDcgNjkuMjQsLTk1LjI0IC0yMS4xNywtMTAxLjY1IC0xMzcuMTEsLTkuNzIgLTQ1Ny41OCw0Mi4xNSAtNTg1LjU0LDcwLjQyIC01OTIuMDMsMTMwLjc4IC05NDIuODUsMzU5LjI4IC0xMjc2LjgxLDQzNy45MXoiLz4NCiAgIDxwYXRoIGNsYXNzPSJmaWwwIiBkPSJNMTE1NC45MyA0NjU4LjI5bDI1LjM1IC04Ljc4YzcuNDUsLTExOS42MiA0Ljk0LC0yMTYuMzggNzIuNDIsLTI5Mi43NyA5MS44MiwtMTAzLjk1IDE1Ny4zLDExLjg5IDIyOS43OSw1My4xOSAtMS4wMiwtNjkuOTMgLTU2Ljk2LC0xOTkuNTkgLTk0LjE1LC0yNjEuM2wtMzYuNzcgLTU2LjExYy0xMC4xMiwtMTguMzUgLTUuMDIsLTIuMjkgLTkuMDUsLTIxLjEyIC0yMS42MiwtMTQuNTMgLTE4Ljk5LC0xNS41NSAtMzcuMTMsLTM0LjczIC0yOTAuMDIsLTMwNi41OSAtNTMzLjU0LC0xNzkuODQgLTQ1Mi4xMSwxMjkuNDcgMzguMzksLTEyLjQxIDMxLjMsLTIwLjExIDY0LjM5LC02OC4wNSA5MC42NCwtMTMxLjM0IDE0NS41OCwtMjMuODggMjQ3LjQsMTIuMiAtNDMuNjMsOTEuNTUgLTEwOS4yLDExOS44MyAtMTEyLjQyLDI3My42OSAtMy42NywxNzUuMTcgNzcuMTgsMjIzLjg3IDEwMi4yOCwyNzQuMzF6Ii8+DQogICA8cG9seWdvbiBjbGFzcz0iZmlsMSIgcG9pbnRzPSIyMDYwLjg2LDE3MzcuMjQgMjA3Ni4zOCwxNzI4LjQgMjA2My42OSwxNzE3LjU2ICIvPg0KICA8L2c+DQogPC9nPg0KPC9zdmc+DQo=';
+const LOGO_MINIMALIST = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8IS0tIENyZWF0b3I6IENvcmVsRFJBVyAtLT4NCjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNzAuNzMyNm1tIiBoZWlnaHQ9IjE2LjM0M21tIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJzaGFwZS1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyB0ZXh0LXJlbmRlcmluZzpnZW9tZXRyaWNQcmVjaXNpb247IGltYWdlLXJlbmRlcmluZzpvcHRpbWl6ZVF1YWxpdHk7IGZpbGwtcnVsZTpldmVub2RkOyBjbGlwLXJ1bGU6ZXZlbm9kZCINCnZpZXdCb3g9IjAgMCA3MDczLjI2IDE2MzQuMyINCiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayINCiB4bWxuczp4b2RtPSJodHRwOi8vd3d3LmNvcmVsLmNvbS9jb3JlbGRyYXcvb2RtLzIwMDMiPg0KIDxkZWZzPg0KICA8Zm9udCBpZD0iRm9udElEMSIgaG9yaXotYWR2LXg9IjY2NyIgZm9udC12YXJpYW50PSJub3JtYWwiIHN0eWxlPSJmaWxsLXJ1bGU6bm9uemVybyIgZm9udC1zdHlsZT0ibm9ybWFsIiBmb250LXdlaWdodD0iNDAwIj4NCgk8Zm9udC1mYWNlIA0KCQlmb250LWZhbWlseT0iQXJpYWwiPg0KCQk8Zm9udC1mYWNlLXNyYz4NCgkJCTxmb250LWZhY2UtbmFtZSBuYW1lPSJBcmlhbCIvPg0KCQk8L2ZvbnQtZmFjZS1zcmM+DQoJPC9mb250LWZhY2U+DQogICA8bWlzc2luZy1nbHlwaD48cGF0aCBkPSJNMCAweiIvPjwvbWlzc2luZy1nbHlwaD4NCiAgIDxnbHlwaCB1bmljb2RlPSI6IiBob3Jpei1hZHYteD0iMjc3IiBkPSJNODkuOTk4IDQxOS4wMWwwIDk5Ljk4MDEgMTAwLjAyIDAgMCAtOTkuOTgwMSAtMTAwLjAyIDB6bTAgLTQxOS4wMWwwIDk5Ljk4MDEgMTAwLjAyIDAgMCAtOTkuOTgwMSAtMTAwLjAyIDB6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iRiIgaG9yaXotYWR2LXg9IjYxMCIgZD0iTTgyLjAwNDQgMGwwIDcxNi4wMDcgNDgyLjk5OSAwIDAgLTgzLjk5MjggLTM4Ny45OSAwIDAgLTIyMy4wMjYgMzM1Ljk3MSAwIDAgLTgzLjk5MjggLTMzNS45NzEgMCAwIC0zMjQuOTk1IC05NS4wMDg5IDB6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iTCIgaG9yaXotYWR2LXg9IjU1NiIgZD0iTTczLjAxNjUgMGwwIDcxNi4wMDcgOTQuOTY5MiAwIDAgLTYzMi4wMTQgMzUxLjk5OCAwIDAgLTgzLjk5MjggLTQ0Ni45NjggMHoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJPIiBob3Jpei1hZHYteD0iNzc3IiBkPSJNNDguMDAxNiAzNDguNDk5YzAsMTE4LjY3MiAzMi4wMTQzLDIxMS42NTIgOTUuODQ0MSwyNzguODIzIDYzLjgyOTgsNjcuMTcwNCAxNDYuMTUyLDEwMC42OTYgMjQ3LjE2NiwxMDAuNjk2IDY2LjEzNjQsMCAxMjUuNjcxLC0xNS44NjggMTc4LjgwMywtNDcuMzY1MyA1My4wMTI1LC0zMS40OTczIDkzLjUzNzUsLTc1LjQ4MjIgMTIxLjMzNiwtMTMxLjk5NCAyNy44Mzg1LC01Ni4zMTM0IDQxLjgzNzMsLTEyMC4zNDIgNDEuODM3MywtMTkxLjgwOCAwLC03Mi40OTk1IC0xNC42NzQ5LC0xMzcuNTIyIC00My45ODQ5LC0xOTQuNjcxIC0yOS4zNDk4LC01Ny4zNDc0IC03MC44MjkyLC0xMDAuNjk2IC0xMjQuNTE4LC0xMzAuMDA2IC01My44MDc5LC0yOS41MDg4IC0xMTEuODMxLC00NC4xODM3IC0xNzMuOTkxLC00NC4xODM3IC02Ny40ODg2LDAgLTEyNy42NiwxNi4zNDUyIC0xODAuODMxLDQ4LjgzNjcgLTUzLjAxMjUsMzIuNDkxNSAtOTMuMzM4Niw3Ni44MzQ0IC0xMjAuNjYsMTMzLjE4OCAtMjcuMzIxNSw1Ni4xNTQzIC00MS4wMDIyLDExNS42NDkgLTQxLjAwMjIsMTc4LjQ4NXptOTcuOTkxNiAtMS42NzAzMWMwLC04Ni4xODAyIDIzLjE4NTUsLTE1My45ODcgNjkuNTE2OCwtMjAzLjUgNDYuMzMxMywtNDkuNTEyOCAxMDQuNDc0LC03NC4zMjg5IDE3NC41MDgsLTc0LjMyODkgNzEuMzA2NCwwIDEyOS44MDcsMjUuMDE0OSAxNzUuOTc5LDc1LjAwNSA0Ni4wMTMxLDQ5Ljk5MDEgNjguOTk5OCwxMjAuOTc4IDY4Ljk5OTgsMjEzLjAwNSAwLDU4LjE0MjggLTkuODIzMDMsMTA5LjAwOCAtMjkuNTA4OCwxNTIuMzE3IC0xOS42NDYxLDQzLjM0ODYgLTQ4LjQ3ODgsNzYuOTkzNCAtODYuMzM5MiwxMDAuODU1IC0zNy45Nzk3LDIzLjgyMTggLTgwLjQ5MzEsMzUuODMyMiAtMTI3LjY2LDM1LjgzMjIgLTY2Ljk3MTYsMCAtMTI0LjYzNywtMjMuMDI2NCAtMTcyLjk5NywtNjguOTk5OCAtNDguMzE5NywtNDYuMDEzMSAtNzIuNDk5NSwtMTIyLjY4OCAtNzIuNDk5NSwtMjMwLjE4NXoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJSIiBob3Jpei1hZHYteD0iNzIyIiBkPSJNNzguOTgxOSAwbDAgNzE2LjAwNyAzMTcuMzU5IDBjNjMuODI5OCwwIDExMi4zMDksLTYuNTIyMTcgMTQ1LjQ3NiwtMTkuMzI3OSAzMy4xNjc2LC0xMi44NDU1IDU5LjY5MzgsLTM1LjUxNCA3OS40OTg5LC02OC4wMDU2IDE5Ljg0NDksLTMyLjQ5MTUgMjkuNjY3OSwtNjguNTIyNiAyOS42Njc5LC0xMDcuODU0IDAsLTUwLjgyNTIgLTE2LjQ2NDUsLTkzLjY1NjggLTQ5LjMxNCwtMTI4LjQ5NSAtMzIuODQ5NSwtMzQuODM3OSAtODMuNTE1NiwtNTYuODMwNCAtMTUyLjE1NywtNjYuMzM1MyAyNS4xMzQyLC0xMS45NzA2IDQ0LjE0NCwtMjMuOTgwOSA1Ny4xNDg1LC0zNS42NzMxIDI3LjY3OTUsLTI1LjMzMzEgNTMuODQ3NywtNTcuMTQ4NSA3OC4zNDU2LC05NS4zMjcxbDEyMy44NDIgLTE5NC45ODkgLTExOC4zNTQgMCAtOTQuNjUxIDE0OS4wMTZjLTI3LjUyMDQsNDMuMTQ5NyAtNTAuMzQ4LDc1Ljk5OTIgLTY4LjE2NDYsOTguODI2OCAtMTguMDE1NSwyMi44Mjc2IC0zNC4wMDI4LDM4LjY1NTggLTQ4LjE2MDcsNDcuODQyNSAtMTQuMDM4Niw4Ljk4Nzg3IC0yOC41MTQ2LDE1LjMxMTIgLTQzLjE4OTUsMTguOTcgLTEwLjY1ODIsMi4xODczMSAtMjguMTU2NywzLjM0MDYyIC01Mi42NTQ2LDMuMzQwNjJsLTEwOS42ODQgMCAwIC0zMTcuOTk2IC05NS4wMDg5IDB6bTk1LjAwODkgNDAwbDIwMy4zNDEgMGM0My4zNDg2LDAgNzYuOTkzNCw0LjQ5Mzk0IDEwMS4zMzIsMTMuNDgxOCAyNC4zMzg4LDguODY4NTYgNDIuODMxNiwyMy4xODU1IDU1LjMxOTEsNDMuMDMwNCAxMi42ODY0LDE5LjY0NjEgMTkuMDA5Nyw0MS4wMDIyIDE5LjAwOTcsNjQuMTQ3OSAwLDMzLjg0MzcgLTEyLjE2OTQsNjEuODQxMyAtMzYuNjY3Myw4My42NzQ3IC0yNC40OTc5LDIxLjgzMzQgLTYzLjE1MzcsMzIuNjUwNiAtMTE2LjAwNywzMi42NTA2bC0yMjYuMzI3IDAgMCAtMjM2Ljk4NXoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJTIiBob3Jpei1hZHYteD0iNjY3IiBkPSJNNDYuMDEzMSAyMjkuOTg2bDg5LjAwMzggOC4wMzM0MWM0LjEzNjAxLC0zNi4wMzEgMTMuOTk4OCwtNjUuNTAwMSAyOS40NjkxLC04OC42ODU2IDE1LjUxLC0yMi45ODY3IDM5LjUzMDcsLTQxLjY3ODMgNzIuMDIyMywtNTUuOTk1MiAzMi40OTE1LC0xNC4xNTc5IDY5LjE1ODksLTIxLjM1NjEgMTA5Ljg0MywtMjEuMzU2MSAzNi4xNTAzLDAgNjcuOTY1OCw1LjM2ODg2IDk1LjY0NTMsMTYuMTg2MSAyNy42Nzk1LDEwLjgxNzMgNDguMTYwNywyNS42NTEyIDYxLjY4MjIsNDQuNTAxOSAxMy40ODE4LDE4LjgxMDkgMjAuMzIyMSwzOS4zMzE5IDIwLjMyMjEsNjEuMzI0MyAwLDIyLjM1MDQgLTYuNDgyNCw0MS44MzczIC0xOS40ODcsNTguNjU5OCAtMTMuMDA0NiwxNi42NjM0IC0zNC41MTk4LDMwLjY2MjIgLTY0LjUwNTksNDIuMTk1MyAtMTkuMTY4OCw3LjMxNzU2IC02MS42ODIyLDE4Ljk3IC0xMjcuNSwzNC43OTgyIC02NS44NTgsMTUuODY4IC0xMTEuODMxLDMwLjcwMTkgLTEzOC4xNTksNDQuNzAwNyAtMzQuMjAxNiwxNy45NzU3IC01OS41MzQ3LDQwLjMyNjEgLTc2LjE5ODEsNjYuODEyNSAtMTYuODIyNCwyNi40ODY0IC0yNS4xMzQyLDU2LjM1MzIgLTI1LjEzNDIsODkuMTYyOSAwLDM2LjM0OTIgMTAuMzAwMyw3MC4xOTI5IDMwLjgyMTIsMTAxLjQ5MSAyMC40ODEyLDMxLjUzNzEgNTAuMzQ4LDU1LjM1ODkgODkuODM4OSw3MS43MDQxIDM5LjMzMTksMTYuMzA1NCA4My4xNTc3LDI0LjQ5NzkgMTMxLjMxOCwyNC40OTc5IDUzLjAxMjUsMCA5OS44MjEsLTguNTEwNjQgMTQwLjM0NiwtMjUuNjkxIDQwLjQ4NTIsLTE2Ljk4MTUgNzEuNjY0MywtNDIuMTU1NSA5My40OTc3LC03NS40ODIyIDIxLjgzMzQsLTMzLjE2NzYgMzMuNDg1OCwtNzAuODI5MiAzNS4xNTYxLC0xMTIuODI2bC05MC45OTIyIC02Ljk5OTRjLTQuODUxODYsNDUuMTM4MiAtMjEuMzE2NCw3OS4zMDAxIC00OS41MTI4LDEwMi4zMjcgLTI4LjE1NjcsMjMuMTQ1OCAtNjkuODM1LDM0LjYzOTEgLTEyNC44MzYsMzQuNjM5MSAtNTcuMzA3NiwwIC05OS4xNDUsLTEwLjQ5OTEgLTEyNS4zMTMsLTMxLjQ5NzMgLTI2LjE2ODIsLTIwLjk5ODIgLTM5LjMzMTksLTQ2LjMzMTMgLTM5LjMzMTksLTc1Ljk5OTIgMCwtMjUuNjUxMiA5LjMwNjAzLC00Ni44MDg1IDI3LjgzODUsLTYzLjQ3MTkgMTguMzMzNywtMTYuNTA0MyA2NS44MTgzLC0zMy42ODQ2IDE0Mi44MTIsLTUxLjAyNDEgNzYuOTkzNCwtMTcuNDk4NSAxMjkuODQ3LC0zMi42NTA2IDE1OC41MjEsLTQ1LjY1NTIgNDEuNDc5NCwtMTkuMTY4OCA3Mi4zMDA3LC00My4zNDg2IDkyLjE0NTYsLTcyLjgxNzcgMTkuODQ0OSwtMjkuMzQ5OCAyOS42Njc5LC02My4xOTM1IDI5LjY2NzksLTEwMS41MzEgMCwtMzguMTM4OCAtMTAuODE3MywtNzMuODExOSAtMzIuNjUwNiwtMTA3LjQ5NyAtMjEuODMzNCwtMzMuNjQ0OSAtNTMuMDEyNSwtNTkuODEzMSAtOTMuODU1NiwtNzguNTA0NyAtNDAuODAzMywtMTguNjUxOCAtODYuNjU3NCwtMjcuOTk3NiAtMTM3LjgwMSwtMjcuOTk3NiAtNjQuNzA0NywwIC0xMTguODcxLDkuNTA0ODcgLTE2Mi41MzcsMjguMzU1NSAtNDMuODI1OCwxOC44MTA5IC03Ny45ODc3LDQ3LjE2NjQgLTEwMi44MDQsODUuMTQ2MiAtMjUuMDE0OSwzNy44NjA0IC0zOC4wMTk1LDgwLjY5MiAtMzkuMzMxOSwxMjguNDk1eiIvPg0KICAgPGdseXBoIHVuaWNvZGU9IlUiIGhvcml6LWFkdi14PSI3MjIiIGQ9Ik01NDUuOTkzIDcxNi4wMDdsOTUuMDA4OSAwIDAgLTQxMy41MjJjMCwtNzEuOTgyNSAtOC4xNTI3MSwtMTI5LjE3MSAtMjQuMzM4OCwtMTcxLjQ4NSAtMTYuMzQ1MiwtNDIuMTU1NSAtNDUuNjU1MiwtNzYuNjc1MyAtODguMDA5NSwtMTAzLjE2MiAtNDIuNDczNywtMjYuNDg2NCAtOTcuOTkxNiwtMzkuODQ4OSAtMTY2Ljk5MSwtMzkuODQ4OSAtNjYuODEyNSwwIC0xMjEuNjU0LDExLjQ5MzMgLTE2NC4xNjgsMzQuNjc4OSAtNDIuNjcyNSwyMy4xNDU4IC03Mi45NzY3LDU2LjUxMjIgLTkxLjE1MTMsMTAwLjMzOCAtMTguMTc0Niw0My44MjU4IC0yNy4zNjEzLDEwMy42NzkgLTI3LjM2MTMsMTc5LjQ3OWwwIDQxMy41MjIgOTUuMDA4OSAwIDAgLTQxMy4zMjNjMCwtNjIuMTk5MiA1Ljg0NjA5LC0xMDguMTczIDE3LjMzOTQsLTEzNy41MjIgMTEuNDkzMywtMjkuNTA4OCAzMS4xNzkyLC01Mi4zMzY0IDU5LjMzNTksLTY4LjE2NDYgMjcuOTk3NiwtMTUuOTg3MyA2Mi4zMTg2LC0yMy45ODA5IDEwMi44NDQsLTIzLjk4MDkgNjkuMzE4LDAgMTE4LjgzMSwxNS44MjgyIDE0OC4zNCw0Ny4zMjU1IDI5LjQ2OTEsMzEuNjU2NCA0NC4xNDQsOTIuMzQ0NCA0NC4xNDQsMTgyLjM0MmwwIDQxMy4zMjN6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iYiIgaG9yaXotYWR2LXg9IjU1NiIgZD0iTTE0Ni45ODcgMGwtODIuMDA0NCAwIDAgNzE2LjAwNyA4OC4wMDk1IDAgMCAtMjU1LjUxOGMzNy4xODQzLDQ2LjMzMTMgODQuNTA5OCw2OS41MTY4IDE0Mi4xNzUsNjkuNTE2OCAzMS44MTU1LDAgNjIuMTU5NSwtNi4zMjMzMiA5MC42NzQxLC0xOS4xNjg4IDI4LjQ3NDgsLTEyLjg0NTUgNTEuODE5NCwtMzEuMDIwMSA3MC4zMTIyLC01NC4xNjU4IDE4LjMzMzcsLTIzLjM0NDYgMzIuODQ5NSwtNTEuMzQyMiA0My4xODk1LC04NC4xNTE5IDEwLjQ5OTEsLTMyLjY5MDQgMTUuNjY5MSwtNjcuODQ2NSAxNS42NjkxLC0xMDUuMTkgMCwtODguNjQ1OSAtMjIuMDMyMiwtMTU3LjMyOCAtNjUuODU4LC0yMDUuNjQ3IC00My45ODQ5LC00OC41MTg2IC05Ni42Mzk1LC03Mi42OTgzIC0xNTguMTYzLC03Mi42OTgzIC02MS4xNjUyLDAgLTEwOS4xNjcsMjUuNTMxOSAtMTQ0LjAwNSw3Ni4zNTcxbDAgLTY1LjM0MXptLTAuOTk0MjMzIDI2My4zNTNjMCwtNjIuMDAwNCA4LjUxMDY0LC0xMDYuODYgMjUuMzMzMSwtMTM0LjUgMjcuNjc5NSwtNDUuMTc4IDY1LjAyMjksLTY3Ljg0NjUgMTEyLjE4OSwtNjcuODQ2NSAzOC40OTY3LDAgNzEuNjY0MywxNi42NjM0IDk5LjUwMjksNDkuOTkwMSAyNy45OTc2LDMzLjMyNjcgNDEuOTk2NCw4Mi45OTg2IDQxLjk5NjQsMTQ5LjAxNiAwLDY3LjY0NzYgLTEzLjM2MjUsMTE3LjQ3OSAtNDAuMTY3LDE0OS42NTIgLTI2Ljg0NDMsMzIuMTczNCAtNTkuMzM1OSw0OC4zMTk3IC05Ny4zNTUzLDQ4LjMxOTcgLTM4LjQ5NjcsMCAtNzEuNjY0MywtMTYuNjYzNCAtOTkuNTAyOSwtNDkuOTkwMSAtMjcuOTk3NiwtMzMuMzI2NyAtNDEuOTk2NCwtODEuNDg3NCAtNDEuOTk2NCwtMTQ0LjY0MXoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJkIiBob3Jpei1hZHYteD0iNTU2IiBkPSJNNDAwLjk5NCAwbDAgNjUuODE4M2MtMzIuODA5NywtNTEuMTQzNCAtODEuMTY5MiwtNzYuODM0NCAtMTQ0Ljk5OSwtNzYuODM0NCAtNDEuMzIwMywwIC03OS4zMzk4LDExLjMzNDMgLTExMy44MiwzNC4yMDE2IC0zNC42Nzg5LDIyLjYyODggLTYxLjUyMzIsNTQuNDg0IC04MC42OTIsOTUuMTI4MyAtMTguOTcsNDAuODQzMSAtMjguNDc0OCw4Ny42OTE0IC0yOC40NzQ4LDE0MC43MDQgMCw1MS42NjA0IDguNjY5NzIsOTguNDY4OSAyNS44MTAzLDE0MC42NjQgMTcuMzM5NCw0MS45OTY0IDQzLjE4OTUsNzQuMzI4OSA3Ny42Njk1LDk2LjYzOTUgMzQuMzYwNywyMi41MDk0IDczLjAxNjUsMzMuNjg0NiAxMTUuNTMsMzMuNjg0NiAzMS4yOTg1LDAgNTkuMTM3LC02LjY4MTI1IDgzLjQ3NTgsLTE5Ljg0NDkgMjQuMzM4OCwtMTMuMTYzNyA0NC4xODM3LC0zMC41MDMxIDU5LjQ5NDksLTUxLjY2MDRsMCAyNTcuNTA2IDg4LjAwOTUgMCAwIC03MTYuMDA3IC04Mi4wMDQ0IDB6bS0yNzcuOTg4IDI1OC44MTljMCwtNjYuMzM1MyAxMy45OTg4LC0xMTUuODA4IDQyLjE1NTUsLTE0OC42NTggMjcuOTk3NiwtMzIuODA5NyA2MS4xNjUyLC00OS4xNTQ5IDk5LjM0MzgsLTQ5LjE1NDkgMzguNDk2NywwIDcxLjE0NzMsMTUuNjY5MSA5OC4xNTA3LDQ3LjAwNzQgMjYuODQ0MywzMS4zMzgyIDQwLjMyNjEsNzkuMTQxIDQwLjMyNjEsMTQzLjQ4OCAwLDcwLjY3MDEgLTEzLjY0MDksMTIyLjY0OSAtNDEuMTYxMywxNTUuODE2IC0yNy4zMjE1LDMzLjE2NzYgLTYxLjE2NTIsNDkuNjcxOSAtMTAxLjMzMiw0OS42NzE5IC0zOS4xNzI4LDAgLTcxLjgyMzQsLTE1LjgyODIgLTk4LjE1MDcsLTQ3LjY0MzcgLTI2LjE2ODIsLTMxLjg1NTIgLTM5LjMzMTksLTgyLjAwNDQgLTM5LjMzMTksLTE1MC41Mjd6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iZSIgaG9yaXotYWR2LXg9IjU1NiIgZD0iTTQyMC4wMDQgMTY3Ljk4Nmw5MC45OTIyIC0xMS45NzA2Yy0xNC4xNTc5LC01Mi44NTM0IC00MC42NDQzLC05NC4wMTQ3IC03OS4zMzk4LC0xMjMuMTY2IC0zOC42NTU4LC0yOS4xOTA3IC04OC4wMDk1LC00My44NjU2IC0xNDguMTQxLC00My44NjU2IC03NS42ODEsMCAtMTM1LjY5MywyMy4zNDQ2IC0xNzkuOTk2LDcwLjAzMzggLTQ0LjM0MjgsNDYuNDkwNCAtNjYuNTM0MSwxMTEuOTkgLTY2LjUzNDEsMTk2LjE0MiAwLDg3LjAxNTMgMjIuMzUwNCwxNTQuNjYzIDY3LjE3MDQsMjAyLjY2NSA0NC44NTk4LDQ4LjE2MDcgMTAzLjAwMyw3Mi4xODEzIDE3NC41MDgsNzIuMTgxMyA2OS4xNTg5LDAgMTI1LjY3MSwtMjMuNTAzNyAxNjkuNDk3LC03MC42NzAxIDQzLjgyNTgsLTQ3LjE2NjQgNjUuODU4LC0xMTMuNTAyIDY1Ljg1OCwtMTk5LjAwNiAwLC01LjE3MDAxIC0wLjE5ODg0NywtMTMuMDA0NiAtMC41MTcwMDEsLTIzLjM0NDZsLTM4Ni41MTggMGMzLjM0MDYyLC01Ni44MzA0IDE5LjM2NzcsLTEwMC40OTcgNDguMzU5NSwtMTMwLjY0MiAyOC44MzI4LC0zMC4xODQ5IDY0Ljk4MzEsLTQ1LjMzNyAxMDguMTczLC00NS4zMzcgMzIuMTMzNiwwIDU5LjY1NCw4LjUxMDY0IDgyLjMyMjUsMjUuNDkyMSAyMi44Mjc2LDE3LjAyMTMgNDAuODQzMSw0NC4xODM3IDU0LjE2NTgsODEuNDg3NHptLTI4OC4wMSAxNDEuMDIybDI4OS4wMDQgMGMtMy44MTc4Niw0My42NjY3IC0xNC45OTMsNzYuMzE3NCAtMzMuMTY3Niw5OC4xNTA3IC0yNy44Mzg1LDMzLjg0MzcgLTY0LjE0NzksNTAuODI1MiAtMTA4LjY1LDUwLjgyNTIgLTQwLjM2NTksMCAtNzQuMTY5OCwtMTMuNDgxOCAtMTAxLjY5LC00MC40ODUyIC0yNy4zMjE1LC0yNy4wMDM0IC00Mi40NzM3LC02My4xNTM3IC00NS40OTYxLC0xMDguNDkxeiIvPg0KICAgPGdseXBoIHVuaWNvZGU9ImkiIGhvcml6LWFkdi14PSIyMjIiIGQ9Ik02Ni4wMTcxIDYxNS45ODdsMCAxMDAuMDIgODcuOTY5OCAwIDAgLTEwMC4wMiAtODcuOTY5OCAwem0wIC02MTUuOTg3bDAgNTE4Ljk5IDg3Ljk2OTggMCAwIC01MTguOTkgLTg3Ljk2OTggMHoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJsIiBob3Jpei1hZHYteD0iMjIyIiBkPSJNNjMuOTg4OSAwbDAgNzE2LjAwNyA4OC4wMDk1IDAgMCAtNzE2LjAwNyAtODguMDA5NSAweiIvPg0KICAgPGdseXBoIHVuaWNvZGU9Im0iIGhvcml6LWFkdi14PSI4MzMiIGQ9Ik02Ni4wMTcxIDBsMCA1MTguOTkgNzguOTgxOSAwIDAgLTczLjMzNDdjMTYuMTg2MSwyNS4zMzMxIDM3LjgyMDYsNDUuODU0IDY0LjgyNCw2MS4xNjUyIDI3LjAwMzQsMTUuNTEgNTcuNjY1NSwyMy4xODU1IDkyLjE4NTMsMjMuMTg1NSAzOC4zMzc2LDAgNjkuODM1LC03Ljk5MzY0IDk0LjMzMjksLTIzLjgyMTggMjQuNDk3OSwtMTYuMDI3IDQxLjgzNzMsLTM4LjE3ODYgNTEuODE5NCwtNjYuODUyMyA0MS4zMjAzLDYwLjQ4OTIgOTQuODQ5OSw5MC42NzQxIDE2MC44MjcsOTAuNjc0MSA1MS42NjA0LDAgOTEuNTA5MiwtMTQuMTU3OSAxMTkuMTg5LC00Mi42NzI1IDI3LjgzODUsLTI4LjUxNDYgNDEuODM3MywtNzIuMzQwNCA0MS44MzczLC0xMzEuNTE3bDAgLTM1NS44MTYgLTg4LjAwOTUgMCAwIDMyNi42NjVjMCwzNC45OTcgLTMuMDIyNDcsNjAuMzMwMSAtOC42Njk3Miw3NS44NDAxIC01LjY4NzAyLDE1LjUxIC0xNS45ODczLDI3LjgzODUgLTMxLjE3OTIsMzcuMzQzNCAtMTQuOTkzLDkuNDY1MSAtMzIuNjUwNiwxNC4xNTc5IC01Mi44MTM3LDE0LjE1NzkgLTM2LjY2NzMsMCAtNjcuMDExMywtMTIuMTY5NCAtOTEuMTkxMSwtMzYuMzQ5MiAtMjQuMTQsLTI0LjMzODggLTM2LjE1MDMsLTYzLjE1MzcgLTM2LjE1MDMsLTExNi40ODRsMCAtMzAxLjE3MyAtODguMDA5NSAwIDAgMzM2Ljg0NmMwLDM4Ljk3NCAtNy4xNTg0OCw2OC4zMjM3IC0yMS40NzU0LDg3LjgxMDcgLTE0LjM1NjcsMTkuNTI2NyAtMzcuODYwNCwyOS4zNDk4IC03MC4zNTIsMjkuMzQ5OCAtMjQuNjU3LDAgLTQ3LjQ4NDYsLTYuNTIyMTcgLTY4LjQ4MjgsLTE5LjQ4NyAtMjAuOTk4MiwtMTMuMDA0NiAtMzYuMTkwMSwtMzIuMDE0MyAtNDUuNjk1LC01Ny4xODgzIC05LjMwNjAzLC0yNS4wMTQ5IC0xMy45OTg4LC02MS4xNjUyIC0xMy45OTg4LC0xMDguMzMybDAgLTI2OSAtODcuOTY5OCAweiIvPg0KICAgPGdseXBoIHVuaWNvZGU9Im4iIGhvcml6LWFkdi14PSI1NTYiIGQ9Ik02Ni4wMTcxIDBsMCA1MTguOTkgNzguOTgxOSAwIDAgLTczLjY1MjhjMzguMDE5NSw1Ni41MTIyIDkzLjAyMDUsODQuNjY4OSAxNjQuODQ0LDg0LjY2ODkgMzEuMzM4MiwwIDU5Ljk3MjIsLTUuNjg3MDIgODYuMTQwNCwtMTYuODIyNCAyNi4xNjgyLC0xMS4xNzUyIDQ1Ljg1NCwtMjYuMDA5MSA1OC44NTg2LC00NC4xODM3IDEzLjAwNDYsLTE4LjE3NDYgMjIuMTUxNSwtMzkuODQ4OSAyNy4zMjE1LC02NC44MjQgMy4xODE1NSwtMTYuMzQ1MiA0Ljg1MTg2LC00NC44NTk4IDQuODUxODYsLTg1LjUwNDFsMCAtMzE4LjY3MiAtODguMDA5NSAwIDAgMzE1LjMzMWMwLDM1LjgzMjIgLTMuMzQwNjIsNjIuNjc2NSAtMTAuMTgxLDgwLjMzNDEgLTYuODQwMzMsMTcuNjU3NiAtMTkuMDA5NywzMS44MTU1IC0zNi4zMDk0LDQyLjUxMzQgLTE3LjMzOTQsMTAuNDk5MSAtMzcuODYwNCwxNS44MjgyIC02MS4xNjUyLDE1LjgyODIgLTM3LjM0MzQsMCAtNjkuNTE2OCwtMTEuODUxMyAtOTYuNjc5MywtMzUuNjczMSAtMjcuMTYyNSwtMjMuNjYyOCAtNDAuNjg0LC02OC44NDA3IC00MC42ODQsLTEzNS4xNzZsMCAtMjgzLjE1OCAtODcuOTY5OCAweiIvPg0KICAgPGdseXBoIHVuaWNvZGU9Im8iIGhvcml6LWFkdi14PSI1NTYiIGQ9Ik0zMy4wMDg2IDI1OS40OTVjMCw5NS44NDQxIDI2LjY0NTUsMTY2LjgzMiA4MC4xNzUsMjEzLjAwNSA0NC41MDE5LDM4LjMzNzYgOTguOTg1OSw1Ny41MDY1IDE2My4xMzQsNTcuNTA2NSA3MS4xODcxLDAgMTI5LjUyOSwtMjMuMzQ0NiAxNzQuODY2LC02OS45OTQgNDUuMTM4MiwtNDYuNTMwMSA2Ny44MDY3LC0xMTAuOTk2IDY3LjgwNjcsLTE5My4xNiAwLC02Ni42OTMyIC05Ljk4MjEsLTExOS4wMyAtMjkuOTg2MSwtMTU3LjE2OCAtMjAuMDA0LC0zOC4xNzg2IC00OS4xNTQ5LC02Ny44NDY1IC04Ny40OTI1LC04OS4wMDM4IC0zOC4xNzg2LC0yMS4xOTcxIC04MC4wMTU5LC0zMS42OTYyIC0xMjUuMTk0LC0zMS42OTYyIC03Mi42NTg2LDAgLTEzMS4zMTgsMjMuMTg1NSAtMTc2LjEzOCw2OS42NzU5IC00NC44NTk4LDQ2LjQ5MDQgLTY3LjE3MDQsMTEzLjUwMiAtNjcuMTcwNCwyMDAuODM1em04OS45OTggLTAuMTU5MDc3YzAsLTY2LjMzNTMgMTQuNDc2LC0xMTYuMDA3IDQzLjUwNzcsLTE0OC44MTcgMjkuMTUwOSwtMzMuMDA4NiA2NS42NTkyLC00OS41MTI4IDEwOS44MDMsLTQ5LjUxMjggNDMuNjY2NywwIDgwLjAxNTksMTYuNTA0MyAxMDkuMTY3LDQ5LjY3MTkgMjkuMDMxNiwzMy4xNjc2IDQzLjUwNzcsODMuNjc0NyA0My41MDc3LDE1MS40ODEgMCw2My45ODg5IC0xNC42NzQ5LDExMi41MDcgLTQzLjgyNTgsMTQ1LjM1NyAtMjkuMTUwOSwzMi45Njg4IC02NS41MDAxLDQ5LjQ3MzEgLTEwOC44NDksNDkuNDczMSAtNDQuMTQ0LDAgLTgwLjY1MjIsLTE2LjMwNTQgLTEwOS44MDMsLTQ5LjE1NDkgLTI5LjAzMTYsLTMyLjg0OTUgLTQzLjUwNzcsLTgyLjMyMjUgLTQzLjUwNzcsLTE0OC40OTl6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0idCIgaG9yaXotYWR2LXg9IjI3NyIgZD0iTTI1Ni45ODkgNzguNTA0N2wxMi4wMTAzIC03Ny42Njk1Yy0yNC42NTcsLTUuMTcwMDEgLTQ2Ljg0ODMsLTcuODM0NTYgLTY2LjE3NjIsLTcuODM0NTYgLTMxLjgxNTUsMCAtNTYuNDcyNSw1LjAxMDk0IC03NC4xNjk4LDE1LjE1MjEgLTE3LjQ5ODUsMTAuMTgxIC0yOS44MjcsMjMuMzQ0NiAtMzYuOTg1NSwzOS44NDg5IC03LjE1ODQ4LDE2LjUwNDMgLTEwLjY1ODIsNTEuMTgzMSAtMTAuNjU4MiwxMDMuOTk3bDAgMjk4Ljk4NiAtNjUuMDIyOSAwIDAgNjguMDA1NiA2NS4wMjI5IDAgMCAxMjguMzM2IDg4LjAwOTUgNTIuODUzNCAwIC0xODEuMTg5IDg3Ljk2OTggMCAwIC02OC4wMDU2IC04Ny45Njk4IDAgMCAtMzAzLjk5N2MwLC0yNS4xNzQgMS40NzE0NywtNDEuMzIwMyA0LjY1MzAxLC00OC40Nzg4IDIuOTgyNywtNy4xNTg0OCA3Ljk5MzY0LC0xMi44NDU1IDE0Ljk5MywtMTcuMTgwNCA2Ljk5OTQsLTQuMTc1NzggMTYuOTgxNSwtNi4zMjMzMiAyOS45ODYxLC02LjMyMzMyIDkuNjYzOTUsMCAyMi41MDk0LDEuMTUzMzEgMzguMzM3NiwzLjQ5OTd6Ii8+DQogIDwvZm9udD4NCiAgPGZvbnQgaWQ9IkZvbnRJRDAiIGhvcml6LWFkdi14PSI3MDAiIGZvbnQtdmFyaWFudD0ibm9ybWFsIiBzdHlsZT0iZmlsbC1ydWxlOm5vbnplcm8iIGZvbnQtc3R5bGU9Im5vcm1hbCIgZm9udC13ZWlnaHQ9IjYwMCI+DQoJPGZvbnQtZmFjZSANCgkJZm9udC1mYW1pbHk9IkZMVVJPIFNlbWlib2xkIj4NCgkJPGZvbnQtZmFjZS1zcmM+DQoJCQk8Zm9udC1mYWNlLW5hbWUgbmFtZT0iRkxVUk8gU2VtaWJvbGQiLz4NCgkJPC9mb250LWZhY2Utc3JjPg0KCTwvZm9udC1mYWNlPg0KICAgPG1pc3NpbmctZ2x5cGg+PHBhdGggZD0iTTAgMHoiLz48L21pc3NpbmctZ2x5cGg+DQogICA8Z2x5cGggdW5pY29kZT0iJmFtcDsiIGhvcml6LWFkdi14PSI2MzUiIGQ9Ik0zNDMuOTk1IDQuMDAzOTJjMjguMDAzOCwxMC45OTYgNTAuOTk5OCwyNi45OTk5IDcwLjAwMzcsNDYuOTk1OWw0OC44Mzg0IC01Mi4wMDM3IDE0My45OTkgMCAtMTMxLjAwNyAxMzYuMDAzIDExLjAwNzggMjMuOTk5OWM0Ljk5NjA0LDEwLjAwMzkgOC45OTk5NiwxOS45OTYgMTIuOTkyMSwyOS45OTk5IDIuOTk5OTksMTAuOTk2IDUuOTk5OTgsMjIuMDAzOSA4LjAwNzg0LDM0LjAwMzggMS45OTYwNiwxMiAzLjk5MjExLDI2Ljk5OTkgNS45OTk5OCw0Mi45OTJsMS45OTYwNiAxOS4wMDM5IC0xMDcuMTYxIDAgLTEuMDAzOTMgLTE2LjAwMzljLTEuMDAzOTMsLTE2Ljk5NiAtNC4wMDM5MiwtMzQuOTk1OSAtOC45OTk5NiwtNTIuOTk1OWwtNzYuOTk1OCA4Mi45OTU3YzkuMzMwNjcsNS4wMDc4NSAxOC4zMzA2LDExLjAwNzggMjYuMzI2NywxNy4wMDc4IDE0Ljk5OTksOS45OTIwOSAyOC45OTU5LDIxLjk5MiA0MC45OTU5LDMzLjk5MiAxMiwxMy4wMDM5IDIwLjk5OTksMjguMDAzOCAyOC4wMDM4LDQ0LjAwNzcgNy45OTYwMywxNS45OTIxIDEwLjk5NiwzMi45OTk5IDEwLjk5Niw1MS45OTE5IDAsMjAuOTk5OSAtNC45OTYwNCw0MC4wMDM4IC0xMy45OTYsNTcuMDExNiAtMTAuMDAzOSwxNS45OTIxIC0yMi45OTYsMjkuOTk5OSAtMzguOTk5OCwzOS45OTIgLTE0Ljk5OTksMTEuMDA3OCAtMzQuMDAzOCwxOS4wMDM5IC01My45OTk4LDIzLjk5OTkgLTE5LjAwMzksNS4wMDc4NSAtNDAuMDAzOCw4LjAwNzg0IC01OS45OTk4LDguMDA3ODQgLTI1LjAwMzgsMCAtNDYuOTk1OSwtNC4wMDM5MiAtNjcuMDAzNywtMTEuMDA3OCAtMTguOTkyMSwtNS45OTk5OCAtMzUuOTk5OSwtMTUuOTkyMSAtNDguOTkxOSwtMjcuOTkyIC0xNC4wMDc4LC0xMiAtMjMuOTk5OSwtMjYuMDA3OCAtMzEuMDAzOCwtNDIuMDExNiAtNy4wMDM5MSwtMTQuOTk5OSAtMTAuOTk2LC0zMS45OTU5IC0xMC45OTYsLTQ4Ljk5MTkgMCwtMTQuOTk5OSAxLjk5NjA2LC0yOS45OTk5IDYuOTkyMSwtNDEuOTk5OCA0LjAwMzkyLC0xMiAxMC4wMDM5LC0yMy45OTk5IDE3LjAwNzgsLTM1LjAwNzcgNi45OTIxLC0xMC45OTYgMTQuOTk5OSwtMjAuOTk5OSAyMi45OTYsLTMxLjk5NTkgNC4wMDM5MiwtNC4wMDM5MiA3Ljk5NjAzLC04Ljk5OTk2IDEzLjAwMzksLTE0Ljk5OTkgLTE0LjAwNzgsLTUuOTk5OTggLTI2Ljk5OTksLTEzLjk5NiAtMzguOTk5OCwtMjAuOTk5OSAtMTkuMDAzOSwtMTAuOTk2IC0zNS4wMDc3LC0yMy45OTk5IC00OS4wMDM3LC0zNy45OTU5IC0xNC45OTk5LC0xNC4wMDc4IC0yNS45OTYsLTMxLjAwMzggLTM0Ljk5NTksLTQ5LjAwMzcgLTguOTk5OTYsLTE3Ljk5OTkgLTEzLjAwMzksLTQwLjAwMzggLTEzLjAwMzksLTYyLjk5OTggMCwtMTMuMDAzOSAxLjk5NjA2LC0yOC4wMDM4IDcuMDAzOTEsLTQ2Ljk5NTkgNC45OTYwNCwtMTkuMDAzOSAxNC45OTk5LC0zOC4wMDc3IDMwLjk5MiwtNTUuMDAzNyAxNC45OTk5LC0xNy45OTk5IDM3LjAwMzgsLTM0LjAwMzggNjUuMDA3NiwtNDYuMDAzOCAyNy45OTIsLTEyIDYzLjk5MTksLTE3Ljk5OTkgMTA4LC0xNy45OTk5IDM1Ljk5OTksMCA3MS45OTk3LDcuMDAzOTEgMTA1Ljk5MiwyMC4wMDc4em0tMzguOTk5OCA0NjYuOTk0YzguOTk5OTYsLTcuOTk2MDMgMTQuMDA3OCwtMTcuOTk5OSAxNC4wMDc4LC0yOC45OTU5IDAsLTguOTk5OTYgLTIuMDA3ODcsLTE3LjAwNzggLTUuOTk5OTgsLTIzLjk5OTkgLTUuMDA3ODUsLTguMDA3ODQgLTEwLjAwMzksLTE2LjAwMzkgLTE3LjAwNzgsLTIyLjAwMzkgLTYuOTkyMSwtNy4wMDM5MSAtMTQuOTk5OSwtMTMuMDAzOSAtMjMuOTk5OSwtMTkuMDAzOWwtMTMuOTk2IC03Ljk5NjAzIC0xMC4wMDM5IDEwLjk5NmMtNi45OTIxLDguMDA3ODQgLTEyLjk5MjEsMTQuOTk5OSAtMTcuOTk5OSwyMi4wMDM5IC00Ljk5NjA0LDcuMDAzOTEgLTkuOTkyMDksMTQuOTk5OSAtMTIuOTkyMSwyMi4wMDM5IC0yLjk5OTk5LDUuOTk5OTggLTQuMDAzOTIsMTIgLTQuMDAzOTIsMTcuOTk5OSAwLDE4Ljk5MjEgNy45OTYwMywyNi45OTk5IDE0Ljk5OTksMzAuOTkyIDEyLDcuMDAzOTEgMjMuOTk5OSwxMS4wMDc4IDM3Ljk5NTksMTEuMDA3OCAxNy4wMDc4LDAgMjkuOTk5OSwtNC4wMDM5MiAzOC45OTk4LC0xMy4wMDM5em0tNzguOTkxOCAtMjE3Ljk5NWwxMjMgLTEzMS4wMDdjLTEyLC0xMi45OTIxIC0yNi4wMDc4LC0yMy45OTk5IC00MS45OTk4LC0zMi45OTk5IC0xOS4wMDM5LC05Ljk5MjA5IC00MS4wMDc3LC0xNC45OTk5IC02NS45OTk3LC0xNC45OTk5IC0xMy4wMDM5LDAgLTI2LjAwNzgsMi4wMDc4NyAtMzguMDA3Nyw1Ljk5OTk4IC0xMiw0LjAwMzkyIC0yMi45OTYsOC45OTk5NiAtMzIuOTk5OSwxNi4wMDM5IC03Ljk5NjAzLDUuOTk5OTggLTE1Ljk5MjEsMTQuOTk5OSAtMjAuOTk5OSwyMy45OTk5IC00Ljk5NjA0LDguOTk5OTYgLTcuOTk2MDMsMTkuMDAzOSAtNy45OTYwMywyOS45OTk5IDAsMTMuOTk2IDEuOTk2MDYsMjUuOTk2IDcuMDAzOTEsMzUuOTk5OSA0Ljk5NjA0LDEwLjk5NiAxMiwxOS45OTYgMTkuOTk2LDI4LjAwMzggOC45OTk5Niw4Ljk5OTk2IDE5LjAwMzksMTYuOTk2IDMxLjAwMzgsMjMuOTk5OWwyNi45OTk5IDE0Ljk5OTl6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iKyIgaG9yaXotYWR2LXg9IjU2MyIgZD0iTTIzNC45OTYgMGw5NC4wMDI3IDAgMCAxNTguOTk2IDE4My4wMDYgMCAwIDgyLjAwODIgLTE4My4wMDYgMCAwIDE2MC4wMDQgLTk0LjAwMjcgMCAwIC0xNjAuMDA0IC0xODMuMDA2IDAgMCAtODIuMDA4MiAxODMuMDA2IDAgMCAtMTU4Ljk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJBIiBob3Jpei1hZHYteD0iNzAwIiBkPSJNNTM5LjAwNiAwbDEzMi45OTIgMCAtMjYzLjk5OSA1NjYuMDA2IC0xMTguMDAzIDAgLTI2Mi45OTUgLTU2Ni4wMDYgMTI2IDAgNzAuOTk1OCAxNjAuMDAzIDI0NS4wMDcgMCA3MC4wMDM3IC0xNjAuMDAzem0tMTExLjAxMSAyNTMuMDAzbC0xNjEuOTk5IDAgODIuMDAzNiAxODguOTk5IDc5Ljk5NTcgLTE4OC45OTl6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iQyIgaG9yaXotYWR2LXg9IjY2NyIgZD0iTTU0Mi42NjcgNDMuOTk1OWM1MC4xNjEyLDM4Ljk5OTggODEuMTY1LDk4Ljk5OTYgOTAuMTY1LDE3Mi4wMDNsMS45OTYwNiAxNy45OTk5IC0xMjIuMTYxIDAgLTEuMDAzOTMgLTE0Ljk5OTljLTEuOTk2MDYsLTIyLjAwMzkgLTcuOTk2MDMsLTQzLjk5NTkgLTE0Ljk5OTksLTU5Ljk5OTggLTcuOTk2MDMsLTE2Ljk5NiAtMTguOTkyMSwtMzEuMDAzOCAtMzIuOTk5OSwtNDMuMDAzOCAtMTMuOTk2LC0xMi45OTIxIC0zMS45OTU5LC0yMS45OTIgLTUwLjk5OTgsLTI4Ljk5NTkgLTE5Ljk5NiwtNy4wMDM5MSAtNDIuODI2NiwtMTAuOTk2IC02OC44MzQ0LC0xMC45OTYgLTM0Ljk5NTksMCAtNjUuOTk5Nyw1Ljk5OTk4IC05MC45OTE4LDE2Ljk5NiAtMjUuMDAzOCwxMC45OTYgLTQ2LjAwMzgsMjUuMDAzOCAtNjIuMDA3Niw0My4wMDM4IC0xNS45OTIxLDE4Ljk5MjEgLTI3LjgyNjcsNDAuOTk1OSAtMzQuODMwNiw2NC45OTU4IC03Ljk5NjAzLDI1Ljk5NiAtMTIsNTIuOTk1OSAtMTIsODIuMDAzNiAwLDI1Ljk5NiA0LjAwMzkyLDUxLjk5MTkgMTAuOTk2LDc1Ljk5MTggOC4wMDc4NCwyMy45OTk5IDE5Ljg0MjQsNDQuOTk5OCAzNS44MzQ1LDYyLjk5OTggMTYuMDAzOSwxOS4wMDM5IDM3LjAwMzgsMzIuOTk5OSA2Mi4wMDc2LDQ0LjAwNzcgMjMuOTk5OSwxMC45OTYgNTQuOTkxOSwxNS45OTIxIDg5Ljk5OTYsMTUuOTkyMWwxLjk5NjA2IDBjMCwwIDEuMDAzOTMsMS4wMDM5MyA0LjAwMzkyLDEuMDAzOTMgMzIuOTk5OSwwIDE0Mi44MywtMTAuOTk2IDE2OS44MywtMTQyLjk5NmwyLjk5OTk5IC0xMy4wMDM5IDEyMS4xNjkgMCAtMi45OTk5OSAxOS4wMDM5Yy0zNS45OTk5LDIyMy4wMDMgLTI2NS4wMDMsMjI5LjAwMyAtMjkwLjk5OSwyMjkuMDAzbC01LjAwNzg1IDBjLTUwLjk5OTgsMCAtOTcuOTk1NywtOC4wMDc4NCAtMTM3Ljk5OSwtMjMuMDA3OCAtMzkuODI2NiwtMTUuOTkyMSAtNzMuODMwNCwtMzYuOTkyIC0xMDAuODMsLTY0LjAwMzcgLTI2Ljk5OTksLTI2Ljk5OTkgLTQ3Ljk5OTgsLTU4Ljk5NTggLTYxLjk5NTgsLTk0Ljk5NTcgLTE0LjAwNzgsLTM1Ljk5OTkgLTIwLjk5OTksLTc0Ljk5OTcgLTIwLjk5OTksLTExNS4wMDMgMCwtNDAuOTk1OSA2Ljk5MjEsLTc4Ljk5MTggMTguOTkyMSwtMTE0IDEzLjAwMzksLTM1Ljk5OTkgMzIuOTk5OSwtNjcuOTk1OCA1OS4wMDc2LC05My45OTE4IDI2Ljk5OTksLTI2Ljk5OTkgNTkuOTk5OCwtNDcuOTk5OCA5OS44MjY0LC02Mi45OTk4IDM4Ljk5OTgsLTE0Ljk5OTkgODUuMDAzNiwtMjMuMDA3OCAxMzcuMDA3LC0yMy4wMDc4IDg1LjgzMDQsMCAxNTUuODM0LDIwLjAwNzggMjA1LjgzLDU5Ljk5OTh6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iSCIgaG9yaXotYWR2LXg9IjYzMiIgZD0iTTQ2MS45OTggMGwxMTkuMDA3IDAgMCA1NjYuMDA2IC0xMTkuMDA3IDAgMCAtMjI5LjAwMyAtMjkwLjk5OSAwIDAgMjI5LjAwMyAtMTE4Ljk5NiAwIDAgLTU2Ni4wMDYgMTE4Ljk5NiAwIDAgMjQ0LjAwMyAyOTAuOTk5IDAgMCAtMjQ0LjAwM3oiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJPIiBob3Jpei1hZHYteD0iNjc3IiBkPSJNNDc2Ljk5OCA3Ljk5NjAzYzM4Ljk5OTgsMTYuMDAzOSA3My4wMDM2LDM4Ljk5OTggOTguOTk5Niw2NS45OTk3IDI2Ljk5OTksMjguMDAzOCA0Ny4wMDc3LDU5Ljk5OTggNTkuOTk5OCw5NS4wMDc1IDEzLjAwMzksMzQuOTk1OSAyMC4wMDc4LDcxLjk5OTcgMjAuMDA3OCwxMDkuOTk2IDAsMzcuOTk1OSAtNy4wMDM5MSw3Ni4wMDM2IC0yMC4wMDc4LDExMSAtMTIuOTkyMSwzNC45OTU5IC0zMi45OTk5LDY3LjAwMzcgLTU5Ljk5OTgsOTQuOTk1NyAtMjUuOTk2LDI3LjAxMTcgLTU5Ljk5OTgsNDkuMDAzNyAtOTguOTk5Niw2Ni4wMTE2IC00MC4wMDM4LDE1Ljk5MjEgLTg1Ljk5NTcsMjMuOTk5OSAtMTM3Ljk5OSwyMy45OTk5IC01Mi4wMDM3LDAgLTk3Ljk5NTcsLTguMDA3ODQgLTEzNy45OTksLTIzLjk5OTkgLTM4Ljk5OTgsLTE3LjAwNzggLTczLjAwMzYsLTM4Ljk5OTggLTk4Ljk5OTYsLTY2LjAxMTYgLTI2Ljk5OTksLTI3Ljk5MiAtNDYuOTk1OSwtNTkuOTk5OCAtNTkuOTk5OCwtOTQuOTk1NyAtMTMuMDAzOSwtMzQuOTk1OSAtMTkuOTk2LC03My4wMDM2IC0xOS45OTYsLTExMSAwLC0zNy45OTU5IDYuOTkyMSwtNzQuOTk5NyAxOS45OTYsLTEwOS45OTYgMTMuMDAzOSwtMzUuMDA3NyAzMi45OTk5LC02Ny4wMDM3IDU5Ljk5OTgsLTk1LjAwNzUgMjUuOTk2LC0yNi45OTk5IDU5Ljk5OTgsLTQ5Ljk5NTkgOTguOTk5NiwtNjUuOTk5NyA0MC4wMDM4LC0xNS45OTIxIDg1Ljk5NTcsLTIzLjk5OTkgMTM3Ljk5OSwtMjMuOTk5OSA1Mi4wMDM3LDAgOTcuOTk1Nyw4LjAwNzg0IDEzNy45OTksMjMuOTk5OXptLTQ3Ljk5OTggNDU3LjAwMmMyNS4wMDM4LC0xMC45OTYgNDQuOTk5OCwtMjYuOTk5OSA2MS4wMDM3LC00Ni4wMDM4IDE2LjAwMzksLTE4Ljk5MjEgMjguMDAzOCwtNDAuOTk1OSAzNC45OTU5LC02NC45OTU4IDguMDA3ODQsLTIzLjk5OTkgMTIsLTQ5LjAwMzcgMTIsLTc0Ljk5OTcgMCwtMjUuMDAzOCAtMy45OTIxMSwtNDkuOTk1OSAtMTIsLTc0Ljk5OTcgLTYuOTkyMSwtMjMuOTk5OSAtMTguOTkyMSwtNDQuOTk5OCAtMzQuOTk1OSwtNjQuOTk1OCAtMTYuMDAzOSwtMTcuOTk5OSAtMzUuOTk5OSwtMzQuMDAzOCAtNjEuMDAzNywtNDQuOTk5OCAtMjUuMDAzOCwtMTIgLTU1LjAwMzcsLTE3Ljk5OTkgLTg5Ljk5OTYsLTE3Ljk5OTkgLTM0Ljk5NTksMCAtNjQuOTk1OCw1Ljk5OTk4IC04OS45OTk2LDE3Ljk5OTkgLTI1LjAwMzgsMTAuOTk2IC00NC45OTk4LDI2Ljk5OTkgLTYxLjAwMzcsNDQuOTk5OCAtMTUuOTkyMSwxOS45OTYgLTI3Ljk5Miw0MC45OTU5IC0zNC45OTU5LDY0Ljk5NTggLTcuOTk2MDMsMjUuMDAzOCAtMTIsNDkuOTk1OSAtMTIsNzQuOTk5NyAwLDI1Ljk5NiA0LjAwMzkyLDUwLjk5OTggMTIsNzQuOTk5NyA3LjAwMzkxLDIzLjk5OTkgMTkuMDAzOSw0Ni4wMDM4IDM0Ljk5NTksNjQuOTk1OCAxNi4wMDM5LDE5LjAwMzkgMzUuOTk5OSwzNS4wMDc3IDYxLjAwMzcsNDYuMDAzOCAyNS4wMDM4LDEyIDU1LjAwMzcsMTYuOTk2IDg5Ljk5OTYsMTYuOTk2IDM0Ljk5NTksMCA2NC45OTU4LC00Ljk5NjA0IDg5Ljk5OTYsLTE2Ljk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJRIiBob3Jpei1hZHYteD0iNjgyIiBkPSJNNDg1Ljk5OCAxNi4wMDM5bDkyLjk5OTYgLTcxLjk5OTcgNzQuOTk5NyA4MC45OTk3IC03Ni45OTU4IDU3Ljk5MTljMTkuOTk2LDIyLjAwMzkgMzIuOTk5OSw0MS4wMDc3IDQ2Ljk5NTksNzQuMDA3NiAxNi4wMDM5LDM4Ljk5OTggMjMuOTk5OSw3OS45OTU3IDIzLjk5OTksMTIzIDAsMzcuOTk1OSAtNS45OTk5OCw3NC45OTk3IC0xOC45OTIxLDEwOS45OTYgLTEzLjAwMzksMzQuOTk1OSAtMzIuOTk5OSw2Ny4wMDM3IC01OS4wMDc2LDk0Ljk5NTcgLTI2Ljk5OTksMjcuMDExNyAtNTkuOTk5OCw0OS4wMDM3IC05OC45OTk2LDY2LjAxMTYgLTM4Ljk5OTgsMTUuOTkyMSAtODUuMDAzNiwyMy45OTk5IC0xMzYuMDAzLDIzLjk5OTkgLTUwLjk5OTgsMCAtOTYuOTkxNywtOC4wMDc4NCAtMTM1Ljk5MiwtMjMuOTk5OSAtMzguOTk5OCwtMTcuMDA3OCAtNzEuOTk5NywtMzguOTk5OCAtOTguMDA3NSwtNjYuMDExNiAtMjYuOTk5OSwtMjcuOTkyIC00NS45OTE5LC01OS45OTk4IC01OC45OTU4LC05NC45OTU3IC0xMy4wMDM5LC0zNC45OTU5IC0xOS45OTYsLTcxLjk5OTcgLTE5Ljk5NiwtMTA5Ljk5NiAwLC0zOC4wMDc3IDYuOTkyMSwtNzQuOTk5NyAxOS45OTYsLTExMSAxMy4wMDM5LC0zNS4wMDc3IDMyLjk5OTksLTY3LjAwMzcgNTguOTk1OCwtOTQuMDAzNiAyNi4wMDc4LC0yOC4wMDM4IDU5LjAwNzYsLTQ5Ljk5NTkgOTguMDA3NSwtNjUuOTk5NyAzOC45OTk4LC0xNi4wMDM5IDg0Ljk5MTgsLTIzLjk5OTkgMTM1Ljk5MiwtMjMuOTk5OSA1My4wMDc3LDAgMTA3LjAwNywxMC45OTYgMTUxLjAwMywzMS4wMDM4em0tNjEuOTk1OCA0NDkuOTk4YzI0Ljk5MiwtMTIgNDQuOTk5OCwtMjYuOTk5OSA1OS45OTk4LC00Ni4wMDM4IDE2LjAwMzksLTE5LjAwMzkgMjguMDAzOCwtNDAuOTk1OSAzNC45OTU5LC02NC45OTU4IDguMDA3ODQsLTIzLjk5OTkgMTIsLTUwLjAwNzcgMTIsLTc0Ljk5OTcgMCwtMzEuMDAzOCAtNS45OTk5OCwtNjEuMDAzNyAtMTUuOTkyMSwtODkuMDA3NSAtOC4wMDc4NCwtMjAuOTk5OSAtMTMuMDAzOSwtMjYuOTk5OSAtMjMuMDA3OCwtNDAuOTk1OWwtNzQuOTk5NyA1OC4wMDM3IC03OS4wMDM2IC03Ni4wMDM2IDU5Ljk5OTggLTQ2Ljk5NTljLTE5Ljk5NiwtNS4wMDc4NSAtMzkuOTkyLC04LjAwNzg0IC02MS45OTU4LC04LjAwNzg0IC0zNC45OTU5LDAgLTY0LjAwMzcsNS45OTk5OCAtODguOTk1NywxNy4wMDc4IC0yMy45OTk5LDEyIC00NC4wMDc3LDI2Ljk5OTkgLTU5Ljk5OTgsNDUuOTkxOSAtMTYuMDAzOSwxOS4wMDM5IC0yNi45OTk5LDQxLjAwNzcgLTM1LjAwNzcsNjUuMDA3NiAtNi45OTIxLDI0Ljk5MiAtMTAuOTk2LDQ5Ljk5NTkgLTEwLjk5Niw3NC45OTk3IDAsMjQuOTkyIDQuMDAzOTIsNTAuOTk5OCAxMC45OTYsNzQuOTk5NyA4LjAwNzg0LDIzLjk5OTkgMTkuMDAzOSw0NS45OTE5IDM1LjAwNzcsNjQuOTk1OCAxNS45OTIxLDE5LjAwMzkgMzUuOTk5OSwzNC4wMDM4IDU5Ljk5OTgsNDYuMDAzOCAyNC45OTIsMTAuOTk2IDUzLjk5OTgsMTYuOTk2IDg4Ljk5NTcsMTYuOTk2IDM0LjAwMzgsMCA2NC4wMDM3LC01Ljk5OTk4IDg4LjAwMzYsLTE2Ljk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJSIiBob3Jpei1hZHYteD0iNTk2IiBkPSJNNDMzLjAwMiAwbDExNS4wMDMgMCAwIDEyNC45OTZjMCwxMy4wMDM5IC0xLjAwMzkzLDI2Ljk5OTkgLTIuMDA3ODcsNDAuMDAzOGwwIDEuMDAzOTNjLTEuOTk2MDYsMTIuOTkyMSAtNC45OTYwNCwyNS45OTYgLTcuOTk2MDMsMzguOTk5OCAtNC4wMDM5MiwxMi45OTIxIC04Ljk5OTk2LDI1Ljk5NiAtMTYuOTk2LDM2Ljk5MiAtOC4wMDc4NCwxMiAtMTcuOTk5OSwyMi4wMDM5IC0zMS4wMDM4LDI5Ljk5OTkgLTIuMDA3ODcsMS4wMDM5MyAtNC4wMDM5MiwyLjAwNzg3IC01LjAwNzg1LDIuOTk5OTkgMjAuMDA3OCwxMC4wMDM5IDM2LjAxMTcsMjMuOTk5OSA0Ny4wMDc3LDQxLjAwNzcgMTkuMDAzOSwyNi45OTk5IDI4LjAwMzgsNTcuOTkxOSAyOC4wMDM4LDkzLjk5MTggMCw0Ny45OTk4IC0xNy45OTk5LDg2Ljk5OTcgLTU1LjAwMzcsMTE1LjAwMyAtMzUuOTk5OSwyNi45OTk5IC04Ni4wMDc1LDQxLjAwNzcgLTE0OC4wMDMsNDEuMDA3N2wtMzA0Ljk5NSAwIDAgLTU2Ni4wMDYgMTE3IDAgMCAyMjcuOTk5IDE3OS45OTkgMGMxNi45OTYsMCAzMC45OTIsLTIuOTk5OTkgMzkuOTkyLC03LjAwMzkxIDEwLjAwMzksLTMuOTkyMTEgMTcuMDA3OCwtOC45OTk5NiAyMy4wMDc4LC0xNS45OTIxIDAsMCAyMC45OTk5LC0yMy45OTk5IDIwLjk5OTksLTU2Ljk5OThsMCAtMTQ4LjAwM3ptLTExMy4wMDcgMzE5Ljk5NWwtMTUwLjk5MiAwIDAgMTUyLjk5OSAxODMuOTkxIDBjMzIuMDA3NywwIDU2LjAwNzcsLTYuOTkyMSA2OC45OTk3LC0xOS45OTYgMTQuMDA3OCwtMTMuOTk2IDIwLjk5OTksLTMxLjk5NTkgMjAuOTk5OSwtNTMuOTk5OCAwLC0xNi45OTYgLTIuOTk5OTksLTI5Ljk5OTkgLTguOTk5OTYsLTM4Ljk5OTggLTUuOTk5OTgsLTEwLjAwMzkgLTEzLjk5NiwtMTcuOTk5OSAtMjQuOTkyLC0yMy45OTk5IC0xMC4wMDM5LC01Ljk5OTk4IC0yMy4wMDc4LC0xMC4wMDM5IC0zOC4wMDc3LC0xMiAtMTUuOTkyMSwtMS45OTYwNiAtMzIuOTk5OSwtNC4wMDM5MiAtNTAuOTk5OCwtNC4wMDM5MnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJTIiBob3Jpei1hZHYteD0iNTg3IiBkPSJNMzg4LjAwMiAtNy4wMDM5MWMzMC45OTIsNS45OTk5OCA1OC45OTU4LDE2LjAwMzkgODIuOTk1NywyOS45OTk5IDI1Ljk5NiwxNC4wMDc4IDQ3LjAwNzcsMzIuMDA3NyA2Mi45OTk4LDUzLjk5OTggMTYuMDAzOSwyMy4wMDc4IDI1LjAwMzgsNTAuOTk5OCAyNS4wMDM4LDgyLjAwMzYgMCwyOC45OTU5IC03LjAwMzkxLDUzLjk5OTggLTE5Ljk5Niw3My45OTU4IC0xMiwyMC4wMDc4IC0yOS4wMDc4LDM1Ljk5OTkgLTUwLjAwNzcsNDkuMDAzNyAtMTkuOTk2LDEyIC00My4wMDM4LDIyLjAwMzkgLTY3Ljk5NTgsMjguOTk1OSAtMjMuOTk5OSw3LjAwMzkxIC00OS4wMDM3LDEzLjAwMzkgLTc0LjAwNzYsMTcuOTk5OSAtMjQuOTkyLDUuMDA3ODUgLTQ4Ljk5MTksMTAuMDAzOSAtNzIuOTkxOCwxNC4wMDc4IC0yMi4wMDM5LDMuOTkyMTEgLTQzLjAwMzgsOC45OTk5NiAtNTkuOTk5OCwxNC45OTk5IC0xNy4wMDc4LDUuOTk5OTggLTI5Ljk5OTksMTIuOTkyMSAtMzguOTk5OCwyMS45OTIgLTguMDA3ODQsNy4wMDM5MSAtMTIsMTYuMDAzOSAtMTIsMjguMDAzOCAwLDEzLjk5NiAyLjk5OTk5LDI1Ljk5NiA4Ljk5OTk2LDM0Ljk5NTkgNi45OTIxLDguOTk5OTYgMTQuOTk5OSwxNy4wMDc4IDI0Ljk5MiwyMi4wMDM5IDExLjAwNzgsNS45OTk5OCAyNS4wMDM4LDEwLjk5NiAzOC45OTk4LDEzLjAwMzkgMTYuMDAzOSwyLjk5OTk5IDMyLjAwNzcsMy45OTIxMSA0Ny45OTk4LDMuOTkyMTEgMzguOTk5OCwwIDcwLjE2OSwtNi45OTIxIDk1LjE3MjksLTIxLjk5MiAyMi45OTYsLTE0Ljk5OTkgMzUuOTk5OSwtMzguMDA3NyA0MC4wMDM4LC03MS4wMDc2bDEuOTk2MDYgLTE0Ljk5OTkgMTEzLjE2MSAwIC0wLjk5MjEyMiAxNy4wMDc4Yy0xLjAwMzkzLDMxLjk5NTkgLTguMDA3ODQsNTguOTk1OCAtMjIuMDAzOSw4MS45OTE4IC0xMy4wMDM5LDIzLjk5OTkgLTMxLjAwMzgsNDMuMDAzOCAtNTMuMTYxMiw1OS4wMDc2IC0yMy4wMDc4LDE0Ljk5OTkgLTQ5LjAwMzcsMjUuOTk2IC03Ny45OTk3LDMyLjk5OTkgLTI4LjAwMzgsNy4wMDM5MSAtNjAuMTc2OSwxMC4wMDM5IC05My4xNzY4LDEwLjAwMzkgLTI4Ljk5NTksMCAtNTguOTk1OCwtMi45OTk5OSAtODYuOTk5NywtOC45OTk5NiAtMjguOTk1OSwtNy4wMDM5MSAtNTQuOTkxOSwtMTcuMDA3OCAtNzYuOTk1OCwtMzEuMDAzOCAtMjIuOTk2LC0xMy45OTYgLTQxLjk5OTgsLTMxLjk5NTkgLTU1Ljk5NTgsLTUzLjk5OTggLTE0Ljk5OTksLTIyLjAwMzkgLTIyLjAwMzksLTQ5LjAwMzcgLTIyLjAwMzksLTc3Ljk5OTcgMCwtMjguMDAzOCA3LjAwMzkxLC01MC45OTk4IDE5Ljk5NiwtNzAuMDAzNyAxMy4wMDM5LC0xOS4wMDM5IDI5Ljk5OTksLTM0LjAwMzggNTAuOTk5OCwtNDQuOTk5OCAyMC4wMDc4LC0xMC45OTYgNDMuMDAzOCwtMTkuOTk2IDY4LjAwNzYsLTI1Ljk5NiAyMy45OTk5LC03LjAwMzkxIDQ3Ljk5OTgsLTEyIDcyLjk5MTgsLTE3LjAwNzggMjUuMDAzOCwtNC45OTYwNCA0OS4wMDM3LC05Ljk5MjA5IDcxLjk5OTcsLTEzLjk5NiAyMy4wMDc4LC00LjAwMzkyIDQzLjAwMzgsLTEwLjAwMzkgNjEuMDAzNywtMTYuOTk2IDE2LjAwMzksLTUuOTk5OTggMjguOTk1OSwtMTQuMDA3OCAzNy45OTU5LC0yMy4wMDc4IDguMDA3ODQsLTguOTk5OTYgMTIsLTE5Ljk5NiAxMiwtMzMuOTkyIDAsLTE2LjAwMzkgLTIuOTk5OTksLTI5LjAwNzggLTkuOTkyMDksLTM4Ljk5OTggLTguMDA3ODQsLTEwLjAwMzkgLTE3Ljk5OTksLTE3Ljk5OTkgLTI5Ljk5OTksLTIzLjk5OTkgLTEzLjAwMzksLTUuOTk5OTggLTI5LjAwNzgsLTExLjAwNzggLTQ0Ljk5OTgsLTEzLjAwMzkgLTE3Ljk5OTksLTIuOTk5OTkgLTM1Ljk5OTksLTQuOTk2MDQgLTUzLjAwNzcsLTQuOTk2MDQgLTIxLjk5MiwwIC00Mi45OTIsMi45OTk5OSAtNjIuOTk5OCw2Ljk5MjEgLTE5Ljk5Niw1LjAwNzg1IC0zNi45OTIsMTIgLTUxLjk5MTksMjAuOTk5OSAtMTQuMDA3OCw4Ljk5OTk2IC0yNS4wMDM4LDIwLjk5OTkgLTM0LjAwMzgsMzUuMDA3NyAtNy45OTYwMywxMi45OTIxIC0xMy4wMDM5LDIzLjk5OTkgLTEzLjAwMzksNDMuOTk1OWwwIDE2LjAwMzkgLTExNCAwIDAgLTE2LjAwMzljMCwtMzIuOTk5OSA3LjAwMzkxLC01OC45OTU4IDIyLjAwMzksLTg2Ljk5OTcgMTQuOTk5OSwtMjUuMDAzOCAzNS45OTk5LC00Ni45OTU5IDYxLjAwMzcsLTY0LjAwMzcgMjQuOTkyLC0xNS45OTIxIDU0Ljk5MTksLTI3Ljk5MiA4Ny45OTE4LC0zNS45OTk5IDMyLjAwNzcsLTcuOTk2MDMgNjUuOTk5NywtMTIgMTAyLC0xMiAyOS45OTk5LDAgNTkuOTk5OCwyLjk5OTk5IDg5LjAwNzUsOC45OTk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJUIiBob3Jpei1hZHYteD0iNTk5IiBkPSJNMjQxLjAwMyAwbDExNy45OTIgMCAwIDQ3Mi45OTQgMjA2LjAwNyAwIDAgOTMuMDExNCAtNTMwLjAwNiAwIDAgLTkzLjAxMTQgMjA2LjAwNyAwIDAgLTQ3Mi45OTR6Ii8+DQogIDwvZm9udD4NCiAgPHN0eWxlIHR5cGU9InRleHQvY3NzIj4NCiAgIDwhW0NEQVRBWw0KICAgIEBmb250LWZhY2UgeyBmb250LWZhbWlseToiQXJpYWwiO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC1zdHlsZTpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO3NyYzp1cmwoIiNGb250SUQxIikgZm9ybWF0KHN2Zyl9DQogICAgQGZvbnQtZmFjZSB7IGZvbnQtZmFtaWx5OiJGTFVSTyBTZW1pYm9sZCI7Zm9udC12YXJpYW50Om5vcm1hbDtmb250LXN0eWxlOm5vcm1hbDtmb250LXdlaWdodDo2MDA7c3JjOnVybCgiI0ZvbnRJRDAiKSBmb3JtYXQoc3ZnKX0NCiAgICAuZmlsMSB7ZmlsbDojMzczNDM1fQ0KICAgIC5maWwwIHtmaWxsOiMzNzM0MzV9DQogICAgLmZudDIge2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXNpemU6MjUxLjQ1cHg7Zm9udC1mYW1pbHk6J0FyaWFsJ30NCiAgICAuZm50MSB7Zm9udC13ZWlnaHQ6NjAwO2ZvbnQtc2l6ZTo0NzYuMDVweDtmb250LWZhbWlseTonRkxVUk8gU2VtaWJvbGQnfQ0KICAgIC5mbnQwIHtmb250LXdlaWdodDo2MDA7Zm9udC1zaXplOjg0Ni42N3B4O2ZvbnQtZmFtaWx5OidGTFVSTyBTZW1pYm9sZCd9DQogICBdXT4NCiAgPC9zdHlsZT4NCiA8L2RlZnM+DQogPGcgaWQ9IkNhbWFkYV94MDAyMF8xIj4NCiAgPG1ldGFkYXRhIGlkPSJDb3JlbENvcnBJRF8wQ29yZWwtTGF5ZXIiLz4NCiAgPHRleHQgeD0iNzQuMjMiIHk9IjU4Ny4zNiIgIGNsYXNzPSJmaWwwIGZudDAiPkNIQU9TPC90ZXh0Pg0KICA8dGV4dCB4PSIyNzUzLjA5IiB5PSIxNDg3LjQyIiAgY2xhc3M9ImZpbDAgZm50MCI+QVJRICZhbXA7IEFSVDwvdGV4dD4NCiAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC44NTIwMjIgMC41MjM1MDcgLTAuNTIzNTA3IDAuODUyMDIyIDgzLjM3MTcgLTE3MzUuODkpIj4NCiAgIDx0ZXh0IHg9IjM1MzYuNjMiIHk9IjgxNy4xNSIgIGNsYXNzPSJmaWwwIGZudDEiPis8L3RleHQ+DQogIDwvZz4NCiAgPHRleHQgeD0iLTIyOTEuNTYiIHk9IjMxODAuNiIgIGNsYXNzPSJmaWwxIGZudDIiPkZMVVJPIFNlbWlib2xkPC90ZXh0Pg0KICA8dGV4dCB4PSItMjI5MS41NiIgeT0iMjYwNC4wMSIgIGNsYXNzPSJmaWwxIGZudDIiPkZvbnQ6PC90ZXh0Pg0KIDwvZz4NCjwvc3ZnPg0K';
+const LOGO_B64 = LOGO_ICON;
 let sb = null; // inicializado de forma assíncrona em init() → initSupabaseClient()
 const DOCS_BUCKET = 'proposal-files';
 const DOCS_ALLOWED_EXT = ['dwg','pdf','jpg','jpeg','cdr','ai','psd'];
@@ -1417,6 +1451,12 @@ const $  = id => document.getElementById(id);
 const flt = id => parseFloat($(id)?.value)||0;
 const fmt  = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtI = n => Math.round(n).toLocaleString('pt-BR');
+function syncBrandLogos(){
+  const headerLogo=$('hdr-logo-img');
+  if(headerLogo) headerLogo.src=LOGO_ICON;
+  const hallLogo=$('hall-logo-img');
+  if(hallLogo) hallLogo.src=LOGO_ICON;
+}
 
 // ── THEME ─────────────────────────────────────────
 const THEME_PREVIEWS=[
@@ -1470,8 +1510,8 @@ document.addEventListener('click',e=>{
 
 // ── INIT ──────────────────────────────────────────
 async function initSupabaseClient(){
-  // Aguarda até 6s pelo SDK carregar via CDN (inclui fallbacks)
-  for(let i=0; i<60; i++){
+  // Aguarda até 12s pelo SDK carregar via CDN (inclui fallbacks)
+  for(let i=0; i<120; i++){
     if(window.supabase?.createClient) break;
     await new Promise(r=>setTimeout(r,100));
   }
@@ -1489,6 +1529,15 @@ async function initSupabaseClient(){
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
       auth:{ autoRefreshToken:true, persistSession:true, detectSessionInUrl:false }
     });
+    if(!window._chaosAuthListener){
+      window._chaosAuthListener=true;
+      client.auth.onAuthStateChange((_event, session)=>{
+        if(session?.user){
+          user=session.user;
+          if($('auth-screen')?.style.display !== 'none') showApp();
+        }
+      });
+    }
     return client;
   }catch(e){
     console.error('Falha ao criar cliente Supabase:', e);
@@ -1499,8 +1548,7 @@ async function initSupabaseClient(){
 async function init(){
   try{
     loadTheme();
-    const logo = $('hdr-logo-img');
-    if(logo) logo.src = LOGO_B64;
+    syncBrandLogos();
 
     // Inicializa sb de forma assíncrona com retry de CDN
     if(!sb) sb = await initSupabaseClient();
@@ -1518,7 +1566,7 @@ async function init(){
     }
 
     const timeout = new Promise((_, reject)=>
-      setTimeout(()=>reject(new Error('Timeout ao conectar')), 6000)
+      setTimeout(()=>reject(new Error('Timeout ao conectar')), 15000)
     );
 
     const result = await Promise.race([sb.auth.getSession(), timeout]);
@@ -1591,9 +1639,15 @@ async function authSubmit(){
     if(authMode === 'login'){
       const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
       if(error) throw error;
-      user = data?.user || data?.session?.user;
+      user = data?.session?.user || data?.user;
+      if(!user){
+        try{
+          const sess = await sb.auth.getSession();
+          user = sess?.data?.session?.user || null;
+        }catch(_e){}
+      }
       if(user){ showApp(); }
-      else { $('auth-err').textContent='Login feito, mas sessão não retornou. Recarregue a página.'; }
+      else { $('auth-err').textContent='Login confirmado, mas a sessão ainda está sincronizando. Recarregue a página se não abrir automaticamente.'; }
 
     } else {
       const c = $('auth-confirm').value;
@@ -1633,15 +1687,20 @@ async function logout(){
 }
 
 function showAuth(){
+  document.body.classList.add('auth-mode');
+  document.body.classList.remove('app-mode','nbr-open');
   $('auth-screen').style.display='flex';
   $('app-screen').style.display='none';
 }
 
 function showApp(){
+  document.body.classList.remove('auth-mode');
+  document.body.classList.add('app-mode');
   $('auth-screen').style.display='none';
   $('app-screen').style.display='flex';
   $('app-screen').style.flexDirection='column';
   $('hdr-user').textContent=user?.email||'';
+  syncBrandLogos();
   loadTheme();
   showHall();
   initPresence();
@@ -1798,7 +1857,53 @@ const MAT_DB = [
   {id:'piso-madeira-eng',nome:'Piso Madeira Engenheirado',cat:'Natural',ico:'🪵',icoBg:'#f5ede2',ct:28,lambda:0.15,rho:650,c:1.34,alfa:0.60,inercia:'baixa',inVal:22,uso:['piso'],zbRec:[1,2,6],zbOk:[3,4,5],zbNao:[7,8],custo:{min:80,max:200,un:'m²'},co2:0.45,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'boa',descricao:'Camadas de madeira real. Mais estável que maciça.',recZB:{quente:'Aquece levemente; menos adequado.',frio:'Excelente — agradável e isolante.',temperado:'Ótima para dormitórios e salas.'},usoRec:'Salas, dormitórios em climas temperados e frios.'},
   {id:'pedra-granito',nome:'Pedra Granito',cat:'Natural',ico:'🪨',icoBg:'#e8e4e0',ct:500,lambda:2.90,rho:2600,c:0.89,alfa:0.55,inercia:'alta',inVal:95,uso:['parede','piso'],zbRec:[3,4,5,8],zbOk:[6,7],zbNao:[1,2],custo:{min:80,max:250,un:'m²'},co2:0.70,origem:'Nacional',disponibilidade:'Alta',sustentabilidade:'media',descricao:'Maior capacidade térmica da lista. Alta condutividade exige proteção solar.',recZB:{quente:'Capacidade excepcional; proteção solar rigorosa necessária.',frio:'Alta condutividade dissipa calor interno.',temperado:'Excelente para pisos e elementos de massa.'},usoRec:'Pisos e elementos de massa em projetos bioclimáticos.'},
   {id:'tijolo-refratario',nome:'Tijolo Refratário',cat:'Alvenaria',ico:'🔥',icoBg:'#fde8d8',ct:420,lambda:1.20,rho:1900,c:1.05,alfa:0.70,inercia:'alta',inVal:82,uso:['parede','piso'],zbRec:[3,4,5,6,7,8],zbOk:[1,2],zbNao:[],custo:{min:50,max:100,un:'m²'},co2:0.45,origem:'Nacional',disponibilidade:'Media',sustentabilidade:'media',descricao:'Alta resistência a temperaturas. Usado em fornos, lareiras e sistemas solares passivos.',recZB:{quente:'Excelente massa térmica de acumulação.',frio:'Paredes de Trombe e fornos de calor radiante.',temperado:'Versátil em paredes solares passivas.'},usoRec:'Fornos, lareiras, paredes de acumulação solar.'},
+  {"id":"bloco-solo-cimento","nome":"Bloco de Solo-Cimento","cat":"Alvenaria","ico":"🧱","icoBg":"#ead8b8","ct":210,"lambda":0.75,"rho":1700,"c":1.0,"alfa":0.68,"inercia":"alta","inVal":82,"uso":["parede"],"zbRec":[3,4,5,7,8],"zbOk":[6],"zbNao":[1,2],"custo":{"min":30,"max":65,"un":"m²"},"co2":0.08,"origem":"Local/Nacional","disponibilidade":"Media","sustentabilidade":"excelente","descricao":"Bloco prensado de terra estabilizada. Alta massa térmica e menor queima que cerâmica.","recZB":{"quente":"Excelente para climas quentes com amplitude térmica; proteger da chuva direta.","frio":"Use com isolamento complementar e controle de umidade.","temperado":"Boa opção de baixa pegada com bom sombreamento."},"usoRec":"Vedações e paredes aparentes protegidas por beiral ou revestimento."},
+  {"id":"cob","nome":"Cob / Terra-palha","cat":"Natural","ico":"🌾","icoBg":"#f2e3c8","ct":260,"lambda":0.45,"rho":1500,"c":1.1,"alfa":0.7,"inercia":"alta","inVal":84,"uso":["parede"],"zbRec":[3,4,7],"zbOk":[5,6,8],"zbNao":[1,2],"custo":{"min":20,"max":60,"un":"m²"},"co2":0.02,"origem":"Local","disponibilidade":"Baixa","sustentabilidade":"excelente","descricao":"Mistura de terra, fibra vegetal e água moldada no local. Muito baixo carbono.","recZB":{"quente":"Muito bom em clima quente seco; exige base elevada e beirais.","frio":"Evitar sem detalhamento térmico e proteção de umidade.","temperado":"Boa opção artesanal quando há mão de obra especializada."},"usoRec":"Paredes de vedação bioclimáticas e elementos de massa térmica."},
+  {"id":"clt","nome":"CLT — Madeira Laminada Cruzada","cat":"Natural","ico":"🪵","icoBg":"#f2e4cf","ct":75,"lambda":0.13,"rho":500,"c":1.6,"alfa":0.58,"inercia":"media","inVal":46,"uso":["parede","cobertura","piso"],"zbRec":[1,2,3,6],"zbOk":[4,5,7],"zbNao":[8],"custo":{"min":250,"max":600,"un":"m²"},"co2":0.2,"origem":"Nacional/Importado","disponibilidade":"Baixa","sustentabilidade":"boa","descricao":"Painel estrutural industrializado de madeira. Execução rápida e baixa carga na fundação.","recZB":{"quente":"Funciona melhor com sombreamento, ventilação e camadas de massa térmica interna.","frio":"Excelente envelope estrutural para regiões frias.","temperado":"Boa solução industrializada com baixo peso."},"usoRec":"Estrutura, lajes secas, paredes portantes e módulos industrializados."},
+  {"id":"mlc","nome":"MLC — Madeira Laminada Colada","cat":"Natural","ico":"🪵","icoBg":"#f5ead8","ct":60,"lambda":0.13,"rho":520,"c":1.55,"alfa":0.58,"inercia":"media","inVal":38,"uso":["parede","cobertura"],"zbRec":[1,2,6],"zbOk":[3,4,5,7],"zbNao":[8],"custo":{"min":180,"max":480,"un":"m²"},"co2":0.18,"origem":"Nacional/Importado","disponibilidade":"Media","sustentabilidade":"boa","descricao":"Elementos estruturais de madeira engenheirada para grandes vãos.","recZB":{"quente":"Boa com cobertura ventilada e proteção da madeira.","frio":"Excelente para reduzir pontes térmicas em estrutura.","temperado":"Boa para coberturas leves e grandes vãos."},"usoRec":"Vigas, pórticos, pergolados técnicos e coberturas de madeira."},
+  {"id":"steel-frame","nome":"Steel Frame com lã mineral","cat":"Industrializado","ico":"🏗️","icoBg":"#e8edf2","ct":35,"lambda":0.05,"rho":120,"c":0.9,"alfa":0.55,"inercia":"baixa","inVal":24,"uso":["parede","cobertura"],"zbRec":[1,2,6],"zbOk":[3,4,5,7],"zbNao":[8],"custo":{"min":140,"max":280,"un":"m²"},"co2":1.8,"origem":"Nacional","disponibilidade":"Media","sustentabilidade":"media","descricao":"Sistema leve com perfis galvanizados, chapas e isolamento termoacústico.","recZB":{"quente":"Precisa de sombreamento e estratégia de massa térmica interna.","frio":"Bom desempenho quando bem isolado e estanque.","temperado":"Rápido e versátil, mas depende da composição das camadas."},"usoRec":"Construção seca, ampliações e obras com prazo curto."},
+  {"id":"wood-frame","nome":"Wood Frame com lã de vidro","cat":"Natural","ico":"🪵","icoBg":"#f5ead8","ct":32,"lambda":0.045,"rho":100,"c":1.2,"alfa":0.55,"inercia":"baixa","inVal":25,"uso":["parede","cobertura"],"zbRec":[1,2,6],"zbOk":[3,4,5,7],"zbNao":[8],"custo":{"min":130,"max":260,"un":"m²"},"co2":0.5,"origem":"Nacional","disponibilidade":"Media","sustentabilidade":"boa","descricao":"Sistema leve em madeira, OSB e isolamento. Boa eficiência para climas frios.","recZB":{"quente":"Baixa inércia; combinar com ventilação, sombreamento e massa interna.","frio":"Muito bom para regiões frias pela resistência térmica.","temperado":"Boa opção para obra limpa e rápida."},"usoRec":"Residências leves, ampliações e módulos pré-fabricados."},
+  {"id":"cobogo-ceramico","nome":"Cobogó Cerâmico","cat":"Alvenaria","ico":"▦","icoBg":"#f0d8c8","ct":95,"lambda":0.85,"rho":1500,"c":0.92,"alfa":0.66,"inercia":"media","inVal":58,"uso":["parede","paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":80,"max":180,"un":"m²"},"co2":0.26,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"media","descricao":"Elemento vazado que sombreia e permite ventilação permanente.","recZB":{"quente":"Excelente para fachadas e varandas ventiladas.","frio":"Evitar em fechamentos principais por infiltração de vento frio.","temperado":"Bom como segunda pele e filtro de privacidade."},"usoRec":"Fachadas ventiladas, muros, varandas e divisórias externas."},
+  {"id":"cobogo-concreto","nome":"Cobogó de Concreto","cat":"Concreto","ico":"▦","icoBg":"#e8e4dc","ct":140,"lambda":1.2,"rho":1900,"c":1.0,"alfa":0.65,"inercia":"alta","inVal":62,"uso":["parede","paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":70,"max":160,"un":"m²"},"co2":0.48,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"media","descricao":"Elemento vazado robusto para sombreamento, ventilação e fechamento externo.","recZB":{"quente":"Boa proteção solar, mas aquece se exposto sem ventilação.","frio":"Usar apenas como elemento secundário.","temperado":"Bom para fachadas, jardins e muros ventilados."},"usoRec":"Muxarabis, fachadas, muros e fechamento de áreas técnicas."},
+  {"id":"policarbonato-alveolar","nome":"Policarbonato Alveolar","cat":"Industrializado","ico":"▤","icoBg":"#edf6fb","ct":9,"lambda":0.21,"rho":1200,"c":1.2,"alfa":0.35,"inercia":"baixa","inVal":10,"uso":["cobertura","parede"],"zbRec":[1,2,6],"zbOk":[3,4,5],"zbNao":[7,8],"custo":{"min":90,"max":220,"un":"m²"},"co2":2.7,"origem":"Nacional/Importado","disponibilidade":"Alta","sustentabilidade":"media","descricao":"Chapa translúcida leve com câmaras de ar. Traz luz, mas precisa de controle solar.","recZB":{"quente":"Usar com cor leitosa, ventilação e sombreamento; cuidado com estufa.","frio":"Útil para iluminação natural e retenção parcial de calor.","temperado":"Bom em pergolados e sheds bem ventilados."},"usoRec":"Coberturas translúcidas, sheds, claraboias e fechamentos leves."},
+  {"id":"argila-expandida","nome":"Argila Expandida","cat":"Natural","ico":"🟤","icoBg":"#ead6c0","ct":35,"lambda":0.16,"rho":350,"c":0.84,"alfa":0.65,"inercia":"baixa","inVal":26,"uso":["cobertura","piso","paisagismo"],"zbRec":[1,2,6],"zbOk":[3,4,5,7,8],"zbNao":[],"custo":{"min":25,"max":70,"un":"m²"},"co2":0.35,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"media","descricao":"Agregado leve para drenagem, enchimento e camada térmica em coberturas.","recZB":{"quente":"Boa como camada drenante e leve em cobertura verde.","frio":"Ajuda como enchimento leve, mas não substitui isolante.","temperado":"Versátil para jardins, lajes e vasos."},"usoRec":"Drenagem de jardins, substrato leve, enchimento de lajes e cobertura verde."},
+  {"id":"concreto-drenante","nome":"Concreto Drenante","cat":"Concreto","ico":"⬚","icoBg":"#e7e4dc","ct":120,"lambda":1.0,"rho":1600,"c":0.9,"alfa":0.55,"inercia":"media","inVal":52,"uso":["piso","paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":90,"max":180,"un":"m²"},"co2":0.6,"origem":"Nacional","disponibilidade":"Media","sustentabilidade":"boa","descricao":"Pavimento permeável que reduz escoamento superficial e ilhas de calor.","recZB":{"quente":"Ótimo para áreas externas permeáveis e redução de calor.","frio":"Usar com atenção à drenagem e manutenção.","temperado":"Boa opção para calçadas, estacionamentos e pátios."},"usoRec":"Calçadas, vagas permeáveis, pátios, rotas de drenagem sustentável."},
+  {"id":"paver-intertravado","nome":"Piso Intertravado Permeável","cat":"Concreto","ico":"▣","icoBg":"#e6e2d8","ct":170,"lambda":1.2,"rho":2000,"c":0.9,"alfa":0.5,"inercia":"alta","inVal":62,"uso":["piso","paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":55,"max":120,"un":"m²"},"co2":0.55,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"boa","descricao":"Peças modulares drenantes ou com juntas permeáveis. Fácil manutenção.","recZB":{"quente":"Preferir cores claras e juntas vegetadas para reduzir aquecimento.","frio":"Funcional, mas frio ao toque em áreas externas.","temperado":"Excelente para mobilidade, drenagem e manutenção."},"usoRec":"Calçadas, garagens, praças, jardins de chuva e pátios."},
+  {"id":"telha-pir","nome":"Telha Sanduíche PIR","cat":"Cobertura","ico":"🥪","icoBg":"#edf2f4","ct":24,"lambda":0.022,"rho":45,"c":1.4,"alfa":0.65,"inercia":"baixa","inVal":20,"uso":["cobertura"],"zbRec":[1,2,6],"zbOk":[3,4,5,7],"zbNao":[8],"custo":{"min":100,"max":220,"un":"m²"},"co2":2.2,"origem":"Nacional/Importado","disponibilidade":"Media","sustentabilidade":"media","descricao":"Painel metálico com núcleo PIR, melhor resistência ao fogo que EPS.","recZB":{"quente":"Boa para reduzir carga térmica em coberturas metálicas.","frio":"Excelente isolamento para galpões e ambientes climatizados.","temperado":"Boa opção técnica quando custo permite."},"usoRec":"Galpões, coberturas industriais, escolas, clínicas e retrofit de telhados."},
+  {"id":"manta-aluminizada","nome":"Manta Aluminizada Subcobertura","cat":"Isolante","ico":"✨","icoBg":"#f0f0f0","ct":2,"lambda":0.04,"rho":50,"c":1.0,"alfa":0.1,"inercia":"baixa","inVal":8,"uso":["cobertura"],"zbRec":[3,4,5,7,8],"zbOk":[1,2,6],"zbNao":[],"custo":{"min":12,"max":35,"un":"m²"},"co2":1.1,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"media","descricao":"Barreira radiante para reduzir ganho de calor sob telhas.","recZB":{"quente":"Muito útil quando há câmara de ar e ventilação no telhado.","frio":"Ajuda pouco sem outras camadas isolantes.","temperado":"Complemento barato para coberturas existentes."},"usoRec":"Subcobertura, retrofit térmico e telhados com forro."},
+  {"id":"cool-roof","nome":"Pintura Refletiva Cool Roof","cat":"Cobertura","ico":"☀️","icoBg":"#f8f8f0","ct":3,"lambda":0.2,"rho":1300,"c":1.0,"alfa":0.2,"inercia":"baixa","inVal":12,"uso":["cobertura"],"zbRec":[3,4,5,7,8],"zbOk":[6],"zbNao":[1,2],"custo":{"min":25,"max":70,"un":"m²"},"co2":0.9,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"boa","descricao":"Revestimento claro/refletivo que reduz absorção solar da cobertura.","recZB":{"quente":"Excelente para reduzir temperatura superficial e ilha de calor.","frio":"Pode reduzir ganhos solares úteis no inverno.","temperado":"Bom em coberturas expostas a oeste/norte."},"usoRec":"Telhas, lajes impermeabilizadas e coberturas expostas."},
+  {"id":"vidro-laminado-controle-solar","nome":"Vidro Laminado de Controle Solar","cat":"Vidro","ico":"🪟","icoBg":"#e8f2f8","ct":15,"lambda":0.7,"rho":2500,"c":0.84,"alfa":0.2,"inercia":"baixa","inVal":12,"uso":["parede"],"zbRec":[3,4,5,7,8],"zbOk":[6],"zbNao":[1,2],"custo":{"min":160,"max":360,"un":"m²"},"co2":1.1,"origem":"Nacional/Importado","disponibilidade":"Media","sustentabilidade":"media","descricao":"Vidro de segurança com película PVB e redução de ganho solar.","recZB":{"quente":"Melhor que vidro comum, mas ainda exige brise em fachadas críticas.","frio":"Pode reduzir ganhos solares desejáveis.","temperado":"Boa escolha para esquadrias maiores com segurança."},"usoRec":"Fachadas, guarda-corpos, esquadrias e coberturas de vidro protegidas."},
+  {"id":"granilite","nome":"Granilite / Marmorite","cat":"Industrializado","ico":"◫","icoBg":"#f2eee6","ct":210,"lambda":1.5,"rho":2200,"c":0.88,"alfa":0.45,"inercia":"alta","inVal":72,"uso":["piso"],"zbRec":[3,4,5,7,8],"zbOk":[6],"zbNao":[1,2],"custo":{"min":95,"max":220,"un":"m²"},"co2":0.65,"origem":"Nacional","disponibilidade":"Media","sustentabilidade":"media","descricao":"Piso contínuo mineral, durável e com alta massa térmica.","recZB":{"quente":"Bom piso frio para áreas internas ventiladas.","frio":"Pode ser desconfortável sem aquecimento ou tapetes.","temperado":"Durável e adequado para alto tráfego."},"usoRec":"Pisos internos, halls, áreas molhadas e retrofit de superfícies contínuas."},
+  {"id":"fulget","nome":"Piso Fulget / Granilha Lavada","cat":"Natural","ico":"◩","icoBg":"#e9e3d4","ct":180,"lambda":1.3,"rho":2100,"c":0.88,"alfa":0.5,"inercia":"alta","inVal":66,"uso":["piso","paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":70,"max":160,"un":"m²"},"co2":0.55,"origem":"Nacional","disponibilidade":"Alta","sustentabilidade":"media","descricao":"Piso externo drenante superficialmente, antiderrapante e resistente.","recZB":{"quente":"Funciona bem com cor clara e áreas sombreadas.","frio":"Uso externo; pode acumular frio em áreas sombreadas.","temperado":"Ótimo para rampas, calçadas e áreas molhadas."},"usoRec":"Piscinas, calçadas, rampas, jardins e áreas externas."},
+  {"id":"reboco-termico","nome":"Argamassa / Reboco Térmico","cat":"Isolante","ico":"▧","icoBg":"#eee8dc","ct":45,"lambda":0.12,"rho":450,"c":1.0,"alfa":0.55,"inercia":"media","inVal":34,"uso":["parede"],"zbRec":[1,2,6],"zbOk":[3,4,5,7],"zbNao":[8],"custo":{"min":45,"max":120,"un":"m²"},"co2":0.5,"origem":"Nacional/Importado","disponibilidade":"Media","sustentabilidade":"media","descricao":"Revestimento leve com agregados isolantes para reduzir transmitância.","recZB":{"quente":"Útil em fachadas expostas quando não há espaço para isolamento externo.","frio":"Boa camada complementar em retrofit.","temperado":"Solução intermediária para melhorar paredes existentes."},"usoRec":"Retrofit térmico, fachadas existentes e correção de pontes térmicas."},
+  {"id":"basalto","nome":"Pedra Basalto","cat":"Natural","ico":"🪨","icoBg":"#ddd8d0","ct":480,"lambda":2.2,"rho":2800,"c":0.84,"alfa":0.7,"inercia":"alta","inVal":92,"uso":["piso","parede","paisagismo"],"zbRec":[3,4,5,8],"zbOk":[6,7],"zbNao":[1,2],"custo":{"min":70,"max":180,"un":"m²"},"co2":0.35,"origem":"Nacional","disponibilidade":"Media","sustentabilidade":"media","descricao":"Rocha de alta massa térmica, muito resistente para pisos e muros.","recZB":{"quente":"Use com sombreamento; pedra escura pode aquecer muito.","frio":"Alta condutividade pode gerar desconforto.","temperado":"Boa para pisos externos, muros e paisagismo."},"usoRec":"Pisos externos, muros, drenagem paisagística e elementos de massa."},
+  {"id":"ipe-amarelo","nome":"Ipê-amarelo","cat":"Paisagismo","tipo":"planta","ico":"🌳","icoBg":"#e9f3d4","ct":78,"lambda":0.22,"rho":0,"c":0,"alfa":0.28,"inercia":"alta","inVal":82,"uso":["paisagismo"],"zbRec":[3,4,5,6,7,8],"zbOk":[1,2],"zbNao":[],"custo":{"min":45,"max":160,"un":"muda"},"co2":-8.0,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Árvore média/grande","sol":"Pleno sol","agua":"Baixa/Média","raiz":"Profunda","sombra":"Alta","manutencao":"Baixa","fauna":"Alta","descricao":"Árvore nativa ornamental, caducifólia, boa para sombra sazonal e identidade urbana.","recZB":{"quente":"Muito indicada; oferece sombra e tolera estiagem depois de estabelecida.","frio":"Pode funcionar em áreas sem geada intensa.","temperado":"Boa para calçadas largas, praças e jardins."},"usoRec":"Sombreamento de passeio, praça, recuo frontal e estacionamento permeável."},
+  {"id":"quaresmeira","nome":"Quaresmeira","cat":"Paisagismo","tipo":"planta","ico":"🌸","icoBg":"#eee2f5","ct":68,"lambda":0.25,"rho":0,"c":0,"alfa":0.3,"inercia":"media","inVal":70,"uso":["paisagismo"],"zbRec":[3,4,5,6,7,8],"zbOk":[1,2],"zbNao":[],"custo":{"min":35,"max":140,"un":"muda"},"co2":-6.0,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Árvore média","sol":"Pleno sol","agua":"Média","raiz":"Moderada","sombra":"Média/Alta","manutencao":"Baixa","fauna":"Média","descricao":"Espécie nativa ornamental, floração roxa/rosa, porte urbano controlável.","recZB":{"quente":"Boa para vias e jardins com irrigação inicial.","frio":"Boa em regiões subtropicais e serranas amenas.","temperado":"Excelente ornamental para recuos e calçadas largas."},"usoRec":"Calçadas médias, jardins, áreas de permanência e composição de fachada."},
+  {"id":"jacaranda-mimoso","nome":"Jacarandá-mimoso","cat":"Paisagismo","tipo":"planta","ico":"🌳","icoBg":"#e5e5f6","ct":80,"lambda":0.23,"rho":0,"c":0,"alfa":0.27,"inercia":"alta","inVal":84,"uso":["paisagismo"],"zbRec":[3,4,5,6,7],"zbOk":[1,2,8],"zbNao":[],"custo":{"min":60,"max":220,"un":"muda"},"co2":-9.0,"origem":"Nativa/Adaptada","disponibilidade":"Media","sustentabilidade":"boa","porte":"Árvore grande","sol":"Pleno sol","agua":"Média","raiz":"Moderada","sombra":"Alta","manutencao":"Média","fauna":"Média","descricao":"Árvore de copa ampla e floração azul-violeta, forte impacto paisagístico.","recZB":{"quente":"Boa para sombreamento amplo em praças e estacionamentos.","frio":"Tolera frio moderado, evitar geadas fortes.","temperado":"Excelente para espaços generosos."},"usoRec":"Praças, estacionamentos, parques e jardins amplos; evitar calçadas estreitas."},
+  {"id":"sibipiruna","nome":"Sibipiruna","cat":"Paisagismo","tipo":"planta","ico":"🌳","icoBg":"#e4f0d2","ct":84,"lambda":0.24,"rho":0,"c":0,"alfa":0.27,"inercia":"alta","inVal":86,"uso":["paisagismo"],"zbRec":[3,4,5,7,8],"zbOk":[6],"zbNao":[1,2],"custo":{"min":50,"max":180,"un":"muda"},"co2":-9.0,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Árvore grande","sol":"Pleno sol","agua":"Média","raiz":"Moderada/forte","sombra":"Alta","manutencao":"Média","fauna":"Alta","descricao":"Copa densa e boa sombra. Exige espaço para desenvolvimento radicular.","recZB":{"quente":"Excelente árvore de sombra para clima quente.","frio":"Evitar regiões com geada recorrente.","temperado":"Boa onde houver canteiro amplo."},"usoRec":"Áreas de permanência, estacionamentos, praças e calçadas largas."},
+  {"id":"oiti","nome":"Oiti","cat":"Paisagismo","tipo":"planta","ico":"🌳","icoBg":"#dcefd0","ct":76,"lambda":0.25,"rho":0,"c":0,"alfa":0.25,"inercia":"alta","inVal":80,"uso":["paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":45,"max":150,"un":"muda"},"co2":-7.0,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Árvore média/grande","sol":"Pleno sol","agua":"Média","raiz":"Moderada","sombra":"Alta","manutencao":"Baixa","fauna":"Média","descricao":"Muito usado em arborização urbana por copa compacta e sombra intensa.","recZB":{"quente":"Ótimo para sombra urbana e redução de ilha de calor.","frio":"Melhor em regiões sem geadas fortes.","temperado":"Boa para calçadas largas e recuos."},"usoRec":"Calçadas largas, estacionamentos, jardins frontais e áreas de descanso."},
+  {"id":"pata-de-vaca","nome":"Pata-de-vaca","cat":"Paisagismo","tipo":"planta","ico":"🌸","icoBg":"#f0e7ee","ct":58,"lambda":0.27,"rho":0,"c":0,"alfa":0.32,"inercia":"media","inVal":62,"uso":["paisagismo"],"zbRec":[3,4,5,6,7,8],"zbOk":[1,2],"zbNao":[],"custo":{"min":35,"max":130,"un":"muda"},"co2":-5.5,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Árvore pequena/média","sol":"Pleno sol","agua":"Média","raiz":"Pouco agressiva","sombra":"Média","manutencao":"Baixa","fauna":"Média","descricao":"Boa para calçadas menores, floração ornamental e copa moderada.","recZB":{"quente":"Boa para sombreamento leve em calçadas e jardins.","frio":"Funciona em clima ameno sem geadas intensas.","temperado":"Boa para ruas locais e recuos pequenos."},"usoRec":"Calçadas médias, jardins pequenos e composição ornamental."},
+  {"id":"reseda","nome":"Resedá / Extremosa","cat":"Paisagismo","tipo":"planta","ico":"🌺","icoBg":"#f5e4e8","ct":45,"lambda":0.3,"rho":0,"c":0,"alfa":0.34,"inercia":"media","inVal":48,"uso":["paisagismo"],"zbRec":[3,4,5,6,7],"zbOk":[1,2,8],"zbNao":[],"custo":{"min":30,"max":120,"un":"muda"},"co2":-3.5,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"boa","porte":"Árvore pequena","sol":"Pleno sol","agua":"Média","raiz":"Pouco agressiva","sombra":"Baixa/Média","manutencao":"Baixa","fauna":"Média","descricao":"Pequeno porte, floração intensa e raízes pouco agressivas.","recZB":{"quente":"Boa para calçadas estreitas, mas gera pouca sombra.","frio":"Tolera frio moderado.","temperado":"Boa ornamental para espaços compactos."},"usoRec":"Calçadas estreitas, jardins de fachada e vasos grandes."},
+  {"id":"palmeira-jeriva","nome":"Palmeira-jerivá","cat":"Paisagismo","tipo":"planta","ico":"🌴","icoBg":"#e2f0d8","ct":50,"lambda":0.28,"rho":0,"c":0,"alfa":0.3,"inercia":"media","inVal":52,"uso":["paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":70,"max":260,"un":"muda"},"co2":-5.0,"origem":"Nativa","disponibilidade":"Media","sustentabilidade":"excelente","porte":"Palmeira média/alta","sol":"Pleno sol","agua":"Média","raiz":"Fasciculada","sombra":"Média","manutencao":"Média","fauna":"Alta","descricao":"Palmeira nativa que atrai fauna e compõe bem com arquitetura tropical.","recZB":{"quente":"Boa para composição tropical e sombreamento pontual.","frio":"Evitar geadas fortes.","temperado":"Funciona em áreas protegidas e jardins amplos."},"usoRec":"Jardins, entradas, praças e eixos visuais; não substitui árvore de sombra densa."},
+  {"id":"palmeira-imperial","nome":"Palmeira-imperial","cat":"Paisagismo","tipo":"planta","ico":"🌴","icoBg":"#e4f2d8","ct":55,"lambda":0.28,"rho":0,"c":0,"alfa":0.28,"inercia":"media","inVal":56,"uso":["paisagismo"],"zbRec":[5,7,8],"zbOk":[3,4,6],"zbNao":[1,2],"custo":{"min":120,"max":500,"un":"muda"},"co2":-6.0,"origem":"Exótica histórica","disponibilidade":"Media","sustentabilidade":"media","porte":"Palmeira alta","sol":"Pleno sol","agua":"Média/Alta","raiz":"Fasciculada","sombra":"Média","manutencao":"Média","fauna":"Baixa/Média","descricao":"Palmeira monumental para eixos e composição formal.","recZB":{"quente":"Boa em climas quentes úmidos com irrigação inicial.","frio":"Não indicada para geada.","temperado":"Uso mais ornamental que bioclimático."},"usoRec":"Eixos de entrada, jardins institucionais e composição monumental."},
+  {"id":"bambu-touceira","nome":"Bambu entouceirante","cat":"Paisagismo","tipo":"planta","ico":"🎋","icoBg":"#e6f2d8","ct":72,"lambda":0.24,"rho":0,"c":0,"alfa":0.3,"inercia":"alta","inVal":74,"uso":["paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":40,"max":180,"un":"muda"},"co2":-7.0,"origem":"Nacional/Adaptada","disponibilidade":"Alta","sustentabilidade":"boa","porte":"Touceira alta","sol":"Sol/meia-sombra","agua":"Média/Alta","raiz":"Touceira controlável","sombra":"Alta","manutencao":"Média","fauna":"Média","descricao":"Barreira visual rápida, sombreamento e filtro de vento. Preferir espécies entouceirantes.","recZB":{"quente":"Excelente para sombra, vento e privacidade em clima quente.","frio":"Selecionar espécie tolerante a frio.","temperado":"Boa tela verde com manutenção regular."},"usoRec":"Muros verdes, filtros visuais, bordas de lote e controle de insolação lateral."},
+  {"id":"clitoria-azul","nome":"Clitória-azul / Cunhã","cat":"Paisagismo","tipo":"planta","ico":"🌿","icoBg":"#e4edf8","ct":42,"lambda":0.35,"rho":0,"c":0,"alfa":0.32,"inercia":"media","inVal":46,"uso":["paisagismo"],"zbRec":[5,7,8],"zbOk":[3,4,6],"zbNao":[1,2],"custo":{"min":15,"max":60,"un":"muda"},"co2":-1.5,"origem":"Nativa/Adaptada","disponibilidade":"Media","sustentabilidade":"excelente","porte":"Trepadeira leve","sol":"Sol/meia-sombra","agua":"Média","raiz":"Leve","sombra":"Média","manutencao":"Média","fauna":"Alta","descricao":"Trepadeira de floração azul, útil em pergolados leves e cercas.","recZB":{"quente":"Boa para sombreamento leve de pergolados e gradis.","frio":"Evitar frio intenso.","temperado":"Funciona com suporte e condução."},"usoRec":"Pergolados, treliças, cercas e sombreamento sazonal."},
+  {"id":"alamanda","nome":"Alamanda","cat":"Paisagismo","tipo":"planta","ico":"🌼","icoBg":"#f5efd0","ct":48,"lambda":0.34,"rho":0,"c":0,"alfa":0.31,"inercia":"media","inVal":50,"uso":["paisagismo"],"zbRec":[5,7,8],"zbOk":[3,4,6],"zbNao":[1,2],"custo":{"min":18,"max":80,"un":"muda"},"co2":-1.8,"origem":"Nativa/Adaptada","disponibilidade":"Alta","sustentabilidade":"boa","porte":"Arbusto/trepadeira","sol":"Pleno sol","agua":"Média","raiz":"Leve","sombra":"Média","manutencao":"Média","fauna":"Média","descricao":"Trepadeira/arbusto florífero para muros, pérgolas e fachadas ensolaradas.","recZB":{"quente":"Boa para fachadas quentes com suporte e poda.","frio":"Sensível a frio intenso.","temperado":"Boa em locais protegidos."},"usoRec":"Muros, grades, pérgolas e fachadas com condução."},
+  {"id":"jiboia","nome":"Jiboia","cat":"Paisagismo","tipo":"planta","ico":"🌿","icoBg":"#dfeeda","ct":30,"lambda":0.38,"rho":0,"c":0,"alfa":0.35,"inercia":"baixa","inVal":34,"uso":["paisagismo"],"zbRec":[5,7,8],"zbOk":[3,4,6],"zbNao":[1,2],"custo":{"min":10,"max":45,"un":"muda"},"co2":-0.8,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"media","porte":"Forração/trepadeira","sol":"Meia-sombra/sombra","agua":"Média","raiz":"Leve","sombra":"Baixa","manutencao":"Baixa","fauna":"Baixa","descricao":"Boa para interiores, jardins verticais sombreados e baixa manutenção.","recZB":{"quente":"Ótima em áreas sombreadas e internas ventiladas.","frio":"Proteger de frio intenso.","temperado":"Boa para ambientes internos e pátios sombreados."},"usoRec":"Jardim vertical, vasos internos, paredes verdes em sombra."},
+  {"id":"espada-sao-jorge","nome":"Espada-de-são-jorge","cat":"Paisagismo","tipo":"planta","ico":"🌱","icoBg":"#e1eed8","ct":25,"lambda":0.4,"rho":0,"c":0,"alfa":0.4,"inercia":"baixa","inVal":28,"uso":["paisagismo"],"zbRec":[3,4,5,7,8],"zbOk":[1,2,6],"zbNao":[],"custo":{"min":12,"max":55,"un":"muda"},"co2":-0.6,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"media","porte":"Herbácea rígida","sol":"Sol/meia-sombra","agua":"Baixa","raiz":"Leve","sombra":"Baixa","manutencao":"Baixa","fauna":"Baixa","descricao":"Muito resistente, pouca água, boa para bordaduras e vasos.","recZB":{"quente":"Excelente para baixa manutenção e sol parcial.","frio":"Boa em áreas protegidas.","temperado":"Muito versátil em vasos e canteiros."},"usoRec":"Bordaduras, jardins secos, vasos, interiores e áreas de baixa irrigação."},
+  {"id":"agave","nome":"Agave","cat":"Paisagismo","tipo":"planta","ico":"🌵","icoBg":"#e6efd8","ct":36,"lambda":0.35,"rho":0,"c":0,"alfa":0.36,"inercia":"media","inVal":40,"uso":["paisagismo"],"zbRec":[3,4,5,7,8],"zbOk":[6],"zbNao":[1,2],"custo":{"min":25,"max":120,"un":"muda"},"co2":-1.0,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"boa","porte":"Suculenta grande","sol":"Pleno sol","agua":"Baixa","raiz":"Leve","sombra":"Baixa","manutencao":"Baixa","fauna":"Média","descricao":"Espécie escultórica para jardins secos, resistente à estiagem.","recZB":{"quente":"Excelente para xerojardins e áreas de baixa irrigação.","frio":"Evitar geada e encharcamento.","temperado":"Boa em canteiros ensolarados e drenados."},"usoRec":"Jardim seco, canteiros minerais, entradas e taludes drenados."},
+  {"id":"grama-esmeralda","nome":"Grama Esmeralda","cat":"Paisagismo","tipo":"planta","ico":"🌱","icoBg":"#dcefd0","ct":40,"lambda":0.3,"rho":0,"c":0,"alfa":0.25,"inercia":"media","inVal":42,"uso":["paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":12,"max":28,"un":"m²"},"co2":-0.4,"origem":"Nacional/Adaptada","disponibilidade":"Alta","sustentabilidade":"media","porte":"Forração","sol":"Pleno sol","agua":"Média/Alta","raiz":"Superficial","sombra":"Baixa","manutencao":"Média","fauna":"Baixa","descricao":"Forração comum para áreas ensolaradas. Reduz temperatura superficial frente a piso mineral.","recZB":{"quente":"Boa para reduzir calor, mas exige irrigação em seca.","frio":"Pode amarelar no inverno intenso.","temperado":"Uso amplo em jardins e áreas permeáveis."},"usoRec":"Jardins, taludes suaves e áreas permeáveis de permanência."},
+  {"id":"grama-amendoim","nome":"Grama-amendoim","cat":"Paisagismo","tipo":"planta","ico":"🌼","icoBg":"#e7f0d2","ct":45,"lambda":0.3,"rho":0,"c":0,"alfa":0.24,"inercia":"media","inVal":48,"uso":["paisagismo"],"zbRec":[4,5,7,8],"zbOk":[3,6],"zbNao":[1,2],"custo":{"min":10,"max":35,"un":"m²"},"co2":-0.6,"origem":"Nativa/Adaptada","disponibilidade":"Media","sustentabilidade":"excelente","porte":"Forração","sol":"Sol/meia-sombra","agua":"Média","raiz":"Superficial","sombra":"Baixa","manutencao":"Baixa","fauna":"Alta","descricao":"Forração florífera, boa para taludes e menos poda que gramados tradicionais.","recZB":{"quente":"Boa para cobrir solo e reduzir aquecimento com menos corte.","frio":"Evitar geadas recorrentes.","temperado":"Boa em taludes e jardins naturais."},"usoRec":"Taludes, canteiros, bordas de jardins e substituto parcial de gramado."},
+  {"id":"capim-dos-pampas","nome":"Capim-dos-pampas","cat":"Paisagismo","tipo":"planta","ico":"🌾","icoBg":"#f0ead8","ct":42,"lambda":0.32,"rho":0,"c":0,"alfa":0.32,"inercia":"media","inVal":45,"uso":["paisagismo"],"zbRec":[1,2,3,4,6],"zbOk":[5,7],"zbNao":[8],"custo":{"min":20,"max":90,"un":"muda"},"co2":-1.2,"origem":"Nativa/Regional","disponibilidade":"Media","sustentabilidade":"boa","porte":"Gramínea alta","sol":"Pleno sol","agua":"Baixa/Média","raiz":"Touceira","sombra":"Baixa","manutencao":"Baixa","fauna":"Média","descricao":"Gramínea ornamental para massas, movimento e baixo consumo hídrico.","recZB":{"quente":"Boa em áreas secas e ensolaradas; evitar excesso de umidade.","frio":"Boa tolerância a frio moderado.","temperado":"Ótima para jardins naturalistas."},"usoRec":"Massas ornamentais, bordas de lote, jardins secos e taludes."},
+  {"id":"costela-de-adao","nome":"Costela-de-adão","cat":"Paisagismo","tipo":"planta","ico":"🌿","icoBg":"#dcefd8","ct":34,"lambda":0.36,"rho":0,"c":0,"alfa":0.3,"inercia":"baixa","inVal":38,"uso":["paisagismo"],"zbRec":[5,7,8],"zbOk":[3,4,6],"zbNao":[1,2],"custo":{"min":25,"max":120,"un":"muda"},"co2":-1.0,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"media","porte":"Herbácea grande","sol":"Meia-sombra","agua":"Média","raiz":"Leve","sombra":"Baixa/Média","manutencao":"Baixa","fauna":"Baixa","descricao":"Folhagem tropical para pátios sombreados e interiores iluminados.","recZB":{"quente":"Ótima para pátios sombreados, interiores e jardins tropicais.","frio":"Proteger de frio intenso.","temperado":"Boa em áreas internas bem iluminadas."},"usoRec":"Pátios, interiores, jardim vertical parcial e canteiros sombreados."},
+  {"id":"moreia","nome":"Moréia","cat":"Paisagismo","tipo":"planta","ico":"🌾","icoBg":"#e8efd8","ct":38,"lambda":0.34,"rho":0,"c":0,"alfa":0.34,"inercia":"media","inVal":40,"uso":["paisagismo"],"zbRec":[3,4,5,6,7,8],"zbOk":[1,2],"zbNao":[],"custo":{"min":12,"max":50,"un":"muda"},"co2":-0.8,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"media","porte":"Herbácea touceira","sol":"Sol/meia-sombra","agua":"Baixa/Média","raiz":"Leve","sombra":"Baixa","manutencao":"Baixa","fauna":"Média","descricao":"Herbácea resistente para bordaduras, baixa manutenção e florescimento discreto.","recZB":{"quente":"Boa para canteiros de baixa irrigação.","frio":"Tolera frio leve.","temperado":"Muito versátil em bordaduras."},"usoRec":"Bordaduras, maciços, jardins de baixa manutenção e base de fachadas."},
+  {"id":"lavanda","nome":"Lavanda","cat":"Paisagismo","tipo":"planta","ico":"🌿","icoBg":"#ece6f5","ct":28,"lambda":0.36,"rho":0,"c":0,"alfa":0.36,"inercia":"baixa","inVal":32,"uso":["paisagismo"],"zbRec":[1,2,3,4,6],"zbOk":[5],"zbNao":[7,8],"custo":{"min":15,"max":70,"un":"muda"},"co2":-0.5,"origem":"Exótica adaptada","disponibilidade":"Media","sustentabilidade":"boa","porte":"Arbusto baixo","sol":"Pleno sol","agua":"Baixa","raiz":"Leve","sombra":"Baixa","manutencao":"Média","fauna":"Alta","descricao":"Aromática para jardins secos, polinizadores e canteiros drenados.","recZB":{"quente":"Funciona melhor em quente seco, com solo muito drenado.","frio":"Boa para clima ameno/frio e ensolarado.","temperado":"Ótima em bordas secas e jardins sensoriais."},"usoRec":"Jardins secos, aromáticos, bordaduras e áreas de polinizadores."},
+  {"id":"pitangueira","nome":"Pitangueira","cat":"Paisagismo","tipo":"planta","ico":"🌳","icoBg":"#dcefd8","ct":62,"lambda":0.26,"rho":0,"c":0,"alfa":0.28,"inercia":"media","inVal":66,"uso":["paisagismo"],"zbRec":[3,4,5,6,7,8],"zbOk":[1,2],"zbNao":[],"custo":{"min":30,"max":120,"un":"muda"},"co2":-4.5,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Arbusto/árvore pequena","sol":"Sol/meia-sombra","agua":"Média","raiz":"Pouco agressiva","sombra":"Média","manutencao":"Baixa","fauna":"Alta","descricao":"Frutífera nativa, atrai aves e cabe em jardins menores.","recZB":{"quente":"Boa para quintais, pátios e jardins com fauna.","frio":"Tolera frio leve a moderado.","temperado":"Excelente frutífera urbana."},"usoRec":"Quintais, jardins de chuva, pomares urbanos e canteiros de biodiversidade."},
+  {"id":"jabuticabeira","nome":"Jabuticabeira","cat":"Paisagismo","tipo":"planta","ico":"🌳","icoBg":"#e1ecd8","ct":66,"lambda":0.25,"rho":0,"c":0,"alfa":0.27,"inercia":"media","inVal":68,"uso":["paisagismo"],"zbRec":[3,4,5,6,7],"zbOk":[1,2,8],"zbNao":[],"custo":{"min":80,"max":450,"un":"muda"},"co2":-5.0,"origem":"Nativa","disponibilidade":"Alta","sustentabilidade":"excelente","porte":"Árvore pequena/média","sol":"Sol/meia-sombra","agua":"Média/Alta","raiz":"Moderada","sombra":"Média","manutencao":"Média","fauna":"Alta","descricao":"Frutífera nativa ornamental, boa para pátios e jardins de permanência.","recZB":{"quente":"Boa com irrigação e solo rico; sombreia pátios pequenos.","frio":"Tolera clima ameno, evitar geada severa.","temperado":"Excelente em pátios e quintais."},"usoRec":"Pátios, quintais, jardins sensoriais e áreas de convivência."},
+  {"id":"hibisco","nome":"Hibisco","cat":"Paisagismo","tipo":"planta","ico":"🌺","icoBg":"#f5e3e6","ct":44,"lambda":0.33,"rho":0,"c":0,"alfa":0.32,"inercia":"media","inVal":47,"uso":["paisagismo"],"zbRec":[5,7,8],"zbOk":[3,4,6],"zbNao":[1,2],"custo":{"min":15,"max":70,"un":"muda"},"co2":-1.0,"origem":"Exótica adaptada","disponibilidade":"Alta","sustentabilidade":"media","porte":"Arbusto","sol":"Pleno sol","agua":"Média","raiz":"Leve","sombra":"Baixa/Média","manutencao":"Média","fauna":"Alta","descricao":"Arbusto florífero tropical para cercas vivas e jardins ensolarados.","recZB":{"quente":"Bom para cerca viva, cor e atração de fauna.","frio":"Sensível a geadas.","temperado":"Funciona em locais protegidos e ensolarados."},"usoRec":"Cercas vivas, canteiros de fachada, bordas e jardins tropicais."},
 ];
+
+const MAT_PIXEL_ART = {"tijolo-ceramico-8f":"assets/pixelart/tijolo-ceramico-8f.png","tijolo-ceramico-6f":"assets/pixelart/tijolo-ceramico-6f.png","tijolo-macico":"assets/pixelart/tijolo-macico.png","bloco-concreto-vazado":"assets/pixelart/bloco-concreto-vazado.png","bloco-concreto-celular":"assets/pixelart/bloco-concreto-celular.png","adobe":"assets/pixelart/adobe.png","taipa-pilao":"assets/pixelart/taipa-pilao.png","concreto-conv":"assets/pixelart/concreto-conv.png","concreto-leve":"assets/pixelart/concreto-leve.png","concreto-celular":"assets/pixelart/concreto-celular.png","fibra-cimento-painel":"assets/pixelart/fibra-cimento-painel.png","drywall":"assets/pixelart/drywall.png","osb":"assets/pixelart/osb.png","sip-painel":"assets/pixelart/sip-painel.png","eps-painel":"assets/pixelart/eps-painel.png","xps-painel":"assets/pixelart/xps-painel.png","la-rocha":"assets/pixelart/la-rocha.png","la-vidro":"assets/pixelart/la-vidro.png","pu-spray":"assets/pixelart/pu-spray.png","aerogel":"assets/pixelart/aerogel.png","acm":"assets/pixelart/acm.png","telha-ceramica":"assets/pixelart/telha-ceramica.png","telha-fibrocimento":"assets/pixelart/telha-fibrocimento.png","telha-metalica":"assets/pixelart/telha-metalica.png","telha-sanduiche":"assets/pixelart/telha-sanduiche.png","cobertura-verde":"assets/pixelart/cobertura-verde.png","vidro-simples":"assets/pixelart/vidro-simples.png","vidro-duplo":"assets/pixelart/vidro-duplo.png","vidro-low-e":"assets/pixelart/vidro-low-e.png","vidro-refletivo":"assets/pixelart/vidro-refletivo.png","porcelanato":"assets/pixelart/porcelanato.png","piso-vinilico":"assets/pixelart/piso-vinilico.png","madeira-eucalipto":"assets/pixelart/madeira-eucalipto.png","madeira-pinus":"assets/pixelart/madeira-pinus.png","palha-bale":"assets/pixelart/palha-bale.png","telha-concreto":"assets/pixelart/telha-concreto.png","pedra-granito":"assets/pixelart/pedra-granito.png","piso-madeira-eng":"assets/pixelart/piso-madeira-eng.png","tijolo-refratario":"assets/pixelart/tijolo-refratario.png","palmeira-jeriva":"assets/pixelart/palmeira-jeriva.png","palmeira-imperial":"assets/pixelart/palmeira-imperial.png","espada-sao-jorge":"assets/pixelart/espada-sao-jorge.png","agave":"assets/pixelart/agave.png","lavanda":"assets/pixelart/lavanda.png","hibisco":"assets/pixelart/hibisco.png","moreia":"assets/pixelart/moreia.png","pata-de-vaca":"assets/pixelart/pata-de-vaca.png","capim-dos-pampas":"assets/pixelart/capim-dos-pampas.png","costela-de-adao":"assets/pixelart/costela-de-adao.png","grama-esmeralda":"assets/pixelart/grama-esmeralda.png","grama-amendoim":"assets/pixelart/grama-amendoim.png","quaresmeira":"assets/pixelart/quaresmeira.png","bambu-laminado":"assets/pixelart/bambu-laminado.png","cortica":"assets/pixelart/cortica.png","bloco-solo-cimento":"assets/pixelart/bloco-solo-cimento.png","cob":"assets/pixelart/cob.png","clt":"assets/pixelart/clt.png","mlc":"assets/pixelart/mlc.png","steel-frame":"assets/pixelart/steel-frame.png","wood-frame":"assets/pixelart/wood-frame.png","cobogo-ceramico":"assets/pixelart/cobogo-ceramico.png","cobogo-concreto":"assets/pixelart/cobogo-concreto.png","policarbonato-alveolar":"assets/pixelart/policarbonato-alveolar.png","argila-expandida":"assets/pixelart/argila-expandida.png","concreto-drenante":"assets/pixelart/concreto-drenante.png","paver-intertravado":"assets/pixelart/paver-intertravado.png","telha-pir":"assets/pixelart/telha-pir.png","manta-aluminizada":"assets/pixelart/manta-aluminizada.png","cool-roof":"assets/pixelart/cool-roof.png","vidro-laminado-controle-solar":"assets/pixelart/vidro-laminado-controle-solar.png","granilite":"assets/pixelart/granilite.png","fulget":"assets/pixelart/fulget.png","reboco-termico":"assets/pixelart/reboco-termico.png","basalto":"assets/pixelart/basalto.png","ipe-amarelo":"assets/pixelart/ipe-amarelo.png","jacaranda-mimoso":"assets/pixelart/jacaranda-mimoso.png","sibipiruna":"assets/pixelart/sibipiruna.png","oiti":"assets/pixelart/oiti.png","reseda":"assets/pixelart/reseda.png","bambu-touceira":"assets/pixelart/bambu-touceira.png","clitoria-azul":"assets/pixelart/clitoria-azul.png","alamanda":"assets/pixelart/alamanda.png","jiboia":"assets/pixelart/jiboia.png","pitangueira":"assets/pixelart/pitangueira.png","jabuticabeira":"assets/pixelart/jabuticabeira.png"};
 
 const MAT_ZB={
   1:{nome:'ZB1 — Sul frio',clima:'frio',txt:'Inverno rigoroso. Priorize alta resistência térmica e baixa condutividade. Inércia alta retém calor noturno.'},
@@ -1822,7 +1927,7 @@ function matGetList(){
   if(_matAmb!=='todos') l=l.filter(m=>m.uso.includes(_matAmb));
   if(_matFI!=='todos') l=l.filter(m=>m.inercia===_matFI);
   if(_matFC!=='todas') l=l.filter(m=>m.cat===_matFC);
-  if(_matQ) l=l.filter(m=>m.nome.toLowerCase().includes(_matQ)||m.cat.toLowerCase().includes(_matQ));
+  if(_matQ) l=l.filter(m=>[m.nome,m.cat,m.descricao,m.usoRec,m.porte,m.sol,m.agua,m.origem].filter(Boolean).join(' ').toLowerCase().includes(_matQ));
   l.sort((a,b)=>{
     if(_matSort==='nome') return a.nome.localeCompare(b.nome);
     if(_matSort==='inercia_desc') return b.inVal-a.inVal;
@@ -1841,10 +1946,12 @@ function matRender(){
   const stats=$('mat-stats');
   if(stats){
     const rec=list.filter(m=>matZBClass(m)==='ok').length;
-    stats.innerHTML=`<strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${list.length}</strong> materiais &nbsp;·&nbsp; <strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${rec}</strong> recomendados para ZB${_matZB}`;
+    const plantas=list.filter(m=>m.tipo==='planta').length;
+    stats.innerHTML=`<strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${list.length}</strong> itens &nbsp;·&nbsp; <strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${rec}</strong> compatíveis com ZB${_matZB}${plantas?` &nbsp;·&nbsp; <strong style="color:var(--text);font-family:'IBM Plex Mono',monospace">${plantas}</strong> plantas`:''}`;
   }
-  if(!list.length){ grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:3rem;font-size:12px;color:var(--faint)">Nenhum material encontrado.</div>`; return; }
+  if(!list.length){ grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:3rem;font-size:12px;color:var(--faint)">Nenhum item encontrado.</div>`; return; }
   grid.innerHTML=list.map(m=>{
+    const isPlant=m.tipo==='planta';
     const rc=matZBClass(m);
     const dotColor=rc==='ok'?'var(--green)':rc==='bad'?'var(--err)':'var(--faint)';
     const exp=_matExpanded.has(m.id);
@@ -1854,22 +1961,33 @@ function matRender(){
     const custoMed=(m.custo.min+m.custo.max)/2;
     const custoColor=custoMed<50?'var(--green)':custoMed<120?'var(--warn)':'var(--err)';
     const dispColor=m.disponibilidade==='Alta'?'var(--green)':m.disponibilidade==='Media'?'var(--warn)':'var(--faint)';
+    const metricLabel=isPlant?'Conforto microclimático':'Inércia térmica';
+    const metricValue=isPlant?`${m.inVal}/100`:`${m.ct} kJ/m²K`;
+    const gridProps=isPlant
+      ? [['Porte',m.porte||'—',''],['Sol',m.sol||'—',''],['Água',m.agua||'—',''],['Raiz',m.raiz||'—','']]
+      : [['λ',m.lambda,'W/m·K'],['ρ',m.rho,'kg/m³'],['c',m.c,'kJ/kg·K'],['α',m.alfa,'solar']];
+    const detailRows=isPlant
+      ? [['Porte',m.porte||'—'],['Insolação',m.sol||'—'],['Água',m.agua||'—'],['Raiz',m.raiz||'—'],['Sombra',m.sombra||'—'],['Manutenção',m.manutencao||'—'],['Fauna/polinizadores',m.fauna||'—'],['CO₂ estimado',(m.co2<0?'−'+Math.abs(m.co2):m.co2)+' kgCO₂eq/planta'],['Origem',m.origem],['Uso',m.usoRec]]
+      : [['Capacidade térmica (ct)',m.ct+' kJ/(m²·K)'],['Condutividade (λ)',m.lambda+' W/(m·K)'],['Densidade (ρ)',m.rho+' kg/m³'],['Calor específico (c)',m.c+' kJ/(kg·K)'],['Absortância (α)',m.alfa],['CO₂ estimado',(m.co2<0?'−'+Math.abs(m.co2):m.co2)+' kgCO₂eq/kg'],['Origem',m.origem],['Uso',m.usoRec]];
+    const detailTitle=isPlant?'Dados de paisagismo':'Propriedades — NBR 15220';
+    const marketBtn=isPlant?'🔍 Ver viveiros':'🔍 Verificar no mercado';
+    const art = MAT_PIXEL_ART[m.id] || '';
 
     return `<div id="matcard-${m.id}" style="background:var(--surface);border:0.5px solid ${rc==='ok'?'rgba(59,109,17,.25)':rc==='bad'?'rgba(139,58,58,.18)':'var(--border)'};border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s;cursor:pointer;position:relative">
       <div style="position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:50%;background:${dotColor}"></div>
       <div onclick="matToggleCard('${m.id}')" style="padding:.8rem .9rem .65rem;display:flex;align-items:flex-start;gap:8px">
-        <div style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:${m.icoBg}">${m.ico}</div>
+        <div style="width:54px;height:54px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:${m.icoBg};overflow:hidden;border:0.5px solid var(--border)">${art ? `<img src="${art}" alt="${m.nome}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block">` : m.ico}</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:12px;font-weight:500;padding-right:14px">${m.nome}</div>
-          <div style="font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--faint);margin-top:1px">${m.cat}</div>
+          <div style="font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--faint);margin-top:1px">${m.cat}${isPlant?' · PLANTA':''}</div>
         </div>
       </div>
       <div style="padding:.35rem .9rem .55rem;background:var(--surf2);border-top:0.5px solid var(--border)">
-        <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--faint);margin-bottom:4px"><span>Inércia térmica</span><span style="font-family:'IBM Plex Mono',monospace">${m.ct} kJ/m²K</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--faint);margin-bottom:4px"><span>${metricLabel}</span><span style="font-family:'IBM Plex Mono',monospace">${metricValue}</span></div>
         <div style="height:4px;background:rgba(90,60,30,.12);border-radius:999px;overflow:hidden"><div style="height:100%;width:${m.inVal}%;background:${matBarColor(m.inVal)};border-radius:999px;transition:width .6s"></div></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:0.5px solid var(--border);background:var(--surf2)">
-        ${[['λ',m.lambda,'W/m·K'],['ρ',m.rho,'kg/m³'],['c',m.c,'kJ/kg·K'],['α',m.alfa,'solar']].map(([l,v,u])=>`<div style="padding:.45rem .35rem;text-align:center;border-right:0.5px solid var(--border)"><div style="font-size:7px;text-transform:uppercase;color:var(--faint);margin-bottom:2px">${l}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--e)">${v}</div><div style="font-size:7px;color:var(--faint)">${u}</div></div>`).join('')}
+        ${gridProps.map(([l,v,u])=>`<div style="padding:.45rem .35rem;text-align:center;border-right:0.5px solid var(--border);min-width:0"><div style="font-size:7px;text-transform:uppercase;color:var(--faint);margin-bottom:2px">${l}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:${isPlant?'9px':'11px'};color:var(--e);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${v}">${v}</div><div style="font-size:7px;color:var(--faint)">${u}</div></div>`).join('')}
       </div>
       <div style="display:flex;gap:5px;padding:.5rem .9rem;border-top:0.5px solid var(--border);flex-wrap:wrap">
         <span style="font-size:8px;padding:2px 7px;border-radius:4px;background:var(--surf2);color:${sustColor};font-family:'IBM Plex Mono',monospace">${sustLabel}</span>
@@ -1877,14 +1995,15 @@ function matRender(){
         <span style="font-size:8px;padding:2px 7px;border-radius:4px;background:var(--surf2);color:${dispColor};font-family:'IBM Plex Mono',monospace">${m.disponibilidade} disp.</span>
       </div>
       ${exp?`<div style="border-top:0.5px solid var(--border);padding:.85rem .9rem">
-        <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin-bottom:.4rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">Propriedades — NBR 15220</div>
-        ${[['Capacidade térmica (ct)',m.ct+' kJ/(m²·K)'],['Condutividade (λ)',m.lambda+' W/(m·K)'],['Densidade (ρ)',m.rho+' kg/m³'],['Calor específico (c)',m.c+' kJ/(kg·K)'],['Absortância (α)',m.alfa],['CO₂ estimado',(m.co2<0?'−'+Math.abs(m.co2):m.co2)+' kgCO₂eq/kg'],['Origem',m.origem],['Uso',m.usoRec]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:0.5px solid rgba(90,60,30,.05)"><span style="color:var(--muted)">${k}</span><span style="font-family:'IBM Plex Mono',monospace;color:var(--text);font-size:9px;text-align:right;max-width:55%">${v}</span></div>`).join('')}
+        <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin-bottom:.4rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">${detailTitle}</div>
+        ${art ? `<div style="display:flex;justify-content:center;padding:.05rem 0 .55rem"><div style="width:170px;height:100px;border:0.5px solid var(--border);border-radius:10px;background:var(--surf2);overflow:hidden"><img src="${art}" alt="${m.nome}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block"></div></div>` : ''}
+        ${detailRows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:0.5px solid rgba(90,60,30,.05)"><span style="color:var(--muted)">${k}</span><span style="font-family:'IBM Plex Mono',monospace;color:var(--text);font-size:9px;text-align:right;max-width:55%">${v}</span></div>`).join('')}
         <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin:.7rem 0 .35rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">Recomendação — ZB${_matZB}</div>
         <div style="font-size:11px;line-height:1.6;padding:.55rem .7rem;border-radius:6px;background:${rc==='ok'?'var(--greenl)':rc==='bad'?'var(--errl)':'var(--surf2)'};border-left:2px solid ${rc==='ok'?'#b8d99a':rc==='bad'?'var(--errb)':'var(--border-em)'};">${matRecText(m)}</div>
         <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin:.7rem 0 .35rem;padding-bottom:3px;border-bottom:0.5px solid var(--border)">Compatibilidade por zona</div>
         <div style="display:flex;gap:4px;flex-wrap:wrap">${[1,2,3,4,5,6,7,8].map(z=>{const r=m.zbRec.includes(z)?'ok':m.zbNao.includes(z)?'bad':'';return `<span style="font-size:8px;font-family:'IBM Plex Mono',monospace;padding:2px 6px;border-radius:3px;border:0.5px solid var(--border-em);${r==='ok'?'background:var(--greenl);color:var(--green)':r==='bad'?'background:var(--errl);color:var(--err)':'background:var(--surf2);color:var(--faint)'}">ZB${z}</span>`;}).join('')}</div>
         <div style="display:flex;justify-content:flex-end;gap:7px;margin-top:.8rem">
-          <button class="btn ghost" onclick="matOpenWS('${m.id}')" style="font-size:10px;padding:5px 11px">🔍 Verificar no mercado</button>
+          <button class="btn ghost" onclick="matOpenWS('${m.id}')" style="font-size:10px;padding:5px 11px">${marketBtn}</button>
           <button class="btn ${inCmp?'solid':'ghost'}" onclick="matToggleCmp('${m.id}','${m.nome.replace(/'/g,"\\'")}')" style="font-size:10px;padding:5px 11px">${inCmp?'✓ Selecionado':'+ Comparar'}</button>
         </div>
       </div>`:''}
@@ -1908,7 +2027,10 @@ function matSetZB(n){
 }
 function matSetAmb(a){
   _matAmb=a;
+  if(a==='paisagismo' && _matFC==='todas') _matFC='Paisagismo';
+  if(a!=='paisagismo' && _matFC==='Paisagismo') _matFC='todas';
   document.querySelectorAll('#mat-amb-group [data-a]').forEach(b=>{ b.className=b.dataset.a===a?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 10px'; });
+  document.querySelectorAll('[data-fc]').forEach(b=>{ b.className=b.dataset.fc===_matFC?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 11px'; b.style.borderRadius='6px'; });
   matRender();
 }
 function matSetFilter(f){
@@ -1918,6 +2040,8 @@ function matSetFilter(f){
 }
 function matSetCat(c){
   _matFC=c;
+  if(c==='Paisagismo') _matAmb='paisagismo';
+  document.querySelectorAll('#mat-amb-group [data-a]').forEach(b=>{ b.className=b.dataset.a===_matAmb?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 10px'; });
   document.querySelectorAll('[data-fc]').forEach(b=>{ b.className=b.dataset.fc===c?'btn solid':'btn ghost'; b.style.fontSize='10px'; b.style.padding='4px 11px'; b.style.borderRadius='6px'; });
   matRender();
 }
@@ -1962,7 +2086,7 @@ function matCloseWS(){ const m=$('mat-ws-modal'); if(m){ m.style.opacity='0'; m.
 async function matFetchWS(m){
   const body=$('mat-ws-body');
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],system:`Consultor de materiais de construção civil brasileiro. Pesquise e responda SOMENTE em JSON válido sem markdown:\n{"resumo":"2-3 frases sobre disponibilidade atual no Brasil","preco_atual":"faixa encontrada em R$","fornecedores":["nome1","nome2"],"novidades":"inovação recente ou null","sustentabilidade_nota":"nota ambiental atual","alerta":"alerta importante ou null"}`,messages:[{role:'user',content:`Pesquise: ${m.nome} material construtivo disponibilidade preço mercado brasileiro 2025`}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],system:`Consultor de materiais de construção civil brasileiro. Pesquise e responda SOMENTE em JSON válido sem markdown:\n{"resumo":"2-3 frases sobre disponibilidade atual no Brasil","preco_atual":"faixa encontrada em R$","fornecedores":["nome1","nome2"],"novidades":"inovação recente ou null","sustentabilidade_nota":"nota ambiental atual","alerta":"alerta importante ou null"}`,messages:[{role:'user',content:m.tipo==='planta'?`Pesquise: ${m.nome} planta paisagismo muda viveiro Brasil preço manutenção clima 2025`:`Pesquise: ${m.nome} material construtivo disponibilidade preço mercado brasileiro 2025`}]})});
     const data=await resp.json();
     const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('');
     let p; try{ p=JSON.parse(text.replace(/```json|```/g,'').trim()); }catch{ p=null; }
@@ -2258,9 +2382,9 @@ function renderDash(){
   grid.innerHTML=proposals.map(p=>{
     const dt=new Date(p.updated_at).toLocaleDateString('pt-BR');
     return `<div class="prop-card" onclick="editProposal('${p.id}')">
-      <div class="pc-tipo">${p.typology||'—'}</div>
-      <div class="pc-nome">${p.name||'Sem título'}</div>
-      <div class="pc-cli">${p.client||'—'}</div>
+      <div class="pc-tipo">${esc(p.typology||'—')}</div>
+      <div class="pc-nome">${esc(p.name||'Sem título')}</div>
+      <div class="pc-cli">${esc(p.client||'—')}</div>
       <div class="pc-total">R$ ${fmtI(p.total||0)}</div>
       <div class="pc-data">Atualizado ${dt}</div>
       <div class="pc-actions">
@@ -2671,26 +2795,34 @@ function notifyStatus(msg,type='ok',ms=3000){
   if(ms) setTimeout(()=>{s.textContent='';s.className='save-status';},ms);
 }
 function createPdfElement(html){
-  // Wrapper invisível: esconde da tela mas mantém o elemento pintado pelo browser.
-  // Não usa position:fixed com largura >100vw (quebra no Safari/iOS).
-  // Não usa left:-9999px (alguns browsers não pintam elementos off-screen).
-  // Solução: position:fixed, dentro de um container com overflow:hidden e tamanho 0,
-  // mas o filho tem visibility:visible e opacity:1 para o html2canvas capturar.
-  const wrap=document.createElement('div');
-  wrap.id='pdf-render-wrap';
-  wrap.setAttribute('aria-hidden','true');
-  wrap.style.cssText='position:fixed;top:0;left:0;width:0;height:0;overflow:hidden;z-index:-1;pointer-events:none';
-
+  // Overlay que cobre a tela durante a captura.
+  // Elemento VISÍVEL = browser pinta 100% garantido em Chrome, Safari e Firefox.
+  // z-index alto garante que fica na frente do conteúdo da página.
   const el=document.createElement('div');
   el.id='pdf-render-host';
-  el.style.cssText='position:absolute;top:0;left:0;width:794px;max-width:794px;min-height:1123px;background:#FAF7F1;overflow:visible;opacity:1;pointer-events:none';
+  el.setAttribute('aria-hidden','true');
+  el.style.cssText='position:fixed;top:0;left:0;width:794px;min-height:100vh;background:#FAF7F1;overflow:visible;opacity:1;visibility:visible;pointer-events:none;z-index:99999';
   el.innerHTML=html;
-  wrap.appendChild(el);
-  document.body.appendChild(wrap);
-  // Força cálculo de layout antes da captura.
+  document.body.appendChild(el);
+  // Força layout completo
   void el.offsetWidth;
-  void el.offsetHeight;
+  void el.getBoundingClientRect();
   return el;
+}
+// Opções html2canvas padrão para todos os PDFs
+function pdfH2cOpts(){
+  return {
+    scale:2,
+    useCORS:false,
+    allowTaint:true,
+    backgroundColor:'#FAF7F1',
+    logging:false,
+    removeContainer:false,
+    scrollX:0,
+    scrollY:0,
+    x:0,
+    y:0,
+  };
 }
 function nextFrame(){
   return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -3609,11 +3741,11 @@ async function exportSimgeoPDF(){
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,width:794,windowWidth:794,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
     simgeoStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF SIMGEO:',e); simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
-  finally{ const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el); simgeoPdfBusy=false; }
+  finally{ const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host); simgeoPdfBusy=false; }
 }
 
 
@@ -3919,11 +4051,11 @@ async function exportMapotecaPDF(){
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha Mapoteca</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,width:794,windowWidth:794,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
     mapotecaStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF Mapoteca:',e); mapotecaStatus('Não consegui gerar o PDF da Mapoteca.','err'); }
-  finally{ const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el); mapotecaPdfBusy=false; }
+  finally{ const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host); mapotecaPdfBusy=false; }
 }
 
 function fillMapotecaFromSimgeo(){
@@ -4123,11 +4255,11 @@ async function exportLabeeePDF(){
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha LabEEE — Análise Ambiental</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:false,allowTaint:true,backgroundColor:'#FAF7F1',logging:false,scrollX:0,scrollY:0,x:0,y:0,width:794,windowWidth:794,removeContainer:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha LabEEE.');
     labeeeStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF LabEEE:',e); labeeeStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
-  finally{ const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el); labeeePdfBusy=false; }
+  finally{ const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host); labeeePdfBusy=false; }
 }
 
 
@@ -4180,13 +4312,9 @@ async function exportPDF(){
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);opacity:0.04;pointer-events:none;z-index:0;font-family:Georgia,serif;font-size:140px;color:#8B5E3C;white-space:nowrap;user-select:none">CH</div>
       <div style="position:relative;z-index:1">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #D4B896">
-        <div style="display:flex;align-items:center;gap:14px">
-          <div style="width:52px;height:52px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:15px;color:#8B5E3C;font-weight:bold;letter-spacing:-0.5px;flex-shrink:0">CH</div>
-          <div>
-            <div style="font-size:20px;color:#8B5E3C;letter-spacing:-0.3px">Chaos</div>
-            <div style="font-size:9px;color:#B0A090;letter-spacing:1.5px;text-transform:uppercase;font-family:system-ui,sans-serif">Arquitetura e Urbanismo</div>
-            ${arq?`<div style="font-size:11px;color:#7A6A56;font-family:system-ui,sans-serif;margin-top:3px">${arq}</div>`:''}
-          </div>
+        <div style="display:flex;align-items:center;gap:12px;min-width:0">
+          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          ${arq?`<div style="font-size:11px;color:#7A6A56;font-family:system-ui,sans-serif;line-height:1.35;max-width:180px">${arq}</div>`:''}
         </div>
         <div style="text-align:right">
           <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#B0A090;font-family:system-ui,sans-serif">Proposta de Serviços</div>
@@ -4226,6 +4354,7 @@ async function exportPDF(){
     </div>`;
 
     el=createPdfElement(htmlContent);
+    await waitForImages(el);
     if(document.fonts?.ready) await document.fonts.ready;
     await nextFrame();
     await nextFrame();
@@ -4235,20 +4364,7 @@ async function exportPDF(){
       margin:0,
       filename:'chaos-proposta-'+fn+'.pdf',
       image:{type:'jpeg',quality:0.95},
-      html2canvas:{
-        scale:2,
-        useCORS:false,
-        allowTaint:true,
-        backgroundColor:'#FAF7F1',
-        logging:false,
-        scrollX:0,
-        scrollY:0,
-        x:0,
-        y:0,
-        width:794,
-        windowWidth:794,
-        removeContainer:false,
-      },
+      html2canvas:pdfH2cOpts(),
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
       pagebreak:{mode:['css','legacy']}
     };
@@ -4258,7 +4374,7 @@ async function exportPDF(){
     console.error('Erro ao gerar PDF:',e);
     notifyStatus('Erro ao gerar PDF. Verifique os dados da proposta e tente novamente.','err',6000);
   }finally{
-    const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el);
+    const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host);
     btn.textContent='⬇ Baixar PDF';
     btn.disabled=false;
     pdfBusy=false;
@@ -4312,6 +4428,7 @@ async function exportCarta(){
     </div>`;
 
     el=createPdfElement(htmlContent);
+    await waitForImages(el);
     if(document.fonts?.ready) await document.fonts.ready;
     await nextFrame();
     await nextFrame();
@@ -4321,20 +4438,7 @@ async function exportCarta(){
       margin:0,
       filename:'chaos-carta-'+fn+'.pdf',
       image:{type:'jpeg',quality:0.95},
-      html2canvas:{
-        scale:2,
-        useCORS:false,
-        allowTaint:true,
-        backgroundColor:'#FAF7F1',
-        logging:false,
-        scrollX:0,
-        scrollY:0,
-        x:0,
-        y:0,
-        width:794,
-        windowWidth:794,
-        removeContainer:false,
-      },
+      html2canvas:pdfH2cOpts(),
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
       pagebreak:{mode:['css','legacy']}
     };
@@ -4343,11 +4447,237 @@ async function exportCarta(){
     console.error('Erro ao gerar carta:',e);
     alert('Não foi possível gerar o PDF da carta. Recarregue a página e tente novamente.');
   }finally{
-    const _w=document.getElementById('pdf-render-wrap'); if(_w) _w.parentNode?.removeChild(_w); else if(el?.parentNode) el.parentNode.removeChild(el);
+    const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host);
     if(btn){btn.textContent='⬇ Baixar PDF';btn.disabled=false;}
     cartaPdfBusy=false;
   }
 }
+
+// ── DOCX EXPORT ──────────────────────────────────
+async function docxReady(){
+  for(let i=0;i<80;i++){
+    if(typeof window.docx!=='undefined') return true;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  return false;
+}
+
+function docxColor(hex){ return hex.replace('#',''); }
+
+function docxParagraph(text, opts={}){
+  const { bold=false, size=22, color='2C1F12', spaceAfter=100, spaceBefore=0, alignment='left', italic=false } = opts;
+  const { Paragraph, TextRun, AlignmentType } = window.docx;
+  return new Paragraph({
+    alignment: alignment==='center'?AlignmentType.CENTER:alignment==='right'?AlignmentType.RIGHT:AlignmentType.LEFT,
+    spacing:{ before:spaceBefore, after:spaceAfter },
+    children:[new TextRun({ text, bold, italics:italic, size, color:docxColor(color), font:'Arial' })]
+  });
+}
+
+function docxSeparator(){
+  const { Paragraph, BorderStyle } = window.docx;
+  return new Paragraph({
+    spacing:{ before:80, after:80 },
+    border:{ bottom:{ style:BorderStyle.SINGLE, size:1, color:'D4B896', space:1 } },
+    children:[]
+  });
+}
+
+async function exportPropostaDocx(){
+  const btn=$('docx-btn');
+  if(!await docxReady()){ notifyStatus('Biblioteca Word não carregou. Verifique a conexão.','err',5000); return; }
+  if(btn){ btn.disabled=true; btn.textContent='Gerando...'; }
+  try{
+    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+            AlignmentType, WidthType, BorderStyle, ShadingType, HeadingLevel } = window.docx;
+
+    const nomeRaw = ($('rel-nome')?.value||'Projeto').trim();
+    const cli     = ($('rel-cli')?.value||'Cliente').trim();
+    const arq     = ($('rel-arq')?.value||'Chaos Arquitetura e Urbanismo').trim();
+    const tipRaw  = ($('rel-tipo')?.value||'').trim();
+    const areaRaw = ($('rel-area')?.value||'').trim();
+    const hoje    = new Date().toLocaleDateString('pt-BR');
+    const validade= new Date(Date.now()+30*24*60*60*1000).toLocaleDateString('pt-BR');
+
+    // Coletar serviços
+    const servicos=getServicos()
+      .filter(s=>s.nome.trim() || s.desc.trim())
+      .map((s,i)=>({i:i+1,nome:s.nome,desc:s.desc}));
+
+    // Valores
+    const final=Math.max(0,fasesT+taxT-descV);
+    const ep=(flt('pg-ent')||30)/100;
+    const np=Math.max(1,Math.round(flt('pg-parc'))||3);
+    const ev=final*ep;
+    const pv=(final-ev)/np;
+
+    const border={ style:BorderStyle.NONE, size:0, color:'FFFFFF' };
+    const borders={ top:border, bottom:border, left:border, right:border };
+    const thBorder={ style:BorderStyle.SINGLE, size:4, color:'D4B896' };
+    const thBorders={ top:{ style:BorderStyle.NONE,size:0,color:'fff'},bottom:thBorder,left:{ style:BorderStyle.NONE,size:0,color:'fff'},right:{ style:BorderStyle.NONE,size:0,color:'fff'}};
+
+    const children=[
+      // Cabeçalho
+      docxParagraph('CHAOS ARQUITETURA E URBANISMO',{ bold:true, size:28, color:'8B5E3C', alignment:'center', spaceAfter:40 }),
+      docxParagraph(arq!=='Chaos Arquitetura e Urbanismo'?arq:'',{ size:18, color:'7A6A56', alignment:'center', spaceAfter:120 }),
+      docxSeparator(),
+      docxParagraph('PROPOSTA DE SERVIÇOS',{ bold:true, size:32, color:'2C1F12', alignment:'center', spaceBefore:120, spaceAfter:60 }),
+      docxParagraph(nomeRaw,{ bold:true, size:26, color:'8B5E3C', alignment:'center', spaceAfter:40 }),
+      docxSeparator(),
+
+      // Info básica
+      new Paragraph({ spacing:{ before:160, after:40 }, children:[
+        new TextRun({ text:'Cliente: ', bold:true, size:22, color:'2C1F12', font:'Arial' }),
+        new TextRun({ text:cli, size:22, color:'2C1F12', font:'Arial' }),
+      ]}),
+      ...(tipRaw?[new Paragraph({ spacing:{ before:0, after:40 }, children:[
+        new TextRun({ text:'Tipologia: ', bold:true, size:22, color:'2C1F12', font:'Arial' }),
+        new TextRun({ text:tipRaw, size:22, color:'2C1F12', font:'Arial' }),
+      ]})]:[]),
+      ...(areaRaw?[new Paragraph({ spacing:{ before:0, after:40 }, children:[
+        new TextRun({ text:'Área: ', bold:true, size:22, color:'2C1F12', font:'Arial' }),
+        new TextRun({ text:areaRaw+' m²', size:22, color:'2C1F12', font:'Arial' }),
+      ]})]:[]),
+      new Paragraph({ spacing:{ before:0, after:160 }, children:[
+        new TextRun({ text:'Data: ', bold:true, size:22, color:'2C1F12', font:'Arial' }),
+        new TextRun({ text:hoje, size:22, color:'2C1F12', font:'Arial' }),
+      ]}),
+      docxSeparator(),
+
+      // Serviços
+      docxParagraph('SERVIÇOS A SEREM REALIZADOS',{ bold:true, size:22, color:'7A6A56', spaceBefore:140, spaceAfter:80 }),
+      ...servicos.flatMap(s=>[
+        new Paragraph({ spacing:{ before:60, after:20 }, children:[
+          new TextRun({ text:`${s.i}. `, bold:true, size:22, color:'8B5E3C', font:'Arial' }),
+          new TextRun({ text:s.nome, bold:true, size:22, color:'2C1F12', font:'Arial' }),
+        ]}),
+        ...(s.desc?[docxParagraph(s.desc,{ size:20, color:'7A6A56', spaceBefore:0, spaceAfter:40 })]:[]),
+      ]),
+      docxSeparator(),
+
+      // Investimento
+      docxParagraph('INVESTIMENTO',{ bold:true, size:22, color:'7A6A56', spaceBefore:140, spaceAfter:80 }),
+      new Table({
+        width:{ size:9026, type:WidthType.DXA },
+        columnWidths:[5000,4026],
+        rows:[
+          new TableRow({ children:[
+            new TableCell({ borders, width:{ size:5000,type:WidthType.DXA }, shading:{ fill:'F5EDE2', type:ShadingType.CLEAR }, margins:{ top:100,bottom:100,left:160,right:160 },
+              children:[docxParagraph('Valor total do projeto',{ size:22, color:'7A6A56' })] }),
+            new TableCell({ borders, width:{ size:4026,type:WidthType.DXA }, shading:{ fill:'F5EDE2', type:ShadingType.CLEAR }, margins:{ top:100,bottom:100,left:160,right:160 },
+              children:[docxParagraph(`R$ ${fmtI(final)}`,{ bold:true, size:24, color:'8B5E3C', alignment:'right' })] }),
+          ]}),
+          new TableRow({ children:[
+            new TableCell({ borders, width:{ size:5000,type:WidthType.DXA }, margins:{ top:80,bottom:80,left:160,right:160 },
+              children:[docxParagraph('Entrada',{ size:20, color:'7A6A56' })] }),
+            new TableCell({ borders, width:{ size:4026,type:WidthType.DXA }, margins:{ top:80,bottom:80,left:160,right:160 },
+              children:[docxParagraph(`R$ ${fmtI(ev)}`,{ size:22, color:'8B5E3C', alignment:'right' })] }),
+          ]}),
+          new TableRow({ children:[
+            new TableCell({ borders, width:{ size:5000,type:WidthType.DXA }, margins:{ top:80,bottom:80,left:160,right:160 },
+              children:[docxParagraph(`${np}x parcelas`,{ size:20, color:'7A6A56' })] }),
+            new TableCell({ borders, width:{ size:4026,type:WidthType.DXA }, margins:{ top:80,bottom:80,left:160,right:160 },
+              children:[docxParagraph(`R$ ${fmtI(pv)} cada`,{ size:22, color:'8B5E3C', alignment:'right' })] }),
+          ]}),
+        ]
+      }),
+      docxSeparator(),
+      docxParagraph(`Validade desta proposta: ${validade}`,{ size:18, color:'B0A090', italic:true, alignment:'center', spaceBefore:120, spaceAfter:40 }),
+      docxParagraph('Chaos Arquitetura e Urbanismo',{ size:18, color:'D4B896', alignment:'center', spaceAfter:40 }),
+      ...(arq?[docxParagraph(arq,{ size:18, color:'D4B896', alignment:'center', spaceAfter:0 })]:[]),
+    ].filter(Boolean);
+
+    const doc=new Document({
+      styles:{ default:{ document:{ run:{ font:'Arial', size:22 } } } },
+      sections:[{
+        properties:{ page:{ size:{ width:11906, height:16838 }, margin:{ top:1134,right:1134,bottom:1134,left:1134 } } },
+        children
+      }]
+    });
+
+    const buf=await Packer.toBuffer(doc);
+    const blob=new Blob([buf],{ type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`chaos-proposta-${safeFileName(nomeRaw,'proposta')}.docx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    notifyStatus('✓ Word gerado','ok',3000);
+  }catch(e){
+    console.error('Erro ao gerar DOCX:',e);
+    notifyStatus('Erro ao gerar Word: '+e.message,'err',6000);
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='⬇ Word (.docx)'; }
+  }
+}
+
+async function exportCartaDocx(){
+  if(!await docxReady()){ notifyStatus('Biblioteca Word não carregou.','err',5000); return; }
+  const btn=document.querySelector('button[onclick="exportCartaDocx()"]');
+  if(btn){ btn.disabled=true; btn.textContent='Gerando...'; }
+  try{
+    const { Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle } = window.docx;
+
+    const dest    =($('carta-dest')?.value||'').trim();
+    const assunto =($('carta-assunto')?.value||'').trim();
+    const arq     =($('carta-arq')?.value||'Chaos Arquitetura e Urbanismo').trim();
+    const bodyRaw =($('carta-body')?.value||'').trim();
+    const dataVal =$('carta-data')?.value;
+    const dataFmt =dataVal?new Date(dataVal+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+
+    const bodyParas=bodyRaw.split('\n').map(line=>
+      docxParagraph(line||' ',{ size:22, color:'2C1F12', spaceAfter:80 })
+    );
+
+    const children=[
+      docxParagraph('CHAOS ARQUITETURA E URBANISMO',{ bold:true, size:24, color:'8B5E3C', alignment:'center', spaceAfter:60 }),
+      docxSeparator(),
+      docxParagraph(dataFmt,{ size:20, color:'7A6A56', alignment:'right', spaceBefore:120, spaceAfter:120 }),
+      ...(dest?[
+        new Paragraph({ spacing:{ before:0, after:40 }, children:[
+          new TextRun({ text:'Para: ', bold:true, size:22, color:'2C1F12', font:'Arial' }),
+          new TextRun({ text:dest, size:22, color:'2C1F12', font:'Arial' }),
+        ]}),
+      ]:[]),
+      ...(assunto?[
+        new Paragraph({ spacing:{ before:0, after:160 }, children:[
+          new TextRun({ text:'Assunto: ', bold:true, size:22, color:'2C1F12', font:'Arial' }),
+          new TextRun({ text:assunto, size:22, color:'2C1F12', font:'Arial' }),
+        ]}),
+      ]:[]),
+      docxSeparator(),
+      docxParagraph(' ',{ spaceAfter:80 }),
+      ...bodyParas,
+      docxParagraph(' ',{ spaceAfter:120 }),
+      docxParagraph('Atenciosamente,',{ size:22, color:'2C1F12', spaceAfter:200 }),
+      docxParagraph(arq,{ bold:true, size:22, color:'8B5E3C', spaceAfter:40 }),
+      docxParagraph('Chaos Arquitetura e Urbanismo',{ size:20, color:'7A6A56', spaceAfter:0 }),
+    ];
+
+    const doc=new Document({
+      styles:{ default:{ document:{ run:{ font:'Arial', size:22 } } } },
+      sections:[{
+        properties:{ page:{ size:{ width:11906, height:16838 }, margin:{ top:1440,right:1440,bottom:1440,left:1440 } } },
+        children
+      }]
+    });
+
+    const buf=await Packer.toBuffer(doc);
+    const blob=new Blob([buf],{ type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`chaos-carta-${safeFileName(assunto||'carta','carta')}.docx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    notifyStatus('✓ Word gerado','ok',3000);
+  }catch(e){
+    console.error('Erro ao gerar carta DOCX:',e);
+    notifyStatus('Erro ao gerar Word: '+e.message,'err',6000);
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='⬇ Word (.docx)'; }
+  }
+}
+
 
 function clearCarta(){
   $('carta-dest').value='';$('carta-assunto').value='';$('carta-arq').value='';$('carta-body').value='';
@@ -4555,6 +4885,7 @@ const notifBubble = document.getElementById('nbr-notif-bubble');
 
 function togglePanel(){
   const open = panel.classList.toggle('open');
+  document.body.classList.toggle('nbr-open', open);
   toggle.classList.toggle('open', open);
   badge.classList.toggle('hidden', open);
   if(open){
