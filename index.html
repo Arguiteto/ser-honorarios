@@ -1443,13 +1443,13 @@ body.nbr-open #online-bar{display:none}
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Adicionar usuário</h2>
         <p style="font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem">A pessoa precisa criar conta no sistema primeiro. Depois, adicione o e-mail aqui para liberar acesso à empresa.</p>
         <div class="field"><label>E-mail do usuário</label><div class="iw"><input type="email" id="eq-email" placeholder="usuario@email.com" autocomplete="off" onkeydown="if(event.key==='Enter')equipeAdd()"></div></div>
-        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="operador">Operador</option><option value="admin">Admin</option><option value="financeiro">Financeiro</option><option value="visualizador">Visualizador</option><option value="dono">Dono</option></select></div></div>
+        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="operador">Operador</option><option value="admin">Admin</option><option value="financeiro">Financeiro</option><option value="dono">Dono</option></select></div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem">
           <button class="btn solid" onclick="equipeAdd()">Adicionar à equipe</button>
           <button class="btn ghost" onclick="equipeLoad()">Atualizar lista</button>
         </div>
         <div id="eq-status" style="font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem"></div>
-        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis recomendados: <b>dono</b> para você, <b>admin</b> para quem gerencia a conta, <b>operador</b> para quem cria propostas, <b>financeiro</b> para valores e <b>visualizador</b> para consulta.</div>
+        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis recomendados: <b>dono</b> para você, <b>admin</b> para quem gerencia a conta, <b>operador</b> para quem cria propostas e <b>financeiro</b> para valores.</div>
       </section>
       <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Usuários da empresa</h2>
@@ -1942,7 +1942,7 @@ function equipeSetStatus(msg,type=''){
 }
 
 function equipeRoleLabel(papel){
-  return ({dono:'Dono',admin:'Admin',operador:'Operador',arquiteto:'Arquiteto',financeiro:'Financeiro',visualizador:'Visualizador'}[papel] || papel || '—');
+  return ({dono:'Dono',admin:'Admin',operador:'Operador',arquiteto:'Arquiteto',financeiro:'Financeiro'}[papel] || papel || '—');
 }
 
 async function equipeLoad(){
@@ -1961,18 +1961,18 @@ async function equipeLoad(){
       return;
     }
     list.innerHTML=rows.map(r=>{
-      const email=escapeHtml(r.email || r.user_id || 'sem e-mail');
+      const email=esc(r.email || r.user_id || 'sem e-mail');
       const ativo=r.ativo!==false;
       return `
         <div style="border:0.5px solid var(--border);border-radius:10px;padding:.85rem;background:var(--surf2);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center">
           <div style="min-width:0">
             <div style="font-size:13px;color:var(--text);font-weight:500;word-break:break-word">${email}</div>
-            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-family:monospace">${escapeHtml(r.user_id||'')}</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-family:monospace">${esc(r.user_id||'')}</div>
             <div style="font-size:10px;color:${ativo?'var(--green)':'var(--err)'};margin-top:4px">${ativo?'ativo':'inativo'} · ${equipeRoleLabel(r.papel)}</div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
             <select onchange="equipeChangeRole('${r.user_id}',this.value)" style="font-family:inherit;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none">
-              ${['operador','admin','financeiro','visualizador','dono'].map(p=>`<option value="${p}" ${r.papel===p?'selected':''}>${equipeRoleLabel(p)}</option>`).join('')}
+              ${['operador','admin','financeiro','dono'].map(p=>`<option value="${p}" ${r.papel===p?'selected':''}>${equipeRoleLabel(p)}</option>`).join('')}
             </select>
             <button class="btn danger" style="font-size:10px;padding:5px 9px" onclick="equipeDeactivate('${r.user_id}')">Desativar</button>
           </div>
@@ -1980,7 +1980,7 @@ async function equipeLoad(){
     }).join('');
   }catch(e){
     const msg=e?.message || String(e);
-    list.innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--err);font-size:12px;line-height:1.6">Erro ao carregar equipe.<br>'+escapeHtml(msg)+'</div>';
+    list.innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--err);font-size:12px;line-height:1.6">Erro ao carregar equipe.<br>'+esc(msg)+'</div>';
     equipeSetStatus(msg.includes('function')?'Rode o arquivo SQL de equipe no Supabase antes de usar esta tela.':msg,'err');
   }
 }
