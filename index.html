@@ -244,7 +244,7 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 #materiais-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
 
 @media(min-width:721px){
-  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#materiais-view{padding-left:180px}
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#materiais-view,#equipe-view{padding-left:180px}
 }
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
@@ -851,6 +851,7 @@ body.nbr-open #online-bar{display:none}
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-materiais" onclick="showMateriais()"><span class="ico">🧱</span>Materiais</button>
     <button class="dock-btn" id="tool-nbr" onclick="nbrTogglePanel()"><span class="ico">⚖</span>Normas NBR</button>
+    <button class="dock-btn" id="tool-equipe" onclick="showEquipe()"><span class="ico">👥</span>Equipe</button>
   </nav>
 
   <!-- HALL / INÍCIO -->
@@ -1429,6 +1430,35 @@ body.nbr-open #online-bar{display:none}
     </div>
   </div>
 
+
+
+  <!-- EQUIPE -->
+  <div id="equipe-view" style="display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%">
+    <div class="dash-top">
+      <div class="dash-title">Equipe — Usuários e permissões</div>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:14px;align-items:start">
+      <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+        <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Adicionar usuário</h2>
+        <p style="font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem">A pessoa precisa criar conta no sistema primeiro. Depois, adicione o e-mail aqui para liberar acesso à empresa.</p>
+        <div class="field"><label>E-mail do usuário</label><div class="iw"><input type="email" id="eq-email" placeholder="usuario@email.com" autocomplete="off" onkeydown="if(event.key==='Enter')equipeAdd()"></div></div>
+        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="operador">Operador</option><option value="admin">Admin</option><option value="financeiro">Financeiro</option><option value="visualizador">Visualizador</option><option value="dono">Dono</option></select></div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem">
+          <button class="btn solid" onclick="equipeAdd()">Adicionar à equipe</button>
+          <button class="btn ghost" onclick="equipeLoad()">Atualizar lista</button>
+        </div>
+        <div id="eq-status" style="font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem"></div>
+        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis recomendados: <b>dono</b> para você, <b>admin</b> para quem gerencia a conta, <b>operador</b> para quem cria propostas, <b>financeiro</b> para valores e <b>visualizador</b> para consulta.</div>
+      </section>
+      <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+        <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Usuários da empresa</h2>
+        <p style="font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem">Aqui aparecem os usuários vinculados à empresa atual.</p>
+        <div id="eq-list" style="display:flex;flex-direction:column;gap:8px"><div style="padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6">Clique em “Atualizar lista”.</div></div>
+      </section>
+    </div>
+  </div>
+
   <!-- ONLINE BAR -->
   <div id="online-bar">
     <div class="online-dot"></div>
@@ -1819,7 +1849,7 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','threejs-view','materiais-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -1829,7 +1859,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs','materiais','nbr'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -1894,6 +1924,112 @@ function showMateriais(){
   $('materiais-view').style.display='block';
   setTool('materiais');
   if(!window._matInit){ window._matInit=true; matRenderNote(); matRender(); }
+}
+
+function showEquipe(){
+  hideViews();
+  $('equipe-view').style.display='block';
+  setTool('equipe');
+  equipeLoad();
+}
+
+// ── EQUIPE / USUÁRIOS ─────────────────────────────
+function equipeSetStatus(msg,type=''){
+  const el=$('eq-status');
+  if(!el) return;
+  el.textContent=msg||'';
+  el.style.color = type==='ok' ? 'var(--green)' : type==='err' ? 'var(--err)' : 'var(--faint)';
+}
+
+function equipeRoleLabel(papel){
+  return ({dono:'Dono',admin:'Admin',operador:'Operador',arquiteto:'Arquiteto',financeiro:'Financeiro',visualizador:'Visualizador'}[papel] || papel || '—');
+}
+
+async function equipeLoad(){
+  const list=$('eq-list');
+  if(!list) return;
+  list.innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px">Carregando equipe...</div>';
+  equipeSetStatus('');
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    if(!sb) throw new Error('Supabase não inicializado.');
+    const {data,error}=await sb.rpc('listar_equipe',{p_empresa_id:null});
+    if(error) throw error;
+    const rows=Array.isArray(data)?data:[];
+    if(!rows.length){
+      list.innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6">Nenhum usuário encontrado na empresa.</div>';
+      return;
+    }
+    list.innerHTML=rows.map(r=>{
+      const email=escapeHtml(r.email || r.user_id || 'sem e-mail');
+      const ativo=r.ativo!==false;
+      return `
+        <div style="border:0.5px solid var(--border);border-radius:10px;padding:.85rem;background:var(--surf2);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center">
+          <div style="min-width:0">
+            <div style="font-size:13px;color:var(--text);font-weight:500;word-break:break-word">${email}</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-family:monospace">${escapeHtml(r.user_id||'')}</div>
+            <div style="font-size:10px;color:${ativo?'var(--green)':'var(--err)'};margin-top:4px">${ativo?'ativo':'inativo'} · ${equipeRoleLabel(r.papel)}</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+            <select onchange="equipeChangeRole('${r.user_id}',this.value)" style="font-family:inherit;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none">
+              ${['operador','admin','financeiro','visualizador','dono'].map(p=>`<option value="${p}" ${r.papel===p?'selected':''}>${equipeRoleLabel(p)}</option>`).join('')}
+            </select>
+            <button class="btn danger" style="font-size:10px;padding:5px 9px" onclick="equipeDeactivate('${r.user_id}')">Desativar</button>
+          </div>
+        </div>`;
+    }).join('');
+  }catch(e){
+    const msg=e?.message || String(e);
+    list.innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--err);font-size:12px;line-height:1.6">Erro ao carregar equipe.<br>'+escapeHtml(msg)+'</div>';
+    equipeSetStatus(msg.includes('function')?'Rode o arquivo SQL de equipe no Supabase antes de usar esta tela.':msg,'err');
+  }
+}
+
+async function equipeAdd(){
+  const email=String($('eq-email')?.value||'').trim().toLowerCase();
+  const papel=$('eq-papel')?.value||'operador';
+  if(!email || !email.includes('@')){ equipeSetStatus('Digite um e-mail válido.','err'); return; }
+  equipeSetStatus('Adicionando usuário...');
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    const {data,error}=await sb.rpc('convidar_usuario_empresa',{p_email:email,p_papel:papel,p_empresa_id:null});
+    if(error) throw error;
+    equipeSetStatus('✓ Usuário adicionado como '+equipeRoleLabel(data?.papel || papel)+'.','ok');
+    const inp=$('eq-email'); if(inp) inp.value='';
+    await equipeLoad();
+  }catch(e){
+    equipeSetStatus(e?.message || String(e),'err');
+  }
+}
+
+async function equipeChangeRole(userId,papel){
+  if(!userId) return;
+  equipeSetStatus('Alterando papel...');
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    const {error}=await sb.rpc('alterar_papel_usuario',{p_user_id:userId,p_papel:papel,p_empresa_id:null});
+    if(error) throw error;
+    equipeSetStatus('✓ Papel atualizado.','ok');
+    await equipeLoad();
+  }catch(e){
+    equipeSetStatus(e?.message || String(e),'err');
+    await equipeLoad();
+  }
+}
+
+async function equipeDeactivate(userId){
+  if(!userId) return;
+  if(!confirm('Desativar este usuário na empresa?')) return;
+  equipeSetStatus('Desativando usuário...');
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    const {error}=await sb.rpc('desativar_usuario_empresa',{p_user_id:userId,p_empresa_id:null});
+    if(error) throw error;
+    equipeSetStatus('✓ Usuário desativado.','ok');
+    await equipeLoad();
+  }catch(e){
+    equipeSetStatus(e?.message || String(e),'err');
+  }
 }
 
 // ── MATERIAIS — BANCO DE DADOS ────────────────────────────────────────────
