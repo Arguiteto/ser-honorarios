@@ -233,10 +233,10 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 
 /* ── HALL / INÍCIO ───────────────────────────────── */
 #hall-view{display:none;padding:4.5rem 1.5rem 1.5rem;max-width:760px;margin:0 auto;flex:1;width:100%}
-.hall-hero{background:transparent;border:none;border-radius:0;padding:5rem 1rem 3rem;margin-bottom:0;box-shadow:none;text-align:center}
+.hall-hero{background:transparent;border:none;border-radius:0;padding:4.2rem 1rem 2.2rem;margin-bottom:0;box-shadow:none;text-align:center}
 .hall-logo-img{width:78px;height:78px;object-fit:contain;display:block;margin:0 auto 1.2rem;opacity:.95}
 .hall-kicker{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--faint);margin-bottom:.9rem}
-.hall-title{font-family:Georgia,serif;font-size:38px;font-weight:400;color:var(--text);margin-bottom:.8rem}
+.hall-title{font-family:Georgia,serif;font-size:38px;font-weight:400;color:var(--text);margin:0 auto .4rem;text-align:center;max-width:720px;line-height:1.18}
 .hall-sub{font-size:13px;color:var(--muted);max-width:520px;line-height:1.75;margin:0 auto}
 .hall-clean-note{margin:1.6rem auto 0;display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);border:0.5px solid var(--border);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.16)}
 .hall-actions{display:none}
@@ -798,8 +798,13 @@ body.nbr-open #online-bar{display:none}
 
 
 /* ── PLANNER / CALENDÁRIO ───────────────────────── */
-body.auth-mode #planner-alert,body.auth-mode #planner-panel{display:none!important}
-.planner-hall{background:var(--surface);border:0.5px solid var(--border);border-radius:16px;padding:1.15rem;margin:0 auto 1.5rem;box-shadow:0 6px 22px rgba(0,0,0,.05);max-width:980px}
+body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #planner-panel,body.auth-mode #planner-hall-card{display:none!important}
+#planner-toggle{position:fixed;right:24px;bottom:86px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--e),var(--eb));border:1px solid var(--border-em);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s,border-color .2s;z-index:9998;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.15rem}
+#planner-toggle:hover,#planner-toggle.open{transform:scale(1.08);box-shadow:0 12px 36px rgba(0,0,0,.24);border-color:var(--e)}
+#planner-toggle .planner-toggle-label{position:absolute;right:66px;background:var(--surface);color:var(--e);border:0.5px solid var(--border-em);border-radius:999px;padding:5px 10px;font-size:10px;letter-spacing:.06em;opacity:0;pointer-events:none;transform:translateX(8px);transition:opacity .18s,transform .18s;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.12)}
+#planner-toggle:hover .planner-toggle-label{opacity:1;transform:translateX(0)}
+.planner-hall{position:fixed;right:92px;bottom:18px;width:min(780px,calc(100vw - 126px));max-height:min(82vh,720px);overflow:auto;display:none;background:var(--surface);border:1px solid var(--border-em);border-radius:18px;padding:1.15rem;box-shadow:0 20px 60px rgba(0,0,0,.24);z-index:9997}
+.planner-hall.open{display:block}
 .planner-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:.8rem}
 .planner-head h2{font-family:Georgia,serif;font-size:18px;font-weight:400;color:var(--text)}
 .planner-muted{font-size:11px;color:var(--faint);line-height:1.55}
@@ -825,6 +830,9 @@ body.auth-mode #planner-alert,body.auth-mode #planner-panel{display:none!importa
 .planner-event .t{font-size:12px;font-weight:600;color:var(--text);line-height:1.35}
 .planner-event .m{font-size:10px;color:var(--faint);line-height:1.45;margin-top:4px}
 .planner-event .chip{display:inline-flex;margin-top:6px;font-size:9px;border:0.5px solid var(--eb);background:var(--el);color:var(--e);border-radius:999px;padding:2px 7px}
+.planner-event-actions{display:flex;gap:6px;align-items:center;justify-content:space-between;margin-top:7px;flex-wrap:wrap}
+.planner-delete-btn{font-family:inherit;font-size:9px;padding:3px 7px;border:0.5px solid var(--errb);border-radius:999px;background:var(--errl);color:var(--err);cursor:pointer;transition:opacity .15s,background .15s}
+.planner-delete-btn:hover{opacity:.82}
 .planner-form{display:flex;flex-direction:column;gap:8px;border-top:0.5px solid var(--border);padding-top:.9rem}
 .planner-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .planner-input,.planner-select,.planner-textarea{width:100%;border:0.5px solid var(--border-em);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-size:12px;padding:8px 10px;outline:none}
@@ -845,7 +853,7 @@ body.auth-mode #planner-alert,body.auth-mode #planner-panel{display:none!importa
 .planner-panel-head h3{font-size:13px;font-weight:600;color:var(--text)}
 .planner-panel-body{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px}
 .planner-panel-close{background:none;border:none;color:var(--faint);font-size:18px;cursor:pointer;line-height:1}
-@media(max-width:760px){.planner-layout{grid-template-columns:1fr}.planner-day{min-height:62px;padding:5px}.planner-form-row{grid-template-columns:1fr}#planner-alert{right:16px;bottom:88px;max-width:220px}#planner-panel{right:10px;bottom:148px;width:calc(100vw - 20px)}}
+@media(max-width:760px){.planner-layout{grid-template-columns:1fr}.planner-day{min-height:62px;padding:5px}.planner-form-row{grid-template-columns:1fr}#planner-toggle{right:16px;bottom:82px;width:52px;height:52px;border-radius:14px}.planner-hall{right:10px;bottom:148px;width:calc(100vw - 20px);max-height:calc(100vh - 170px);padding:1rem}#planner-alert{right:16px;bottom:146px;max-width:220px}#planner-panel{right:10px;bottom:205px;width:calc(100vw - 20px)}}
 
 </style>
 </head>
@@ -939,54 +947,7 @@ body.auth-mode #planner-alert,body.auth-mode #planner-panel{display:none!importa
   <div id="hall-view" style="display:none">
     <section class="hall-hero">
       <img id="hall-logo-img" class="hall-logo-img" src="" alt="Chaos">
-      <div class="hall-kicker">Central de ferramentas</div>
       <h1 class="hall-title">Chaos — Arquitetura e Urbanismo</h1>
-      <p class="hall-sub">Escolha o que deseja fazer. Assim, ao entrar no sistema, você começa por esta tela inicial e só acessa as propostas quando clicar em “Propostas” ou “Nova proposta”.</p>
-    </section>
-
-    <section class="planner-hall" id="planner-hall-card">
-      <div class="planner-head">
-        <div>
-          <h2>Planner</h2>
-          <p class="planner-muted">Calendário da equipe. Marque usuários para eles receberem aviso no sistema.</p>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-          <button class="btn ghost" onclick="plannerChangeMonth(-1)">←</button>
-          <span id="planner-month-label" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);min-width:130px;text-align:center">—</span>
-          <button class="btn ghost" onclick="plannerChangeMonth(1)">→</button>
-          <button class="btn" onclick="plannerGoToday()">Hoje</button>
-        </div>
-      </div>
-      <div class="planner-layout">
-        <div class="planner-calendar">
-          <div class="planner-week"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
-          <div class="planner-grid" id="planner-calendar-grid"><div style="grid-column:1/-1;padding:1rem;text-align:center;color:var(--faint);font-size:12px">Carregando calendário...</div></div>
-        </div>
-        <aside class="planner-side">
-          <div class="planner-day-title" id="planner-day-title">Hoje</div>
-          <div class="planner-list" id="planner-day-list"><div class="planner-muted">Nenhum compromisso selecionado.</div></div>
-          <div class="planner-form">
-            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint)">Novo aviso</div>
-            <input class="planner-input" id="pl-title" placeholder="Ex: Reunião com cliente">
-            <div class="planner-form-row">
-              <input class="planner-input" id="pl-date" type="date">
-              <input class="planner-input" id="pl-time" type="time" value="09:00">
-            </div>
-            <div class="planner-form-row">
-              <input class="planner-input" id="pl-end-time" type="time" placeholder="Fim">
-              <select class="planner-select" id="pl-type"><option value="reuniao">Reunião</option><option value="prazo">Prazo</option><option value="visita">Visita</option><option value="tarefa">Tarefa</option><option value="outro">Outro</option></select>
-            </div>
-            <input class="planner-input" id="pl-local" placeholder="Local / link (opcional)">
-            <textarea class="planner-textarea" id="pl-desc" placeholder="Detalhes para os usuários marcados..."></textarea>
-            <div class="planner-users" id="planner-users"><span class="planner-muted">Carregando usuários...</span></div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <button class="btn solid" onclick="plannerCreateEvent()">Criar aviso</button>
-              <button class="btn ghost" onclick="plannerLoad(true)">Atualizar</button>
-            </div>
-            <div class="planner-status" id="planner-status"></div>
-          </div>
-        </aside>
-      </div>
     </section>
 
     <div class="hall-actions">
@@ -2256,14 +2217,20 @@ function plannerRenderDayList(){
   if(!evs.length){ list.innerHTML='<div class="planner-muted">Nenhum aviso para este dia.</div>'; return; }
   list.innerHTML=evs.map(ev=>plannerEventCard(ev)).join('');
 }
+function plannerCanDeleteEvent(ev){
+  const r=normalizedRole(currentRole);
+  return !!ev && (['dono','arquiteto'].includes(r) || String(ev.criado_por||'')===String(user?.id||''));
+}
 function plannerEventCard(ev){
   const hora=[plannerTimeLabel(ev.inicio),plannerTimeLabel(ev.fim)].filter(Boolean).join('–');
   const part=Array.isArray(ev.participantes)?ev.participantes.map(p=>p.nome||p.email).filter(Boolean).slice(0,4).join(', '):'';
-  return `<div class="planner-event" onclick="plannerShowDetails('${esc(ev.evento_id||ev.id)}')">
+  const id=esc(ev.evento_id||ev.id);
+  const del=plannerCanDeleteEvent(ev)?`<button class="planner-delete-btn" onclick="event.stopPropagation(); plannerDeleteEvent('${id}')">Apagar</button>`:'';
+  return `<div class="planner-event" onclick="plannerShowDetails('${id}')">
     <div class="t">${esc(ev.titulo||'Sem título')}</div>
     <div class="m">${esc([hora,ev.local].filter(Boolean).join(' · ') || 'Sem horário')}</div>
     ${part?`<div class="m">Marcados: ${esc(part)}</div>`:''}
-    <span class="chip">${esc(ev.tipo||'aviso')}</span>
+    <div class="planner-event-actions"><span class="chip">${esc(ev.tipo||'aviso')}</span>${del}</div>
   </div>`;
 }
 function plannerSelectDate(key){
@@ -2277,6 +2244,17 @@ function plannerChangeMonth(delta){
 }
 function plannerGoToday(){
   plannerMonth=new Date(); plannerSelectedDate=new Date(); plannerLoad(true);
+}
+function plannerToggleFull(){
+  const card=$('planner-hall-card'); if(!card) return;
+  const willOpen=!card.classList.contains('open');
+  card.classList.toggle('open',willOpen);
+  const btn=$('planner-toggle'); if(btn) btn.classList.toggle('open',willOpen);
+  if(willOpen){ plannerClosePanel(); plannerLoad(true); }
+}
+function plannerCloseFull(){
+  const card=$('planner-hall-card'); if(card) card.classList.remove('open');
+  const btn=$('planner-toggle'); if(btn) btn.classList.remove('open');
 }
 async function plannerCreateEvent(){
   if(!plannerCanManage()){ plannerSetStatus('Seu perfil não pode criar avisos.','err'); return; }
@@ -2335,11 +2313,13 @@ function plannerRenderPanel(){
   if(!evs.length){ body.innerHTML='<div class="planner-muted">Nenhum aviso para hoje.</div>'; return; }
   body.innerHTML=evs.map(ev=>{
     const hora=[plannerTimeLabel(ev.inicio),plannerTimeLabel(ev.fim)].filter(Boolean).join('–');
-    return `<div class="planner-event" onclick="plannerShowDetails('${esc(ev.evento_id||ev.id)}')">
+    const id=esc(ev.evento_id||ev.id);
+    const del=plannerCanDeleteEvent(ev)?`<button class="planner-delete-btn" onclick="event.stopPropagation(); plannerDeleteEvent('${id}')">Apagar</button>`:'';
+    return `<div class="planner-event" onclick="plannerShowDetails('${id}')">
       <div class="t">${esc(ev.titulo||'Sem título')}</div>
       <div class="m">${esc([hora,ev.local].filter(Boolean).join(' · ') || 'Hoje')}</div>
       ${ev.descricao?`<div class="m">${esc(String(ev.descricao).slice(0,140))}</div>`:''}
-      <span class="chip">Clique para detalhes</span>
+      <div class="planner-event-actions"><span class="chip">Clique para detalhes</span>${del}</div>
     </div>`;
   }).join('');
 }
@@ -2362,9 +2342,28 @@ function plannerShowDetails(id){
       <div class="rel-row"><span>Marcados</span><span class="rv">${esc(part||'—')}</span></div>
     </div>
     <div style="font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap">${esc(ev.descricao||'Sem descrição.')}</div>
-    <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap"><button class="btn solid" onclick="plannerMarkRead('${esc(ev.evento_id||ev.id)}')">Ok, entendido</button></div>
+    <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap">
+      <button class="btn solid" onclick="plannerMarkRead('${esc(ev.evento_id||ev.id)}')">Ok, entendido</button>
+      ${plannerCanDeleteEvent(ev)?`<button class="btn danger" onclick="plannerDeleteEvent('${esc(ev.evento_id||ev.id)}')">Apagar aviso</button>`:''}
+    </div>
   </div>`;
   document.body.appendChild(wrap);
+}
+async function plannerDeleteEvent(id){
+  if(!id) return;
+  if(!confirm('Apagar este aviso do Planner?')) return;
+  try{
+    plannerSetStatus('Apagando aviso...');
+    if(!sb) sb=await initSupabaseClient();
+    const {error}=await sb.rpc('planner_excluir_evento',{p_evento_id:id});
+    if(error) throw error;
+    const modal=$('planner-detail-modal'); if(modal) modal.remove();
+    plannerSetStatus('✓ Aviso apagado.','ok');
+    await plannerLoad(true);
+  }catch(e){
+    plannerSetStatus(e?.message || String(e),'err');
+    alert('Não foi possível apagar o aviso: '+(e?.message || String(e)));
+  }
 }
 async function plannerMarkRead(id){
   try{ if(sb) await sb.rpc('planner_marcar_lido',{p_evento_id:id}); }catch(e){ console.warn(e); }
@@ -5426,6 +5425,59 @@ init();
 
 </script>
 
+<!-- ── PLANNER FLUTUANTE / CALENDÁRIO ───────────────────── -->
+    <section class="planner-hall" id="planner-hall-card">
+      <div class="planner-head">
+        <div>
+          <h2>Planner</h2>
+          <p class="planner-muted">Calendário da equipe. Marque usuários para eles receberem aviso no sistema.</p>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <button class="btn ghost" onclick="plannerChangeMonth(-1)">←</button>
+          <span id="planner-month-label" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);min-width:130px;text-align:center">—</span>
+          <button class="btn ghost" onclick="plannerChangeMonth(1)">→</button>
+          <button class="btn" onclick="plannerGoToday()">Hoje</button>
+          <button class="btn ghost" onclick="plannerCloseFull()" title="Fechar Planner">✕</button>
+        </div>
+      </div>
+      <div class="planner-layout">
+        <div class="planner-calendar">
+          <div class="planner-week"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
+          <div class="planner-grid" id="planner-calendar-grid"><div style="grid-column:1/-1;padding:1rem;text-align:center;color:var(--faint);font-size:12px">Carregando calendário...</div></div>
+        </div>
+        <aside class="planner-side">
+          <div class="planner-day-title" id="planner-day-title">Hoje</div>
+          <div class="planner-list" id="planner-day-list"><div class="planner-muted">Nenhum compromisso selecionado.</div></div>
+          <div class="planner-form">
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint)">Novo aviso</div>
+            <input class="planner-input" id="pl-title" placeholder="Ex: Reunião com cliente">
+            <div class="planner-form-row">
+              <input class="planner-input" id="pl-date" type="date">
+              <input class="planner-input" id="pl-time" type="time" value="09:00">
+            </div>
+            <div class="planner-form-row">
+              <input class="planner-input" id="pl-end-time" type="time" placeholder="Fim">
+              <select class="planner-select" id="pl-type"><option value="reuniao">Reunião</option><option value="prazo">Prazo</option><option value="visita">Visita</option><option value="tarefa">Tarefa</option><option value="outro">Outro</option></select>
+            </div>
+            <input class="planner-input" id="pl-local" placeholder="Local / link (opcional)">
+            <textarea class="planner-textarea" id="pl-desc" placeholder="Detalhes para os usuários marcados..."></textarea>
+            <div class="planner-users" id="planner-users"><span class="planner-muted">Carregando usuários...</span></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="btn solid" onclick="plannerCreateEvent()">Criar aviso</button>
+              <button class="btn ghost" onclick="plannerLoad(true)">Atualizar</button>
+            </div>
+            <div class="planner-status" id="planner-status"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+<!-- ── PLANNER BOTÃO MINIMIZADO ─────────────────────────── -->
+<button id="planner-toggle" onclick="plannerToggleFull()" title="Abrir Planner">
+  <span aria-hidden="true">📅</span>
+  <span class="planner-toggle-label">Planner</span>
+</button>
+
 <!-- ── PLANNER ALERTA FLUTUANTE ───────────────────────────── -->
 <div id="planner-alert" onclick="plannerTogglePanel()">
   <div class="planner-alert-ico">📅</div>
@@ -5933,7 +5985,7 @@ function reopenCep(){
 }
 
 // ─── GLOBAIS ─────────────────────────────────────────
-window.nbrTogglePanel     = ()=>{ if(window.guardTool && guardTool('nbr')) return; togglePanel(); };
+window.nbrTogglePanel     = ()=>{ if(window.guardTool && guardTool('nbr')) return; if(window.plannerCloseFull) plannerCloseFull(); togglePanel(); };
 window.nbrSearch          = nbrSearch;
 window.nbrSearchByCode    = q=>{ nbrSearch(q); document.getElementById('nbr-search-input').value=q; document.querySelectorAll('.nbr-tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.nbr-tab-panel').forEach(x=>x.classList.remove('active')); document.querySelector('[data-nbrtab="buscar"]').classList.add('active'); document.getElementById('nbr-tab-buscar').classList.add('active'); };
 window.nbrToggleFav       = (id,btn)=>nbrToggleFavItemFn(id,btn);
