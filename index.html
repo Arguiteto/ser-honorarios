@@ -758,13 +758,94 @@ body.nbr-open #online-bar{display:none}
 /* NBR acompanha o tema atual */
 #nbr-toggle{
   background:linear-gradient(135deg,var(--e),var(--eb))!important;
-  box-shadow:0 8px 28px rgba(var(--bg-rgb,237,232,220),.18),0 0 0 1px var(--border-em)!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 1px var(--border-em)!important;
   border:1px solid var(--border-em)!important;
 }
-#nbr-toggle:hover{box-shadow:0 12px 36px rgba(var(--bg-rgb,237,232,220),.28),0 0 0 1px var(--e)!important}
+#nbr-toggle:hover{box-shadow:0 12px 36px rgba(0,0,0,.22),0 0 0 1px var(--e)!important}
 #nbr-badge{background:var(--surface)!important;border:1px solid var(--e)!important;color:var(--e)!important;box-shadow:0 8px 24px rgba(0,0,0,.12)!important}
 #nbr-toggle .nbr-icon-label{color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.35)}
 @keyframes nbr-pulse{0%{box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 0 var(--border-em)}60%{box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 14px rgba(0,0,0,0)}100%{box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 0 var(--border-em)}}
+
+/* Tema completo para o painel NBR */
+#notif-toast{background:var(--surface)!important;border:1px solid var(--e)!important;box-shadow:0 12px 40px rgba(0,0,0,.22)!important}
+.nbr-notif-body strong{color:var(--e)!important}.nbr-notif-body p{color:var(--muted)!important}.nbr-notif-close{color:var(--faint)!important}.nbr-notif-close:hover{color:var(--e)!important}
+#nbr-panel,#nbr-cep-screen{background:var(--surface)!important;border-color:var(--border-em)!important;color:var(--text)!important;box-shadow:0 20px 60px rgba(0,0,0,.28),0 0 0 1px var(--border)!important}
+.nbr-panel-header,.nbr-cep-header{background:linear-gradient(135deg,var(--surface),var(--surf2))!important;border-bottom:1px solid var(--border)!important}
+.nbr-header-icon{background:linear-gradient(135deg,var(--e),var(--eb))!important;color:#fff!important}
+.nbr-header-text h2,.nbr-cep-title,.nbr-fav-query,.nbr-hist-q,.nbr-loc-text strong,.nbr-card-title,.nbr-notif-nbody strong{color:var(--text)!important}
+.nbr-header-text p,.nbr-cep-sub,.nbr-card-escopo,.nbr-notif-nbody p{color:var(--muted)!important}
+.nbr-tabs{background:var(--surf2)!important;border-bottom:1px solid var(--border)!important}
+.nbr-tab{color:var(--faint)!important}.nbr-tab:hover{color:var(--muted)!important}.nbr-tab.active{color:var(--e)!important;border-bottom-color:var(--e)!important}
+.nbr-cep-body,.nbr-obra-section,.nbr-input-area{background:var(--surface)!important;border-color:var(--border)!important}
+.nbr-info-box{background:var(--el)!important;border:1px solid var(--eb)!important;color:var(--muted)!important}.nbr-info-box strong{color:var(--e)!important}
+.nbr-field label,.nbr-obra-label,.nbr-card-year,.nbr-hist-header span,.nbr-fav-date,.nbr-hist-meta,.nbr-msg-time,.nbr-notif-nbody span,.nbr-cat-header,.nbr-panel-footer,#nbr-panel .nbr-empty p{color:var(--faint)!important}
+.nbr-field input,.nbr-input-area textarea,.nbr-search-wrap input{background:var(--surf2)!important;border:1px solid var(--border-em)!important;color:var(--text)!important}
+.nbr-field input:focus,.nbr-input-area textarea:focus,.nbr-search-wrap input:focus{border-color:var(--e)!important}
+.nbr-field input::placeholder,.nbr-input-area textarea::placeholder,.nbr-search-wrap input::placeholder{color:var(--faint)!important}
+.nbr-loc-preview{background:var(--surf2)!important;border-color:var(--border)!important;color:var(--muted)!important}.nbr-loc-preview.loaded{border-color:var(--green)!important;color:var(--muted)!important}
+.nbr-cep-btn,.nbr-send-btn{background:linear-gradient(135deg,var(--e),var(--eb))!important;color:#fff!important}.nbr-cep-skip button{color:var(--faint)!important}.nbr-cep-skip button:hover{color:var(--e)!important}
+.nbr-obra-chip{background:transparent!important;border-color:var(--border-em)!important;color:var(--muted)!important}.nbr-obra-chip:hover,.nbr-obra-chip.selected{border-color:var(--eb)!important;color:var(--e)!important;background:var(--el)!important}
+.nbr-msg.user .nbr-bubble{background:linear-gradient(135deg,var(--e),var(--eb))!important;color:#fff!important}.nbr-msg.bot .nbr-bubble,.nbr-typing-bubble{background:var(--surf2)!important;border:1px solid var(--border)!important;color:var(--text)!important}
+.nbr-msg.bot .nbr-bubble strong,.nbr-msg.bot .nbr-bubble code,.nbr-card-badge,.nbr-card-link.primary,.nbr-consult-btn{color:var(--e)!important}.nbr-msg.bot .nbr-bubble code{background:var(--surface)!important;border-color:var(--border-em)!important}
+.nbr-fav-item,.nbr-hist-item,.nbr-notif-item,.nbr-card{background:var(--surf2)!important;border:1px solid var(--border)!important;color:var(--text)!important}.nbr-fav-item:hover,.nbr-hist-item:hover,.nbr-card:hover,.nbr-card.expanded{border-color:var(--eb)!important;background:var(--el)!important}
+.nbr-card-badge{background:var(--el)!important;border:1px solid var(--eb)!important}.nbr-card-cat{background:var(--surface)!important;border-color:var(--border-em)!important;color:var(--faint)!important}
+.nbr-card-req,.nbr-card-req::before,.nbr-empty-search,#nbr-panel .nbr-empty{color:var(--faint)!important}.nbr-card-link{border-color:var(--border-em)!important;color:var(--muted)!important;background:transparent!important}.nbr-card-link:hover{border-color:var(--eb)!important;color:var(--e)!important;background:var(--el)!important}.nbr-card-link.primary,.nbr-consult-btn{border-color:var(--eb)!important;background:var(--el)!important}
+.nbr-icon-btn,.nbr-fav-btn,.nbr-hist-fav-btn,.nbr-fav-del{color:var(--faint)!important}.nbr-icon-btn:hover,.nbr-fav-btn:hover,.nbr-hist-fav-btn:hover{color:var(--e)!important}.nbr-fav-btn.starred,.nbr-icon-btn.starred,.nbr-fav-star{color:#fbbf24!important}.nbr-fav-del:hover{color:var(--err)!important}
+.nbr-hist-clear{background:transparent!important;border-color:var(--border-em)!important;color:var(--faint)!important}.nbr-hist-clear:hover{border-color:var(--err)!important;color:var(--err)!important}
+.nbr-results,.nbr-messages,.nbr-fav-list,.nbr-hist-list,.nbr-notif-list{scrollbar-color:var(--border-em) transparent!important}.nbr-results::-webkit-scrollbar-thumb,.nbr-messages::-webkit-scrollbar-thumb{background:var(--border-em)!important}
+#nbr-loc-badge{background:var(--greenl)!important;border-color:var(--green)!important;color:var(--green)!important}.nbr-status-dot{background:var(--green)!important;box-shadow:0 0 6px var(--green)!important}
+
+
+
+/* ── PLANNER / CALENDÁRIO ───────────────────────── */
+body.auth-mode #planner-alert,body.auth-mode #planner-panel{display:none!important}
+.planner-hall{background:var(--surface);border:0.5px solid var(--border);border-radius:16px;padding:1.15rem;margin:0 auto 1.5rem;box-shadow:0 6px 22px rgba(0,0,0,.05);max-width:980px}
+.planner-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:.8rem}
+.planner-head h2{font-family:Georgia,serif;font-size:18px;font-weight:400;color:var(--text)}
+.planner-muted{font-size:11px;color:var(--faint);line-height:1.55}
+.planner-layout{display:grid;grid-template-columns:1.25fr minmax(260px,.75fr);gap:14px;align-items:start}
+.planner-calendar{border:0.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surf2)}
+.planner-week,.planner-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.planner-week div{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;text-align:center;padding:8px 4px;border-bottom:0.5px solid var(--border);background:var(--surface)}
+.planner-day{min-height:76px;border-right:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:7px;cursor:pointer;background:var(--surface);transition:background .15s,border-color .15s;position:relative}
+.planner-day:nth-child(7n){border-right:none}
+.planner-day:hover{background:var(--el)}
+.planner-day.muted{opacity:.38;background:var(--surf2)}
+.planner-day.today{box-shadow:inset 0 0 0 1px var(--e)}
+.planner-day.selected{background:var(--el);box-shadow:inset 0 0 0 1.5px var(--e)}
+.planner-day .n{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.planner-day .dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:7px}
+.planner-dot{width:7px;height:7px;border-radius:50%;background:var(--e);opacity:.8}
+.planner-more{font-size:9px;color:var(--e);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+.planner-side{border:0.5px solid var(--border);border-radius:12px;padding:.95rem;background:var(--surf2)}
+.planner-day-title{font-size:12px;color:var(--text);font-weight:500;margin-bottom:.6rem}
+.planner-list{display:flex;flex-direction:column;gap:7px;margin-bottom:1rem;max-height:220px;overflow:auto;padding-right:2px}
+.planner-event{border:0.5px solid var(--border);border-radius:10px;padding:.75rem;background:var(--surface);cursor:pointer;transition:border-color .15s}
+.planner-event:hover{border-color:var(--eb)}
+.planner-event .t{font-size:12px;font-weight:600;color:var(--text);line-height:1.35}
+.planner-event .m{font-size:10px;color:var(--faint);line-height:1.45;margin-top:4px}
+.planner-event .chip{display:inline-flex;margin-top:6px;font-size:9px;border:0.5px solid var(--eb);background:var(--el);color:var(--e);border-radius:999px;padding:2px 7px}
+.planner-form{display:flex;flex-direction:column;gap:8px;border-top:0.5px solid var(--border);padding-top:.9rem}
+.planner-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.planner-input,.planner-select,.planner-textarea{width:100%;border:0.5px solid var(--border-em);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-size:12px;padding:8px 10px;outline:none}
+.planner-input:focus,.planner-select:focus,.planner-textarea:focus{border-color:var(--e)}
+.planner-textarea{resize:vertical;min-height:64px;line-height:1.5}
+.planner-users{display:flex;flex-direction:column;gap:5px;max-height:115px;overflow:auto;border:0.5px solid var(--border);border-radius:9px;padding:7px;background:var(--surface)}
+.planner-user-check{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center;line-height:1.35}
+.planner-status{font-size:11px;color:var(--faint);min-height:16px;line-height:1.5}
+#planner-alert{position:fixed;right:24px;bottom:144px;z-index:9997;display:none;align-items:center;gap:9px;border:1px solid var(--border-em);background:var(--surface);color:var(--text);border-radius:14px;padding:9px 11px;box-shadow:0 12px 36px rgba(0,0,0,.18);cursor:pointer;max-width:260px;transition:transform .15s,border-color .15s}
+#planner-alert:hover{transform:translateY(-2px);border-color:var(--eb)}
+.planner-alert-ico{width:32px;height:32px;border-radius:10px;background:var(--el);border:0.5px solid var(--eb);color:var(--e);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.planner-alert-text{font-size:11px;line-height:1.35;color:var(--muted)}
+.planner-alert-text strong{display:block;color:var(--text);font-size:12px}
+.planner-alert-count{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--e);color:#fff;border-radius:999px;padding:2px 7px;margin-left:auto;flex-shrink:0}
+#planner-panel{position:fixed;right:90px;bottom:132px;width:min(340px,calc(100vw - 120px));max-height:430px;z-index:9997;display:none;background:var(--surface);border:1px solid var(--border-em);border-radius:16px;box-shadow:0 18px 54px rgba(0,0,0,.24);overflow:hidden}
+#planner-panel.open{display:flex;flex-direction:column}
+.planner-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:0.5px solid var(--border);background:var(--surf2)}
+.planner-panel-head h3{font-size:13px;font-weight:600;color:var(--text)}
+.planner-panel-body{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.planner-panel-close{background:none;border:none;color:var(--faint);font-size:18px;cursor:pointer;line-height:1}
+@media(max-width:760px){.planner-layout{grid-template-columns:1fr}.planner-day{min-height:62px;padding:5px}.planner-form-row{grid-template-columns:1fr}#planner-alert{right:16px;bottom:88px;max-width:220px}#planner-panel{right:10px;bottom:148px;width:calc(100vw - 20px)}}
 
 </style>
 </head>
@@ -862,6 +943,52 @@ body.nbr-open #online-bar{display:none}
       <h1 class="hall-title">Chaos — Arquitetura e Urbanismo</h1>
       <p class="hall-sub">Escolha o que deseja fazer. Assim, ao entrar no sistema, você começa por esta tela inicial e só acessa as propostas quando clicar em “Propostas” ou “Nova proposta”.</p>
     </section>
+
+    <section class="planner-hall" id="planner-hall-card">
+      <div class="planner-head">
+        <div>
+          <h2>Planner</h2>
+          <p class="planner-muted">Calendário da equipe. Marque usuários para eles receberem aviso no sistema.</p>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <button class="btn ghost" onclick="plannerChangeMonth(-1)">←</button>
+          <span id="planner-month-label" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);min-width:130px;text-align:center">—</span>
+          <button class="btn ghost" onclick="plannerChangeMonth(1)">→</button>
+          <button class="btn" onclick="plannerGoToday()">Hoje</button>
+        </div>
+      </div>
+      <div class="planner-layout">
+        <div class="planner-calendar">
+          <div class="planner-week"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
+          <div class="planner-grid" id="planner-calendar-grid"><div style="grid-column:1/-1;padding:1rem;text-align:center;color:var(--faint);font-size:12px">Carregando calendário...</div></div>
+        </div>
+        <aside class="planner-side">
+          <div class="planner-day-title" id="planner-day-title">Hoje</div>
+          <div class="planner-list" id="planner-day-list"><div class="planner-muted">Nenhum compromisso selecionado.</div></div>
+          <div class="planner-form">
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint)">Novo aviso</div>
+            <input class="planner-input" id="pl-title" placeholder="Ex: Reunião com cliente">
+            <div class="planner-form-row">
+              <input class="planner-input" id="pl-date" type="date">
+              <input class="planner-input" id="pl-time" type="time" value="09:00">
+            </div>
+            <div class="planner-form-row">
+              <input class="planner-input" id="pl-end-time" type="time" placeholder="Fim">
+              <select class="planner-select" id="pl-type"><option value="reuniao">Reunião</option><option value="prazo">Prazo</option><option value="visita">Visita</option><option value="tarefa">Tarefa</option><option value="outro">Outro</option></select>
+            </div>
+            <input class="planner-input" id="pl-local" placeholder="Local / link (opcional)">
+            <textarea class="planner-textarea" id="pl-desc" placeholder="Detalhes para os usuários marcados..."></textarea>
+            <div class="planner-users" id="planner-users"><span class="planner-muted">Carregando usuários...</span></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="btn solid" onclick="plannerCreateEvent()">Criar aviso</button>
+              <button class="btn ghost" onclick="plannerLoad(true)">Atualizar</button>
+            </div>
+            <div class="planner-status" id="planner-status"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
     <div class="hall-actions">
       <button class="hall-card" onclick="newProposal()">
         <div>
@@ -1254,7 +1381,7 @@ body.nbr-open #online-bar{display:none}
       <div class="chart-box">
         <div class="chart-title">Valores de propostas por login</div>
         <canvas id="chart-users" height="220"></canvas>
-        <div style="font-size:10px;color:var(--faint);margin-top:.8rem">Exibe os logins que o Supabase permitir consultar. Se aparecer apenas você, ajuste as permissões/RLS da tabela para visão compartilhada.</div>
+        <div style="font-size:10px;color:var(--faint);margin-top:.8rem">Dono e financeiro veem propostas de todos os usuários. Arquiteto e Minion veem apenas as próprias propostas.</div>
       </div>
     </div>
   </div>
@@ -1494,8 +1621,10 @@ let user=null, proposals=[], currentId=null;
 let currentRole=null, currentEmpresaId=null;
 let horaG=0, fasesT=0, visitaV=0, taxT=0, descV=0, totalH=0, dType='pct';
 let chartProps=null, chartTipo=null, chartUsers=null;
-let presenceChannel=null, pdfBusy=false, cartaPdfBusy=false;
+let presenceChannel=null, onlinePresenceTimer=null, pdfBusy=false, cartaPdfBusy=false;
 let proposalDocs=[];
+let plannerEvents=[], plannerUsers=[], plannerTimer=null, plannerLoaded=false;
+let plannerMonth=new Date(), plannerSelectedDate=new Date();
 
 const $  = id => document.getElementById(id);
 const flt = id => parseFloat($(id)?.value)||0;
@@ -1763,6 +1892,9 @@ async function authSubmit(){
 }
 
 async function logout(){
+  if(plannerTimer){ clearInterval(plannerTimer); plannerTimer=null; }
+  if(onlinePresenceTimer){ clearInterval(onlinePresenceTimer); onlinePresenceTimer=null; }
+  if(presenceChannel && sb){ try{ await sb.removeChannel(presenceChannel); }catch(e){ console.warn('removeChannel:', e); } presenceChannel=null; }
   if(!sb) sb = await initSupabaseClient();
   if(!sb){ showAuth(); return; }
   try{ await sb.auth.signOut(); }catch(e){ console.warn('Erro ao sair:', e); }
@@ -1821,6 +1953,7 @@ function guardTool(tool){
   return true;
 }
 
+
 function applyRoleUI(){
   ['home','props','chart','new','carta','simgeo','labeee','mapoteca','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
@@ -1828,6 +1961,28 @@ function applyRoleUI(){
   });
   const chartTab=$('dt-chart');
   if(chartTab) chartTab.style.display=canUseTool('chart')?'':'none';
+}
+
+function canSeeAllProposals(){
+  const r=normalizedRole(currentRole);
+  return r==='dono' || r==='financeiro';
+}
+function isOwnProposal(p){
+  return !p?.user_id || !user?.id || p.user_id===user.id;
+}
+function canEditProposal(p){
+  const r=normalizedRole(currentRole);
+  return r==='dono' || isOwnProposal(p);
+}
+function canDeleteProposal(p){
+  const r=normalizedRole(currentRole);
+  return r==='dono' || isOwnProposal(p);
+}
+function proposalOwnerLabel(p){
+  if(!p) return '—';
+  if(p.user_email) return String(p.user_email).split('@')[0];
+  if(user?.id && p.user_id===user.id) return 'Você';
+  return p.user_id ? 'Usuário '+String(p.user_id).slice(0,8) : 'Sem autor';
 }
 
 async function loadCurrentRole(){
@@ -1843,12 +1998,13 @@ async function loadCurrentRole(){
     console.warn('Não foi possível carregar perfil da empresa:', e);
   }
   applyRoleUI();
+  plannerInit();
 }
 
 // ── PRESENCE (online users) ───────────────────────
 async function initPresence(){
   const bar = $('online-users');
-  const selfEntry = ()=>({email:user?.email||'', nome:getDisplayName(), id:user?.id||''});
+  const selfEntry = ()=>({email:user?.email||'', nome:getDisplayName(), id:user?.id||'', papel:'você'});
   const renderUsers = (entries=[])=>{
     if(!bar) return;
     const list = [];
@@ -1856,52 +2012,39 @@ async function initPresence(){
     entries.forEach(u=>{
       const email = String(u?.email || u || '').trim();
       const nome = cleanDisplayName(u?.nome || u?.name || u?.display_name || (email?email.split('@')[0]:'usuário'));
+      const papel = String(u?.papel || '').trim();
       if(!email && !nome) return;
-      const key = (email || nome).toLowerCase();
+      const key = String(u?.user_id || u?.id || email || nome).toLowerCase();
       if(seen.has(key)) return;
       seen.add(key);
-      list.push({email, nome:nome || 'usuário'});
+      list.push({email, nome:nome || 'usuário', papel});
     });
     bar.innerHTML = list.length
-      ? list.map(u=>`<span class="online-chip" title="${esc(u.email||u.nome)}">${esc(u.nome)}</span>`).join('')
+      ? list.map(u=>`<span class="online-chip" title="${esc([u.nome,u.email,u.papel].filter(Boolean).join(' · '))}">${esc(u.nome)}</span>`).join('')
       : '<span style="color:var(--faint)">—</span>';
   };
+
+  if(onlinePresenceTimer){ clearInterval(onlinePresenceTimer); onlinePresenceTimer=null; }
   if(bar) bar.innerHTML = '<span style="color:var(--faint)">Conectando...</span>';
   if(!user?.email || !sb){ renderUsers(user?.email ? [selfEntry()] : []); return; }
-  try {
-    if(presenceChannel){
-      try{ await sb.removeChannel(presenceChannel); }catch(e){ console.warn('removeChannel:',e); }
-      presenceChannel=null;
+
+  async function updateOnlineFromDatabase(){
+    try{
+      const nome = getDisplayName();
+      const reg = await sb.rpc('registrar_presenca_online', {p_nome:nome});
+      if(reg?.error) throw reg.error;
+      const {data, error} = await sb.rpc('listar_usuarios_online', {p_minutos:3});
+      if(error) throw error;
+      renderUsers((data && data.length) ? data : [selfEntry()]);
+    }catch(e){
+      console.warn('Presença online via banco indisponível:', e);
+      renderUsers([selfEntry()]);
     }
-    const ch = sb.channel('presence-global', {config:{presence:{key:user.id||user.email}}});
-    presenceChannel=ch;
-    const readPresence = ()=>{
-      const state = ch.presenceState?.() || {};
-      return Object.values(state).flat().filter(u=>u?.email || u?.nome || u?.name);
-    };
-    ch.on('presence',{event:'sync'},()=>{
-      try{
-        const users = readPresence();
-        renderUsers(users.length ? users : [selfEntry()]);
-      }catch(e){ console.warn('presence sync:', e); renderUsers([selfEntry()]); }
-    });
-    ch.subscribe(async status=>{
-      if(status==='SUBSCRIBED'){
-        try{
-          await ch.track(Object.assign(selfEntry(), {online_at:new Date().toISOString()}));
-          setTimeout(()=>{
-            try{
-              const users = readPresence();
-              renderUsers(users.length ? users : [selfEntry()]);
-            }catch(e){ renderUsers([selfEntry()]); }
-          },500);
-        }catch(e){ console.warn('presence track:', e); renderUsers([selfEntry()]); }
-      }
-      if(status==='CHANNEL_ERROR' || status==='TIMED_OUT' || status==='CLOSED'){
-        renderUsers([selfEntry()]);
-      }
-    });
-  } catch(e){ console.warn('Presence error:',e); renderUsers([selfEntry()]); }
+  }
+
+  // Atualiza agora e repete o heartbeat. Assim os usuários aparecem mesmo quando o Realtime/WebSocket falha.
+  await updateOnlineFromDatabase();
+  onlinePresenceTimer = setInterval(updateOnlineFromDatabase, 25000);
 }
 
 // ── VIEWS ─────────────────────────────────────────
@@ -1926,6 +2069,7 @@ function showHall(){
   hideViews();
   $('hall-view').style.display='block';
   setTool('home');
+  if(plannerLoaded) plannerRenderAll();
 }
 
 function showDash(tab='props'){
@@ -1997,6 +2141,234 @@ function showEquipe(){
   $('equipe-view').style.display='block';
   setTool('equipe');
   equipeLoad();
+}
+
+
+
+// ── PLANNER / CALENDÁRIO ─────────────────────────
+function plannerPad(n){ return String(n).padStart(2,'0'); }
+function plannerDateKey(d){
+  const x = d instanceof Date ? d : new Date(d);
+  return x.getFullYear()+'-'+plannerPad(x.getMonth()+1)+'-'+plannerPad(x.getDate());
+}
+function plannerParseKey(key){
+  const [y,m,d]=String(key||plannerDateKey(new Date())).split('-').map(Number);
+  return new Date(y,(m||1)-1,d||1);
+}
+function plannerTimeLabel(v){
+  if(!v) return '';
+  try{return new Date(v).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}catch(_e){return '';}
+}
+function plannerDateLabel(key){
+  return plannerParseKey(key).toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+}
+function plannerSetStatus(msg,type=''){
+  const el=$('planner-status'); if(!el) return;
+  el.textContent=msg||'';
+  el.style.color=type==='ok'?'var(--green)':type==='err'?'var(--err)':'var(--faint)';
+}
+function plannerMonthRange(){
+  const y=plannerMonth.getFullYear(), m=plannerMonth.getMonth();
+  const first=new Date(y,m,1), last=new Date(y,m+1,0);
+  const start=new Date(first); start.setDate(first.getDate()-first.getDay());
+  const end=new Date(last); end.setDate(last.getDate()+(6-last.getDay()));
+  return {start,end};
+}
+function plannerEventsForDate(key){
+  return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===key);
+}
+function plannerCanManage(){
+  const r=normalizedRole(currentRole);
+  return ['dono','arquiteto','minion','financeiro'].includes(r);
+}
+async function plannerInit(){
+  if(plannerLoaded || !user || !sb) return;
+  plannerLoaded=true;
+  plannerSelectedDate=new Date();
+  plannerMonth=new Date();
+  const dateInput=$('pl-date'); if(dateInput) dateInput.value=plannerDateKey(new Date());
+  await plannerLoad(true);
+  if(plannerTimer) clearInterval(plannerTimer);
+  plannerTimer=setInterval(()=>plannerLoad(false),60000);
+}
+async function plannerLoad(forceRender=true){
+  if(!sb || !user) return;
+  const range=plannerMonthRange();
+  try{
+    const usersRes=await sb.rpc('planner_listar_usuarios');
+    if(usersRes.error) throw usersRes.error;
+    plannerUsers=Array.isArray(usersRes.data)?usersRes.data:[];
+    const {data,error}=await sb.rpc('planner_listar_eventos',{p_de:plannerDateKey(range.start),p_ate:plannerDateKey(range.end)});
+    if(error) throw error;
+    plannerEvents=Array.isArray(data)?data:[];
+    plannerSetStatus('');
+    if(forceRender) plannerRenderAll(); else plannerRenderFloatingAlert();
+  }catch(e){
+    console.warn('Planner indisponível:',e);
+    plannerSetStatus((e?.message||String(e)).includes('function')?'Rode o SQL do Planner no Supabase para ativar o calendário.':(e?.message||String(e)),'err');
+    plannerEvents=[];
+    if(forceRender) plannerRenderAll();
+  }
+}
+function plannerRenderAll(){
+  plannerRenderUsers();
+  plannerRenderCalendar();
+  plannerRenderDayList();
+  plannerRenderFloatingAlert();
+}
+function plannerRenderUsers(){
+  const wrap=$('planner-users'); if(!wrap) return;
+  if(!plannerUsers.length){ wrap.innerHTML='<span class="planner-muted">Nenhum usuário da equipe encontrado.</span>'; return; }
+  wrap.innerHTML=plannerUsers.map(u=>{
+    const id=esc(u.user_id||'');
+    const nome=esc(u.nome || (u.email||'').split('@')[0] || 'usuário');
+    const email=esc(u.email || '');
+    const checked=(u.user_id===user?.id)?'checked':'';
+    return `<label class="planner-user-check" title="${email}"><input type="checkbox" class="pl-user" value="${id}" ${checked}> <span>${nome}<span style="color:var(--faint)"> · ${roleLabel(u.papel)}</span></span></label>`;
+  }).join('');
+}
+function plannerRenderCalendar(){
+  const grid=$('planner-calendar-grid'); if(!grid) return;
+  const lbl=$('planner-month-label');
+  if(lbl) lbl.textContent=plannerMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const {start}=plannerMonthRange();
+  const selected=plannerDateKey(plannerSelectedDate);
+  const today=plannerDateKey(new Date());
+  const y=plannerMonth.getFullYear(), m=plannerMonth.getMonth();
+  let html='';
+  for(let i=0;i<42;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i);
+    const key=plannerDateKey(d);
+    const evs=plannerEventsForDate(key);
+    const muted=d.getMonth()!==m?' muted':'';
+    const cls='planner-day'+muted+(key===today?' today':'')+(key===selected?' selected':'');
+    const dots=evs.slice(0,3).map(()=>'<span class="planner-dot"></span>').join('')+(evs.length>3?`<div class="planner-more">+${evs.length-3}</div>`:'');
+    html+=`<div class="${cls}" onclick="plannerSelectDate('${key}')"><div class="n">${d.getDate()}</div><div class="dots">${dots}</div></div>`;
+  }
+  grid.innerHTML=html;
+}
+function plannerRenderDayList(){
+  const key=plannerDateKey(plannerSelectedDate);
+  const title=$('planner-day-title'); if(title) title.textContent=plannerDateLabel(key);
+  const dateInput=$('pl-date'); if(dateInput) dateInput.value=key;
+  const list=$('planner-day-list'); if(!list) return;
+  const evs=plannerEventsForDate(key).sort((a,b)=>new Date(a.inicio)-new Date(b.inicio));
+  if(!evs.length){ list.innerHTML='<div class="planner-muted">Nenhum aviso para este dia.</div>'; return; }
+  list.innerHTML=evs.map(ev=>plannerEventCard(ev)).join('');
+}
+function plannerEventCard(ev){
+  const hora=[plannerTimeLabel(ev.inicio),plannerTimeLabel(ev.fim)].filter(Boolean).join('–');
+  const part=Array.isArray(ev.participantes)?ev.participantes.map(p=>p.nome||p.email).filter(Boolean).slice(0,4).join(', '):'';
+  return `<div class="planner-event" onclick="plannerShowDetails('${esc(ev.evento_id||ev.id)}')">
+    <div class="t">${esc(ev.titulo||'Sem título')}</div>
+    <div class="m">${esc([hora,ev.local].filter(Boolean).join(' · ') || 'Sem horário')}</div>
+    ${part?`<div class="m">Marcados: ${esc(part)}</div>`:''}
+    <span class="chip">${esc(ev.tipo||'aviso')}</span>
+  </div>`;
+}
+function plannerSelectDate(key){
+  plannerSelectedDate=plannerParseKey(key);
+  plannerRenderCalendar();
+  plannerRenderDayList();
+}
+function plannerChangeMonth(delta){
+  plannerMonth=new Date(plannerMonth.getFullYear(),plannerMonth.getMonth()+Number(delta||0),1);
+  plannerLoad(true);
+}
+function plannerGoToday(){
+  plannerMonth=new Date(); plannerSelectedDate=new Date(); plannerLoad(true);
+}
+async function plannerCreateEvent(){
+  if(!plannerCanManage()){ plannerSetStatus('Seu perfil não pode criar avisos.','err'); return; }
+  const titulo=String($('pl-title')?.value||'').trim();
+  const data=$('pl-date')?.value || plannerDateKey(plannerSelectedDate);
+  const hora=$('pl-time')?.value || '09:00';
+  const fimHora=$('pl-end-time')?.value || '';
+  if(!titulo){ plannerSetStatus('Digite um título para o aviso.','err'); return; }
+  const checked=[...document.querySelectorAll('.pl-user:checked')].map(i=>i.value).filter(Boolean);
+  if(!checked.length && user?.id) checked.push(user.id);
+  const inicio=new Date(data+'T'+hora+':00');
+  const fim=fimHora?new Date(data+'T'+fimHora+':00'):null;
+  if(isNaN(inicio.getTime())){ plannerSetStatus('Data ou horário inválido.','err'); return; }
+  plannerSetStatus('Criando aviso...');
+  try{
+    if(!sb) sb=await initSupabaseClient();
+    const {error}=await sb.rpc('planner_criar_evento',{
+      p_titulo:titulo,
+      p_inicio:inicio.toISOString(),
+      p_fim:fim && !isNaN(fim.getTime())?fim.toISOString():null,
+      p_local:String($('pl-local')?.value||'').trim() || null,
+      p_descricao:String($('pl-desc')?.value||'').trim() || null,
+      p_tipo:$('pl-type')?.value || 'reuniao',
+      p_participantes:checked
+    });
+    if(error) throw error;
+    ['pl-title','pl-local','pl-desc'].forEach(id=>{const el=$(id); if(el) el.value='';});
+    plannerSetStatus('✓ Aviso criado e enviado aos usuários marcados.','ok');
+    await plannerLoad(true);
+  }catch(e){ plannerSetStatus(e?.message || String(e),'err'); }
+}
+function plannerTodayEvents(){
+  const today=plannerDateKey(new Date());
+  return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===today).sort((a,b)=>new Date(a.inicio)-new Date(b.inicio));
+}
+function plannerRenderFloatingAlert(){
+  const alert=$('planner-alert'); if(!alert) return;
+  const evs=plannerTodayEvents();
+  if(!evs.length){ alert.style.display='none'; plannerClosePanel(); return; }
+  alert.style.display='flex';
+  const first=evs[0];
+  const txt=$('planner-alert-text');
+  if(txt) txt.innerHTML=`<strong>Você tem ${evs.length} aviso${evs.length>1?'s':''} hoje</strong><span>${esc(plannerTimeLabel(first.inicio)||'Hoje')} · ${esc(first.titulo||'Compromisso')}</span>`;
+  const count=$('planner-alert-count'); if(count) count.textContent=evs.length;
+  plannerRenderPanel();
+}
+function plannerTogglePanel(){
+  const panel=$('planner-panel'); if(!panel) return;
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')) plannerRenderPanel();
+}
+function plannerClosePanel(){ const panel=$('planner-panel'); if(panel) panel.classList.remove('open'); }
+function plannerRenderPanel(){
+  const body=$('planner-panel-body'); if(!body) return;
+  const evs=plannerTodayEvents();
+  if(!evs.length){ body.innerHTML='<div class="planner-muted">Nenhum aviso para hoje.</div>'; return; }
+  body.innerHTML=evs.map(ev=>{
+    const hora=[plannerTimeLabel(ev.inicio),plannerTimeLabel(ev.fim)].filter(Boolean).join('–');
+    return `<div class="planner-event" onclick="plannerShowDetails('${esc(ev.evento_id||ev.id)}')">
+      <div class="t">${esc(ev.titulo||'Sem título')}</div>
+      <div class="m">${esc([hora,ev.local].filter(Boolean).join(' · ') || 'Hoje')}</div>
+      ${ev.descricao?`<div class="m">${esc(String(ev.descricao).slice(0,140))}</div>`:''}
+      <span class="chip">Clique para detalhes</span>
+    </div>`;
+  }).join('');
+}
+function plannerShowDetails(id){
+  const ev=plannerEvents.find(x=>String(x.evento_id||x.id)===String(id));
+  if(!ev) return;
+  const old=$('planner-detail-modal'); if(old) old.remove();
+  const hora=[new Date(ev.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}), ev.fim?plannerTimeLabel(ev.fim):''].filter(Boolean).join('–');
+  const part=Array.isArray(ev.participantes)?ev.participantes.map(p=>p.nome||p.email).filter(Boolean).join(', '):'';
+  const wrap=document.createElement('div');
+  wrap.id='planner-detail-modal'; wrap.className='modal-overlay';
+  wrap.onclick=e=>{ if(e.target===wrap) wrap.remove(); };
+  wrap.innerHTML=`<div class="modal">
+    <button class="modal-close" onclick="$('planner-detail-modal')?.remove()">✕</button>
+    <h2>${esc(ev.titulo||'Aviso')}</h2>
+    <div class="rel-box"><h3>Detalhes</h3>
+      <div class="rel-row"><span>Quando</span><span class="rv">${esc(hora)}</span></div>
+      <div class="rel-row"><span>Tipo</span><span class="rv">${esc(ev.tipo||'—')}</span></div>
+      <div class="rel-row"><span>Local/link</span><span class="rv">${esc(ev.local||'—')}</span></div>
+      <div class="rel-row"><span>Marcados</span><span class="rv">${esc(part||'—')}</span></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap">${esc(ev.descricao||'Sem descrição.')}</div>
+    <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap"><button class="btn solid" onclick="plannerMarkRead('${esc(ev.evento_id||ev.id)}')">Ok, entendido</button></div>
+  </div>`;
+  document.body.appendChild(wrap);
+}
+async function plannerMarkRead(id){
+  try{ if(sb) await sb.rpc('planner_marcar_lido',{p_evento_id:id}); }catch(e){ console.warn(e); }
+  const modal=$('planner-detail-modal'); if(modal) modal.remove();
 }
 
 // ── EQUIPE / USUÁRIOS ─────────────────────────────
@@ -2653,28 +3025,45 @@ function dashTab(t){
 // ── LOAD PROPOSALS ────────────────────────────────
 async function loadProposals(){
   if(!sb){ proposals=[]; renderDash(); return; }
-  const {data} = await sb.from('proposals').select('*').order('updated_at',{ascending:false});
+  if(user && currentRole===null){
+    try{ await loadCurrentRole(); }catch(_e){}
+  }
+  let q = sb.from('proposals').select('*').order('updated_at',{ascending:false});
+  if(user?.id && !canSeeAllProposals()) q = q.eq('user_id', user.id);
+  const {data,error} = await q;
+  if(error){
+    console.error('Erro ao carregar propostas:', error);
+    proposals=[]; renderDash();
+    notifyStatus?.('Erro ao carregar propostas. Verifique as permissões/RLS.','err',4000);
+    return;
+  }
   proposals = data||[];
   renderDash();
 }
 
 function renderDash(){
   const grid=$('prop-grid');
+  const allMode=canSeeAllProposals();
+  const scopeLabel=allMode?'Visão da empresa: propostas de todos os usuários.':'Minha visão: apenas propostas criadas por você.';
   if(!proposals.length){
-    grid.innerHTML='<div class="empty-state"><div class="ei">◻</div><div style="font-size:14px;color:var(--muted)">Nenhuma proposta ainda</div><p>Clique em "+ Nova proposta" para começar</p></div>';
+    grid.innerHTML='<div class="empty-state"><div class="ei">◻</div><div style="font-size:14px;color:var(--muted)">Nenhuma proposta ainda</div><p>'+scopeLabel+'</p><p>Clique em "+ Nova proposta" para começar</p></div>';
     return;
   }
-  grid.innerHTML=proposals.map(p=>{
-    const dt=new Date(p.updated_at).toLocaleDateString('pt-BR');
-    return `<div class="prop-card" onclick="editProposal('${p.id}')">
+  grid.innerHTML='<div style="grid-column:1/-1;font-size:11px;color:var(--faint);margin-bottom:2px">'+esc(scopeLabel)+'</div>'+proposals.map(p=>{
+    const dt=new Date(p.updated_at||p.created_at||Date.now()).toLocaleDateString('pt-BR');
+    const canEdit=canEditProposal(p);
+    const canDelete=canDeleteProposal(p);
+    const owner=proposalOwnerLabel(p);
+    return `<div class="prop-card" onclick="${canEdit?'editProposal':'viewProposalReadonly'}('${p.id}')">
       <div class="pc-tipo">${esc(p.typology||'—')}</div>
       <div class="pc-nome">${esc(p.name||'Sem título')}</div>
       <div class="pc-cli">${esc(p.client||'—')}</div>
+      ${allMode?`<div class="pc-data" style="margin-bottom:.35rem">Autor: ${esc(owner)}</div>`:''}
       <div class="pc-total">R$ ${fmtI(p.total||0)}</div>
       <div class="pc-data">Atualizado ${dt}</div>
       <div class="pc-actions">
-        <button class="btn" style="font-size:11px;padding:5px 10px" onclick="event.stopPropagation();editProposal('${p.id}')">Editar</button>
-        <button class="btn danger" style="font-size:11px;padding:5px 10px" onclick="event.stopPropagation();deleteProposal('${p.id}')">Excluir</button>
+        <button class="btn" style="font-size:11px;padding:5px 10px" onclick="event.stopPropagation();${canEdit?'editProposal':'viewProposalReadonly'}('${p.id}')">${canEdit?'Editar':'Ver'}</button>
+        ${canDelete?`<button class="btn danger" style="font-size:11px;padding:5px 10px" onclick="event.stopPropagation();deleteProposal('${p.id}')">Excluir</button>`:''}
       </div>
     </div>`;
   }).join('');
@@ -2746,8 +3135,35 @@ function newProposal(){
   showCalc(); go(0);
 }
 
+function viewProposalReadonly(id){
+  const p=proposals.find(x=>x.id===id); if(!p) return;
+  const old=$('proposal-readonly-modal'); if(old) old.remove();
+  const dt=new Date(p.updated_at||p.created_at||Date.now()).toLocaleString('pt-BR');
+  const area=Number(p.area||0);
+  const wrap=document.createElement('div');
+  wrap.id='proposal-readonly-modal';
+  wrap.className='modal-overlay';
+  wrap.onclick=e=>{ if(e.target===wrap) wrap.remove(); };
+  wrap.innerHTML=`<div class="modal">
+    <button class="modal-close" onclick="$('proposal-readonly-modal')?.remove()">✕</button>
+    <h2>Resumo da proposta</h2>
+    <div class="rel-box"><h3>Identificação</h3>
+      <div class="rel-row"><span>Projeto</span><span class="rv">${esc(p.name||'Sem título')}</span></div>
+      <div class="rel-row"><span>Cliente</span><span class="rv">${esc(p.client||'—')}</span></div>
+      <div class="rel-row"><span>Tipologia</span><span class="rv">${esc(p.typology||'—')}</span></div>
+      <div class="rel-row"><span>Área total</span><span class="rv">${area?fmt(area)+' m²':'—'}</span></div>
+      <div class="rel-row"><span>Autor</span><span class="rv">${esc(proposalOwnerLabel(p))}</span></div>
+      <div class="rel-row"><span>Atualizada em</span><span class="rv">${esc(dt)}</span></div>
+    </div>
+    <div class="grand"><span class="gl">Total da proposta</span><span class="gv">R$ ${fmtI(p.total||0)}</span></div>
+    <p style="font-size:11px;color:var(--faint);line-height:1.6;margin-top:.8rem">Dono e autor podem editar/excluir. Financeiro pode ver propostas de todos para acompanhar valores e gráficos.</p>
+  </div>`;
+  document.body.appendChild(wrap);
+}
+
 function editProposal(id){
   const p=proposals.find(x=>x.id===id); if(!p)return;
+  if(!canEditProposal(p)){ viewProposalReadonly(id); return; }
   currentId=id;
   $('calc-title').textContent=p.name||'Editar proposta';
   $('save-status').textContent='';
@@ -2756,9 +3172,13 @@ function editProposal(id){
 }
 
 async function deleteProposal(id){
+  const p=proposals.find(x=>x.id===id);
+  if(!p) return;
+  if(!canDeleteProposal(p)){ alert('Seu perfil não pode excluir esta proposta.'); return; }
   if(!id || !confirm('Excluir esta proposta?')) return;
   if(!sb) return;
-  await sb.from('proposals').delete().eq('id',id);
+  const {error}=await sb.from('proposals').delete().eq('id',id);
+  if(error){ alert('Não foi possível excluir: '+(error.message||error)); return; }
   loadProposals();
 }
 
@@ -2774,7 +3194,15 @@ async function saveProposal(opts={}){
   }
   const nome=$('rel-nome').value||'Sem título';
   const final=Math.max(0,fasesT+taxT-descV);
-  const payload={user_id:user.id,name:nome,client:$('rel-cli').value||'',typology:$('rel-tipo').value||'',area:flt('rel-area'),total:Math.round(final),updated_at:new Date().toISOString(),data:getCalcData()};
+  if(currentId){
+    const existing=proposals.find(x=>x.id===currentId);
+    if(existing && !canEditProposal(existing)){
+      if(btn){btn.disabled=false;btn.textContent='Salvar proposta';}
+      if(status){status.textContent='Seu perfil não pode editar esta proposta.';status.className='save-status err';}
+      return {ok:false,error:'sem permissão'};
+    }
+  }
+  const payload={user_id:user.id,user_email:user.email||'',name:nome,client:$('rel-cli').value||'',typology:$('rel-tipo').value||'',area:flt('rel-area'),total:Math.round(final),updated_at:new Date().toISOString(),data:getCalcData()};
   let error,data;
   if(currentId){
     ({error}=await sb.from('proposals').update(payload).eq('id',currentId));
@@ -4997,6 +5425,21 @@ init();
 
 
 </script>
+
+<!-- ── PLANNER ALERTA FLUTUANTE ───────────────────────────── -->
+<div id="planner-alert" onclick="plannerTogglePanel()">
+  <div class="planner-alert-ico">📅</div>
+  <div class="planner-alert-text" id="planner-alert-text"><strong>Planner</strong><span>Você tem compromisso hoje</span></div>
+  <div class="planner-alert-count" id="planner-alert-count">0</div>
+</div>
+<div id="planner-panel">
+  <div class="planner-panel-head">
+    <h3>Seus avisos de hoje</h3>
+    <button class="planner-panel-close" onclick="plannerClosePanel()">✕</button>
+  </div>
+  <div class="planner-panel-body" id="planner-panel-body"></div>
+</div>
+
 <!-- ── NBR CHAT WIDGET ────────────────────────────────────── -->
 <div id="notif-toast">
   <div class="nbr-notif-icon">🔄</div>
