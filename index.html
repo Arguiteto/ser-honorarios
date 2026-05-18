@@ -1994,7 +1994,7 @@ async function initPresence(){
       const nome = getDisplayName();
       const reg = await sb.rpc('registrar_presenca_online', {p_nome:nome});
       if(reg?.error) throw reg.error;
-      const {data, error} = await sb.rpc('listar_usuarios_online', {p_minutos:3});
+      const {data, error} = await sb.rpc('listar_usuarios_online', {p_minutos:10});
       if(error) throw error;
       renderUsers((data && data.length) ? data : [selfEntry()]);
     }catch(e){
@@ -2003,9 +2003,27 @@ async function initPresence(){
     }
   }
 
-  // Atualiza agora e repete o heartbeat. Assim os usuários aparecem mesmo quando o Realtime/WebSocket falha.
+  // Atualiza agora e repete o heartbeat. Janela maior ajuda Safari/iPhone, que pode pausar timers.
   await updateOnlineFromDatabase();
-  onlinePresenceTimer = setInterval(updateOnlineFromDatabase, 25000);
+  setTimeout(updateOnlineFromDatabase, 2000);
+  onlinePresenceTimer = setInterval(updateOnlineFromDatabase, 15000);
+
+  // Reativa presença quando o Safari volta para a aba/app, quando a rede retorna ou a janela ganha foco.
+  if(!window._chaosOnlinePresenceListeners){
+    window._chaosOnlinePresenceListeners = true;
+    document.addEventListener('visibilitychange', ()=>{
+      if(!document.hidden && typeof initPresence === 'function') initPresence();
+    });
+    window.addEventListener('focus', ()=>{
+      if(typeof initPresence === 'function') initPresence();
+    });
+    window.addEventListener('pageshow', ()=>{
+      if(typeof initPresence === 'function') initPresence();
+    });
+    window.addEventListener('online', ()=>{
+      if(typeof initPresence === 'function') initPresence();
+    });
+  }
 }
 
 // ── VIEWS ─────────────────────────────────────────
