@@ -812,7 +812,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 .planner-calendar{border:0.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surf2)}
 .planner-week,.planner-grid{display:grid;grid-template-columns:repeat(7,1fr)}
 .planner-week div{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;text-align:center;padding:8px 4px;border-bottom:0.5px solid var(--border);background:var(--surface)}
-.planner-day{min-height:76px;border-right:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:7px;cursor:pointer;background:var(--surface);transition:background .15s,border-color .15s;position:relative}
+.planner-day{min-height:76px;border-right:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:7px;cursor:pointer;background:var(--surface);transition:background .15s,border-color .15s;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .planner-day:nth-child(7n){border-right:none}
 .planner-day:hover{background:var(--el)}
 .planner-day.muted{opacity:.38;background:var(--surf2)}
@@ -834,6 +834,8 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 .planner-delete-btn{font-family:inherit;font-size:9px;padding:3px 7px;border:0.5px solid var(--errb);border-radius:999px;background:var(--errl);color:var(--err);cursor:pointer;transition:opacity .15s,background .15s}
 .planner-delete-btn:hover{opacity:.82}
 .planner-form{display:flex;flex-direction:column;gap:8px;border-top:0.5px solid var(--border);padding-top:.9rem}
+.planner-form-focus{box-shadow:0 0 0 2px var(--e);border-radius:12px;padding:.9rem;background:var(--surface);transition:box-shadow .2s,background .2s}
+.planner-create-day-btn{display:flex;align-items:center;gap:6px}
 .planner-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .planner-input,.planner-select,.planner-textarea{width:100%;border:0.5px solid var(--border-em);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-size:12px;padding:8px 10px;outline:none}
 .planner-input:focus,.planner-select:focus,.planner-textarea:focus{border-color:var(--e)}
@@ -854,6 +856,10 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 .planner-panel-body{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px}
 .planner-panel-close{background:none;border:none;color:var(--faint);font-size:18px;cursor:pointer;line-height:1}
 @media(max-width:760px){.planner-layout{grid-template-columns:1fr}.planner-day{min-height:62px;padding:5px}.planner-form-row{grid-template-columns:1fr}#planner-toggle{right:16px;bottom:82px;width:52px;height:52px;border-radius:14px}.planner-hall{right:10px;bottom:148px;width:calc(100vw - 20px);max-height:calc(100vh - 170px);padding:1rem}#planner-alert{right:16px;bottom:146px;max-width:220px}#planner-panel{right:10px;bottom:205px;width:calc(100vw - 20px)}}
+
+
+/* Remove texto flutuante acima do botão NBR */
+#nbr-badge{display:none!important}
 
 </style>
 </head>
@@ -2222,7 +2228,7 @@ function plannerRenderCalendar(){
     const muted=d.getMonth()!==m?' muted':'';
     const cls='planner-day'+muted+(key===today?' today':'')+(key===selected?' selected':'');
     const dots=evs.slice(0,3).map(()=>'<span class="planner-dot"></span>').join('')+(evs.length>3?`<div class="planner-more">+${evs.length-3}</div>`:'');
-    html+=`<div class="${cls}" onclick="plannerSelectDate('${key}')"><div class="n">${d.getDate()}</div><div class="dots">${dots}</div></div>`;
+    html+=`<div class="${cls}" role="button" tabindex="0" data-planner-date="${key}" onclick="plannerSelectDate('${key}',true)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();plannerSelectDate('${key}',true)}"><div class="n">${d.getDate()}</div><div class="dots">${dots}</div></div>`;
   }
   grid.innerHTML=html;
 }
@@ -2232,8 +2238,11 @@ function plannerRenderDayList(){
   const dateInput=$('pl-date'); if(dateInput) dateInput.value=key;
   const list=$('planner-day-list'); if(!list) return;
   const evs=plannerEventsForDate(key).sort((a,b)=>new Date(a.inicio)-new Date(b.inicio));
-  if(!evs.length){ list.innerHTML='<div class="planner-muted">Nenhum aviso para este dia.</div>'; return; }
-  list.innerHTML=evs.map(ev=>plannerEventCard(ev)).join('');
+  const createBtn = plannerCanManage()
+    ? `<button class="btn solid planner-create-day-btn" type="button" onclick="plannerOpenCreateForm()" style="width:100%;justify-content:center;margin-bottom:6px">＋ Criar aviso neste dia</button>`
+    : '';
+  if(!evs.length){ list.innerHTML=createBtn+'<div class="planner-muted">Nenhum aviso para este dia.</div>'; return; }
+  list.innerHTML=createBtn+evs.map(ev=>plannerEventCard(ev)).join('');
 }
 function plannerCanDeleteEvent(ev){
   const r=normalizedRole(currentRole);
@@ -2251,10 +2260,32 @@ function plannerEventCard(ev){
     <div class="planner-event-actions"><span class="chip">${esc(ev.tipo||'aviso')}</span>${del}</div>
   </div>`;
 }
-function plannerSelectDate(key){
+
+function plannerIsMobile(){
+  return window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+}
+function plannerOpenCreateForm(){
+  const form=document.querySelector('.planner-form');
+  if(!form) return;
+  const key=plannerDateKey(plannerSelectedDate);
+  const dateInput=$('pl-date');
+  if(dateInput) dateInput.value=key;
+  form.classList.add('planner-form-focus');
+  form.scrollIntoView({behavior:'smooth',block:'start'});
+  plannerSetStatus('Data selecionada: '+plannerDateLabel(key)+'. Preencha o título e crie o aviso.','ok');
+  setTimeout(()=>{
+    const title=$('pl-title');
+    if(title){ try{ title.focus({preventScroll:true}); }catch(_e){ title.focus(); } }
+  },260);
+  setTimeout(()=>form.classList.remove('planner-form-focus'),1800);
+}
+function plannerSelectDate(key, openForm=false){
   plannerSelectedDate=plannerParseKey(key);
   plannerRenderCalendar();
   plannerRenderDayList();
+  if(openForm && plannerIsMobile()){
+    setTimeout(()=>plannerOpenCreateForm(),80);
+  }
 }
 function plannerChangeMonth(delta){
   plannerMonth=new Date(plannerMonth.getFullYear(),plannerMonth.getMonth()+Number(delta||0),1);
@@ -5520,7 +5551,7 @@ init();
   <button class="nbr-notif-close" onclick="nbrCloseToast()">✕</button>
 </div>
 <div id="nbr-notif-bubble" class="hidden">!</div>
-<div id="nbr-badge">NBR ASSISTANT</div>
+<div id="nbr-badge" aria-hidden="true"></div>
 <button id="nbr-toggle" title="Assistente NBR">
   <span class="nbr-icon-label" style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.85rem;color:#fff;letter-spacing:.04em;line-height:1;">NBR</span>
 </button>
