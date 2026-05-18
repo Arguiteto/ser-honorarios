@@ -1414,11 +1414,9 @@ body.nbr-open #online-bar{display:none}
       <div class="rel-box"><h3>Encargos e impostos</h3><div class="rel-row"><span>Total de encargos</span><span class="rv warn" id="rr-tax">R$ 0</span></div></div>
       <div class="rel-box"><h3>Ajuste</h3><div class="rel-row"><span>Desconto concedido</span><span class="rv neg" id="rr-desc">— R$ 0</span></div></div>
       <div class="grand"><span class="gl">Total da proposta</span><span class="gv" id="rr-total">R$ 0</span></div>
-      <div id="rr-m2-row" style="display:none;font-size:11px;color:var(--faint);text-align:right;font-family:monospace;margin-top:.3rem"></div>
-      <div class="mc2">
+      <div class="mc2" style="grid-template-columns:1fr 1fr">
         <div class="m"><div class="l">Entrada</div><div class="v" id="rr-ent">R$ 0</div></div>
         <div class="m"><div class="l">Parcela mensal</div><div class="v" id="rr-parc">R$ 0</div></div>
-        <div class="m"><div class="l">Por m²</div><div class="v" id="rr-m2c">—</div></div>
       </div>
       <div class="save-row">
         <button class="btn solid" id="save-btn" onclick="saveProposal()">Salvar proposta</button>
@@ -2709,7 +2707,7 @@ function calcD(){
 function upRel(){
   const bruto=fasesT+taxT,final=Math.max(0,bruto-descV);
   const ep=(flt('pg-ent')||30)/100,np=Math.max(1,Math.round(flt('pg-parc'))||3);
-  const ev=final*ep,pv=(final-ev)/np,area=flt('rel-area');
+  const ev=final*ep,pv=(final-ev)/np;
   $('rr-hora').textContent='R$ '+fmt(horaG);
   $('rr-horas').textContent=totalH+' h';
   $('rr-fases').textContent='R$ '+fmtI(fasesT-visitaV);
@@ -2719,9 +2717,7 @@ function upRel(){
   $('rr-total').textContent='R$ '+fmtI(final);
   $('rr-ent').textContent='R$ '+fmtI(ev);
   $('rr-parc').textContent='R$ '+fmt(pv);
-  const m2r=$('rr-m2-row');
-  if(area>0){$('rr-m2c').textContent='R$ '+fmt(final/area);m2r.textContent='R$ '+fmt(final/area)+' / m²';m2r.style.display='block';}
-  else{$('rr-m2c').textContent='—';m2r.style.display='none';}
+
 }
 
 // ── SERVICES ──────────────────────────────────────
@@ -4438,10 +4434,9 @@ async function exportPDF(){
           <div style="font-size:13px;color:#7A6A56;font-family:system-ui,sans-serif">Valor total do projeto</div>
           <div style="font-size:28px;color:#8B5E3C">R$ ${fmtI(final)}</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Entrada</div><div style="font-size:15px;color:#8B5E3C;font-family:monospace">R$ ${fmtI(ev)}</div></div>
           <div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Parcelas</div><div style="font-size:15px;color:#8B5E3C;font-family:monospace">${np}× R$ ${fmt(pv)}</div></div>
-          ${area>0?`<div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Por m²</div><div style="font-size:15px;color:#8B5E3C;font-family:monospace">R$ ${fmt(final/area)}</div></div>`:''}
         </div>
       </div>
       <div style="font-size:10px;color:#B0A090;font-family:system-ui,sans-serif;text-align:center;margin-bottom:16px">Esta proposta tem validade de 30 dias a partir da data de emissão.</div>
