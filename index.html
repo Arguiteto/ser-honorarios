@@ -746,6 +746,26 @@ body.nbr-open #online-bar{display:none}
 .threejs-note{font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem}
 @media(max-width:860px){.threejs-wrap{grid-template-columns:1fr}.threejs-kpis{grid-template-columns:1fr 1fr}.threejs-canvas{height:420px}}
 
+/* Correções desktop: Volumetria não fica sob o dock lateral */
+@media(min-width:721px){
+  #threejs-view{padding:1.5rem 1.5rem 1.5rem calc(180px + 1.5rem)!important;max-width:calc(1100px + 180px)}
+}
+@media(max-width:720px){
+  #threejs-view{padding:1rem!important}
+  .threejs-wrap{grid-template-columns:1fr}
+}
+
+/* NBR acompanha o tema atual */
+#nbr-toggle{
+  background:linear-gradient(135deg,var(--e),var(--eb))!important;
+  box-shadow:0 8px 28px rgba(var(--bg-rgb,237,232,220),.18),0 0 0 1px var(--border-em)!important;
+  border:1px solid var(--border-em)!important;
+}
+#nbr-toggle:hover{box-shadow:0 12px 36px rgba(var(--bg-rgb,237,232,220),.28),0 0 0 1px var(--e)!important}
+#nbr-badge{background:var(--surface)!important;border:1px solid var(--e)!important;color:var(--e)!important;box-shadow:0 8px 24px rgba(0,0,0,.12)!important}
+#nbr-toggle .nbr-icon-label{color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+@keyframes nbr-pulse{0%{box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 0 var(--border-em)}60%{box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 14px rgba(0,0,0,0)}100%{box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 0 var(--border-em)}}
+
 </style>
 </head>
 <body class="auth-mode">
@@ -1708,7 +1728,25 @@ function showApp(){
 
 // ── PRESENCE (online users) ───────────────────────
 async function initPresence(){
-  if(!user?.email || !sb) return;
+  const bar = $('online-users');
+  const renderUsers = (entries=[])=>{
+    if(!bar) return;
+    const list = [];
+    const seen = new Set();
+    entries.forEach(u=>{
+      const email = String(u?.email || u || '').trim();
+      if(!email) return;
+      const key = email.toLowerCase();
+      if(seen.has(key)) return;
+      seen.add(key);
+      list.push({email, nome:String(u?.nome || u?.name || email.split('@')[0] || 'usuário')});
+    });
+    bar.innerHTML = list.length
+      ? list.map(u=>`<span class="online-chip" title="${esc(u.email)}">${esc(u.nome)}</span>`).join('')
+      : '<span style="color:var(--faint)">Só você</span>';
+  };
+  if(bar) bar.innerHTML = '<span style="color:var(--faint)">Conectando...</span>';
+  if(!user?.email || !sb){ renderUsers(user?.email ? [{email:user.email}] : []); return; }
   try {
     if(presenceChannel){
       try{ await sb.removeChannel(presenceChannel); }catch(e){ console.warn('removeChannel:',e); }
@@ -1716,23 +1754,37 @@ async function initPresence(){
     }
     const ch = sb.channel('presence-global', {config:{presence:{key:user.id||user.email}}});
     presenceChannel=ch;
+    const readPresence = ()=>{
+      const state = ch.presenceState?.() || {};
+      return Object.values(state).flat().filter(u=>u?.email);
+    };
     ch.on('presence',{event:'sync'},()=>{
       try{
-        const state = ch.presenceState();
-        const users = [...new Set(Object.values(state).flat().map(u=>u.email||'?'))];
-        const bar = $('online-users');
-        if(bar) bar.innerHTML = users.length
-          ? users.map(u=>`<span class="online-chip">${esc(u.split('@')[0])}</span>`).join('')
-          : '<span style="color:var(--faint)">Só você</span>';
-      }catch(e){ console.warn('presence sync:', e); }
+        const users = readPresence();
+        renderUsers(users.length ? users : [{email:user.email}]);
+      }catch(e){ console.warn('presence sync:', e); renderUsers([{email:user.email}]); }
     });
     ch.subscribe(async status=>{
       if(status==='SUBSCRIBED'){
-        try{ await ch.track({email:user.email, online_at:new Date().toISOString()}); }
-        catch(e){ console.warn('presence track:', e); }
+        try{
+          await ch.track({
+            email:user.email,
+            nome:(user.email||'').split('@')[0] || 'usuário',
+            online_at:new Date().toISOString()
+          });
+          setTimeout(()=>{
+            try{
+              const users = readPresence();
+              renderUsers(users.length ? users : [{email:user.email}]);
+            }catch(e){ renderUsers([{email:user.email}]); }
+          },500);
+        }catch(e){ console.warn('presence track:', e); renderUsers([{email:user.email}]); }
+      }
+      if(status==='CHANNEL_ERROR' || status==='TIMED_OUT' || status==='CLOSED'){
+        renderUsers([{email:user.email}]);
       }
     });
-  } catch(e){ console.warn('Presence error:',e); }
+  } catch(e){ console.warn('Presence error:',e); renderUsers([{email:user.email}]); }
 }
 
 // ── VIEWS ─────────────────────────────────────────
@@ -2794,23 +2846,34 @@ function notifyStatus(msg,type='ok',ms=3000){
   s.className='save-status '+(type==='err'?'err':'ok');
   if(ms) setTimeout(()=>{s.textContent='';s.className='save-status';},ms);
 }
+let _pdfScrollPos = null;
 function createPdfElement(html){
-  // Overlay que cobre a tela durante a captura.
-  // Elemento VISÍVEL = browser pinta 100% garantido em Chrome, Safari e Firefox.
-  // z-index alto garante que fica na frente do conteúdo da página.
+  cleanupPdfElement(false);
+  _pdfScrollPos = { x: window.scrollX || 0, y: window.scrollY || 0 };
   const el=document.createElement('div');
   el.id='pdf-render-host';
   el.setAttribute('aria-hidden','true');
-  el.style.cssText='position:fixed;top:0;left:0;width:794px;min-height:100vh;background:#FAF7F1;overflow:visible;opacity:1;visibility:visible;pointer-events:none;z-index:99999';
+  el.style.cssText='position:absolute;top:0;left:0;width:794px;min-height:1123px;background:#FAF7F1;overflow:visible;opacity:1;visibility:visible;pointer-events:none;z-index:99999;box-shadow:0 0 0 9999px rgba(250,247,241,.96)';
   el.innerHTML=html;
   document.body.appendChild(el);
-  // Força layout completo
   void el.offsetWidth;
-  void el.getBoundingClientRect();
+  const h=Math.max(1123, Math.ceil(el.scrollHeight || el.getBoundingClientRect().height || 1123));
+  el.style.height=h+'px';
+  window.scrollTo(0,0);
   return el;
 }
+function cleanupPdfElement(restore=true){
+  const host=document.getElementById('pdf-render-host');
+  if(host) host.parentNode?.removeChild(host);
+  if(restore && _pdfScrollPos){
+    const pos=_pdfScrollPos; _pdfScrollPos=null;
+    setTimeout(()=>window.scrollTo(pos.x,pos.y),0);
+  }
+}
 // Opções html2canvas padrão para todos os PDFs
-function pdfH2cOpts(){
+function pdfH2cOpts(root){
+  const w=Math.max(794, Math.ceil(root?.scrollWidth || 794));
+  const h=Math.max(1123, Math.ceil(root?.scrollHeight || 1123));
   return {
     scale:2,
     useCORS:false,
@@ -2822,6 +2885,10 @@ function pdfH2cOpts(){
     scrollY:0,
     x:0,
     y:0,
+    width:w,
+    height:h,
+    windowWidth:w,
+    windowHeight:h
   };
 }
 function nextFrame(){
@@ -3741,11 +3808,11 @@ async function exportSimgeoPDF(){
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Consulta SIMGEO</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
     simgeoStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF SIMGEO:',e); simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
-  finally{ const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host); simgeoPdfBusy=false; }
+  finally{ cleanupPdfElement(); simgeoPdfBusy=false; }
 }
 
 
@@ -4051,11 +4118,11 @@ async function exportMapotecaPDF(){
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha Mapoteca</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
     mapotecaStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF Mapoteca:',e); mapotecaStatus('Não consegui gerar o PDF da Mapoteca.','err'); }
-  finally{ const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host); mapotecaPdfBusy=false; }
+  finally{ cleanupPdfElement(); mapotecaPdfBusy=false; }
 }
 
 function fillMapotecaFromSimgeo(){
@@ -4255,11 +4322,11 @@ async function exportLabeeePDF(){
     const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#D4B896,#F5EDE2);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:14px;color:#8B5E3C;font-weight:bold;flex-shrink:0">CH</div><div><div style="font-size:19px;color:#8B5E3C">Chaos</div><div style="font-size:9px;color:#B0A090;letter-spacing:1.4px;text-transform:uppercase;font-family:system-ui,sans-serif">Ficha LabEEE — Análise Ambiental</div></div></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
-    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha LabEEE.');
     labeeeStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF LabEEE:',e); labeeeStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
-  finally{ const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host); labeeePdfBusy=false; }
+  finally{ cleanupPdfElement(); labeeePdfBusy=false; }
 }
 
 
@@ -4364,7 +4431,7 @@ async function exportPDF(){
       margin:0,
       filename:'chaos-proposta-'+fn+'.pdf',
       image:{type:'jpeg',quality:0.95},
-      html2canvas:pdfH2cOpts(),
+      html2canvas:pdfH2cOpts(el),
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
       pagebreak:{mode:['css','legacy']}
     };
@@ -4374,7 +4441,7 @@ async function exportPDF(){
     console.error('Erro ao gerar PDF:',e);
     notifyStatus('Erro ao gerar PDF. Verifique os dados da proposta e tente novamente.','err',6000);
   }finally{
-    const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host);
+    cleanupPdfElement();
     btn.textContent='⬇ Baixar PDF';
     btn.disabled=false;
     pdfBusy=false;
@@ -4438,16 +4505,17 @@ async function exportCarta(){
       margin:0,
       filename:'chaos-carta-'+fn+'.pdf',
       image:{type:'jpeg',quality:0.95},
-      html2canvas:pdfH2cOpts(),
+      html2canvas:pdfH2cOpts(el),
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
       pagebreak:{mode:['css','legacy']}
     };
     await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a carta.');
+    notifyStatus('✓ PDF da carta gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar carta:',e);
     alert('Não foi possível gerar o PDF da carta. Recarregue a página e tente novamente.');
   }finally{
-    const _host=document.getElementById('pdf-render-host'); if(_host) _host.parentNode?.removeChild(_host);
+    cleanupPdfElement();
     if(btn){btn.textContent='⬇ Baixar PDF';btn.disabled=false;}
     cartaPdfBusy=false;
   }
@@ -4482,6 +4550,31 @@ function docxSeparator(){
     children:[]
   });
 }
+
+function base64ToBlob(b64, type){
+  const bin=atob(b64);
+  const len=bin.length;
+  const bytes=new Uint8Array(len);
+  for(let i=0;i<len;i++) bytes[i]=bin.charCodeAt(i);
+  return new Blob([bytes],{type});
+}
+async function packDocxBlob(doc){
+  const { Packer } = window.docx;
+  const type='application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  if(Packer.toBlob) return await Packer.toBlob(doc);
+  if(Packer.toBase64String) return base64ToBlob(await Packer.toBase64String(doc), type);
+  throw new Error('Exportação DOCX não suportada neste navegador.');
+}
+function downloadBlob(blob, filename){
+  const a=document.createElement('a');
+  const url=URL.createObjectURL(blob);
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },500);
+}
+
 
 async function exportPropostaDocx(){
   const btn=$('docx-btn');
@@ -4595,13 +4688,8 @@ async function exportPropostaDocx(){
       }]
     });
 
-    const buf=await Packer.toBuffer(doc);
-    const blob=new Blob([buf],{ type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download=`chaos-proposta-${safeFileName(nomeRaw,'proposta')}.docx`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const blob=await packDocxBlob(doc);
+    downloadBlob(blob, `chaos-proposta-${safeFileName(nomeRaw,'proposta')}.docx`);
     notifyStatus('✓ Word gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar DOCX:',e);
@@ -4662,13 +4750,8 @@ async function exportCartaDocx(){
       }]
     });
 
-    const buf=await Packer.toBuffer(doc);
-    const blob=new Blob([buf],{ type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download=`chaos-carta-${safeFileName(assunto||'carta','carta')}.docx`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const blob=await packDocxBlob(doc);
+    downloadBlob(blob, `chaos-carta-${safeFileName(assunto||'carta','carta')}.docx`);
     notifyStatus('✓ Word gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar carta DOCX:',e);
