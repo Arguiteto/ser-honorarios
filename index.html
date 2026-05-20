@@ -977,6 +977,48 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 @media(max-width:760px){.planner-layout{grid-template-columns:1fr}.planner-day{min-height:62px;padding:5px}.planner-form-row{grid-template-columns:1fr}#planner-toggle{right:16px;bottom:82px;width:52px;height:52px;border-radius:14px}.planner-hall{right:10px;bottom:148px;width:calc(100vw - 20px);max-height:calc(100vh - 170px);padding:1rem}#planner-alert{right:16px;bottom:146px;max-width:220px}#planner-panel{right:10px;bottom:205px;width:calc(100vw - 20px)}}
 
 
+
+/* ── PROTÓTIPO AMPLIFICADOR / ÁUDIO ───────────────────────── */
+#audioamp-view{display:none;padding:1.5rem;max-width:1040px;margin:0 auto;flex:1;width:100%}
+@media(min-width:721px){#audioamp-view{padding-left:180px}}
+.audioamp-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:1rem}
+.audioamp-kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.audioamp-title{font-family:Georgia,serif;font-size:28px;font-weight:400;color:var(--text);margin:0}
+.audioamp-sub{font-size:12px;color:var(--muted);max-width:620px;line-height:1.55;margin-top:8px}
+.audioamp-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(280px,360px);gap:14px;align-items:start}
+@media(max-width:860px){.audioamp-grid{grid-template-columns:1fr}}
+.amp-device{position:relative;min-height:440px;border:0.5px solid rgba(255,255,255,.14);border-radius:30px;background:radial-gradient(circle at 18% 15%,rgba(255,255,255,.10),transparent 26%),linear-gradient(145deg,#111827,#020617 62%,#050508);box-shadow:0 22px 60px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08);padding:26px;overflow:hidden;color:#f8fafc;isolation:isolate}
+.amp-device::before{content:'';position:absolute;inset:-40%;background:conic-gradient(from 40deg,transparent,rgba(249,115,22,.14),transparent 22%,rgba(59,130,246,.12),transparent 42%);animation:ampGlow 9s linear infinite;opacity:.75;z-index:-1}.amp-device::after{content:'';position:absolute;inset:14px;border-radius:24px;border:1px solid rgba(255,255,255,.08);pointer-events:none}
+@keyframes ampGlow{to{transform:rotate(360deg)}}
+.amp-face{height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:18px}.amp-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.amp-brand{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.72)}.amp-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.78)}
+.amp-viz{display:grid;grid-template-columns:repeat(16,1fr);gap:8px;align-items:end;height:230px;padding:22px;border-radius:22px;background:linear-gradient(180deg,rgba(15,23,42,.42),rgba(2,6,23,.78));border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 12px 32px rgba(0,0,0,.36)}
+.amp-bar{height:100%;min-height:8px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#f97316 45%,#7c2d12);transform-origin:bottom;transform:scaleY(var(--h,.12));box-shadow:0 0 calc(4px + var(--glow,0)*28px) rgba(249,115,22,.58);transition:transform 80ms linear,box-shadow 120ms linear,opacity 120ms linear;opacity:calc(.38 + var(--h,.12)*.58)}
+.amp-device.idle .amp-bar{background:linear-gradient(180deg,#94a3b8,#475569);box-shadow:none;opacity:.28}.amp-device.spotify .amp-bar{background:linear-gradient(180deg,#86efac,#22c55e 48%,#14532d);box-shadow:0 0 calc(4px + var(--glow,0)*26px) rgba(34,197,94,.48)}
+.amp-footer{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end}.amp-now{min-width:0}.amp-now-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:rgba(255,255,255,.48);margin-bottom:5px}.amp-track{font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.amp-artist{font-size:12px;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.amp-knob{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#f8fafc,#64748b 34%,#111827 70%);box-shadow:inset -8px -10px 18px rgba(0,0,0,.42),0 12px 26px rgba(0,0,0,.34);position:relative;transform:rotate(calc(-120deg + var(--level,0)*240deg));transition:transform 100ms linear}.amp-knob::after{content:'';position:absolute;top:9px;left:50%;width:3px;height:18px;border-radius:999px;background:#0f172a;transform:translateX(-50%)}
+.audioamp-card{background:var(--surface);border:0.5px solid var(--border);border-radius:16px;padding:1rem;box-shadow:0 2px 14px rgba(0,0,0,.05);margin-bottom:12px}.audioamp-card h3{font-family:Georgia,serif;font-size:18px;font-weight:400;margin:0 0 8px;color:var(--text)}.audioamp-card p{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 10px}.amp-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.amp-btn{border:0.5px solid var(--border);background:var(--surf2);color:var(--text);border-radius:10px;padding:10px 12px;font-size:12px;cursor:pointer;transition:transform .15s,background .15s,border .15s}.amp-btn:hover{transform:translateY(-1px);border-color:var(--border-em)}.amp-btn.primary{background:var(--e);border-color:var(--e);color:#fff}.amp-btn.danger{color:var(--err);background:var(--errl);border-color:var(--errb)}.amp-status{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);background:var(--surf2);border:0.5px solid var(--border);border-radius:10px;padding:9px 10px;margin-top:10px;line-height:1.45}.amp-meter{height:8px;border-radius:999px;background:var(--surf2);border:0.5px solid var(--border);overflow:hidden;margin-top:10px}.amp-meter span{display:block;height:100%;width:calc(var(--level,0)*100%);background:var(--e);transition:width 90ms linear}.amp-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}.spotify-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;border:0.5px solid var(--border);background:var(--surf2);border-radius:12px;padding:10px;margin-top:10px}.spotify-dot{width:10px;height:10px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 4px rgba(148,163,184,.16)}.spotify-chip.on .spotify-dot{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}.spotify-main{min-width:0}.spotify-main strong{display:block;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.spotify-main small{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+
+
+/* ── MINI MÓDULO DE ÁUDIO NO HEADER (DESKTOP) ───────────────────────── */
+.hdr-audio-widget{position:relative;display:flex;align-items:center;flex-shrink:0;--haa-accent:var(--icon-accent,var(--e))}
+.hdr-audio-chip{height:30px;min-width:104px;display:inline-flex;align-items:center;gap:8px;border:0.5px solid var(--border-em);border-radius:999px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer;white-space:nowrap;transition:transform .15s,border-color .15s,background .15s,color .15s,box-shadow .15s}
+.hdr-audio-chip:hover,.hdr-audio-widget.open .hdr-audio-chip{transform:translateY(-1px);border-color:var(--eb);background:var(--el);color:var(--haa-accent);box-shadow:0 8px 24px rgba(0,0,0,.10)}
+.hdr-audio-chip.live{color:var(--haa-accent);border-color:var(--eb);background:var(--el)}
+.hdr-audio-mini{width:30px;height:16px;display:flex;align-items:flex-end;justify-content:center;gap:2px;flex-shrink:0}
+.hdr-audio-mini i{width:3px;height:4px;border-radius:999px;background:currentColor;opacity:.45;transition:height 90ms linear,opacity 90ms linear,background 90ms linear;box-shadow:0 0 0 transparent}
+.hdr-audio-chip.live .hdr-audio-mini i{opacity:.82;box-shadow:0 0 8px rgba(0,0,0,.12)}
+.hdr-audio-pop{display:none;position:absolute;right:0;top:calc(100% + 10px);width:380px;max-width:calc(100vw - 42px);border:0.5px solid rgba(255,255,255,.16);border-radius:22px;background:linear-gradient(160deg,rgba(38,38,38,.96),rgba(16,16,16,.98));color:#f1eee9;box-shadow:0 24px 70px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.08);padding:16px;z-index:1000;overflow:hidden;isolation:isolate}
+.hdr-audio-pop::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 0%,rgba(242,163,93,.13),transparent 34%),radial-gradient(circle at 80% 82%,rgba(255,255,255,.055),transparent 30%);pointer-events:none;z-index:-1}
+.hdr-audio-widget.open .hdr-audio-pop{display:block;animation:hdrAudioIn .16s ease-out both}
+@keyframes hdrAudioIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.haa-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.10)}
+.haa-brand{display:flex;align-items:center;gap:11px;min-width:0}.haa-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);color:#f2a35d;flex-shrink:0}.haa-mark svg{width:22px;height:22px}.haa-title{font-size:14px;font-weight:650;letter-spacing:-.02em;color:#f8f5ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-sub{font-size:10px;color:#a8a29a;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-state{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#f2a35d;border:1px solid rgba(242,163,93,.28);background:rgba(242,163,93,.10);border-radius:999px;padding:5px 8px;flex-shrink:0}
+.haa-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.haa-btn{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);color:#d8d2ca;border-radius:999px;padding:7px 8px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,color .15s}.haa-btn:hover{transform:translateY(-1px);border-color:rgba(242,163,93,.38);color:#f2a35d}.haa-btn.on{border-color:rgba(242,163,93,.58);background:rgba(242,163,93,.12);color:#f2a35d}.haa-btn.danger{color:#f09283}.haa-btn.spotify{color:#1ed760}
+.haa-stage{height:160px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.12));display:flex;align-items:flex-end;justify-content:center;padding:18px 14px 20px;overflow:hidden;position:relative}.haa-stage::after{content:'';position:absolute;left:18px;right:18px;bottom:11px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,163,93,.28),transparent)}
+.haa-eq{height:120px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:5px}.haa-col{height:100%;width:12px;display:flex;flex-direction:column-reverse;gap:4px}.haa-seg{height:5px;border-radius:999px;background:rgba(255,255,255,.22);opacity:.14;transform:scaleX(.82);transition:opacity 90ms linear,transform 90ms linear,background 90ms linear,box-shadow 90ms linear}.haa-seg.active{opacity:.54;background:rgba(168,162,154,.72);transform:scaleX(1)}.haa-seg.peak{opacity:1;background:#f2a35d;box-shadow:0 0 12px rgba(242,163,93,.34);transform:scaleX(1)}.haa-seg.ghost{opacity:.26;background:rgba(242,163,93,.20)}
+.haa-now{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;margin-top:12px}.haa-cover{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 42%,transparent 0 18%,rgba(242,163,93,.94) 19% 22%,transparent 23%),linear-gradient(180deg,#2c2c2c,#141414);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}.haa-track{min-width:0}.haa-track strong{display:block;font-size:12px;color:#f1eee9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-track span{display:block;font-size:10px;color:#a8a29a;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-foot{margin-top:10px;font-size:10px;line-height:1.45;color:#8f887f}
+@media(max-width:720px){.hdr-audio-widget{display:none!important}}
+@media(max-width:1100px){.hdr-audio-chip{min-width:42px;padding:4px 8px}.hdr-audio-label{display:none}.hdr-user{max-width:120px}}
+
 /* Remove texto flutuante acima do botão NBR */
 #nbr-badge{display:none!important}
 
@@ -1012,6 +1054,45 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <div style="flex:1"></div>
     <div class="hdr-right">
       <span class="hdr-user" id="hdr-user"></span>
+
+      <div class="hdr-audio-widget" id="hdr-audio-widget">
+        <button type="button" class="hdr-audio-chip" id="hdr-audio-toggle" onclick="hdrAudioToggle(event)" title="Módulo de áudio — somente desktop">
+          <span class="hdr-audio-mini" id="hdr-audio-mini" aria-hidden="true"></span>
+          <span class="hdr-audio-label" id="hdr-audio-label">Áudio</span>
+        </button>
+        <div class="hdr-audio-pop" id="hdr-audio-pop" role="dialog" aria-label="Módulo de áudio desktop">
+          <div class="haa-head">
+            <div class="haa-brand">
+              <div class="haa-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 9v6M17 4v16M21 10v4" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg>
+              </div>
+              <div style="min-width:0">
+                <div class="haa-title">Chaos Audio Module</div>
+                <div class="haa-sub">visualizador minimalista</div>
+              </div>
+            </div>
+            <div class="haa-state" id="haa-state">Idle</div>
+          </div>
+          <div class="haa-actions" aria-label="Controles de áudio">
+            <button type="button" class="haa-btn" id="haa-demo" onclick="hdrAudioDemo(event)">Demo</button>
+            <button type="button" class="haa-btn" id="haa-system" onclick="hdrAudioCaptureSystem(event)">Sistema</button>
+            <button type="button" class="haa-btn" id="haa-mic" onclick="hdrAudioCaptureMic(event)">Mic</button>
+            <button type="button" class="haa-btn spotify" id="haa-spotify" onclick="hdrAudioSpotify(event)">Spotify</button>
+            <button type="button" class="haa-btn danger" id="haa-stop" onclick="hdrAudioStop(event)">Parar</button>
+          </div>
+          <div class="haa-stage">
+            <div class="haa-eq" id="haa-eq" aria-hidden="true"></div>
+          </div>
+          <div class="haa-now">
+            <div class="haa-cover" aria-hidden="true"></div>
+            <div class="haa-track">
+              <strong id="haa-track-title">Pronto para áudio</strong>
+              <span id="haa-track-sub">Use demo, sistema, microfone ou Spotify</span>
+            </div>
+          </div>
+          <div class="haa-foot" id="haa-foot">Disponível apenas no desktop. No mobile o módulo fica oculto e inativo.</div>
+        </div>
+      </div>
       <button class="btn ghost name-btn" onclick="changeDisplayName()" title="Alterar nome exibido online">Nome</button>
       <div class="theme-picker" id="theme-picker">
         <button class="tp-trigger" onclick="tpToggle(event)" title="Escolher tema">
@@ -1069,6 +1150,69 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-nbr" onclick="nbrTogglePanel()"><span class="ico">⚖</span>Normas NBR</button>
     <button class="dock-btn" id="tool-equipe" onclick="showEquipe()"><span class="ico">👥</span>Equipe</button>
   </nav>
+
+
+  <!-- PROTÓTIPO AMPLIFICADOR / ÁUDIO -->
+  <div id="audioamp-view" style="display:none">
+    <div class="audioamp-top">
+      <div>
+        <div class="audioamp-kicker">protótipo visual</div>
+        <h1 class="audioamp-title">Amplificador reativo</h1>
+        <div class="audioamp-sub">Elemento gráfico inspirado no módulo enviado: ele reage a um modo demo, ao áudio capturado com permissão do navegador ou ao estado de reprodução do Spotify.</div>
+      </div>
+    </div>
+    <div class="audioamp-grid">
+      <section class="amp-device idle" id="amp-device" style="--level:.08">
+        <div class="amp-face">
+          <div class="amp-head">
+            <div class="amp-brand">CHAOS AUDIO MODULE</div>
+            <div class="amp-badge" id="amp-source-badge">IDLE</div>
+          </div>
+          <div class="amp-viz" id="amp-viz" aria-label="Visualizador de áudio">
+            <span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span>
+            <span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span>
+            <span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span>
+            <span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span><span class="amp-bar"></span>
+          </div>
+          <div class="amp-footer">
+            <div class="amp-now">
+              <div class="amp-now-label">reproduzindo agora</div>
+              <div class="amp-track" id="amp-track">Sem áudio detectado</div>
+              <div class="amp-artist" id="amp-artist">Escolha uma fonte para iniciar o teste</div>
+            </div>
+            <div class="amp-knob" id="amp-knob" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+      <aside>
+        <div class="audioamp-card">
+          <h3>Fonte de áudio</h3>
+          <p>Para áudio do dispositivo, o navegador precisa pedir permissão. Em alguns sistemas, a melhor opção é compartilhar uma aba que esteja tocando som.</p>
+          <div class="amp-actions">
+            <button class="amp-btn primary" onclick="audioAmpStartDemo()">Modo demo</button>
+            <button class="amp-btn" onclick="audioAmpCaptureDisplay()">Capturar aba/sistema</button>
+            <button class="amp-btn" onclick="audioAmpCaptureMic()">Microfone</button>
+            <button class="amp-btn danger" onclick="audioAmpStop()">Parar</button>
+          </div>
+          <div class="amp-meter" style="--level:.08"><span id="amp-meter-fill"></span></div>
+          <div class="amp-status" id="amp-status">Aguardando fonte de áudio.</div>
+        </div>
+        <div class="audioamp-card">
+          <h3>Spotify</h3>
+          <p>O botão abaixo deixa a estrutura pronta para conectar sua conta via OAuth/PKCE. Para funcionar em produção, preencha o Client ID no código e libere a Redirect URI no painel do Spotify.</p>
+          <div class="amp-actions">
+            <button class="amp-btn primary" onclick="audioAmpSpotifyConnect()">Conectar Spotify</button>
+            <button class="amp-btn" onclick="audioAmpSpotifyRefresh()">Atualizar status</button>
+          </div>
+          <div class="spotify-chip" id="spotify-chip">
+            <span class="spotify-dot"></span>
+            <span class="spotify-main"><strong id="spotify-title">Spotify não conectado</strong><small id="spotify-sub">Use áudio capturado para barras reais; o Spotify mostra status/faixa.</small></span>
+          </div>
+          <div class="amp-note">Observação: a API do Spotify mostra faixa, artista e estado de reprodução. Ela não entrega o espectro bruto do áudio; para barras realmente fiéis, use a captura de aba/sistema ou uma fonte de áudio local.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
 
   <!-- HALL / INÍCIO -->
   <div id="hall-view" style="display:none">
@@ -2447,7 +2591,7 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -2523,6 +2667,14 @@ function showMapoteca(){
   hideViews();
   $('mapoteca-view').style.display='block';
   setTool('mapoteca');
+}
+
+function showAudioAmp(){
+  if(guardTool('audioamp')) return;
+  hideViews();
+  $('audioamp-view').style.display='block';
+  setTool('audioamp');
+  if(window.audioAmpEnsureIdle) audioAmpEnsureIdle();
 }
 
 
@@ -6670,7 +6822,7 @@ init();
     <div class="nbr-header-icon">NBR</div>
     <div class="nbr-header-text">
       <h2>ASSISTENTE NBR</h2>
-      <p id="nbr-user-label">Consulta ABNT em tempo real</p>
+      <p id="nbr-user-label">Links oficiais ABNT por NBR</p>
     </div>
     <div class="nbr-header-actions">
       <div id="nbr-loc-badge" onclick="nbrReopenCep()">📍 <span id="nbr-loc-badge-text"></span></div>
@@ -6748,7 +6900,7 @@ init();
     <div class="nbr-fav-list" id="nbr-fav-list"></div>
   </div>
 
-  <div class="nbr-panel-footer">base local ABNT · verificação via catálogo.abnt.org.br</div>
+  <div class="nbr-panel-footer">base local ABNT · links diretos oficiais quando disponíveis</div>
 </div>
 
 </body>
@@ -6825,7 +6977,170 @@ const NBR_DB = [
 {id:'16800', codigo:'NBR 16800',   ano:2020, titulo:'Acessibilidade em edificações, mobiliário, espaços e equipamentos urbanos — Síntese', cat:'Acessibilidade', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Norma de síntese que consolida os principais parâmetros de acessibilidade para rápida consulta.', req:['Complementar à NBR 9050:2020','Referência rápida de dimensionamentos','Tabelas e figuras resumo'], comp:['NBR 9050','NBR 16537']},
 // ── SUSTENTABILIDADE ─────────────────────────────────
 {id:'15112', codigo:'NBR 15112',   ano:2004, titulo:'Resíduos da construção civil e resíduos volumosos — Áreas de transbordo e triagem', cat:'Sustentabilidade', usos:[], escopo:'Define diretrizes para implantação e operação de áreas de transbordo e triagem de resíduos de construção civil.', req:['Resolução CONAMA 307/2002: base legal','Separação obrigatória: Classes A, B, C, D','Plano de Gerenciamento de Resíduos obrigatório para obras >20.000m²'], comp:['NBR 15113','NBR 15114']},
+
+// ── GESTÃO, MANUTENÇÃO E GARANTIAS ───────────────────
+{id:'5674', codigo:'NBR 5674', ano:2024, titulo:'Manutenção de edificações — Requisitos para o sistema de gestão de manutenção', cat:'Gestão e Manutenção', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Organiza diretrizes para planejar, registrar e controlar a manutenção de edificações ao longo da vida útil.', req:['Plano de manutenção documentado','Registro de inspeções e intervenções','Rotinas preventivas e corretivas','Integração com manual de uso, operação e manutenção'], comp:['NBR 14037','NBR 16280','NBR 16747','NBR 15575']},
+{id:'14037', codigo:'NBR 14037', ano:2024, titulo:'Diretrizes para elaboração de manuais de uso, operação e manutenção das edificações', cat:'Gestão e Manutenção', usos:['residencial','comercial'], escopo:'Define diretrizes para organizar manuais de uso, operação e manutenção a serem entregues aos usuários e responsáveis pela edificação.', req:['Manual deve orientar operação, conservação e manutenção','Conteúdo deve ser claro para usuários e síndicos','Indicar responsabilidades de uso e manutenção','Relacionar garantias, fornecedores e sistemas da edificação'], comp:['NBR 5674','NBR 17170','NBR 15575']},
+{id:'16280', codigo:'NBR 16280', ano:2024, titulo:'Reforma em edificações — Sistema de gestão de reformas', cat:'Gestão e Manutenção', usos:['residencial','comercial'], escopo:'Estabelece requisitos para gestão de reformas em edificações, com controle de impactos técnicos, segurança e responsabilidades.', req:['Plano de reforma antes da execução','Análise de interferências em estrutura e instalações','Registro de responsável técnico quando aplicável','Controle de acesso, resíduos e segurança durante a obra'], comp:['NBR 5674','NBR 14037','NBR 15575']},
+{id:'16747', codigo:'NBR 16747', ano:2020, titulo:'Inspeção predial — Diretrizes, conceitos, terminologia e procedimento', cat:'Gestão e Manutenção', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Apresenta diretrizes para inspeção predial, avaliação de anomalias e falhas de manutenção, e organização do laudo técnico.', req:['Classificação de anomalias e falhas','Avaliação por prioridade de intervenção','Laudo com recomendações técnicas','Integração com plano de manutenção'], comp:['NBR 5674','NBR 14037','NBR 16280']},
+{id:'17170', codigo:'NBR 17170', ano:2022, titulo:'Edificações — Garantias — Prazos recomendados e diretrizes', cat:'Gestão e Manutenção', usos:['residencial','comercial'], escopo:'Reúne diretrizes para garantias de sistemas, elementos e componentes de edificações.', req:['Organiza prazos recomendados por sistema','Relaciona garantia com uso e manutenção adequados','Apoia manuais de proprietário e síndico','Referência útil para pós-obra e assistência técnica'], comp:['NBR 15575','NBR 14037','NBR 5674']},
+// ── INSTALAÇÕES PREDIAIS COMPLEMENTARES ──────────────
+{id:'13103', codigo:'NBR 13103', ano:2024, titulo:'Instalação de aparelhos a gás — Requisitos', cat:'Instalações Prediais', usos:['residencial','comercial'], escopo:'Define requisitos para instalação de aparelhos a gás, ventilação, afastamentos e condições de segurança do ambiente.', req:['Verificar ventilação permanente quando exigida','Compatibilizar exaustão e admissão de ar','Atender afastamentos do fabricante e da norma','Checar interferências com esquadrias e shafts'], comp:['NBR 15526','NBR 16057','NBR 5626']},
+{id:'16057', codigo:'NBR 16057', ano:2024, titulo:'Sistema de aquecimento de água a gás — Projeto e instalação', cat:'Instalações Prediais', usos:['residencial','comercial'], escopo:'Estabelece requisitos para projeto e instalação de sistemas de aquecimento de água a gás.', req:['Dimensionamento do sistema de aquecimento','Compatibilização com ventilação e exaustão','Previsão de acesso para manutenção','Integração com água quente e gás combustível'], comp:['NBR 13103','NBR 5626','NBR 15526']},
+{id:'15848', codigo:'NBR 15848', ano:2024, titulo:'Sistemas de condicionamento de ar e ventilação — Qualidade do ar interno', cat:'Instalações Prediais', usos:['comercial','educacional','hospitalar'], escopo:'Estabelece procedimentos ligados à construção, reforma, operação e manutenção de instalações que afetam a qualidade do ar interno.', req:['Controle de sujidade e contaminação em dutos e equipamentos','Planejamento de operação e manutenção','Atenção a reformas que afetem ar interno','Compatibilização com ventilação e climatização'], comp:['NBR 16401','NBR 5674','NBR 14037']},
+{id:'16858-4', codigo:'NBR 16858-4', ano:2024, titulo:'Elevadores — Comportamento em caso de incêndio', cat:'Instalações Prediais', usos:['comercial','residencial','hospitalar'], escopo:'Trata dos requisitos de segurança para elevadores quanto ao comportamento em caso de incêndio.', req:['Integrar elevadores ao plano de segurança contra incêndio','Compatibilizar comandos com detecção/alarme','Prever sinalização e operação de emergência','Verificar exigências do corpo de bombeiros local'], comp:['NBR 9077','NBR 17240','NBR 10898']},
+{id:'13571', codigo:'NBR 13571', ano:2024, titulo:'Haste de aterramento de aço revestida de cobre — Especificação', cat:'Instalações Elétricas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Especifica requisitos para hastes de aterramento utilizadas em sistemas elétricos e de proteção.', req:['Aplicável a sistemas de aterramento','Verificar dimensões e revestimento especificados','Compatibilizar com projeto elétrico e SPDA','Inspecionar conexões e continuidade'], comp:['NBR 5410','NBR 5419','NBR 16254']},
+{id:'16254', codigo:'NBR 16254', ano:2024, titulo:'Materiais para sistema de aterramento — Requisitos gerais', cat:'Instalações Elétricas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Define requisitos gerais para materiais empregados em sistemas de aterramento.', req:['Selecionar materiais compatíveis com o ambiente','Evitar pares sujeitos à corrosão acelerada','Compatibilizar conectores, hastes e cabos','Registrar inspeções do sistema'], comp:['NBR 5410','NBR 5419','NBR 13571']},
+{id:'5419-1', codigo:'NBR 5419-1', ano:2015, titulo:'Proteção contra descargas atmosféricas — Parte 1: Princípios gerais', cat:'Instalações Elétricas', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Apresenta princípios gerais para proteção contra descargas atmosféricas e composição do SPDA.', req:['Avaliar risco de descargas atmosféricas','Compatibilizar captação, descidas e aterramento','Prever equipotencialização','Integrar com projeto elétrico e eletrônico'], comp:['NBR 5410','NBR 13571','NBR 16254']},
+// ── ILUMINAÇÃO NATURAL E CONFORTO ────────────────────
+{id:'15215-1', codigo:'NBR 15215-1', ano:2024, titulo:'Iluminação natural — Conceitos básicos e definições', cat:'Iluminação Natural', usos:['residencial','comercial','educacional','hospitalar'], escopo:'Define conceitos básicos para estudos e avaliações de iluminação natural em edificações.', req:['Terminologia para luz natural e abertura','Base para cálculos de disponibilidade de luz','Apoio ao estudo de orientação solar','Compatibilização com conforto visual'], comp:['NBR 15215-3','NBR 15215-4','NBR 15575']},
+{id:'15215-3', codigo:'NBR 15215-3', ano:2024, titulo:'Iluminação natural — Procedimento para avaliação em ambientes internos', cat:'Iluminação Natural', usos:['residencial','comercial','educacional'], escopo:'Define procedimentos para avaliação da iluminação natural em ambientes internos.', req:['Avaliar contribuição das aberturas','Considerar entorno e obstruções','Compatibilizar com orientação e sombreamento','Apoiar decisões de fachada e layout'], comp:['NBR 15215-1','NBR 15215-4','NBR 15575']},
+{id:'15215-4', codigo:'NBR 15215-4', ano:2024, titulo:'Iluminação natural — Verificação experimental das condições internas', cat:'Iluminação Natural', usos:['residencial','comercial','educacional'], escopo:'Apresenta método de medição para verificar condições de iluminação natural interna.', req:['Medições em pontos representativos','Registro das condições de céu e ambiente','Comparação com critérios de projeto','Uso em diagnóstico e pós-ocupação'], comp:['NBR 15215-1','NBR 15215-3','NBR ISO CIE 8995-1']},
+{id:'13789', codigo:'NBR ISO 13789', ano:2024, titulo:'Desempenho térmico das edificações — Coeficientes de transferência de calor', cat:'Desempenho Térmico', usos:['residencial','comercial'], escopo:'Apresenta método de cálculo de coeficientes de transferência de calor por transmissão e ventilação.', req:['Apoia avaliação energética da envoltória','Considera perdas por transmissão','Considera trocas por ventilação','Compatibiliza estudos térmicos e desempenho'], comp:['NBR 15220','NBR 15575','NBR 17162']},
+{id:'17162', codigo:'NBR 17162', ano:2024, titulo:'Edificações — Refletância solar, emitância térmica e índice SRI — Métodos de medição', cat:'Desempenho Térmico', usos:['residencial','comercial'], escopo:'Define métodos de medição de propriedades solares e térmicas de superfícies de edificações.', req:['Medição de refletância solar','Medição de emitância térmica','Cálculo do índice de refletância solar (SRI)','Apoio à seleção de coberturas e fachadas'], comp:['NBR 15220','NBR 15575','NBR ISO 13789']},
+{id:'tr15220-3-1', codigo:'ABNT TR 15220-3-1', ano:2024, titulo:'Zoneamento bioclimático por desempenho — Lista de cidades brasileiras', cat:'Desempenho Térmico', usos:['residencial','comercial'], escopo:'Relatório técnico com lista de cidades brasileiras para apoio ao zoneamento bioclimático por desempenho.', req:['Consulta de cidade para estudos climáticos','Apoio a decisões de envoltória','Compatibilização com desempenho térmico','Base para pré-dimensionamento bioclimático'], comp:['NBR 15220-3','NBR 15575','NBR 17162']},
+// ── INCÊNDIO E EMERGÊNCIA COMPLEMENTAR ───────────────
+{id:'15200', codigo:'NBR 15200', ano:2024, titulo:'Projeto de estruturas de concreto em situação de incêndio', cat:'Incêndio e Emergência', usos:['residencial','comercial','hospitalar'], escopo:'Define critérios para projeto de estruturas de concreto submetidas à situação de incêndio.', req:['Verificar tempo requerido de resistência ao fogo','Compatibilizar cobrimento e dimensões com TRRF','Integrar requisitos estruturais e de segurança contra incêndio','Apoiar memoriais para aprovação'], comp:['NBR 6118','NBR 14432','NBR 9077']},
+{id:'6479', codigo:'NBR 6479', ano:2024, titulo:'Portas e vedadores — Ensaio de resistência ao fogo', cat:'Incêndio e Emergência', usos:['comercial','residencial','hospitalar'], escopo:'Define método de ensaio de resistência ao fogo para portas e vedadores.', req:['Aplicável a portas e compartimentações','Usada para comprovação de desempenho ao fogo','Relacionada a portas corta-fogo','Exigir documentação do fabricante'], comp:['NBR 11742','NBR 11711','NBR 14432']},
+{id:'7240-13', codigo:'NBR ISO 7240-13', ano:2024, titulo:'Sistemas de detecção e alarme de incêndio — Compatibilidade dos componentes', cat:'Incêndio e Emergência', usos:['comercial','educacional','hospitalar'], escopo:'Trata da avaliação de compatibilidade entre componentes de sistemas de detecção e alarme de incêndio.', req:['Verificar compatibilidade entre central e dispositivos','Apoiar especificação de sistema integrado','Evitar mistura de componentes incompatíveis','Registrar documentação técnica do sistema'], comp:['NBR 17240','NBR ISO 7240-17','NBR 10898']},
+{id:'7240-17', codigo:'NBR ISO 7240-17', ano:2024, titulo:'Sistemas de detecção e alarme de incêndio — Isoladores de caminho de transmissão', cat:'Incêndio e Emergência', usos:['comercial','educacional','hospitalar'], escopo:'Especifica requisitos para isoladores de caminho de transmissão em sistemas de detecção e alarme de incêndio.', req:['Setorizar falhas em laços de detecção','Evitar perda total por curto-circuito','Compatibilizar com a central de alarme','Prever documentação de endereçamento'], comp:['NBR 17240','NBR ISO 7240-13']},
+{id:'11711', codigo:'NBR 11711', ano:2024, titulo:'Portas e vedadores resistentes ao fogo com núcleo de madeira', cat:'Incêndio e Emergência', usos:['comercial','industrial'], escopo:'Estabelece requisitos para portas e vedadores resistentes ao fogo com núcleo de madeira para compartimentação.', req:['Aplicável a compartimentação de áreas','Verificar classe e desempenho do produto','Compatibilizar ferragens, batentes e vedação','Exigir identificação e certificação quando aplicável'], comp:['NBR 6479','NBR 11742','NBR 14432']},
+{id:'12615', codigo:'NBR 12615', ano:2024, titulo:'Sistema de combate a incêndio por espuma — Espuma de baixa expansão', cat:'Incêndio e Emergência', usos:['industrial','comercial'], escopo:'Trata de sistemas de combate a incêndio por espuma de baixa expansão.', req:['Aplicável a riscos específicos definidos em projeto','Compatibilizar reserva, proporcionamento e aplicação','Exigir projeto especializado','Verificar normas e instruções do Corpo de Bombeiros'], comp:['NBR 13714','NBR 12693','NBR 9077']},
+// ── IMPERMEABILIZAÇÃO E VEDAÇÕES ─────────────────────
+{id:'9952', codigo:'NBR 9952', ano:2024, titulo:'Manta asfáltica para impermeabilização', cat:'Impermeabilização', usos:['residencial','comercial'], escopo:'Estabelece requisitos para mantas asfálticas empregadas em sistemas de impermeabilização.', req:['Selecionar tipo conforme exposição e uso','Compatibilizar substrato, primer e proteção mecânica','Exigir ensaios e documentação do fabricante','Detalhar ralos, juntas e rodapés'], comp:['NBR 9575','NBR 9574','NBR 15575']},
+{id:'16411', codigo:'NBR 16411', ano:2024, titulo:'Fita asfáltica autoadesiva', cat:'Impermeabilização', usos:['residencial','comercial'], escopo:'Especifica requisitos para fitas asfálticas autoadesivas usadas em vedação e impermeabilização pontual.', req:['Aplicação conforme tipo de substrato','Verificar aderência e sobreposição','Usar como solução complementar, não substituta de projeto completo','Compatibilizar com exposição ao intemperismo'], comp:['NBR 9952','NBR 9575']},
+{id:'17076', codigo:'NBR 17076', ano:2024, titulo:'Projeto de sistema de tratamento de esgoto de menor porte — Requisitos', cat:'Instalações Hidrossanitárias', usos:['residencial','comercial'], escopo:'Estabelece requisitos para projeto de sistemas de tratamento de esgoto de menor porte.', req:['Aplicável onde não há rede pública adequada','Compatibilizar carga, solo e manutenção','Prever acesso para inspeção e limpeza','Atender legislação ambiental/local'], comp:['NBR 7229','NBR 13969','NBR 8160']},
+// ── MATERIAIS E SISTEMAS CONSTRUTIVOS ────────────────
+{id:'7212', codigo:'NBR 7212', ano:2024, titulo:'Concreto dosado em central — Preparo, fornecimento e controle', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Define requisitos para preparo, fornecimento e controle do concreto dosado em central.', req:['Especificar resistência, abatimento e classe de agressividade','Controlar recebimento em obra','Registrar nota, horário e características do concreto','Compatibilizar com projeto estrutural'], comp:['NBR 6118','NBR 12655','NBR 8953']},
+{id:'7480', codigo:'NBR 7480', ano:2024, titulo:'Aço destinado às armaduras para estruturas de concreto armado — Requisitos', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Especifica requisitos para aço utilizado em armaduras de concreto armado.', req:['Verificar categoria e bitola do aço','Exigir identificação e rastreabilidade','Compatibilizar com projeto estrutural','Conferir armazenamento e corte/dobra em obra'], comp:['NBR 6118','NBR 7212']},
+{id:'17143', codigo:'NBR 17143', ano:2024, titulo:'Arame de aço-carbono recozido para uso na construção civil — Requisitos', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Estabelece requisitos para arame recozido usado em amarrações e serviços da construção civil.', req:['Verificar diâmetro e características do arame','Aplicação em amarração de armaduras e serviços auxiliares','Controle de recebimento por lote','Armazenar protegido de corrosão excessiva'], comp:['NBR 7480','NBR 6118']},
+{id:'14229', codigo:'NBR 14229', ano:2024, titulo:'Alumínio e suas ligas — Perfis, tubos, barras e vergalhões extrudados para fins estruturais', cat:'Materiais e Componentes', usos:['comercial','residencial'], escopo:'Define requisitos para perfis, tubos, barras e vergalhões extrudados de alumínio destinados a uso estrutural.', req:['Verificar liga e têmpera especificadas','Controlar dimensões e tolerâncias','Compatibilizar com cálculo estrutural','Considerar proteção contra corrosão conforme ambiente'], comp:['NBR 8800','NBR 14718']},
+{id:'11358', codigo:'NBR 11358', ano:2024, titulo:'Painéis termoisolantes à base de lã de vidro — Especificação', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Especifica painéis termoisolantes à base de lã de vidro usados na construção.', req:['Selecionar densidade e espessura conforme desempenho','Compatibilizar com sistema de vedação ou cobertura','Prever proteção contra umidade quando necessário','Considerar requisitos térmicos e acústicos'], comp:['NBR 15575','NBR 15220','NBR 10152']},
+{id:'11360', codigo:'NBR 11360', ano:2024, titulo:'Isolantes térmicos de lã de vidro — Flocos — Especificação', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Especifica flocos de lã de vidro para isolamento térmico.', req:['Aplicar conforme sistema construtivo','Garantir preenchimento uniforme','Controlar exposição à umidade','Compatibilizar com desempenho térmico'], comp:['NBR 15575','NBR 15220']},
+{id:'11362', codigo:'NBR 11362', ano:2024, titulo:'Feltros termoisolantes à base de lã de vidro — Especificação', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Especifica feltros termoisolantes à base de lã de vidro.', req:['Selecionar espessura conforme desempenho térmico/acústico','Instalar sem compressão indevida','Proteger contra umidade e condensação','Compatibilizar com coberturas e forros'], comp:['NBR 15575','NBR 15220','NBR 10152']},
+{id:'11752', codigo:'NBR 11752', ano:2024, titulo:'Materiais celulares de poliestireno para isolamento térmico na construção civil', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Especifica materiais celulares de poliestireno utilizados como isolamento térmico na construção civil.', req:['Selecionar classe adequada ao uso','Compatibilizar resistência, espessura e desempenho térmico','Proteger contra exposição incompatível','Prever detalhamento contra pontes térmicas'], comp:['NBR 15575','NBR 15220','NBR 17162']},
+{id:'13047', codigo:'NBR 13047', ano:2024, titulo:'Mantas termoisolantes à base de lã de rocha — Especificação', cat:'Materiais e Componentes', usos:['residencial','comercial','industrial'], escopo:'Especifica mantas termoisolantes à base de lã de rocha para uso em construção.', req:['Selecionar densidade e espessura conforme projeto','Compatibilizar com resistência ao fogo quando aplicável','Proteger contra umidade','Usar em coberturas, paredes e sistemas técnicos'], comp:['NBR 15575','NBR 15220','NBR 14432']},
+{id:'11363', codigo:'NBR 11363', ano:2024, titulo:'Tubos termoisolantes à base de lã de rocha — Especificação', cat:'Materiais e Componentes', usos:['comercial','industrial'], escopo:'Especifica tubos termoisolantes à base de lã de rocha para isolamento de tubulações.', req:['Selecionar diâmetro e espessura conforme tubulação','Prever proteção mecânica quando exposto','Compatibilizar com temperatura de operação','Apoiar eficiência energética e segurança'], comp:['NBR 5626','NBR 13047']},
+{id:'11364', codigo:'NBR 11364', ano:2024, titulo:'Painéis termoisolantes à base de lã de rocha — Especificação', cat:'Materiais e Componentes', usos:['residencial','comercial','industrial'], escopo:'Especifica painéis termoisolantes à base de lã de rocha para sistemas construtivos.', req:['Aplicável a fachadas, coberturas e divisórias conforme sistema','Compatibilizar densidade e desempenho','Considerar reação/resistência ao fogo quando exigido','Detalhar fixação e proteção'], comp:['NBR 15575','NBR 15220','NBR 14432']},
+{id:'14810-2', codigo:'NBR 14810-2', ano:2024, titulo:'Painéis de partículas de média densidade — Requisitos e métodos de ensaio', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Estabelece requisitos e métodos de ensaio para painéis de partículas de média densidade.', req:['Verificar classe de uso e ambiente','Controlar espessura e estabilidade dimensional','Compatibilizar com mobiliário e painéis internos','Evitar uso em áreas úmidas sem especificação adequada'], comp:['NBR 15575','NBR 16280']},
+{id:'15316-2', codigo:'NBR 15316-2', ano:2024, titulo:'Painéis de fibras de média densidade — Requisitos e métodos de ensaio', cat:'Materiais e Componentes', usos:['residencial','comercial'], escopo:'Estabelece requisitos e métodos de ensaio para painéis de fibras de média densidade.', req:['Verificar classe, densidade e acabamento','Compatibilizar com ambiente de aplicação','Controlar estabilidade dimensional','Exigir documentação do fabricante'], comp:['NBR 15575','NBR 16280']},
+{id:'16143', codigo:'NBR 16143', ano:2024, titulo:'Preservação de madeiras — Sistema de categorias de uso', cat:'Materiais e Componentes', usos:['residencial','comercial','paisagismo'], escopo:'Define categorias de uso para madeira preservada conforme exposição e risco biológico.', req:['Classificar uso interno, externo, contato com solo ou umidade','Selecionar tratamento conforme categoria','Detalhar proteção de cortes e encaixes','Controlar documentação do tratamento preservativo'], comp:['NBR 7190','NBR 15575']},
+// ── CIDADES, SUSTENTABILIDADE E OBRAS ────────────────
+{id:'iso37101', codigo:'NBR ISO 37101', ano:2024, titulo:'Desenvolvimento sustentável de comunidades — Sistema de gestão', cat:'Sustentabilidade', usos:['urbanismo','gestão pública'], escopo:'Define requisitos para sistema de gestão voltado ao desenvolvimento sustentável de comunidades.', req:['Apoia planejamento urbano sustentável','Organiza objetivos, indicadores e responsabilidades','Integra temas ambientais, sociais e econômicos','Útil para municípios, bairros e projetos urbanos'], comp:['NBR ISO 37110','NBR 9284']},
+{id:'iso37110', codigo:'NBR ISO 37110', ano:2024, titulo:'Cidades e comunidades sustentáveis — Dados abertos de cidades inteligentes', cat:'Sustentabilidade', usos:['urbanismo','gestão pública'], escopo:'Apresenta requisitos e recomendações para dados abertos em cidades e comunidades inteligentes.', req:['Apoia governança de dados urbanos','Estrutura visão e princípios gerais','Integra indicadores e transparência pública','Útil para observatórios e plataformas municipais'], comp:['NBR ISO 37101','NBR 9284']},
+{id:'17152-1', codigo:'NBR 17152-1', ano:2024, titulo:'Segurança em obras — Redes de segurança contra quedas — Requisitos e ensaios', cat:'Segurança em Obras', usos:['obras'], escopo:'Estabelece requisitos e métodos de ensaio para redes de segurança contra quedas em obras.', req:['Selecionar rede conforme sistema e carga','Exigir ensaios e identificação do produto','Compatibilizar com projeto de proteção coletiva','Inspecionar antes e durante o uso'], comp:['NBR 17152-2','NBR 17164']},
+{id:'17152-2', codigo:'NBR 17152-2', ano:2024, titulo:'Segurança em obras — Redes de segurança contra quedas — Instalação', cat:'Segurança em Obras', usos:['obras'], escopo:'Apresenta requisitos e diretrizes de instalação de redes de segurança contra quedas em obras.', req:['Instalação por equipe capacitada','Fixações compatíveis com a estrutura','Inspeção periódica e após eventos','Registro de instalação e manutenção'], comp:['NBR 17152-1','NBR 17164']},
+{id:'17164', codigo:'NBR 17164', ano:2024, titulo:'Segurança em obras — Sistemas provisórios de proteção de periferia', cat:'Segurança em Obras', usos:['obras'], escopo:'Define especificações e métodos de ensaio para sistemas provisórios de proteção de periferia em obras.', req:['Proteção coletiva em bordas e vãos','Dimensionamento conforme esforços previstos','Inspeção e manutenção do sistema','Compatibilização com fases da obra'], comp:['NBR 17152-1','NBR 17152-2']},
+{id:'16325-1', codigo:'NBR 16325-1', ano:2024, titulo:'Proteção contra quedas — Dispositivos de ancoragem tipos A, B, D e E', cat:'Segurança em Obras', usos:['obras','manutenção'], escopo:'Estabelece requisitos para dispositivos de ancoragem usados em proteção contra quedas de altura.', req:['Selecionar tipo de ancoragem conforme uso','Exigir projeto e documentação técnica','Prever inspeção periódica','Compatibilizar com acesso e manutenção predial'], comp:['NBR 16325-2','NBR 5674']},
+{id:'16325-2', codigo:'NBR 16325-2', ano:2024, titulo:'Proteção contra quedas — Dispositivo de ancoragem tipo C', cat:'Segurança em Obras', usos:['obras','manutenção'], escopo:'Estabelece requisitos para dispositivos de ancoragem tipo C usados em sistemas de proteção contra quedas.', req:['Aplicável a linhas flexíveis horizontais','Exigir cálculo e instalação por responsável técnico','Registrar inspeções e uso','Compatibilizar com manutenção de fachadas e coberturas'], comp:['NBR 16325-1','NBR 5674']},
+
 ];
+
+
+
+// Links oficiais diretos do ABNT Catálogo. Quando houver ID confiável,
+// o botão abre a página da própria NBR em vez de mandar o usuário para pesquisa.
+// Alguns itens oficiais da ABNT aparecem como pnm.aspx?Q=... em vez de norma.aspx?ID=...
+const ABNT_URL_DIRECT = {
+  '5674':'https://www.abntcatalogo.com.br/pnm.aspx?Q=UDQzaWt6U0tIRERqbVNqblJJeXkrRk5lcnF3bmNFOWFVdTFHQkZ4NjlMRT0=',
+  '17170':'https://www.abntcatalogo.com.br/pnm.aspx?Q=Z0tYL2hUWk8rL1ljZkI4Nnd3WGRFNVgrNjFxQUtlSVJLQmlGakt6eHVLOD0%3D'
+};
+const ABNT_DIRECT = {
+  '6492':'516897',
+  '13531':'5011',
+  '8196':'5356',
+  '9050':'461490',
+  '16537':'398393',
+  '15575-1':'477978',
+  '15575-2':'195578',
+  '15575-4':'195612',
+  '15575-5':'195616',
+  '15575-6':'195706',
+  '15220-1':'11',
+  '15220-2':'59664',
+  '15220-3':'635',
+  '6118':'317027',
+  '6120':'431707',
+  '6122':'426719',
+  '6123':'254413',
+  '8800':'1459',
+  '9062':'195001',
+  '11742':'403921',
+  '10898':'',
+  '5626':'454684',
+  '8160':'5234',
+  '10844':'4510',
+  '7229':'4522',
+  '5410':'10146',
+  '5101':'406808',
+  '10151':'441496',
+  '10152':'441488',
+  '6136':'364276',
+  '15270':'382947',
+  '13818':'458847',
+  '14724':'',
+  '10520':'',
+  '6023':'',
+  '15112':'',
+  '14037':'549299',
+  '16280':'549295',
+  '16747':'444718',
+  '13103':'552233',
+  '16057':'554745',
+  '15848':'552745',
+  '16858-4':'552244',
+  '13571':'553670',
+  '16254':'561461',
+  '5419-1':'333548',
+  '15215-1':'553229',
+  '15215-3':'556520',
+  '15215-4':'549390',
+  '13789':'550355',
+  '17162':'553661',
+  'tr15220-3-1':'549322',
+  '15200':'556518',
+  '6479':'556928',
+  '7240-13':'557746',
+  '7240-17':'550922',
+  '11711':'559342',
+  '12615':'552153',
+  '9952':'553265',
+  '16411':'556930',
+  '17076':'553658',
+  '7212':'562725',
+  '7480':'552736',
+  '17143':'559106',
+  '14229':'557767',
+  '11358':'558411',
+  '11360':'558412',
+  '11362':'558414',
+  '11752':'561450',
+  '13047':'554739',
+  '11363':'554736',
+  '11364':'554737',
+  '14810-2':'561458',
+  '15316-2':'561459',
+  '16143':'562058',
+  'iso37101':'556485',
+  'iso37110':'564184',
+  '17152-1':'556920',
+  '17152-2':'556921',
+  '17164':'556922',
+  '16325-1':'553672',
+  '16325-2':'553674'
+};
+function abntDirectUrl(n){
+  const url = ABNT_URL_DIRECT[n.id];
+  if(url) return url;
+  const id = ABNT_DIRECT[n.id];
+  return id ? `https://www.abntcatalogo.com.br/norma.aspx?ID=${id}` : '';
+}
+function abntUrl(n){
+  return abntDirectUrl(n) || `https://www.abntcatalogo.com.br/pav.aspx`;
+}
+function abntLabel(n){
+  return abntDirectUrl(n) ? '↗ Abrir NBR oficial' : '↗ ABNT Catálogo oficial';
+}
 
 // ─── STATE ───────────────────────────────────────────
 const S = { selectedFiltro:'', pendingAlerts:0, location:null, updateCache:{} };
@@ -6972,7 +7287,7 @@ function cardHTML(n){
       <div class="nbr-card-escopo">${n.escopo}</div>
       <div class="nbr-card-reqs">${(n.req||[]).map(r=>`<div class="nbr-card-req">${r}</div>`).join('')}</div>
       <div class="nbr-card-links">
-        <a class="nbr-card-link primary" href="https://catalogo.abnt.org.br/catalog/search.do?q=${encodeURIComponent(n.codigo)}" target="_blank" rel="noopener noreferrer">↗ ABNT Catálogo</a>
+        <a class="nbr-card-link primary" href="${abntUrl(n)}" target="_blank" rel="noopener noreferrer">${abntLabel(n)}</a>
         ${compChips}
       </div>
       ${updateMsg(n.id)}
@@ -7012,7 +7327,7 @@ async function verificarNbr(n){
   setUpdateCache(n.id, 'checking');
   refreshCard(n.id);
   try{
-    const url = `https://catalogo.abnt.org.br/catalog/search.do?q=${encodeURIComponent(n.codigo)}`;
+    const url = abntUrl(n);
     const res = await fetch(PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
     if(!res.ok) throw new Error('proxy error');
     const html = await res.text();
@@ -7062,7 +7377,7 @@ function renderAlertas(){
         <p>${a.titulo}</p>
         <span>Base local: ${a.anoBase} · Detectado: ${a.anoDetectado} · ${a.date}</span>
       </div>
-      <a class="nbr-consult-btn" href="https://catalogo.abnt.org.br/catalog/search.do?q=${encodeURIComponent(a.codigo)}" target="_blank" rel="noopener noreferrer">Verificar</a>
+      <a class="nbr-consult-btn" href="${abntUrl(NBR_DB.find(n=>n.id===a.id)||a)}" target="_blank" rel="noopener noreferrer">Abrir</a>
     </div>`).join('');
   // marca como lido
   alerts.forEach(a=>a.lido=true);
@@ -7161,4 +7476,309 @@ nbrSearch('');
 
 })();
 </script>
+
+<script>
+// ── PROTÓTIPO AMPLIFICADOR / SPOTIFY ─────────────────────────────
+(function(){
+  const SPOTIFY_CLIENT_ID = ''; // Preencha com o Client ID do app no Spotify Developer Dashboard.
+  const SPOTIFY_SCOPES = 'user-read-currently-playing user-read-playback-state';
+  const state = {
+    ctx:null, analyser:null, data:null, raf:null, stream:null, mode:'idle', demoT:0,
+    spotifyToken:localStorage.getItem('chaos_spotify_token')||'',
+    spotifyRefreshToken:localStorage.getItem('chaos_spotify_refresh')||'',
+    spotifyExpires:Number(localStorage.getItem('chaos_spotify_expires')||0)
+  };
+  const $ = id => document.getElementById(id);
+  const bars = () => Array.from(document.querySelectorAll('#amp-viz .amp-bar'));
+  function setStatus(msg){ const el=$('amp-status'); if(el) el.textContent=msg; }
+  function setBadge(msg){ const el=$('amp-source-badge'); if(el) el.textContent=msg; }
+  function setNow(track,artist){ if($('amp-track')) $('amp-track').textContent=track||'Sem áudio detectado'; if($('amp-artist')) $('amp-artist').textContent=artist||'Escolha uma fonte para iniciar o teste'; }
+  function setLevel(level, values){
+    level = Math.max(0, Math.min(1, Number(level)||0));
+    const dev=$('amp-device'); if(dev) dev.style.setProperty('--level', level.toFixed(3));
+    const meter=$('amp-meter-fill'); if(meter) meter.parentElement.style.setProperty('--level', level.toFixed(3));
+    const b=bars();
+    b.forEach((el,i)=>{
+      const raw = values ? values[i % values.length] : level;
+      const h = Math.max(.06, Math.min(1, raw));
+      el.style.setProperty('--h', h.toFixed(3));
+      el.style.setProperty('--glow', level.toFixed(3));
+    });
+  }
+  function setMode(mode){
+    state.mode=mode;
+    const dev=$('amp-device'); if(!dev) return;
+    dev.classList.toggle('idle', mode==='idle');
+    dev.classList.toggle('spotify', mode==='spotify');
+  }
+  function stopAnimation(){ if(state.raf){ cancelAnimationFrame(state.raf); state.raf=null; } }
+  function stopStream(){ if(state.stream){ state.stream.getTracks().forEach(t=>t.stop()); state.stream=null; } if(state.ctx){ try{state.ctx.close();}catch(e){} state.ctx=null; } state.analyser=null; state.data=null; }
+  function animateAnalyser(label){
+    stopAnimation();
+    const tick=()=>{
+      if(!state.analyser || !state.data) return;
+      state.analyser.getByteFrequencyData(state.data);
+      const n=state.data.length || 1;
+      let sum=0; for(let i=0;i<n;i++) sum+=state.data[i];
+      const level=sum/(n*255);
+      const grouped=[]; const parts=16; const step=Math.max(1,Math.floor(n/parts));
+      for(let p=0;p<parts;p++){
+        let s=0,c=0; for(let i=p*step;i<Math.min(n,(p+1)*step);i++){s+=state.data[i];c++;}
+        grouped.push(Math.max(.06,(s/Math.max(1,c))/255));
+      }
+      setLevel(level,grouped);
+      if(level>.035){ setNow('Som detectado',label); setStatus('Áudio em reprodução detectado pela fonte selecionada.'); }
+      else{ setNow('Silêncio / pausa',label); setStatus('Fonte conectada, mas sem áudio relevante no momento.'); }
+      state.raf=requestAnimationFrame(tick);
+    };
+    tick();
+  }
+  async function useStream(stream,label,badge){
+    stopAnimation(); stopStream();
+    state.stream=stream;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    state.ctx=new AudioContext();
+    state.analyser=state.ctx.createAnalyser();
+    state.analyser.fftSize=512;
+    state.analyser.smoothingTimeConstant=.72;
+    state.data=new Uint8Array(state.analyser.frequencyBinCount);
+    const src=state.ctx.createMediaStreamSource(stream);
+    src.connect(state.analyser);
+    setMode('live'); setBadge(badge); setNow('Fonte conectada',label);
+    animateAnalyser(label);
+  }
+  window.audioAmpStartDemo=function(){
+    stopAnimation(); stopStream(); setMode('demo'); setBadge('DEMO'); setNow('Demo visual','Barras simuladas para aprovação do layout'); setStatus('Modo demo ativo. Use para validar o visual sem permissões.');
+    const tick=()=>{
+      state.demoT+=.08;
+      const vals=Array.from({length:16},(_,i)=>{
+        const wave=(Math.sin(state.demoT+i*.55)+1)/2;
+        const pulse=(Math.sin(state.demoT*1.8+i*.18)+1)/2;
+        return .08 + wave*.58 + pulse*.24*Math.random();
+      });
+      const lvl=vals.reduce((a,b)=>a+b,0)/vals.length;
+      setLevel(lvl,vals);
+      state.raf=requestAnimationFrame(tick);
+    };
+    tick();
+  };
+  window.audioAmpCaptureDisplay=async function(){
+    if(!navigator.mediaDevices?.getDisplayMedia){ setStatus('Este navegador não oferece captura de tela/aba.'); return; }
+    try{
+      const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+      if(!stream.getAudioTracks().length){ setStatus('A captura abriu, mas veio sem trilha de áudio. Tente compartilhar uma aba com “compartilhar áudio” ativado.'); stream.getTracks().forEach(t=>t.stop()); return; }
+      await useStream(stream,'Aba/sistema compartilhado','LIVE');
+    }catch(e){ setStatus('Captura cancelada ou bloqueada pelo navegador.'); }
+  };
+  window.audioAmpCaptureMic=async function(){
+    if(!navigator.mediaDevices?.getUserMedia){ setStatus('Este navegador não oferece captura de microfone.'); return; }
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      await useStream(stream,'Microfone','MIC');
+    }catch(e){ setStatus('Microfone cancelado ou bloqueado pelo navegador.'); }
+  };
+  window.audioAmpStop=function(){
+    stopAnimation(); stopStream(); setMode('idle'); setBadge('IDLE'); setLevel(.08,Array(16).fill(.08)); setNow('Sem áudio detectado','Escolha uma fonte para iniciar o teste'); setStatus('Aguardando fonte de áudio.');
+  };
+  window.audioAmpEnsureIdle=function(){ if(!state.raf && state.mode==='idle') setLevel(.08,Array(16).fill(.08)); };
+  async function sha256(text){
+    const data=new TextEncoder().encode(text); const digest=await crypto.subtle.digest('SHA-256',data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function randomString(len=64){ const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~'; const arr=new Uint8Array(len); crypto.getRandomValues(arr); return Array.from(arr,b=>chars[b%chars.length]).join(''); }
+  function redirectUri(){ return location.origin + location.pathname; }
+  window.audioAmpSpotifyConnect=async function(){
+    if(!SPOTIFY_CLIENT_ID){ setStatus('Spotify: preencha SPOTIFY_CLIENT_ID no código e cadastre esta URL como Redirect URI no painel do Spotify.'); return; }
+    const verifier=randomString(); localStorage.setItem('chaos_spotify_verifier',verifier);
+    const challenge=await sha256(verifier);
+    const url=new URL('https://accounts.spotify.com/authorize');
+    url.searchParams.set('client_id',SPOTIFY_CLIENT_ID); url.searchParams.set('response_type','code'); url.searchParams.set('redirect_uri',redirectUri()); url.searchParams.set('scope',SPOTIFY_SCOPES); url.searchParams.set('code_challenge_method','S256'); url.searchParams.set('code_challenge',challenge);
+    location.href=url.toString();
+  };
+  async function exchangeSpotifyCode(code){
+    if(!SPOTIFY_CLIENT_ID) return;
+    const verifier=localStorage.getItem('chaos_spotify_verifier')||'';
+    const body=new URLSearchParams({client_id:SPOTIFY_CLIENT_ID,grant_type:'authorization_code',code,redirect_uri:redirectUri(),code_verifier:verifier});
+    const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});
+    if(!r.ok) throw new Error('Falha no token Spotify');
+    const d=await r.json();
+    state.spotifyToken=d.access_token||''; state.spotifyRefreshToken=d.refresh_token||state.spotifyRefreshToken||''; state.spotifyExpires=Date.now()+((d.expires_in||3600)-60)*1000;
+    localStorage.setItem('chaos_spotify_token',state.spotifyToken); localStorage.setItem('chaos_spotify_refresh',state.spotifyRefreshToken); localStorage.setItem('chaos_spotify_expires',String(state.spotifyExpires));
+  }
+  async function refreshSpotifyToken(){
+    if(!SPOTIFY_CLIENT_ID || !state.spotifyRefreshToken) return false;
+    const body=new URLSearchParams({client_id:SPOTIFY_CLIENT_ID,grant_type:'refresh_token',refresh_token:state.spotifyRefreshToken});
+    const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});
+    if(!r.ok) return false;
+    const d=await r.json(); state.spotifyToken=d.access_token||state.spotifyToken; state.spotifyExpires=Date.now()+((d.expires_in||3600)-60)*1000;
+    localStorage.setItem('chaos_spotify_token',state.spotifyToken); localStorage.setItem('chaos_spotify_expires',String(state.spotifyExpires)); return true;
+  }
+  function spotifyPulse(title,sub,isPlaying){
+    const chip=$('spotify-chip'); if(chip) chip.classList.toggle('on',!!isPlaying);
+    if($('spotify-title')) $('spotify-title').textContent=title; if($('spotify-sub')) $('spotify-sub').textContent=sub;
+    if(!isPlaying) return;
+    stopAnimation(); stopStream(); setMode('spotify'); setBadge('SPOTIFY'); setNow(title,sub); setStatus('Spotify conectado. Barras em modo visual, baseadas no estado de reprodução.');
+    const tick=()=>{ state.demoT+=.065; const vals=Array.from({length:16},(_,i)=>.08 + ((Math.sin(state.demoT+i*.47)+1)/2)*.50 + Math.random()*.18); setLevel(vals.reduce((a,b)=>a+b,0)/vals.length,vals); state.raf=requestAnimationFrame(tick); };
+    tick();
+  }
+  window.audioAmpSpotifyRefresh=async function(){
+    try{
+      if(!state.spotifyToken){ setStatus('Spotify ainda não conectado. Configure o Client ID e clique em Conectar Spotify.'); return; }
+      if(Date.now()>state.spotifyExpires) await refreshSpotifyToken();
+      const r=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{Authorization:'Bearer '+state.spotifyToken}});
+      if(r.status===204){ spotifyPulse('Spotify conectado','Nada tocando agora',false); setStatus('Spotify conectado, mas sem reprodução no momento.'); return; }
+      if(!r.ok) throw new Error('Spotify HTTP '+r.status);
+      const d=await r.json();
+      const item=d.item||{}; const title=item.name||'Spotify conectado'; const artist=(item.artists||[]).map(a=>a.name).join(', ') || (d.is_playing?'Reproduzindo':'Pausado');
+      spotifyPulse(title,artist,!!d.is_playing);
+    }catch(e){ setStatus('Não consegui atualizar o Spotify. Verifique login, escopos e Redirect URI.'); }
+  };
+  async function handleSpotifyCallback(){
+    const params=new URLSearchParams(location.search); const code=params.get('code');
+    if(!code) return;
+    try{ await exchangeSpotifyCode(code); history.replaceState({},document.title,redirectUri()); setStatus('Spotify conectado. Atualizando reprodução...'); window.audioAmpSpotifyRefresh(); }
+    catch(e){ setStatus('Falha ao finalizar conexão com Spotify. Confira Client ID e Redirect URI.'); }
+  }
+  setLevel(.08,Array(16).fill(.08));
+  handleSpotifyCallback();
+})();
+</script>
+
+
+<script>
+// ── MINI MÓDULO DE ÁUDIO NO HEADER — DESKTOP ONLY ─────────────────────
+(function(){
+  const desktopMQ = window.matchMedia('(min-width: 721px)');
+  const $ = id => document.getElementById(id);
+  const state = {ctx:null, analyser:null, data:null, source:null, stream:null, raf:null, mode:'idle', tick:0};
+  const cols = 20, segs = 12;
+  const widget = ()=>$('hdr-audio-widget');
+  const chip = ()=>$('hdr-audio-toggle');
+  const mini = ()=>$('hdr-audio-mini');
+  const eq = ()=>$('haa-eq');
+
+  function isDesktop(){ return desktopMQ.matches; }
+  function build(){
+    const m=mini(), e=eq();
+    if(m && !m.children.length){ for(let i=0;i<6;i++){ const bar=document.createElement('i'); bar.style.height=(4+i%3*3)+'px'; m.appendChild(bar); } }
+    if(e && !e.children.length){
+      for(let c=0;c<cols;c++){
+        const col=document.createElement('div'); col.className='haa-col';
+        for(let s=0;s<segs;s++){ const segment=document.createElement('i'); segment.className='haa-seg'; col.appendChild(segment); }
+        e.appendChild(col);
+      }
+    }
+  }
+  function setOpen(open){ const w=widget(); if(w && isDesktop()) w.classList.toggle('open', !!open); }
+  function setActive(id){ ['haa-demo','haa-system','haa-mic','haa-spotify','haa-stop'].forEach(k=>{ const b=$(k); if(b) b.classList.toggle('on', k===id); }); }
+  function setText(stateText,title,sub,foot){
+    if($('haa-state')) $('haa-state').textContent=stateText||'Idle';
+    if($('haa-track-title')) $('haa-track-title').textContent=title||'Pronto para áudio';
+    if($('haa-track-sub')) $('haa-track-sub').textContent=sub||'Use demo, sistema, microfone ou Spotify';
+    if($('haa-foot')) $('haa-foot').textContent=foot||'Disponível apenas no desktop. No mobile o módulo fica oculto e inativo.';
+    if($('hdr-audio-label')) $('hdr-audio-label').textContent=stateText && stateText!=='Idle' ? stateText : 'Áudio';
+  }
+  function applyLevels(levels){
+    build();
+    const max = Math.max(...levels, .01);
+    const avg = levels.reduce((a,b)=>a+b,0)/Math.max(1,levels.length);
+    const miniBars = Array.from((mini()||{}).children||[]);
+    miniBars.forEach((bar,i)=>{ const v=levels[Math.floor(i*levels.length/Math.max(1,miniBars.length))]||avg; bar.style.height=(4+Math.min(1,v/max)*12).toFixed(1)+'px'; bar.style.opacity=(.35+Math.min(1,v)*.6).toFixed(2); });
+    const columns = Array.from((eq()||{}).children||[]);
+    columns.forEach((col,i)=>{
+      const raw=levels[i % levels.length] || 0;
+      const activeCount=Math.max(1,Math.min(segs,Math.round(raw*segs)));
+      Array.from(col.children).forEach((seg,idx)=>{
+        const active=idx<activeCount;
+        const peak=active && idx>Math.max(1,activeCount-3);
+        seg.classList.toggle('active',active && !peak);
+        seg.classList.toggle('peak',peak);
+        seg.classList.toggle('ghost',!active && idx<activeCount+2);
+      });
+    });
+    const c=chip(); if(c) c.classList.toggle('live', avg>.07 && state.mode!=='idle');
+  }
+  function demoLevels(){
+    state.tick += .055;
+    return Array.from({length:cols},(_,i)=>{
+      const wave=(Math.sin(state.tick*1.35+i*.72)+1)*.20;
+      const wave2=(Math.sin(state.tick*2.4-i*.33)+1)*.11;
+      const shape=.22+Math.sin((i/(cols-1))*Math.PI)*.12;
+      const pulse=Math.max(0,Math.sin(state.tick*1.8+i*.16))*.16;
+      return Math.min(.92,shape+wave+wave2+pulse);
+    });
+  }
+  function analyserLevels(){
+    if(!state.analyser || !state.data) return demoLevels();
+    state.analyser.getByteFrequencyData(state.data);
+    const step=Math.max(1,Math.floor(state.data.length/cols));
+    const out=[];
+    for(let i=0;i<cols;i++){
+      let sum=0,c=0;
+      for(let j=i*step;j<Math.min(state.data.length,(i+1)*step);j++){ sum+=state.data[j]; c++; }
+      const avg=(sum/Math.max(1,c))/255;
+      out.push(Math.min(.95,Math.pow(avg,.72)+.06));
+    }
+    return out;
+  }
+  function loop(){
+    if(!isDesktop()){ stop({silent:true}); return; }
+    applyLevels(state.analyser ? analyserLevels() : demoLevels());
+    state.raf=requestAnimationFrame(loop);
+  }
+  function stop({silent=false}={}){
+    if(state.raf){ cancelAnimationFrame(state.raf); state.raf=null; }
+    if(state.source){ try{state.source.disconnect();}catch(e){} state.source=null; }
+    if(state.stream){ state.stream.getTracks().forEach(t=>t.stop()); state.stream=null; }
+    if(state.ctx){ try{state.ctx.close();}catch(e){} state.ctx=null; }
+    state.analyser=null; state.data=null; state.mode='idle';
+    if(!silent){ setText('Idle','Pronto para áudio','Use demo, sistema, microfone ou Spotify','Disponível apenas no desktop. No mobile o módulo fica oculto e inativo.'); setActive('haa-stop'); }
+    applyLevels(Array(cols).fill(.06));
+    const c=chip(); if(c) c.classList.remove('live');
+  }
+  async function useStream(stream,label,activeId){
+    stop({silent:true});
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContext){ setText('Bloqueado','Áudio indisponível','Este navegador não oferece AudioContext','Tente usar um navegador desktop moderno.'); return; }
+    state.stream=stream;
+    state.ctx=new AudioContext();
+    await state.ctx.resume();
+    state.analyser=state.ctx.createAnalyser();
+    state.analyser.fftSize=1024;
+    state.analyser.smoothingTimeConstant=.78;
+    state.data=new Uint8Array(state.analyser.frequencyBinCount);
+    state.source=state.ctx.createMediaStreamSource(stream);
+    state.source.connect(state.analyser);
+    state.mode='live'; setActive(activeId); setText('Live',label,'Barras reagindo ao áudio liberado pelo navegador','Para áudio do dispositivo, compartilhe uma aba/tela com som habilitado.');
+    loop();
+  }
+  window.hdrAudioToggle=function(ev){ if(ev) ev.stopPropagation(); if(!isDesktop()) return; build(); setOpen(!(widget()?.classList.contains('open'))); };
+  window.hdrAudioDemo=function(ev){ if(ev) ev.stopPropagation(); if(!isDesktop()) return; stop({silent:true}); state.mode='demo'; setActive('haa-demo'); setText('Demo','Modo demo','Animação simulada para validar o visual','Modo visual, sem usar permissões do navegador.'); loop(); };
+  window.hdrAudioCaptureSystem=async function(ev){
+    if(ev) ev.stopPropagation(); if(!isDesktop()) return;
+    if(!navigator.mediaDevices?.getDisplayMedia){ setText('Bloqueado','Captura indisponível','Este navegador não oferece captura de aba/sistema','Use um navegador desktop compatível.'); return; }
+    try{
+      const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+      if(!stream.getAudioTracks().length){ stream.getTracks().forEach(t=>t.stop()); setText('Sem áudio','Captura sem áudio','Ative “compartilhar áudio” ao escolher a aba/tela','Alguns navegadores só permitem áudio ao compartilhar uma aba específica.'); setActive('haa-system'); return; }
+      await useStream(stream,'Sistema / aba capturada','haa-system');
+    }catch(e){ setText('Bloqueado','Captura cancelada','O navegador recusou ou cancelou a permissão','Nenhum áudio foi acessado sem autorização.'); setActive('haa-system'); }
+  };
+  window.hdrAudioCaptureMic=async function(ev){
+    if(ev) ev.stopPropagation(); if(!isDesktop()) return;
+    if(!navigator.mediaDevices?.getUserMedia){ setText('Bloqueado','Microfone indisponível','Este navegador não oferece captura de microfone','Use um navegador desktop compatível.'); return; }
+    try{ const stream=await navigator.mediaDevices.getUserMedia({audio:true}); await useStream(stream,'Microfone ativo','haa-mic'); }
+    catch(e){ setText('Bloqueado','Microfone cancelado','O navegador recusou ou cancelou a permissão','Nenhum áudio foi acessado sem autorização.'); setActive('haa-mic'); }
+  };
+  window.hdrAudioSpotify=function(ev){
+    if(ev) ev.stopPropagation(); if(!isDesktop()) return;
+    stop({silent:true}); state.mode='spotify'; setActive('haa-spotify'); setText('Spotify','Spotify preparado','Visual em modo Spotify; OAuth segue preparado no código','A Web API mostra faixa/status, mas não entrega espectro bruto do áudio.'); loop();
+  };
+  window.hdrAudioStop=function(ev){ if(ev) ev.stopPropagation(); if(!isDesktop()) return; stop(); };
+  document.addEventListener('click', ev=>{ const w=widget(); if(w && !w.contains(ev.target)) setOpen(false); });
+  document.addEventListener('keydown', ev=>{ if(ev.key==='Escape') setOpen(false); });
+  if(desktopMQ.addEventListener) desktopMQ.addEventListener('change', ev=>{ if(!ev.matches){ setOpen(false); stop({silent:true}); } else build(); });
+  build(); applyLevels(Array(cols).fill(.06));
+})();
+</script>
+
 </html>
