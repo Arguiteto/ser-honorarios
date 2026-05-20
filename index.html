@@ -999,23 +999,23 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 
 
 /* ── MINI MÓDULO DE ÁUDIO NO HEADER (DESKTOP) ───────────────────────── */
-.hdr-audio-widget{position:relative;display:flex;align-items:center;flex-shrink:0;--haa-accent:var(--icon-accent,var(--e))}
+.hdr-audio-widget{position:relative;display:flex;align-items:center;flex-shrink:0;--haa-accent:var(--icon-accent,var(--e));--haa-panel:var(--surface);--haa-panel-2:var(--surf2);--haa-text:var(--text);--haa-muted:var(--muted);--haa-line:var(--border)}
 .hdr-audio-chip{height:30px;min-width:104px;display:inline-flex;align-items:center;gap:8px;border:0.5px solid var(--border-em);border-radius:999px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer;white-space:nowrap;transition:transform .15s,border-color .15s,background .15s,color .15s,box-shadow .15s}
 .hdr-audio-chip:hover,.hdr-audio-widget.open .hdr-audio-chip{transform:translateY(-1px);border-color:var(--eb);background:var(--el);color:var(--haa-accent);box-shadow:0 8px 24px rgba(0,0,0,.10)}
 .hdr-audio-chip.live{color:var(--haa-accent);border-color:var(--eb);background:var(--el)}
 .hdr-audio-mini{width:30px;height:16px;display:flex;align-items:flex-end;justify-content:center;gap:2px;flex-shrink:0}
 .hdr-audio-mini i{width:3px;height:4px;border-radius:999px;background:currentColor;opacity:.45;transition:height 90ms linear,opacity 90ms linear,background 90ms linear;box-shadow:0 0 0 transparent}
-.hdr-audio-chip.live .hdr-audio-mini i{opacity:.82;box-shadow:0 0 8px rgba(0,0,0,.12)}
-.hdr-audio-pop{display:none;position:absolute;right:0;top:calc(100% + 10px);width:380px;max-width:calc(100vw - 42px);border:0.5px solid rgba(255,255,255,.16);border-radius:22px;background:linear-gradient(160deg,rgba(38,38,38,.96),rgba(16,16,16,.98));color:#f1eee9;box-shadow:0 24px 70px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.08);padding:16px;z-index:1000;overflow:hidden;isolation:isolate}
-.hdr-audio-pop::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 0%,rgba(242,163,93,.13),transparent 34%),radial-gradient(circle at 80% 82%,rgba(255,255,255,.055),transparent 30%);pointer-events:none;z-index:-1}
+.hdr-audio-chip.live .hdr-audio-mini i{opacity:.9;box-shadow:0 0 8px rgba(0,0,0,.12)}
+.hdr-audio-pop{display:none;position:absolute;right:0;top:calc(100% + 10px);width:380px;max-width:calc(100vw - 42px);border:0.5px solid var(--border-em);border-radius:22px;background:var(--surface);color:var(--text);box-shadow:0 24px 70px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.08);padding:16px;z-index:1000;overflow:hidden;isolation:isolate}
+.hdr-audio-pop::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 0%,var(--el),transparent 36%),radial-gradient(circle at 80% 82%,var(--surf2),transparent 34%);opacity:.46;pointer-events:none;z-index:-1}
 .hdr-audio-widget.open .hdr-audio-pop{display:block;animation:hdrAudioIn .16s ease-out both}
 @keyframes hdrAudioIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.haa-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.10)}
-.haa-brand{display:flex;align-items:center;gap:11px;min-width:0}.haa-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);color:#f2a35d;flex-shrink:0}.haa-mark svg{width:22px;height:22px}.haa-title{font-size:14px;font-weight:650;letter-spacing:-.02em;color:#f8f5ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-sub{font-size:10px;color:#a8a29a;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-state{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#f2a35d;border:1px solid rgba(242,163,93,.28);background:rgba(242,163,93,.10);border-radius:999px;padding:5px 8px;flex-shrink:0}
-.haa-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.haa-btn{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);color:#d8d2ca;border-radius:999px;padding:7px 8px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,color .15s}.haa-btn:hover{transform:translateY(-1px);border-color:rgba(242,163,93,.38);color:#f2a35d}.haa-btn.on{border-color:rgba(242,163,93,.58);background:rgba(242,163,93,.12);color:#f2a35d}.haa-btn.danger{color:#f09283}.haa-btn.spotify{color:#1ed760}
-.haa-stage{height:160px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.12));display:flex;align-items:flex-end;justify-content:center;padding:18px 14px 20px;overflow:hidden;position:relative}.haa-stage::after{content:'';position:absolute;left:18px;right:18px;bottom:11px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,163,93,.28),transparent)}
-.haa-eq{height:120px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:5px}.haa-col{height:100%;width:12px;display:flex;flex-direction:column-reverse;gap:4px}.haa-seg{height:5px;border-radius:999px;background:rgba(255,255,255,.22);opacity:.14;transform:scaleX(.82);transition:opacity 90ms linear,transform 90ms linear,background 90ms linear,box-shadow 90ms linear}.haa-seg.active{opacity:.54;background:rgba(168,162,154,.72);transform:scaleX(1)}.haa-seg.peak{opacity:1;background:#f2a35d;box-shadow:0 0 12px rgba(242,163,93,.34);transform:scaleX(1)}.haa-seg.ghost{opacity:.26;background:rgba(242,163,93,.20)}
-.haa-now{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;margin-top:12px}.haa-cover{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 42%,transparent 0 18%,rgba(242,163,93,.94) 19% 22%,transparent 23%),linear-gradient(180deg,#2c2c2c,#141414);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}.haa-track{min-width:0}.haa-track strong{display:block;font-size:12px;color:#f1eee9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-track span{display:block;font-size:10px;color:#a8a29a;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-foot{margin-top:10px;font-size:10px;line-height:1.45;color:#8f887f}
+.haa-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.haa-brand{display:flex;align-items:center;gap:11px;min-width:0}.haa-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--eb);background:var(--el);color:var(--haa-accent);flex-shrink:0}.haa-mark svg{width:22px;height:22px}.haa-title{font-size:14px;font-weight:650;letter-spacing:-.02em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-sub{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-state{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--haa-accent);border:1px solid var(--eb);background:var(--el);border-radius:999px;padding:5px 8px;flex-shrink:0}
+.haa-actions{display:grid;grid-template-columns:1.25fr 1fr .82fr;gap:7px;margin:12px 0}.haa-btn{border:1px solid var(--border);background:var(--surf2);color:var(--text);border-radius:999px;padding:8px 8px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,color .15s}.haa-btn:hover{transform:translateY(-1px);border-color:var(--eb);color:var(--haa-accent);background:var(--el)}.haa-btn.on{border-color:var(--eb);background:var(--el);color:var(--haa-accent)}.haa-btn.danger{color:var(--err);border-color:var(--errb);background:var(--errl)}
+.haa-stage{height:160px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg,var(--surf2),rgba(var(--bg-rgb),.10));display:flex;align-items:flex-end;justify-content:center;padding:18px 14px 20px;overflow:hidden;position:relative}.haa-stage::after{content:'';position:absolute;left:18px;right:18px;bottom:11px;height:1px;background:linear-gradient(90deg,transparent,var(--eb),transparent);opacity:.62}
+.haa-eq{height:120px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:5px}.haa-col{height:100%;width:12px;display:flex;flex-direction:column-reverse;gap:4px}.haa-seg{height:5px;border-radius:999px;background:var(--muted);opacity:.14;transform:scaleX(.82);transition:opacity 90ms linear,transform 90ms linear,background 90ms linear,box-shadow 90ms linear}.haa-seg.active{opacity:.54;background:var(--muted);transform:scaleX(1)}.haa-seg.peak{opacity:1;background:var(--haa-accent);box-shadow:0 0 12px rgba(0,0,0,.18);transform:scaleX(1)}.haa-seg.ghost{opacity:.26;background:var(--eb)}
+.haa-now{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;margin-top:12px}.haa-cover{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 42%,transparent 0 18%,var(--haa-accent) 19% 22%,transparent 23%),linear-gradient(180deg,var(--surf2),var(--surface));border:1px solid var(--border);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}.haa-track{min-width:0}.haa-track strong{display:block;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-track span{display:block;font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.haa-foot{margin-top:10px;font-size:10px;line-height:1.45;color:var(--muted)}
 @media(max-width:720px){.hdr-audio-widget{display:none!important}}
 @media(max-width:1100px){.hdr-audio-chip{min-width:42px;padding:4px 8px}.hdr-audio-label{display:none}.hdr-user{max-width:120px}}
 
@@ -1073,11 +1073,9 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
             </div>
             <div class="haa-state" id="haa-state">Idle</div>
           </div>
-          <div class="haa-actions" aria-label="Controles de áudio">
-            <button type="button" class="haa-btn" id="haa-demo" onclick="hdrAudioDemo(event)">Demo</button>
-            <button type="button" class="haa-btn" id="haa-system" onclick="hdrAudioCaptureSystem(event)">Sistema</button>
-            <button type="button" class="haa-btn" id="haa-mic" onclick="hdrAudioCaptureMic(event)">Mic</button>
-            <button type="button" class="haa-btn spotify" id="haa-spotify" onclick="hdrAudioSpotify(event)">Spotify</button>
+          <div class="haa-actions" aria-label="Permissões do áudio">
+            <button type="button" class="haa-btn" id="haa-system" onclick="hdrAudioCaptureSystem(event)">Permitir sistema</button>
+            <button type="button" class="haa-btn" id="haa-mic" onclick="hdrAudioCaptureMic(event)">Permitir mic</button>
             <button type="button" class="haa-btn danger" id="haa-stop" onclick="hdrAudioStop(event)">Parar</button>
           </div>
           <div class="haa-stage">
@@ -1086,11 +1084,11 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
           <div class="haa-now">
             <div class="haa-cover" aria-hidden="true"></div>
             <div class="haa-track">
-              <strong id="haa-track-title">Pronto para áudio</strong>
-              <span id="haa-track-sub">Use demo, sistema, microfone ou Spotify</span>
+              <strong id="haa-track-title">Permissão necessária</strong>
+              <span id="haa-track-sub">Escolha Sistema ou Microfone para ativar</span>
             </div>
           </div>
-          <div class="haa-foot" id="haa-foot">Disponível apenas no desktop. No mobile o módulo fica oculto e inativo.</div>
+          <div class="haa-foot" id="haa-foot">O navegador pedirá autorização antes de captar qualquer áudio. No mobile o módulo fica oculto e inativo.</div>
         </div>
       </div>
       <button class="btn ghost name-btn" onclick="changeDisplayName()" title="Alterar nome exibido online">Nome</button>
@@ -7650,7 +7648,8 @@ nbrSearch('');
 (function(){
   const desktopMQ = window.matchMedia('(min-width: 721px)');
   const $ = id => document.getElementById(id);
-  const state = {ctx:null, analyser:null, data:null, source:null, stream:null, raf:null, mode:'idle', tick:0};
+  const STORAGE_KEY = 'chaos_header_audio_source';
+  const state = {ctx:null, analyser:null, data:null, source:null, stream:null, raf:null, mode:'idle', tick:0, preferred:localStorage.getItem(STORAGE_KEY)||'', autoTried:false};
   const cols = 20, segs = 12;
   const widget = ()=>$('hdr-audio-widget');
   const chip = ()=>$('hdr-audio-toggle');
@@ -7670,14 +7669,15 @@ nbrSearch('');
     }
   }
   function setOpen(open){ const w=widget(); if(w && isDesktop()) w.classList.toggle('open', !!open); }
-  function setActive(id){ ['haa-demo','haa-system','haa-mic','haa-spotify','haa-stop'].forEach(k=>{ const b=$(k); if(b) b.classList.toggle('on', k===id); }); }
+  function setActive(id){ ['haa-system','haa-mic','haa-stop'].forEach(k=>{ const b=$(k); if(b) b.classList.toggle('on', k===id); }); }
   function setText(stateText,title,sub,foot){
     if($('haa-state')) $('haa-state').textContent=stateText||'Idle';
-    if($('haa-track-title')) $('haa-track-title').textContent=title||'Pronto para áudio';
-    if($('haa-track-sub')) $('haa-track-sub').textContent=sub||'Use demo, sistema, microfone ou Spotify';
-    if($('haa-foot')) $('haa-foot').textContent=foot||'Disponível apenas no desktop. No mobile o módulo fica oculto e inativo.';
+    if($('haa-track-title')) $('haa-track-title').textContent=title||'Permissão necessária';
+    if($('haa-track-sub')) $('haa-track-sub').textContent=sub||'Escolha Sistema ou Microfone para ativar';
+    if($('haa-foot')) $('haa-foot').textContent=foot||'O navegador pedirá autorização antes de captar qualquer áudio. No mobile o módulo fica oculto e inativo.';
     if($('hdr-audio-label')) $('hdr-audio-label').textContent=stateText && stateText!=='Idle' ? stateText : 'Áudio';
   }
+  function idleLevels(){ return Array.from({length:cols},(_,i)=>.045 + (i%5)*.006); }
   function applyLevels(levels){
     build();
     const max = Math.max(...levels, .01);
@@ -7696,20 +7696,10 @@ nbrSearch('');
         seg.classList.toggle('ghost',!active && idx<activeCount+2);
       });
     });
-    const c=chip(); if(c) c.classList.toggle('live', avg>.07 && state.mode!=='idle');
-  }
-  function demoLevels(){
-    state.tick += .055;
-    return Array.from({length:cols},(_,i)=>{
-      const wave=(Math.sin(state.tick*1.35+i*.72)+1)*.20;
-      const wave2=(Math.sin(state.tick*2.4-i*.33)+1)*.11;
-      const shape=.22+Math.sin((i/(cols-1))*Math.PI)*.12;
-      const pulse=Math.max(0,Math.sin(state.tick*1.8+i*.16))*.16;
-      return Math.min(.92,shape+wave+wave2+pulse);
-    });
+    const c=chip(); if(c) c.classList.toggle('live', avg>.07 && state.mode==='live');
   }
   function analyserLevels(){
-    if(!state.analyser || !state.data) return demoLevels();
+    if(!state.analyser || !state.data) return idleLevels();
     state.analyser.getByteFrequencyData(state.data);
     const step=Math.max(1,Math.floor(state.data.length/cols));
     const out=[];
@@ -7723,24 +7713,29 @@ nbrSearch('');
   }
   function loop(){
     if(!isDesktop()){ stop({silent:true}); return; }
-    applyLevels(state.analyser ? analyserLevels() : demoLevels());
+    if(!state.analyser){ applyLevels(idleLevels()); state.raf=null; return; }
+    applyLevels(analyserLevels());
     state.raf=requestAnimationFrame(loop);
   }
-  function stop({silent=false}={}){
+  function stop({silent=false,keepPreference=true}={}){
     if(state.raf){ cancelAnimationFrame(state.raf); state.raf=null; }
     if(state.source){ try{state.source.disconnect();}catch(e){} state.source=null; }
     if(state.stream){ state.stream.getTracks().forEach(t=>t.stop()); state.stream=null; }
     if(state.ctx){ try{state.ctx.close();}catch(e){} state.ctx=null; }
     state.analyser=null; state.data=null; state.mode='idle';
-    if(!silent){ setText('Idle','Pronto para áudio','Use demo, sistema, microfone ou Spotify','Disponível apenas no desktop. No mobile o módulo fica oculto e inativo.'); setActive('haa-stop'); }
-    applyLevels(Array(cols).fill(.06));
+    if(!keepPreference){ state.preferred=''; localStorage.removeItem(STORAGE_KEY); }
+    if(!silent){ setText('Idle','Permissão necessária','Escolha Sistema ou Microfone para ativar','O navegador pedirá autorização antes de captar qualquer áudio. No mobile o módulo fica oculto e inativo.'); setActive('haa-stop'); }
+    applyLevels(idleLevels());
     const c=chip(); if(c) c.classList.remove('live');
   }
-  async function useStream(stream,label,activeId){
+  function rememberSource(type){ state.preferred=type; localStorage.setItem(STORAGE_KEY,type); }
+  function attachEndedHandlers(stream){ stream.getTracks().forEach(track=>track.addEventListener('ended',()=>{ stop(); setText('Encerrado','Fonte de áudio encerrada','Clique em Sistema ou Microfone para permitir novamente','A fonte foi parada pelo navegador ou pelo usuário.'); })); }
+  async function useStream(stream,label,activeId,type){
     stop({silent:true});
     const AudioContext=window.AudioContext||window.webkitAudioContext;
     if(!AudioContext){ setText('Bloqueado','Áudio indisponível','Este navegador não oferece AudioContext','Tente usar um navegador desktop moderno.'); return; }
-    state.stream=stream;
+    rememberSource(type);
+    state.stream=stream; attachEndedHandlers(stream);
     state.ctx=new AudioContext();
     await state.ctx.resume();
     state.analyser=state.ctx.createAnalyser();
@@ -7749,35 +7744,88 @@ nbrSearch('');
     state.data=new Uint8Array(state.analyser.frequencyBinCount);
     state.source=state.ctx.createMediaStreamSource(stream);
     state.source.connect(state.analyser);
-    state.mode='live'; setActive(activeId); setText('Live',label,'Barras reagindo ao áudio liberado pelo navegador','Para áudio do dispositivo, compartilhe uma aba/tela com som habilitado.');
+    state.mode='live'; setActive(activeId); setText('Live',label,'Barras reagindo ao áudio permitido pelo navegador', type==='system' ? 'Áudio de sistema/aba pode exigir nova seleção por segurança do navegador.' : 'Microfone permitido. Se o navegador salvar a permissão, não deve perguntar novamente neste domínio.');
+    if(state.raf) cancelAnimationFrame(state.raf);
     loop();
   }
-  window.hdrAudioToggle=function(ev){ if(ev) ev.stopPropagation(); if(!isDesktop()) return; build(); setOpen(!(widget()?.classList.contains('open'))); };
-  window.hdrAudioDemo=function(ev){ if(ev) ev.stopPropagation(); if(!isDesktop()) return; stop({silent:true}); state.mode='demo'; setActive('haa-demo'); setText('Demo','Modo demo','Animação simulada para validar o visual','Modo visual, sem usar permissões do navegador.'); loop(); };
+  async function getMicPermissionState(){
+    try{
+      if(!navigator.permissions?.query) return 'unknown';
+      const p = await navigator.permissions.query({name:'microphone'});
+      return p.state || 'unknown';
+    }catch(e){ return 'unknown'; }
+  }
+  async function refreshPermissionHint(){
+    if(!isDesktop()) return;
+    const micState = await getMicPermissionState();
+    if(state.mode==='live') return;
+    if(state.preferred==='mic' && micState==='granted'){
+      setText('Permitido','Microfone já permitido','Clique em Permitir mic para reconectar sem novo aviso','Este navegador já possui permissão de microfone para este domínio.');
+      return;
+    }
+    if(state.preferred==='system'){
+      setText('Sistema','Sistema usado antes','Clique em Permitir sistema e escolha a aba/tela com áudio','Por segurança, a captura de tela/aba normalmente precisa ser escolhida novamente.');
+      return;
+    }
+    if(micState==='denied'){
+      setText('Bloqueado','Microfone bloqueado','Libere o microfone nas permissões do navegador se quiser usar essa fonte','Sistema/aba ainda pode ser permitido pelo botão Sistema.');
+    }
+  }
+  async function maybeAutoMic(){
+    if(state.autoTried || state.mode==='live' || state.preferred!=='mic') return;
+    const micState = await getMicPermissionState();
+    if(micState==='granted'){
+      state.autoTried=true;
+      try{ await window.hdrAudioCaptureMic(null,{auto:true}); }catch(e){}
+    }
+  }
+  async function requestDisplayStream(){
+    const richOptions={
+      video:true,
+      audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false},
+      systemAudio:'include',
+      surfaceSwitching:'include',
+      preferCurrentTab:false
+    };
+    try{ return await navigator.mediaDevices.getDisplayMedia(richOptions); }
+    catch(e){
+      if(e && e.name==='TypeError') return await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+      throw e;
+    }
+  }
+  window.hdrAudioToggle=function(ev){
+    if(ev) ev.stopPropagation(); if(!isDesktop()) return;
+    build();
+    const open=!(widget()?.classList.contains('open'));
+    setOpen(open);
+    if(open){ refreshPermissionHint(); maybeAutoMic(); }
+  };
   window.hdrAudioCaptureSystem=async function(ev){
     if(ev) ev.stopPropagation(); if(!isDesktop()) return;
-    if(!navigator.mediaDevices?.getDisplayMedia){ setText('Bloqueado','Captura indisponível','Este navegador não oferece captura de aba/sistema','Use um navegador desktop compatível.'); return; }
+    if(!navigator.mediaDevices?.getDisplayMedia){ setText('Bloqueado','Captura indisponível','Este navegador não oferece captura de aba/sistema','Use Chrome, Edge ou outro navegador desktop compatível.'); return; }
+    setActive('haa-system'); setText('Permissão','Escolha uma fonte de áudio','Na janela do navegador, selecione uma aba/tela e ative o compartilhamento de áudio','Em alguns computadores, o áudio só aparece ao compartilhar uma aba específica.');
     try{
-      const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
-      if(!stream.getAudioTracks().length){ stream.getTracks().forEach(t=>t.stop()); setText('Sem áudio','Captura sem áudio','Ative “compartilhar áudio” ao escolher a aba/tela','Alguns navegadores só permitem áudio ao compartilhar uma aba específica.'); setActive('haa-system'); return; }
-      await useStream(stream,'Sistema / aba capturada','haa-system');
-    }catch(e){ setText('Bloqueado','Captura cancelada','O navegador recusou ou cancelou a permissão','Nenhum áudio foi acessado sem autorização.'); setActive('haa-system'); }
+      const stream=await requestDisplayStream();
+      if(!stream.getAudioTracks().length){ stream.getTracks().forEach(t=>t.stop()); setText('Sem áudio','Captura sem áudio','Ative “compartilhar áudio” ao escolher a aba/tela','Alguns navegadores ou sistemas não liberam áudio da tela inteira; tente compartilhar uma aba com som.'); setActive('haa-system'); rememberSource('system'); return; }
+      await useStream(stream,'Sistema / aba capturada','haa-system','system');
+    }catch(e){ setText('Bloqueado','Permissão cancelada','O navegador recusou ou cancelou a captura','Nenhum áudio foi acessado sem autorização.'); setActive('haa-system'); }
   };
-  window.hdrAudioCaptureMic=async function(ev){
+  window.hdrAudioCaptureMic=async function(ev,opts={}){
     if(ev) ev.stopPropagation(); if(!isDesktop()) return;
     if(!navigator.mediaDevices?.getUserMedia){ setText('Bloqueado','Microfone indisponível','Este navegador não oferece captura de microfone','Use um navegador desktop compatível.'); return; }
-    try{ const stream=await navigator.mediaDevices.getUserMedia({audio:true}); await useStream(stream,'Microfone ativo','haa-mic'); }
-    catch(e){ setText('Bloqueado','Microfone cancelado','O navegador recusou ou cancelou a permissão','Nenhum áudio foi acessado sem autorização.'); setActive('haa-mic'); }
-  };
-  window.hdrAudioSpotify=function(ev){
-    if(ev) ev.stopPropagation(); if(!isDesktop()) return;
-    stop({silent:true}); state.mode='spotify'; setActive('haa-spotify'); setText('Spotify','Spotify preparado','Visual em modo Spotify; OAuth segue preparado no código','A Web API mostra faixa/status, mas não entrega espectro bruto do áudio.'); loop();
+    if(!opts.auto) setText('Permissão','Solicitando microfone','Autorize o microfone quando o navegador perguntar','Se você marcar a permissão como permanente, ele não deve perguntar de novo neste domínio.');
+    setActive('haa-mic');
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+      await useStream(stream,'Microfone ativo','haa-mic','mic');
+    }
+    catch(e){ setText('Bloqueado','Microfone cancelado','O navegador recusou ou cancelou a permissão','Libere o microfone nas configurações do navegador para não bloquear novamente.'); setActive('haa-mic'); }
   };
   window.hdrAudioStop=function(ev){ if(ev) ev.stopPropagation(); if(!isDesktop()) return; stop(); };
   document.addEventListener('click', ev=>{ const w=widget(); if(w && !w.contains(ev.target)) setOpen(false); });
   document.addEventListener('keydown', ev=>{ if(ev.key==='Escape') setOpen(false); });
-  if(desktopMQ.addEventListener) desktopMQ.addEventListener('change', ev=>{ if(!ev.matches){ setOpen(false); stop({silent:true}); } else build(); });
-  build(); applyLevels(Array(cols).fill(.06));
+  if(desktopMQ.addEventListener) desktopMQ.addEventListener('change', ev=>{ if(!ev.matches){ setOpen(false); stop({silent:true}); } else { build(); applyLevels(idleLevels()); } });
+  build(); applyLevels(idleLevels()); refreshPermissionHint();
 })();
 </script>
 
