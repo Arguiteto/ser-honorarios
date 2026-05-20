@@ -244,7 +244,7 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 #materiais-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
 
 @media(min-width:721px){
-  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#materiais-view,#equipe-view{padding-left:180px}
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#calc-tecnico-view,#materiais-view,#equipe-view{padding-left:180px}
 }
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
@@ -872,6 +872,31 @@ body.nbr-open #online-bar{display:none}
 @media(max-width:720px){#planurb-view{padding:1rem!important}.planurb-hero,.planurb-detail-grid{grid-template-columns:1fr}.planurb-badges{justify-content:flex-start}.planurb-tools-grid,.planurb-config,.planurb-preset-grid,.planurb-action-grid{grid-template-columns:1fr}.planurb-roadmap-row{grid-template-columns:1fr}.planurb-roadmap-row .tempo{text-align:left}}
 
 
+
+/* ── CÁLCULOS TÉCNICOS / TELHADO / COBERTURA / ESCADA ─────────────── */
+#calc-tecnico-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
+.ct-sub{font-size:11px;color:var(--faint);line-height:1.5;margin-top:3px}
+.ct-wrap{display:grid;grid-template-columns:minmax(300px,390px) 1fr;gap:14px;align-items:start}
+.ct-card,.ct-stage{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)}
+.ct-card h2,.ct-stage h2{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem}
+.ct-muted{font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem}
+.ct-tabs{display:flex;border:0.5px solid var(--border-em);border-radius:8px;overflow:hidden;margin-bottom:1rem;background:var(--surf2)}
+.ct-tab{flex:1;font-family:inherit;font-size:11px;padding:7px 8px;border:none;border-right:0.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.ct-tab:last-child{border-right:none}.ct-tab.on{background:var(--el);color:var(--e);font-weight:600}
+.ct-pane{display:none}.ct-pane.active{display:block}
+.ct-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.ct-status{font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem}.ct-status.ok{color:var(--green)}.ct-status.err{color:var(--err)}
+.ct-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:.9rem 0 1rem}
+.ct-kpi{background:var(--surf2);border-radius:8px;padding:.75rem}.ct-kpi .k{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}.ct-kpi .v{font-size:13px;color:var(--e);font-family:monospace;word-break:break-word}
+.ct-canvas{height:440px;min-height:330px;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;background:linear-gradient(180deg,var(--surf2),var(--surface));position:relative;margin-bottom:10px}.ct-canvas canvas{display:block;width:100%;height:100%}
+.ct-help{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.45);color:#fff;border-radius:999px;padding:5px 10px;font-size:10px;pointer-events:none}
+.ct-result{border:0.5px solid var(--border);border-radius:10px;background:var(--surf2);padding:.85rem;font-size:12px;color:var(--muted);line-height:1.55}
+.ct-result h3{font-size:13px;color:var(--text);margin-bottom:.5rem}.ct-result-row{display:grid;grid-template-columns:1fr auto;gap:10px;border-bottom:0.5px solid var(--border);padding:5px 0}.ct-result-row:last-child{border-bottom:none}.ct-result-row span:last-child{font-family:monospace;color:var(--text);text-align:right}.ct-note{font-size:10px;color:var(--faint);line-height:1.55;margin-top:.7rem}
+.ct-warning{border:0.5px solid var(--warnb);background:var(--warnl);color:var(--warn);border-radius:8px;padding:.55rem .7rem;font-size:10.5px;line-height:1.45;margin-top:.65rem}
+@media(min-width:721px){#calc-tecnico-view{padding-left:180px}}
+@media(max-width:860px){.ct-wrap{grid-template-columns:1fr}.ct-kpis{grid-template-columns:1fr 1fr}.ct-canvas{height:380px}}
+@media(max-width:720px){#calc-tecnico-view{padding:1rem!important}.ct-kpis{grid-template-columns:1fr 1fr}.ct-tabs{flex-direction:column}.ct-tab{border-right:none;border-bottom:0.5px solid var(--border)}.ct-tab:last-child{border-bottom:none}}
+
 /* ── PLANNER / CALENDÁRIO ───────────────────────── */
 body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #planner-panel,body.auth-mode #planner-hall-card{display:none!important}
 #planner-toggle{position:fixed;right:24px;bottom:86px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--e),var(--eb));border:1px solid var(--border-em);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s,border-color .2s;z-index:9998;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.15rem}
@@ -1017,7 +1042,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-threejs" onclick="showThreejs()"><span class="ico">▥</span>Volumetria 3D</button>
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
-    <button class="dock-btn" id="tool-planurb" onclick="showPlanurb()"><span class="ico">▤</span>Planurb/TCC</button>
+    <button class="dock-btn" id="tool-calctec" onclick="showCalcTec()"><span class="ico">⌁</span>Cálculos técnicos</button>
     <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-materiais" onclick="showMateriais()"><span class="ico">🧱</span>Materiais</button>
@@ -1089,13 +1114,13 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         </div>
         <span class="hall-go">Buscar arquivo →</span>
       </button>
-      <button class="hall-card" onclick="showPlanurb()" style="border-color:var(--eb)">
+      <button class="hall-card" onclick="showCalcTec()" style="border-color:var(--eb)">
         <div>
-          <div class="hall-icon">▤</div>
-          <h2>Planurb/TCC Studio</h2>
-          <p>Transforma modelagem de terreno, diagramas, pranchas, colagens e caderno em um pacote de serviços e entregáveis para o projeto.</p>
+          <div class="hall-icon">⌁</div>
+          <h2>Cálculos técnicos</h2>
+          <p>Calcula telhado, cobertura e escada, com quantitativos rápidos e volume 3D para conferir proporção.</p>
         </div>
-        <span class="hall-go">Montar pacote →</span>
+        <span class="hall-go">Abrir calculadora →</span>
       </button>
       <button class="hall-card" onclick="showSimgeo()">
         <div>
@@ -1296,130 +1321,87 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 
 
 
-  <!-- PLANURB / TCC STUDIO -->
-  <div id="planurb-view" style="display:none">
+  <!-- CÁLCULOS TÉCNICOS / TELHADO / COBERTURA / ESCADA -->
+  <div id="calc-tecnico-view" style="display:none">
     <div class="dash-top">
       <div>
-        <div class="dash-title">Planurb / TCC Studio</div>
-        <div class="planurb-sub">Ferramenta para organizar estudos urbanísticos, TCC e entregáveis visuais do projeto.</div>
+        <div class="dash-title">Cálculos técnicos — Telhado, cobertura e escada</div>
+        <div class="ct-sub">Pré-dimensionamento rápido para arquitetura: área inclinada, consumo de cobertura, geometria de escada e volume 3D.</div>
       </div>
       <button class="btn ghost" onclick="showHall()">← Início</button>
     </div>
 
-    <div class="planurb-shell">
-      <main class="planurb-main">
-        <section class="planurb-hero">
-          <div>
-            <h2>Do terreno à entrega final</h2>
-            <p>Use os seis blocos como ferramentas internas: modelagem do terreno, leitura urbana, partido, pranchas, colagens e caderno. Agora o painel separa o que será produzido do que já foi importado para o projeto.</p>
-          </div>
-          <div class="planurb-badges">
-            <span class="planurb-badge">Entregáveis</span>
-            <span class="planurb-badge">Itens importados</span>
-            <span class="planurb-badge">Presets</span>
-            <span class="planurb-badge">Brief</span>
-          </div>
-        </section>
+    <div class="ct-wrap">
+      <section class="ct-card">
+        <h2>Entradas de cálculo</h2>
+        <p class="ct-muted">Use como estudo preliminar. O resultado não substitui projeto estrutural, detalhamento executivo ou conferência de norma local.</p>
+        <div class="ct-tabs">
+          <button class="ct-tab on" id="ct-tab-telhado" onclick="ctSetMode('telhado')">Telhado</button>
+          <button class="ct-tab" id="ct-tab-cobertura" onclick="ctSetMode('cobertura')">Cobertura</button>
+          <button class="ct-tab" id="ct-tab-escada" onclick="ctSetMode('escada')">Escada</button>
+        </div>
 
-        <section class="planurb-card">
-          <div class="planurb-section-head">
-            <div>
-              <h2>Configuração do pacote</h2>
-              <p>Defina o contexto do projeto. O pacote gerado usa estes dados no brief e na proposta.</p>
-            </div>
+        <div class="ct-pane active" id="ct-pane-telhado">
+          <div class="slabel" style="margin-top:0">Geometria do telhado</div>
+          <div class="g2">
+            <div class="field"><label>Comprimento da planta</label><div class="iw"><input type="number" id="ct-len" value="12" min="0.1" step="0.1" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
+            <div class="field"><label>Largura da planta</label><div class="iw"><input type="number" id="ct-width" value="8" min="0.1" step="0.1" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
+            <div class="field"><label>Beiral em todo perímetro</label><div class="iw"><input type="number" id="ct-eave" value="0.6" min="0" step="0.05" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
+            <div class="field"><label>Inclinação</label><div class="iw"><input type="number" id="ct-slope" value="30" min="0" max="200" step="1" oninput="ctUpdate()"><span class="sfx">%</span></div></div>
+            <div class="field"><label>Tipo de telhado</label><div class="iw"><select id="ct-roof-type" onchange="ctUpdate()"><option value="duas">Duas águas</option><option value="uma">Uma água</option><option value="quatro">Quatro águas</option></select></div></div>
+            <div class="field"><label>Altura das paredes</label><div class="iw"><input type="number" id="ct-wall-h" value="3" min="1" step="0.1" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
           </div>
-          <div class="planurb-config">
-            <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pl-projeto" placeholder="Ex: Centro Cultural" oninput="planurbRefreshPackage()"></div></div>
-            <div class="field"><label>Etapa</label><div class="iw"><select id="pl-etapa" onchange="planurbRefreshPackage()"><option>TCC / Estudo acadêmico</option><option>Estudo preliminar</option><option>Anteprojeto</option><option>Concurso</option><option>Portfólio</option></select></div></div>
-            <div class="field"><label>Local / bairro</label><div class="iw"><input type="text" id="pl-local" placeholder="Ex: Campo Grande/MS" oninput="planurbRefreshPackage()"></div></div>
-            <div class="field"><label>Formato principal</label><div class="iw"><select id="pl-formato" onchange="planurbRefreshPackage()"><option>Pranchas A1</option><option>Pranchas A2</option><option>Caderno A3</option><option>Caderno A4</option><option>Post carrossel</option></select></div></div>
-          </div>
-        </section>
+        </div>
 
-        <section class="planurb-card">
-          <div class="planurb-section-head">
-            <div>
-              <h2>Ferramentas disponíveis</h2>
-              <p>Selecione uma ferramenta para ver detalhes. Use o botão de seleção no card para marcar todos os entregáveis daquele bloco.</p>
-            </div>
-            <span class="planurb-count" id="pl-tool-count">—</span>
+        <div class="ct-pane" id="ct-pane-cobertura">
+          <div class="slabel" style="margin-top:0">Quantitativo da cobertura</div>
+          <div class="g2">
+            <div class="field"><label>Material</label><div class="iw"><select id="ct-cover-material" onchange="ctApplyMaterialDefaults();ctUpdate()"><option value="ceramica">Telha cerâmica</option><option value="fibrocimento">Telha fibrocimento</option><option value="metalica">Telha metálica / sanduíche</option><option value="policarbonato">Policarbonato</option><option value="custom">Personalizado</option></select></div></div>
+            <div class="field"><label>Consumo por m²</label><div class="iw"><input type="number" id="ct-consumo" value="16" min="0.01" step="0.01" oninput="ctUpdate()"><span class="sfx">un/m²</span></div><span class="hint">Para chapas, use placas por m² ou 1 se quiser só a área.</span></div>
+            <div class="field"><label>Perda / recorte</label><div class="iw"><input type="number" id="ct-waste" value="10" min="0" max="80" step="1" oninput="ctUpdate()"><span class="sfx">%</span></div></div>
+            <div class="field"><label>Peso estimado</label><div class="iw"><input type="number" id="ct-weight" value="45" min="0" step="0.5" oninput="ctUpdate()"><span class="sfx">kg/m²</span></div></div>
+            <div class="field"><label>Comprimento útil da peça</label><div class="iw"><input type="number" id="ct-piece-l" value="0" min="0" step="0.05" oninput="ctUpdate()"><span class="sfx">m</span></div><span class="hint">Opcional para estimar faixas/fiadas.</span></div>
+            <div class="field"><label>Espaçamento de apoio</label><div class="iw"><input type="number" id="ct-apoio" value="1.1" min="0" step="0.05" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
           </div>
-          <div class="planurb-tools-grid" id="pl-tool-grid"></div>
-        </section>
+        </div>
 
-        <section class="planurb-card">
-          <div class="planurb-section-head">
-            <div>
-              <h2 id="pl-detail-title">Detalhe da ferramenta</h2>
-              <p id="pl-detail-sub">Escolha uma ferramenta para visualizar entregáveis e checklist de produção.</p>
-            </div>
-            <div class="planurb-actions">
-              <button class="btn ghost" onclick="planurbToggleActiveTool()">Selecionar bloco</button>
-            </div>
+        <div class="ct-pane" id="ct-pane-escada">
+          <div class="slabel" style="margin-top:0">Geometria da escada</div>
+          <div class="g2">
+            <div class="field"><label>Desnível piso a piso</label><div class="iw"><input type="number" id="ct-stair-h" value="3" min="0.1" step="0.01" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
+            <div class="field"><label>Largura da escada</label><div class="iw"><input type="number" id="ct-stair-w" value="1.1" min="0.5" step="0.05" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
+            <div class="field"><label>Espelho alvo</label><div class="iw"><input type="number" id="ct-riser-target" value="17.5" min="10" max="22" step="0.1" oninput="ctUpdate()"><span class="sfx">cm</span></div></div>
+            <div class="field"><label>Pisada desejada</label><div class="iw"><input type="number" id="ct-tread-target" value="28" min="20" max="40" step="0.5" oninput="ctUpdate()"><span class="sfx">cm</span></div></div>
+            <div class="field"><label>Comprimento disponível</label><div class="iw"><input type="number" id="ct-stair-avail" value="4.8" min="0" step="0.1" oninput="ctUpdate()"><span class="sfx">m</span></div></div>
+            <div class="field"><label>Tipo</label><div class="iw"><select id="ct-stair-type" onchange="ctUpdate()"><option value="reta">Reta</option><option value="l">L com patamar</option><option value="u">U com patamar</option></select></div></div>
           </div>
-          <div id="pl-tool-detail"></div>
-        </section>
+        </div>
 
-        <section class="planurb-card">
-          <div class="planurb-section-head">
-            <div>
-              <h2>Presets rápidos</h2>
-              <p>Carrega uma combinação sugerida de entregáveis para cada tipo de apresentação.</p>
-            </div>
-          </div>
-          <div class="planurb-preset-grid">
-            <button class="planurb-preset active" id="pl-preset-tcc" onclick="planurbApplyPreset('tcc')"><span class="ico">▣</span><span><strong>Preset TCC</strong><span>Completo para banca acadêmica</span></span></button>
-            <button class="planurb-preset" id="pl-preset-cliente" onclick="planurbApplyPreset('cliente')"><span class="ico">◉</span><span><strong>Preset cliente</strong><span>Focado em apresentação clara</span></span></button>
-            <button class="planurb-preset" id="pl-preset-concurso" onclick="planurbApplyPreset('concurso')"><span class="ico">♕</span><span><strong>Preset concurso</strong><span>Material visual e narrativo</span></span></button>
-          </div>
-        </section>
+        <div class="ct-actions">
+          <button class="btn solid" onclick="ctUpdate()">Atualizar cálculo</button>
+          <button class="btn ghost" onclick="ctView('roof')">Vista telhado</button>
+          <button class="btn ghost" onclick="ctView('stairs')">Vista escada</button>
+          <button class="btn ghost" onclick="ctCopySummary()">Copiar resumo</button>
+          <button class="btn ghost" onclick="ctAddToProposal()">＋ Proposta</button>
+        </div>
+        <div class="ct-status" id="ct-status"></div>
+      </section>
 
-        <section class="planurb-action-grid">
-          <div class="planurb-action-card">
-            <span><strong>Gerar pacote de entregáveis</strong><span>Gera a lista completa dos entregáveis selecionados com base no projeto.</span></span>
-            <button class="btn solid" onclick="planurbBuildPackage(true)">Gerar pacote</button>
-          </div>
-          <div class="planurb-action-card">
-            <span><strong>Copiar brief do projeto</strong><span>Copia o escopo selecionado para colar onde quiser.</span></span>
-            <button class="btn ghost" onclick="planurbCopyBrief()">Copiar</button>
-          </div>
-          <div class="planurb-action-card">
-            <span><strong>Adicionar serviços na proposta</strong><span>Envia os itens selecionados para a proposta ativa.</span></span>
-            <button class="btn solid" onclick="planurbSendToProposal()">＋ Adicionar</button>
-          </div>
-        </section>
-
-        <div class="planurb-status" id="pl-status"></div>
-        <div id="pl-package"></div>
-      </main>
-
-      <aside class="planurb-side">
-        <section class="planurb-panel">
-          <div class="planurb-panel-head">
-            <h3>Checklist de entregáveis</h3>
-            <span class="planurb-count" id="pl-delivery-count">—</span>
-          </div>
-          <p class="planurb-muted">O que será produzido neste projeto.</p>
-          <div class="planurb-checklist" id="pl-delivery-checklist"></div>
-        </section>
-
-        <section class="planurb-panel">
-          <div class="planurb-panel-head">
-            <h3>Checklist de itens importados</h3>
-            <span class="planurb-count" id="pl-import-count">—</span>
-          </div>
-          <p class="planurb-muted">Dados e arquivos que já entraram no sistema. Clique no status para alternar entre importado, pendente e não encontrado.</p>
-          <div class="planurb-checklist" id="pl-import-checklist"></div>
-          <div class="planurb-legend">
-            <span><i class="planurb-dot ok"></i> Importado</span>
-            <span><i class="planurb-dot warn"></i> Pendente</span>
-            <span><i class="planurb-dot err"></i> Não encontrado</span>
-          </div>
-        </section>
-      </aside>
+      <section class="ct-stage">
+        <h2>Resultado e volume 3D</h2>
+        <p class="ct-muted">A volumetria mostra um bloco simples com telhado e escada para conferir escala, inclinação e ocupação visual.</p>
+        <div class="ct-kpis">
+          <div class="ct-kpi"><div class="k">Projeção</div><div class="v" id="ct-k-proj">—</div></div>
+          <div class="ct-kpi"><div class="k">Área telhado</div><div class="v" id="ct-k-roof">—</div></div>
+          <div class="ct-kpi"><div class="k">Cobertura</div><div class="v" id="ct-k-cover">—</div></div>
+          <div class="ct-kpi"><div class="k">Escada</div><div class="v" id="ct-k-stair">—</div></div>
+        </div>
+        <div class="ct-canvas" id="ct-canvas"><div class="ct-help">arraste para orbitar · roda para zoom</div></div>
+        <div class="ct-result" id="ct-result"><h3>Aguardando cálculo</h3><p>Preencha os campos e clique em atualizar.</p></div>
+        <button class="btn ghost" style="margin-top:10px" onclick="ctExportPNG()">Baixar PNG do volume</button>
+      </section>
     </div>
   </div>
-
 
   <!-- SIMGEO CONSULTA -->
   <div id="simgeo-view" style="display:none">
@@ -2117,7 +2099,7 @@ function canUseTool(tool){
   const r=normalizedRole(currentRole);
   if(!r) return true; // evita bloquear enquanto o perfil carrega
   if(r==='dono' || r==='arquiteto') return true;
-  const minionTools=['home','new','props','simgeo','labeee','mapoteca','planurb','materiais','nbr'];
+  const minionTools=['home','new','props','simgeo','labeee','mapoteca','calctec','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
   if(r==='minion') return minionTools.includes(tool);
   if(r==='financeiro') return financeiroTools.includes(tool);
@@ -2133,7 +2115,7 @@ function guardTool(tool){
 
 
 function applyRoleUI(){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','planurb','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -2245,7 +2227,7 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','planurb-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -2255,7 +2237,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','planurb','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -2340,12 +2322,233 @@ function showEquipe(){
 }
 
 
-function showPlanurb(){
-  if(guardTool('planurb')) return;
+function showCalcTec(){
+  if(guardTool('calctec')) return;
   hideViews();
-  $('planurb-view').style.display='block';
-  setTool('planurb');
-  planurbInit();
+  $('calc-tecnico-view').style.display='block';
+  setTool('calctec');
+  waitForThree().then(()=>ctInit3D());
+  ctUpdate();
+}
+
+
+// ── CÁLCULOS TÉCNICOS / TELHADO / COBERTURA / ESCADA ───────────────
+let ctMode='telhado';
+let ctLastSummary='';
+const ct3d={renderer:null,scene:null,camera:null,root:null,host:null,ready:false,dragging:false,lastX:0,lastY:0,theta:.72,phi:.92,radius:38};
+function ctNum(id,fallback=0){ const n=parseFloat($(id)?.value); return Number.isFinite(n)?n:fallback; }
+function ctFmt(n,d=2){ return (Number(n)||0).toLocaleString('pt-BR',{maximumFractionDigits:d,minimumFractionDigits:d}); }
+function ctFmt0(n){ return Math.ceil(Number(n)||0).toLocaleString('pt-BR'); }
+function ctSetStatus(msg,type='ok'){ const el=$('ct-status'); if(!el) return; el.textContent=msg||''; el.className='ct-status '+(type==='err'?'err':'ok'); }
+function ctSetMode(mode){
+  ctMode=mode||'telhado';
+  ['telhado','cobertura','escada'].forEach(m=>{
+    const tab=$('ct-tab-'+m), pane=$('ct-pane-'+m);
+    if(tab) tab.classList.toggle('on',m===ctMode);
+    if(pane) pane.classList.toggle('active',m===ctMode);
+  });
+  ctUpdate();
+}
+function ctApplyMaterialDefaults(){
+  const m=$('ct-cover-material')?.value||'ceramica';
+  const cfg={
+    ceramica:[16,45,10], fibrocimento:[0.75,17,8], metalica:[1,10,7], policarbonato:[1,3,10]
+  }[m];
+  if(!cfg) return;
+  if($('ct-consumo')) $('ct-consumo').value=cfg[0];
+  if($('ct-weight')) $('ct-weight').value=cfg[1];
+  if($('ct-waste')) $('ct-waste').value=cfg[2];
+}
+function ctData(){
+  const len=Math.max(.1,ctNum('ct-len',12));
+  const wid=Math.max(.1,ctNum('ct-width',8));
+  const eave=Math.max(0,ctNum('ct-eave',.6));
+  const slope=Math.max(0,ctNum('ct-slope',30));
+  const type=$('ct-roof-type')?.value||'duas';
+  const wallH=Math.max(1,ctNum('ct-wall-h',3));
+  const planLen=len+eave*2, planWid=wid+eave*2;
+  const planArea=planLen*planWid;
+  const angle=Math.atan(slope/100);
+  const factor=1/Math.max(.05,Math.cos(angle));
+  const roofShapeFactor=type==='quatro'?1.03:1;
+  const roofArea=planArea*factor*roofShapeFactor;
+  const roofRise=(type==='uma'?planWid:planWid/2)*(slope/100);
+  const ridge=type==='duas'?planLen:(type==='quatro'?Math.max(0,planLen-planWid):0);
+  const hip=type==='quatro'?Math.sqrt(Math.pow(planWid/2,2)+Math.pow(roofRise,2))*4:0;
+  const consumo=Math.max(.01,ctNum('ct-consumo',16));
+  const waste=Math.max(0,ctNum('ct-waste',10));
+  const weight=Math.max(0,ctNum('ct-weight',45));
+  const apoio=Math.max(0,ctNum('ct-apoio',1.1));
+  const pieceL=Math.max(0,ctNum('ct-piece-l',0));
+  const coverUnits=roofArea*consumo*(1+waste/100);
+  const totalWeight=roofArea*weight;
+  const apoioLines=apoio>0?Math.ceil((type==='uma'?planWid:planWid/2)/apoio)+1:0;
+  const faixas=pieceL>0?Math.ceil((type==='uma'?planWid:planWid/2)/pieceL):0;
+  const stairH=Math.max(.1,ctNum('ct-stair-h',3));
+  const stairW=Math.max(.5,ctNum('ct-stair-w',1.1));
+  const riserTarget=Math.max(10,ctNum('ct-riser-target',17.5));
+  const risers=Math.max(1,Math.round((stairH*100)/riserTarget));
+  const riser=(stairH*100)/risers;
+  const treadInput=Math.max(20,ctNum('ct-tread-target',28));
+  const blondelIdeal=Math.max(20,63-2*riser);
+  const tread=treadInput||blondelIdeal;
+  const treads=Math.max(1,risers-1);
+  const run=(treads*tread)/100;
+  const stairAvail=Math.max(0,ctNum('ct-stair-avail',4.8));
+  const stairAngle=Math.atan2(stairH,run)*180/Math.PI;
+  const blondel=2*riser+tread;
+  const stairArea=run*stairW;
+  return {len,wid,eave,slope,type,wallH,planLen,planWid,planArea,angle,roofArea,roofRise,ridge,hip,consumo,waste,weight,coverUnits,totalWeight,apoio,apoioLines,pieceL,faixas,stairH,stairW,riserTarget,risers,riser,tread,treads,run,stairAvail,stairAngle,blondel,stairArea,stairType:$('ct-stair-type')?.value||'reta'};
+}
+function ctUpdate(){
+  const d=ctData();
+  if($('ct-k-proj')) $('ct-k-proj').textContent=ctFmt(d.planArea,1)+' m²';
+  if($('ct-k-roof')) $('ct-k-roof').textContent=ctFmt(d.roofArea,1)+' m²';
+  if($('ct-k-cover')) $('ct-k-cover').textContent=ctFmt0(d.coverUnits)+' un.';
+  if($('ct-k-stair')) $('ct-k-stair').textContent=`${d.risers} esp. · ${ctFmt(d.run,2)} m`;
+  const roofLabel={uma:'Uma água',duas:'Duas águas',quatro:'Quatro águas'}[d.type]||'Telhado';
+  const stairOk=d.blondel>=60 && d.blondel<=65;
+  const fits=!d.stairAvail || d.run<=d.stairAvail;
+  let title='Telhado';
+  let rows=[];
+  let warn='';
+  if(ctMode==='escada'){
+    title='Escada';
+    rows=[['Número de espelhos',`${d.risers}`],['Altura do espelho',`${ctFmt(d.riser,1)} cm`],['Número de pisadas',`${d.treads}`],['Pisada adotada',`${ctFmt(d.tread,1)} cm`],['Fórmula 2E + P',`${ctFmt(d.blondel,1)} cm`],['Desenvolvimento horizontal',`${ctFmt(d.run,2)} m`],['Área aproximada em planta',`${ctFmt(d.stairArea,2)} m²`],['Inclinação',`${ctFmt(d.stairAngle,1)}°`]];
+    if(!stairOk) warn+='A fórmula de conforto 2E + P ficou fora da faixa usual de 60 a 65 cm. ';
+    if(!fits) warn+=`A escada precisa de ${ctFmt(d.run,2)} m e o disponível é ${ctFmt(d.stairAvail,2)} m. `;
+    if(d.risers>16) warn+='Acima de 16 espelhos, considere patamar intermediário. ';
+  }else if(ctMode==='cobertura'){
+    title='Cobertura';
+    rows=[['Área inclinada com perda',`${ctFmt(d.roofArea*(1+d.waste/100),2)} m²`],['Consumo estimado',`${ctFmt0(d.coverUnits)} un.`],['Perda adotada',`${ctFmt(d.waste,1)}%`],['Peso sobre estrutura',`${ctFmt(d.totalWeight/1000,2)} t`],['Cumeeira aproximada',`${ctFmt(d.ridge,2)} m`],['Rincões aproximados',`${ctFmt(d.hip,2)} m`],['Linhas de apoio por água',d.apoioLines?`${d.apoioLines}`:'—'],['Faixas/fiadas por água',d.faixas?`${d.faixas}`:'—']];
+    if(d.weight>55) warn+='Peso de cobertura alto: confira estrutura, cargas e especificação. ';
+  }else{
+    title='Telhado';
+    rows=[['Tipo',roofLabel],['Projeção com beiral',`${ctFmt(d.planArea,2)} m²`],['Área inclinada',`${ctFmt(d.roofArea,2)} m²`],['Inclinação',`${ctFmt(d.slope,1)}% · ${ctFmt(d.angle*180/Math.PI,1)}°`],['Elevação da cumeeira',`${ctFmt(d.roofRise,2)} m`],['Altura total visual',`${ctFmt(d.wallH+d.roofRise,2)} m`],['Cumeeira aproximada',`${ctFmt(d.ridge,2)} m`],['Rincões aproximados',`${ctFmt(d.hip,2)} m`]];
+    if(d.slope<10) warn+='Inclinação baixa: confirme a telha/sistema escolhido e sobreposição mínima do fabricante. ';
+  }
+  const result=$('ct-result');
+  if(result){
+    result.innerHTML=`<h3>${title}</h3>${rows.map(r=>`<div class="ct-result-row"><span>${esc(r[0])}</span><span>${esc(r[1])}</span></div>`).join('')}${warn?`<div class="ct-warning">${esc(warn)}</div>`:''}<div class="ct-note">Valores aproximados para estudo. Confira norma, fabricante, estrutura e detalhamento antes de executar.</div>`;
+  }
+  ctLastSummary=`Cálculo técnico — ${title}\nTelhado: ${roofLabel}\nPlanta com beiral: ${ctFmt(d.planLen,2)} m × ${ctFmt(d.planWid,2)} m = ${ctFmt(d.planArea,2)} m²\nÁrea inclinada: ${ctFmt(d.roofArea,2)} m²\nInclinação: ${ctFmt(d.slope,1)}% (${ctFmt(d.angle*180/Math.PI,1)}°)\nCobertura: ${ctFmt0(d.coverUnits)} un. com ${ctFmt(d.waste,1)}% de perda\nPeso estimado: ${ctFmt(d.totalWeight/1000,2)} t\nEscada: ${d.risers} espelhos de ${ctFmt(d.riser,1)} cm, ${d.treads} pisadas de ${ctFmt(d.tread,1)} cm, desenvolvimento ${ctFmt(d.run,2)} m, 2E+P=${ctFmt(d.blondel,1)} cm`;
+  ctSetStatus('Cálculo atualizado.', warn?'err':'ok');
+  if(ct3d.ready) ctRender3D(d);
+  return d;
+}
+function ctInit3D(){
+  const host=$('ct-canvas');
+  if(!host) return;
+  if(ct3d.ready){ ctUpdate(); return; }
+  if(!window.THREE){ ctSetStatus('Three.js não carregou. Verifique a conexão.', 'err'); return; }
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(50,1,.1,1000);
+  const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.shadowMap.enabled=true;
+  host.appendChild(renderer.domElement);
+  const root=new THREE.Group(); scene.add(root);
+  scene.add(new THREE.AmbientLight(0xffffff,.58));
+  const sun=new THREE.DirectionalLight(0xffffff,1.05); sun.position.set(18,34,16); sun.castShadow=true; scene.add(sun);
+  Object.assign(ct3d,{renderer,scene,camera,root,host,ready:true});
+  host.addEventListener('pointerdown',e=>{ct3d.dragging=true;ct3d.lastX=e.clientX;ct3d.lastY=e.clientY;host.setPointerCapture?.(e.pointerId);});
+  host.addEventListener('pointermove',e=>{if(!ct3d.dragging)return;const dx=e.clientX-ct3d.lastX,dy=e.clientY-ct3d.lastY;ct3d.lastX=e.clientX;ct3d.lastY=e.clientY;ct3d.theta-=dx*.008;ct3d.phi=Math.max(.18,Math.min(1.42,ct3d.phi+dy*.006));ctRender3D();});
+  host.addEventListener('pointerup',e=>{ct3d.dragging=false;host.releasePointerCapture?.(e.pointerId);});
+  host.addEventListener('wheel',e=>{e.preventDefault();ct3d.radius=Math.max(12,Math.min(110,ct3d.radius+e.deltaY*.035));ctRender3D();},{passive:false});
+  window.addEventListener('resize',()=>ctRender3D());
+  ctRender3D(ctData());
+}
+function ctClearRoot(){
+  const root=ct3d.root; if(!root) return;
+  while(root.children.length){
+    const obj=root.children.pop();
+    obj.traverse?.(c=>{c.geometry?.dispose?.(); if(c.material){Array.isArray(c.material)?c.material.forEach(m=>m.dispose?.()):c.material.dispose?.();}});
+  }
+}
+function ctRoofGeometry(d){
+  const w=d.planWid,l=d.planLen,rise=d.roofRise;
+  let vertices=[], indices=[];
+  if(d.type==='uma'){
+    vertices=[-w/2,0,-l/2, w/2,rise,-l/2, w/2,rise,l/2, -w/2,0,l/2, -w/2,-.08,-l/2, w/2,rise-.08,-l/2, w/2,rise-.08,l/2, -w/2,-.08,l/2];
+    indices=[0,1,2,0,2,3,4,7,6,4,6,5,0,4,5,0,5,1,3,2,6,3,6,7,0,3,7,0,7,4,1,5,6,1,6,2];
+  }else if(d.type==='quatro'){
+    const ridge=Math.max(.01,Math.min(l*.55,Math.max(0,l-w)));
+    vertices=[-w/2,0,-l/2, w/2,0,-l/2, w/2,0,l/2, -w/2,0,l/2, 0,rise,-ridge/2, 0,rise,ridge/2];
+    indices=[0,1,4, 3,5,2, 0,4,5,3, 1,2,5,4];
+  }else{
+    vertices=[-w/2,0,-l/2, w/2,0,-l/2, 0,rise,-l/2, -w/2,0,l/2, w/2,0,l/2, 0,rise,l/2];
+    indices=[0,1,2, 3,5,4, 0,2,5,3, 1,4,5,2, 0,3,4,1];
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geo.setIndex(indices); geo.computeVertexNormals();
+  return geo;
+}
+function ctRender3D(data){
+  if(!ct3d.ready) return;
+  const d=data||ctData();
+  const T=window.THREE;
+  ctClearRoot();
+  const root=ct3d.root;
+  const maxDim=Math.max(d.planLen,d.planWid,d.run+d.len);
+  const ground=new T.Mesh(new T.BoxGeometry(maxDim+8,.1,maxDim+8),new T.MeshStandardMaterial({color:0xe8dcc8,roughness:.95}));
+  ground.position.y=-.06; ground.receiveShadow=true; root.add(ground);
+  const grid=new T.GridHelper(maxDim+8,Math.max(6,Math.round(maxDim+8)),0x8b5e3c,0xc8bca8); grid.position.y=.02; root.add(grid);
+  const wall=new T.Mesh(new T.BoxGeometry(d.planWid,d.wallH,d.planLen),new T.MeshStandardMaterial({color:0xd8d2c4,roughness:.82}));
+  wall.position.y=d.wallH/2; wall.castShadow=true; wall.receiveShadow=true; root.add(wall);
+  const roof=new T.Mesh(ctRoofGeometry(d),new T.MeshStandardMaterial({color:0x9f4f2f,roughness:.72,side:T.DoubleSide}));
+  roof.position.y=d.wallH; roof.castShadow=true; roof.receiveShadow=true; root.add(roof);
+  const roofEdges=new T.LineSegments(new T.EdgesGeometry(roof.geometry),new T.LineBasicMaterial({color:0x3b2a1a,transparent:true,opacity:.65}));
+  roofEdges.position.copy(roof.position); root.add(roofEdges);
+  const stairGroup=new T.Group();
+  const maxSteps=Math.min(d.risers,18);
+  const tread=d.tread/100, riser=d.riser/100, sw=d.stairW;
+  const startZ=d.planLen/2+0.35;
+  for(let i=0;i<maxSteps;i++){
+    const step=new T.Mesh(new T.BoxGeometry(sw,riser*(i+1),tread),new T.MeshStandardMaterial({color:0xb9b2a4,roughness:.8}));
+    step.position.set(0,riser*(i+1)/2,startZ+i*tread+tread/2);
+    step.castShadow=true; step.receiveShadow=true; stairGroup.add(step);
+  }
+  root.add(stairGroup);
+  ctRenderCamera(d);
+}
+function ctRenderCamera(d=ctData()){
+  const host=ct3d.host,renderer=ct3d.renderer,camera=ct3d.camera;
+  const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);
+  renderer.setSize(w,h,false); camera.aspect=w/h;
+  const r=ct3d.radius,theta=ct3d.theta,phi=ct3d.phi;
+  camera.position.set(r*Math.sin(phi)*Math.sin(theta),r*Math.cos(phi)+7,r*Math.sin(phi)*Math.cos(theta));
+  camera.lookAt(0,(d.wallH+d.roofRise)/2,0); camera.updateProjectionMatrix(); renderer.render(ct3d.scene,camera);
+}
+function ctView(mode){
+  if(!ct3d.ready) ctInit3D();
+  if(mode==='stairs'){ct3d.theta=.05;ct3d.phi=.98;ct3d.radius=34;ctSetMode('escada');}
+  else{ct3d.theta=.72;ct3d.phi=.86;ct3d.radius=38;if(ctMode==='escada')ctSetMode('telhado');}
+  ctRender3D(ctData());
+}
+async function ctCopySummary(){
+  ctUpdate();
+  try{await navigator.clipboard.writeText(ctLastSummary);ctSetStatus('Resumo copiado para a área de transferência.','ok');}
+  catch(e){ctSetStatus('Não consegui copiar automaticamente. Selecione o resumo no resultado e copie manualmente.','err');}
+}
+function ctAddToProposal(){
+  ctUpdate();
+  if(typeof newProposal==='function') newProposal();
+  setTimeout(()=>{
+    const nome=$('rel-nome'); if(nome && !nome.value) nome.value='Cálculos técnicos';
+    if(typeof addServico==='function') addServico('Cálculo de telhado, cobertura e escada',ctLastSummary);
+    if(typeof upRel==='function') upRel();
+    const st=$('save-status'); if(st) st.textContent='Resumo técnico adicionado à proposta.';
+  },80);
+}
+function ctExportPNG(){
+  if(!ct3d.ready){ctInit3D();return;}
+  ctRender3D(ctData());
+  const a=document.createElement('a');
+  a.href=ct3d.renderer.domElement.toDataURL('image/png');
+  a.download='calculo-tecnico-volume-3d-chaos.png';
+  document.body.appendChild(a);a.click();a.remove();
+  ctSetStatus('PNG do volume 3D gerado.','ok');
 }
 
 
@@ -2595,7 +2798,7 @@ function planurbBuildPackage(showStatus=true){
     ['Fase 02','Produzir base, diagramas, colagens e peças selecionadas','2–5 dias'],
     ['Fase 03','Revisar narrativa, diagramar prancha/caderno e fechar PDF','1–2 dias']
   ].map(r=>`<div class="planurb-roadmap-row"><span class="fase">${r[0]}</span><span class="nome">${r[1]}</span><span class="tempo">${r[2]}</span></div>`).join('');
-  planurbLastBrief=`Pacote Planurb/TCC — ${data.projeto}\nEtapa: ${data.etapa}\nLocal: ${data.local}\nFormato: ${data.formato}\n\nEntregáveis selecionados (${outs.length}):\n${outs.map((o,i)=>`${i+1}. ${o.name} — ${o.toolTitle}`).join('\n') || 'Nenhum entregável selecionado'}\n\nItens importados (${imported.length}/${PLANURB_IMPORTS.length}):\n${imported.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como importado'}\n\nPendências:\n${pending.map(i=>`- ${i.name}`).join('\n') || '- Sem pendências'}\n\nNão encontrados:\n${missing.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como não encontrado'}\n\nFluxo sugerido:\n- Conferir bases e referências\n- Produzir os entregáveis selecionados\n- Revisar narrativa gráfica e fechar PDF`;
+  planurbLastBrief=`Pacote Cálculos técnicos — ${data.projeto}\nEtapa: ${data.etapa}\nLocal: ${data.local}\nFormato: ${data.formato}\n\nEntregáveis selecionados (${outs.length}):\n${outs.map((o,i)=>`${i+1}. ${o.name} — ${o.toolTitle}`).join('\n') || 'Nenhum entregável selecionado'}\n\nItens importados (${imported.length}/${PLANURB_IMPORTS.length}):\n${imported.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como importado'}\n\nPendências:\n${pending.map(i=>`- ${i.name}`).join('\n') || '- Sem pendências'}\n\nNão encontrados:\n${missing.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como não encontrado'}\n\nFluxo sugerido:\n- Conferir bases e referências\n- Produzir os entregáveis selecionados\n- Revisar narrativa gráfica e fechar PDF`;
   packageBox.innerHTML=`<section class="planurb-package-box"><div class="planurb-kicker">${esc(data.etapa)} · ${esc(data.formato)}</div><div class="planurb-title">${esc(data.projeto)}</div><p class="planurb-desc">Pacote para ${esc(data.local)}, com ${outs.length} entregável(is) e ${imported.length} item(ns) já importado(s). Use isto como escopo de proposta, checklist de produção ou briefing para equipe.</p><div class="planurb-summary"><strong>Resumo automático:</strong> ${outs.length?`Produzir ${outs.length} entregável(is), começando pelas bases importadas e resolvendo ${pending.length} pendência(s).`:'Selecione entregáveis no painel lateral para gerar o pacote.'}</div><div class="planurb-package">${groups}</div><div class="planurb-roadmap">${roadmap}</div></section>`;
   if(showStatus) planurbSetStatus('Pacote atualizado com checklist de entregáveis e itens importados.','ok');
 }
@@ -2630,7 +2833,7 @@ function planurbSendToProposal(){
       if(typeof addServico==='function') addServico(o.name,`${o.toolTitle}: ${o.toolPrompt}`);
     });
     if(typeof upRel==='function') upRel();
-    const st=$('save-status'); if(st) st.textContent='Serviços do Planurb/TCC adicionados à proposta.';
+    const st=$('save-status'); if(st) st.textContent='Serviços do Cálculos técnicos adicionados à proposta.';
   },80);
 }
 
