@@ -1791,6 +1791,102 @@ const $  = id => document.getElementById(id);
 const flt = id => parseFloat($(id)?.value)||0;
 const fmt  = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtI = n => Math.round(n).toLocaleString('pt-BR');
+
+// ── SALVAMENTO LOCAL DE EMERGÊNCIA ─────────────────
+// Mantém as propostas utilizáveis mesmo quando o Supabase recusa o INSERT/UPDATE
+// por política RLS, coluna ausente ou falha de conexão. A sincronização principal
+// continua sendo tentada primeiro pelo Supabase.
+function proposalLocalKey(){
+  return 'chaos-local-proposals-'+(user?.id || user?.email || 'anon');
+}
+function isLocalProposalId(id){
+  return String(id||'').startsWith('local-');
+}
+function isLocalProposal(p){
+  return !!p?._local || isLocalProposalId(p?.id);
+}
+function readLocalProposals(){
+  try{
+    const raw=localStorage.getItem(proposalLocalKey());
+    const arr=raw?JSON.parse(raw):[];
+    return Array.isArray(arr)?arr.filter(Boolean):[];
+  }catch(e){
+    console.warn('Não foi possível ler propostas locais:', e);
+    return [];
+  }
+}
+function writeLocalProposals(list){
+  try{
+    localStorage.setItem(proposalLocalKey(), JSON.stringify(Array.isArray(list)?list:[]));
+    return true;
+  }catch(e){
+    console.warn('Não foi possível salvar propostas locais:', e);
+    return false;
+  }
+}
+function mergeLocalProposals(remote=[]){
+  const local=readLocalProposals().map(p=>Object.assign({_local:true},p));
+  const ids=new Set((remote||[]).map(p=>String(p.id)));
+  return [...local.filter(p=>!ids.has(String(p.id))), ...(remote||[])].sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));
+}
+function saveProposalLocal(payload,id){
+  const now=new Date().toISOString();
+  const list=readLocalProposals();
+  const localId=isLocalProposalId(id)?String(id):'local-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+  const rec=Object.assign({}, payload, {
+    id:localId,
+    _local:true,
+    user_id:payload.user_id || user?.id || '',
+    user_email:payload.user_email || user?.email || '',
+    created_at:payload.created_at || now,
+    updated_at:now
+  });
+  const i=list.findIndex(p=>String(p.id)===localId);
+  if(i>=0) list[i]=Object.assign({},list[i],rec);
+  else list.unshift(rec);
+  if(!writeLocalProposals(list)) throw new Error('Armazenamento local cheio ou bloqueado pelo navegador.');
+  return rec;
+}
+function deleteLocalProposal(id){
+  const sid=String(id||'');
+  const list=readLocalProposals().filter(p=>String(p.id)!==sid);
+  return writeLocalProposals(list);
+}
+function compactErrorMessage(error){
+  const raw=error?.message || error?.details || error?.hint || error?.code || String(error||'Erro desconhecido');
+  return String(raw).replace(/\s+/g,' ').trim().slice(0,180);
+}
+function omitKeys(obj,keys=[]){
+  const out={};
+  Object.keys(obj||{}).forEach(k=>{ if(!keys.includes(k) && obj[k]!==undefined) out[k]=obj[k]; });
+  return out;
+}
+function pickKeys(obj,keys=[]){
+  const out={};
+  keys.forEach(k=>{ if(obj && obj[k]!==undefined) out[k]=obj[k]; });
+  return out;
+}
+function uniquePayloadVariants(variants){
+  const seen=new Set();
+  return variants.filter(v=>{
+    const key=Object.keys(v).sort().join('|');
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+function proposalPayloadVariants(payload){
+  const base=omitKeys(payload,[]);
+  const variants=[
+    base,
+    omitKeys(base,['user_email']),
+    omitKeys(base,['empresa_id']),
+    omitKeys(base,['user_email','empresa_id']),
+    pickKeys(base,['user_id','name','client','typology','area','total','updated_at','created_at','data']),
+    pickKeys(base,['user_id','name','client','typology','area','total','updated_at','created_at'])
+  ];
+  return uniquePayloadVariants(variants).filter(v=>Object.keys(v).length);
+}
 function syncBrandLogos(){
   const headerLogo=$('hdr-logo-img');
   if(headerLogo) headerLogo.src=LOGO_ICON;
@@ -2141,6 +2237,7 @@ function canDeleteProposal(p){
 }
 function proposalOwnerLabel(p){
   if(!p) return '—';
+  if(isLocalProposal(p) && p.user_email) return String(p.user_email).split('@')[0]+' (local)';
   if(p.user_email) return String(p.user_email).split('@')[0];
   if(user?.id && p.user_id===user.id) return 'Você';
   return p.user_id ? 'Usuário '+String(p.user_id).slice(0,8) : 'Sem autor';
@@ -3857,7 +3954,7 @@ function dashTab(t){
 
 // ── LOAD PROPOSALS ────────────────────────────────
 async function loadProposals(){
-  if(!sb){ proposals=[]; renderDash(); return; }
+  if(!sb){ proposals=mergeLocalProposals([]); renderDash(); return; }
   if(user && currentRole===null){
     try{ await loadCurrentRole(); }catch(_e){}
   }
@@ -3866,11 +3963,11 @@ async function loadProposals(){
   const {data,error} = await q;
   if(error){
     console.error('Erro ao carregar propostas:', error);
-    proposals=[]; renderDash();
-    notifyStatus?.('Erro ao carregar propostas. Verifique as permissões/RLS.','err',4000);
+    proposals=mergeLocalProposals([]); renderDash();
+    notifyStatus?.('Erro ao carregar do servidor. Mostrando salvos locais.','err',4000);
     return;
   }
-  proposals = data||[];
+  proposals = mergeLocalProposals(data||[]);
   renderDash();
 }
 
@@ -3888,7 +3985,7 @@ function renderDash(){
     const canDelete=canDeleteProposal(p);
     const owner=proposalOwnerLabel(p);
     return `<div class="prop-card" onclick="${canEdit?'editProposal':'viewProposalReadonly'}('${p.id}')">
-      <div class="pc-tipo">${esc(p.typology||'—')}</div>
+      <div class="pc-tipo">${esc(p.typology||'—')}${isLocalProposal(p)?' · LOCAL':''}</div>
       <div class="pc-nome">${esc(p.name||'Sem título')}</div>
       <div class="pc-cli">${esc(p.client||'—')}</div>
       ${allMode?`<div class="pc-data" style="margin-bottom:.35rem">Autor: ${esc(owner)}</div>`:''}
@@ -4005,14 +4102,43 @@ function editProposal(id){
 }
 
 async function deleteProposal(id){
-  const p=proposals.find(x=>x.id===id);
+  const p=proposals.find(x=>String(x.id)===String(id));
   if(!p) return;
   if(!canDeleteProposal(p)){ alert('Seu perfil não pode excluir esta proposta.'); return; }
   if(!id || !confirm('Excluir esta proposta?')) return;
-  if(!sb) return;
+  if(isLocalProposal(p)){
+    deleteLocalProposal(id);
+    if(currentId===id) currentId=null;
+    await loadProposals();
+    notifyStatus?.('Proposta local excluída.','ok',2500);
+    return;
+  }
+  if(!sb){ alert('Sem conexão com o servidor.'); return; }
   const {error}=await sb.from('proposals').delete().eq('id',id);
   if(error){ alert('Não foi possível excluir: '+(error.message||error)); return; }
   loadProposals();
+}
+
+async function tryCloudSaveProposal(payload,currentId){
+  if(!sb) return {ok:false,error:new Error('Sem conexão com o Supabase')};
+  const variants=proposalPayloadVariants(payload);
+  let lastError=null;
+  for(const v of variants){
+    try{
+      if(currentId && !isLocalProposalId(currentId)){
+        const {error}=await sb.from('proposals').update(v).eq('id',currentId);
+        if(!error) return {ok:true,id:currentId,data:null};
+        lastError=error;
+      }else{
+        const res=await sb.from('proposals').insert(v).select('id').single();
+        if(!res.error) return {ok:true,id:res.data?.id,data:res.data};
+        lastError=res.error;
+      }
+    }catch(e){
+      lastError=e;
+    }
+  }
+  return {ok:false,error:lastError};
 }
 
 async function saveProposal(opts={}){
@@ -4020,37 +4146,75 @@ async function saveProposal(opts={}){
   const btn=$('save-btn'),status=$('save-status');
   if(btn){btn.disabled=true;if(!silent)btn.textContent='Salvando...';}
   if(status && !silent){status.className='save-status';status.textContent='';}
-  if(!sb){
-    if(btn){btn.disabled=false;btn.textContent='Salvar proposta';}
-    if(status && !silent){status.textContent='Sem conexão com o servidor.';status.className='save-status err';}
-    return {ok:false,error:'sb null'};
-  }
-  const nome=$('rel-nome').value||'Sem título';
-  const final=Math.max(0,fasesT+taxT-descV);
-  if(currentId){
-    const existing=proposals.find(x=>x.id===currentId);
-    if(existing && !canEditProposal(existing)){
-      if(btn){btn.disabled=false;btn.textContent='Salvar proposta';}
-      if(status){status.textContent='Seu perfil não pode editar esta proposta.';status.className='save-status err';}
-      return {ok:false,error:'sem permissão'};
+  const finishButton=()=>{ if(btn){btn.disabled=false;btn.textContent='Salvar proposta';} };
+
+  try{
+    if(!user && sb){
+      try{ const sess=await sb.auth.getSession(); user=sess?.data?.session?.user || user; }catch(_e){}
     }
+    if(!user){
+      finishButton();
+      if(status && !silent){status.textContent='Entre no sistema antes de salvar.';status.className='save-status err';}
+      return {ok:false,error:'sem usuário'};
+    }
+
+    const nome=$('rel-nome').value||'Sem título';
+    const final=Math.max(0,fasesT+taxT-descV);
+    if(currentId){
+      const existing=proposals.find(x=>String(x.id)===String(currentId));
+      if(existing && !canEditProposal(existing)){
+        finishButton();
+        if(status){status.textContent='Seu perfil não pode editar esta proposta.';status.className='save-status err';}
+        return {ok:false,error:'sem permissão'};
+      }
+    }
+
+    if(sb && user && currentEmpresaId===null){
+      try{ await loadCurrentRole(); }catch(_e){}
+    }
+
+    const now=new Date().toISOString();
+    const payload={
+      user_id:user.id,
+      user_email:user.email||'',
+      name:nome,
+      client:$('rel-cli').value||'',
+      typology:$('rel-tipo').value||'',
+      area:flt('rel-area'),
+      total:Math.round(final),
+      updated_at:now,
+      data:getCalcData()
+    };
+    if(currentEmpresaId) payload.empresa_id=currentEmpresaId;
+
+    let cloud=await tryCloudSaveProposal(currentId && isLocalProposalId(currentId) ? Object.assign({},payload,{created_at:now}) : payload, currentId);
+
+    if(cloud.ok){
+      if(!currentId || isLocalProposalId(currentId)) currentId=cloud.id || currentId;
+      $('calc-title').textContent=nome;
+      await loadProposals();
+      finishButton();
+      if(!silent && status){status.textContent='✓ Salvo com sucesso';status.className='save-status ok';setTimeout(()=>status.textContent='',3000);}
+      return {ok:true,id:currentId,data:cloud.data};
+    }
+
+    // Fallback local: evita perder trabalho quando o servidor bloqueia o salvamento.
+    const local=saveProposalLocal(Object.assign({},payload,{created_at:now}), currentId);
+    currentId=local.id;
+    $('calc-title').textContent=nome;
+    await loadProposals();
+    finishButton();
+    const msg='Salvo localmente. Servidor recusou: '+compactErrorMessage(cloud.error);
+    if(status && !silent){status.textContent=msg;status.className='save-status ok';}
+    console.warn('Proposta salva localmente. Erro do Supabase:', cloud.error);
+    return {ok:true,local:true,id:currentId,error:cloud.error};
+
+  }catch(e){
+    finishButton();
+    console.error('Erro inesperado ao salvar proposta:', e);
+    if(status && !silent){status.textContent='Erro ao salvar: '+compactErrorMessage(e);status.className='save-status err';}
+    return {ok:false,error:e};
   }
-  const payload={user_id:user.id,user_email:user.email||'',name:nome,client:$('rel-cli').value||'',typology:$('rel-tipo').value||'',area:flt('rel-area'),total:Math.round(final),updated_at:new Date().toISOString(),data:getCalcData()};
-  let error,data;
-  if(currentId){
-    ({error}=await sb.from('proposals').update(payload).eq('id',currentId));
-  } else {
-    const res=await sb.from('proposals').insert({...payload,created_at:new Date().toISOString()}).select().single();
-    error=res.error; data=res.data; if(!error)currentId=res.data.id;
-  }
-  if(btn){btn.disabled=false;btn.textContent='Salvar proposta';}
-  if(error){
-    if(status){status.textContent=silent?'Erro ao salvar antes de anexar.':'Erro ao salvar.';status.className='save-status err';}
-    return {ok:false,error};
-  }
-  $('calc-title').textContent=nome;
-  if(!silent && status){status.textContent='✓ Salvo com sucesso';status.className='save-status ok';setTimeout(()=>status.textContent='',3000);}
-  return {ok:true,id:currentId,data};
 }
 
 // ── CALC DATA ─────────────────────────────────────
