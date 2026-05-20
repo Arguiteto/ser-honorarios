@@ -1380,6 +1380,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <div class="ct-actions">
           <button class="btn solid" onclick="ctUpdate()">Atualizar cálculo</button>
           <button class="btn ghost" onclick="ctView('roof')">Vista telhado</button>
+          <button class="btn ghost" onclick="ctView('cover')">Vista cobertura</button>
           <button class="btn ghost" onclick="ctView('stairs')">Vista escada</button>
           <button class="btn ghost" onclick="ctCopySummary()">Copiar resumo</button>
           <button class="btn ghost" onclick="ctAddToProposal()">＋ Proposta</button>
@@ -1389,7 +1390,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 
       <section class="ct-stage">
         <h2>Resultado e volume 3D</h2>
-        <p class="ct-muted">A volumetria mostra um bloco simples com telhado e escada para conferir escala, inclinação e ocupação visual.</p>
+        <p class="ct-muted">A volumetria agora é isolada por aba: cobertura mostra apenas a cobertura/telhado, escada mostra apenas a escada, e telhado mostra o conjunto básico sem misturar com a escada.</p>
         <div class="ct-kpis">
           <div class="ct-kpi"><div class="k">Projeção</div><div class="v" id="ct-k-proj">—</div></div>
           <div class="ct-kpi"><div class="k">Área telhado</div><div class="v" id="ct-k-roof">—</div></div>
@@ -1398,7 +1399,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         </div>
         <div class="ct-canvas" id="ct-canvas"><div class="ct-help">arraste para orbitar · roda para zoom</div></div>
         <div class="ct-result" id="ct-result"><h3>Aguardando cálculo</h3><p>Preencha os campos e clique em atualizar.</p></div>
-        <button class="btn ghost" style="margin-top:10px" onclick="ctExportPNG()">Baixar PNG do volume</button>
+        <button class="btn ghost" style="margin-top:10px" onclick="ctExportPNG()">Baixar PNG do 3D atual</button>
       </section>
     </div>
   </div>
@@ -2375,6 +2376,7 @@ function ctData(){
   const roofRise=(type==='uma'?planWid:planWid/2)*(slope/100);
   const ridge=type==='duas'?planLen:(type==='quatro'?Math.max(0,planLen-planWid):0);
   const hip=type==='quatro'?Math.sqrt(Math.pow(planWid/2,2)+Math.pow(roofRise,2))*4:0;
+  const coverMaterial=$('ct-cover-material')?.value||'ceramica';
   const consumo=Math.max(.01,ctNum('ct-consumo',16));
   const waste=Math.max(0,ctNum('ct-waste',10));
   const weight=Math.max(0,ctNum('ct-weight',45));
@@ -2398,7 +2400,7 @@ function ctData(){
   const stairAngle=Math.atan2(stairH,run)*180/Math.PI;
   const blondel=2*riser+tread;
   const stairArea=run*stairW;
-  return {len,wid,eave,slope,type,wallH,planLen,planWid,planArea,angle,roofArea,roofRise,ridge,hip,consumo,waste,weight,coverUnits,totalWeight,apoio,apoioLines,pieceL,faixas,stairH,stairW,riserTarget,risers,riser,tread,treads,run,stairAvail,stairAngle,blondel,stairArea,stairType:$('ct-stair-type')?.value||'reta'};
+  return {len,wid,eave,slope,type,wallH,planLen,planWid,planArea,angle,roofArea,roofRise,ridge,hip,coverMaterial,consumo,waste,weight,coverUnits,totalWeight,apoio,apoioLines,pieceL,faixas,stairH,stairW,riserTarget,risers,riser,tread,treads,run,stairAvail,stairAngle,blondel,stairArea,stairType:$('ct-stair-type')?.value||'reta'};
 }
 function ctUpdate(){
   const d=ctData();
@@ -2469,20 +2471,101 @@ function ctRoofGeometry(d){
   const w=d.planWid,l=d.planLen,rise=d.roofRise;
   let vertices=[], indices=[];
   if(d.type==='uma'){
-    vertices=[-w/2,0,-l/2, w/2,rise,-l/2, w/2,rise,l/2, -w/2,0,l/2, -w/2,-.08,-l/2, w/2,rise-.08,-l/2, w/2,rise-.08,l/2, -w/2,-.08,l/2];
-    indices=[0,1,2,0,2,3,4,7,6,4,6,5,0,4,5,0,5,1,3,2,6,3,6,7,0,3,7,0,7,4,1,5,6,1,6,2];
+    vertices=[
+      -w/2,0,-l/2,  w/2,rise,-l/2,  w/2,rise,l/2,  -w/2,0,l/2
+    ];
+    indices=[0,1,2, 0,2,3];
   }else if(d.type==='quatro'){
     const ridge=Math.max(.01,Math.min(l*.55,Math.max(0,l-w)));
-    vertices=[-w/2,0,-l/2, w/2,0,-l/2, w/2,0,l/2, -w/2,0,l/2, 0,rise,-ridge/2, 0,rise,ridge/2];
-    indices=[0,1,4, 3,5,2, 0,4,5,3, 1,2,5,4];
+    vertices=[
+      -w/2,0,-l/2,  w/2,0,-l/2,  w/2,0,l/2,  -w/2,0,l/2,
+       0,rise,-ridge/2, 0,rise,ridge/2
+    ];
+    // Corrigido: cada água precisa ser triangulada. Antes havia faces com 4 índices,
+    // o que gerava o telhado cruzado/deformado na visualização.
+    indices=[
+      0,1,4,
+      3,5,2,
+      0,4,5, 0,5,3,
+      1,2,5, 1,5,4
+    ];
   }else{
-    vertices=[-w/2,0,-l/2, w/2,0,-l/2, 0,rise,-l/2, -w/2,0,l/2, w/2,0,l/2, 0,rise,l/2];
-    indices=[0,1,2, 3,5,4, 0,2,5,3, 1,4,5,2, 0,3,4,1];
+    vertices=[
+      -w/2,0,-l/2,  w/2,0,-l/2,  0,rise,-l/2,
+      -w/2,0,l/2,   w/2,0,l/2,   0,rise,l/2
+    ];
+    indices=[0,1,2, 3,5,4, 0,2,5, 0,5,3, 1,4,5, 1,5,2];
   }
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
   geo.setIndex(indices); geo.computeVertexNormals();
   return geo;
+}
+function ctCoverColor(d){
+  return ({ceramica:0x9f4f2f,fibrocimento:0x9ca3a7,metalica:0xb8c3c9,policarbonato:0x8fc9df,custom:0x9f4f2f})[d.coverMaterial]||0x9f4f2f;
+}
+function ctAddGroundAndGrid(root,T,size){
+  const ground=new T.Mesh(new T.BoxGeometry(size,.08,size),new T.MeshStandardMaterial({color:0xe8dcc8,roughness:.95}));
+  ground.position.y=-.06; ground.receiveShadow=true; root.add(ground);
+  const grid=new T.GridHelper(size,Math.max(6,Math.round(size)),0x8b5e3c,0xc8bca8);
+  grid.position.y=.01; root.add(grid);
+}
+function ctAddRoofOnly(root,T,d,y=0){
+  const roofMat=new T.MeshStandardMaterial({
+    color:ctCoverColor(d),roughness:.7,metalness:d.coverMaterial==='metalica'?.22:0,
+    transparent:d.coverMaterial==='policarbonato',opacity:d.coverMaterial==='policarbonato'?.58:1,side:T.DoubleSide
+  });
+  const roof=new T.Mesh(ctRoofGeometry(d),roofMat);
+  roof.position.y=y; roof.castShadow=true; roof.receiveShadow=true; root.add(roof);
+  const edges=new T.LineSegments(new T.EdgesGeometry(roof.geometry),new T.LineBasicMaterial({color:0x3b2a1a,transparent:true,opacity:.72}));
+  edges.position.copy(roof.position); root.add(edges);
+  const base=new T.Mesh(new T.BoxGeometry(d.planWid,.05,d.planLen),new T.MeshStandardMaterial({color:0xf3eadb,roughness:.9,transparent:true,opacity:.36}));
+  base.position.y=y-.08; base.receiveShadow=true; root.add(base);
+  return roof;
+}
+function ctAddWallVolume(root,T,d){
+  const wall=new T.Mesh(new T.BoxGeometry(d.planWid,d.wallH,d.planLen),new T.MeshStandardMaterial({color:0xd8d2c4,roughness:.82}));
+  wall.position.y=d.wallH/2; wall.castShadow=true; wall.receiveShadow=true; root.add(wall);
+  const edge=new T.LineSegments(new T.EdgesGeometry(wall.geometry),new T.LineBasicMaterial({color:0x7d7567,transparent:true,opacity:.28}));
+  edge.position.copy(wall.position); root.add(edge);
+}
+function ctAddStairOnly(root,T,d){
+  const group=new T.Group();
+  const riser=d.riser/100, tread=d.tread/100, sw=d.stairW;
+  const total=Math.max(1,Math.min(d.risers,36));
+  const mat=new T.MeshStandardMaterial({color:0xb9b2a4,roughness:.82});
+  function addStep(i,x,z,axis='z'){
+    const h=riser*(i+1);
+    const geo=axis==='x'?new T.BoxGeometry(tread,h,sw):new T.BoxGeometry(sw,h,tread);
+    const step=new T.Mesh(geo,mat);
+    step.position.set(x,h/2,z); step.castShadow=true; step.receiveShadow=true; group.add(step);
+  }
+  function addLanding(level,x,z,w=sw,l=sw){
+    const h=riser*level;
+    const land=new T.Mesh(new T.BoxGeometry(w,h,l),mat);
+    land.position.set(x,h/2,z); land.castShadow=true; land.receiveShadow=true; group.add(land);
+  }
+  if(d.stairType==='l' && total>4){
+    const first=Math.ceil(total/2), second=total-first;
+    for(let i=0;i<first;i++) addStep(i,0,i*tread+tread/2,'z');
+    addLanding(first,0,first*tread+sw/2,sw,sw);
+    for(let j=0;j<second;j++) addStep(first+j,(j+0.5)*tread+sw/2,first*tread+sw,'x');
+  }else if(d.stairType==='u' && total>6){
+    const first=Math.ceil(total/2), second=total-first;
+    const offset=sw+0.55;
+    for(let i=0;i<first;i++) addStep(i,-offset/2,i*tread+tread/2,'z');
+    addLanding(first,0,first*tread+sw/2,sw*2+.55,sw);
+    for(let j=0;j<second;j++) addStep(first+j,offset/2,first*tread+sw-(j*tread+tread/2),'z');
+  }else{
+    for(let i=0;i<total;i++) addStep(i,0,i*tread+tread/2,'z');
+  }
+  const box=new T.Box3().setFromObject(group);
+  const center=new T.Vector3(); box.getCenter(center);
+  group.position.x-=center.x; group.position.z-=center.z;
+  root.add(group);
+  const footprint=new T.Mesh(new T.BoxGeometry(Math.max(sw,box.max.x-box.min.x)+.35,.04,Math.max(tread,total*tread)+.35),new T.MeshStandardMaterial({color:0xf3eadb,roughness:.9,transparent:true,opacity:.38}));
+  footprint.position.y=-.035; footprint.receiveShadow=true; root.add(footprint);
+  return group;
 }
 function ctRender3D(data){
   if(!ct3d.ready) return;
@@ -2490,26 +2573,18 @@ function ctRender3D(data){
   const T=window.THREE;
   ctClearRoot();
   const root=ct3d.root;
-  const maxDim=Math.max(d.planLen,d.planWid,d.run+d.len);
-  const ground=new T.Mesh(new T.BoxGeometry(maxDim+8,.1,maxDim+8),new T.MeshStandardMaterial({color:0xe8dcc8,roughness:.95}));
-  ground.position.y=-.06; ground.receiveShadow=true; root.add(ground);
-  const grid=new T.GridHelper(maxDim+8,Math.max(6,Math.round(maxDim+8)),0x8b5e3c,0xc8bca8); grid.position.y=.02; root.add(grid);
-  const wall=new T.Mesh(new T.BoxGeometry(d.planWid,d.wallH,d.planLen),new T.MeshStandardMaterial({color:0xd8d2c4,roughness:.82}));
-  wall.position.y=d.wallH/2; wall.castShadow=true; wall.receiveShadow=true; root.add(wall);
-  const roof=new T.Mesh(ctRoofGeometry(d),new T.MeshStandardMaterial({color:0x9f4f2f,roughness:.72,side:T.DoubleSide}));
-  roof.position.y=d.wallH; roof.castShadow=true; roof.receiveShadow=true; root.add(roof);
-  const roofEdges=new T.LineSegments(new T.EdgesGeometry(roof.geometry),new T.LineBasicMaterial({color:0x3b2a1a,transparent:true,opacity:.65}));
-  roofEdges.position.copy(roof.position); root.add(roofEdges);
-  const stairGroup=new T.Group();
-  const maxSteps=Math.min(d.risers,18);
-  const tread=d.tread/100, riser=d.riser/100, sw=d.stairW;
-  const startZ=d.planLen/2+0.35;
-  for(let i=0;i<maxSteps;i++){
-    const step=new T.Mesh(new T.BoxGeometry(sw,riser*(i+1),tread),new T.MeshStandardMaterial({color:0xb9b2a4,roughness:.8}));
-    step.position.set(0,riser*(i+1)/2,startZ+i*tread+tread/2);
-    step.castShadow=true; step.receiveShadow=true; stairGroup.add(step);
+  const stairDim=Math.max(d.run+d.stairW+3,d.stairW*3+3);
+  const roofDim=Math.max(d.planLen,d.planWid)+8;
+  const siteDim=ctMode==='escada'?Math.max(10,stairDim):Math.max(10,roofDim);
+  ctAddGroundAndGrid(root,T,siteDim);
+  if(ctMode==='escada'){
+    ctAddStairOnly(root,T,d);
+  }else if(ctMode==='cobertura'){
+    ctAddRoofOnly(root,T,d,.25);
+  }else{
+    ctAddWallVolume(root,T,d);
+    ctAddRoofOnly(root,T,d,d.wallH);
   }
-  root.add(stairGroup);
   ctRenderCamera(d);
 }
 function ctRenderCamera(d=ctData()){
@@ -2518,12 +2593,14 @@ function ctRenderCamera(d=ctData()){
   renderer.setSize(w,h,false); camera.aspect=w/h;
   const r=ct3d.radius,theta=ct3d.theta,phi=ct3d.phi;
   camera.position.set(r*Math.sin(phi)*Math.sin(theta),r*Math.cos(phi)+7,r*Math.sin(phi)*Math.cos(theta));
-  camera.lookAt(0,(d.wallH+d.roofRise)/2,0); camera.updateProjectionMatrix(); renderer.render(ct3d.scene,camera);
+  const targetY=ctMode==='escada'?d.stairH/2:(ctMode==='cobertura'?Math.max(.6,d.roofRise/2):(d.wallH+d.roofRise)/2);
+  camera.lookAt(0,targetY,0); camera.updateProjectionMatrix(); renderer.render(ct3d.scene,camera);
 }
 function ctView(mode){
   if(!ct3d.ready) ctInit3D();
-  if(mode==='stairs'){ct3d.theta=.05;ct3d.phi=.98;ct3d.radius=34;ctSetMode('escada');}
-  else{ct3d.theta=.72;ct3d.phi=.86;ct3d.radius=38;if(ctMode==='escada')ctSetMode('telhado');}
+  if(mode==='stairs'){ct3d.theta=.05;ct3d.phi=.98;ct3d.radius=30;ctSetMode('escada');}
+  else if(mode==='cover'){ct3d.theta=.72;ct3d.phi=.78;ct3d.radius=34;ctSetMode('cobertura');}
+  else{ct3d.theta=.72;ct3d.phi=.86;ct3d.radius=38;ctSetMode('telhado');}
   ctRender3D(ctData());
 }
 async function ctCopySummary(){
