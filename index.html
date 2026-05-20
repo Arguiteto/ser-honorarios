@@ -1161,6 +1161,93 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 @media (max-width:1180px){.hb-shell{grid-template-columns:350px minmax(0,1fr)}.hb-side{display:none}.hb-stage{min-height:580px}}
 @media (max-width:880px){.hb-hero{flex-direction:column}.hb-shell{grid-template-columns:1fr}.hb-form{grid-template-columns:1fr}.hb-stage{min-height:520px}.hb-scene{padding:74px 22px 36px}.hb-mockup,.hb-scene.studio .hb-mockup,.hb-scene.laptop .hb-mockup,.hb-scene.pinboard .hb-mockup,.hb-scene.spread .hb-mockup{width:min(90vw,680px)}}
 
+
+
+/* ── PATCH: Pranchas humanizadas — layout e PDF preview ───────────── */
+#humanboards-view{
+  display:none;
+  width:100%;
+  max-width:1480px;
+  margin:0 auto;
+  padding:1.5rem;
+  flex:1;
+  min-width:0;
+}
+@media(min-width:721px){
+  #humanboards-view{padding-left:180px!important;}
+}
+#humanboards-view .hb-hero{margin-top:0;}
+#humanboards-view .hb-shell{
+  grid-template-columns:minmax(280px,340px) minmax(0,1fr) minmax(250px,310px);
+  align-items:start;
+}
+#humanboards-view .hb-card{min-width:0;}
+#humanboards-view .hb-card-body{min-width:0;}
+#humanboards-view .hb-stage{
+  height:min(70vh,720px);
+  min-height:560px;
+  border:0.5px solid var(--border);
+}
+#humanboards-view .hb-scene{
+  position:absolute;
+  inset:0;
+  width:auto;
+  height:auto;
+}
+#humanboards-view .hb-mockup{
+  max-width:900px;
+  width:min(76%,900px);
+  z-index:2;
+}
+#humanboards-view .hb-sheet object,
+#humanboards-view .hb-sheet iframe,
+#humanboards-view .hb-sheet embed{
+  width:100%;
+  height:100%;
+  display:block;
+  border:0;
+  background:#fff;
+}
+#humanboards-view .hb-pdf-fallback{
+  position:absolute;
+  right:10px;
+  bottom:10px;
+  z-index:4;
+  background:rgba(255,255,255,.86);
+  color:#333;
+  border:1px solid rgba(0,0,0,.12);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  text-decoration:none;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+#humanboards-view .hb-upload.dragover{
+  border-color:var(--e);
+  background:color-mix(in srgb,var(--e) 14%, transparent);
+}
+#humanboards-view .hb-status.ok{border-color:var(--green);color:var(--green);background:var(--greenl);}
+#humanboards-view .hb-status.err{border-color:var(--errb);color:var(--err);background:var(--errl);}
+#humanboards-view .hb-status.warn{border-color:var(--warnb);color:var(--warn);background:var(--warnl);}
+#humanboards-view .hb-model{width:100%;text-align:left;color:inherit;font-family:inherit;border:none;}
+#humanboards-view .hb-scene.no-texture::before{display:none;}
+@media(max-width:1180px){
+  #humanboards-view .hb-shell{grid-template-columns:minmax(280px,340px) minmax(0,1fr);}
+  #humanboards-view .hb-side{display:none;}
+  #humanboards-view .hb-stage{min-height:540px;height:min(68vh,660px);}
+}
+@media(max-width:880px){
+  #humanboards-view{padding:1rem!important;}
+  #humanboards-view .hb-shell{grid-template-columns:1fr;}
+  #humanboards-view .hb-stage{min-height:500px;height:62vh;}
+  #humanboards-view .hb-scene{padding:74px 18px 36px;}
+  #humanboards-view .hb-mockup,
+  #humanboards-view .hb-scene.studio .hb-mockup,
+  #humanboards-view .hb-scene.laptop .hb-mockup,
+  #humanboards-view .hb-scene.pinboard .hb-mockup,
+  #humanboards-view .hb-scene.spread .hb-mockup{width:min(88vw,680px);}
+}
+
 </style>
 </head>
 <body class="auth-mode">
@@ -7460,6 +7547,168 @@ init();
 
   <div class="nbr-panel-footer">base local ABNT · links diretos oficiais quando disponíveis</div>
 </div>
+
+
+<script>
+/* ── PATCH: Pranchas humanizadas — inicialização, layout e upload PDF ── */
+(function(){
+  const $ = window.$ || (id => document.getElementById(id));
+  const scenes = {
+    wall:{name:'Parede galeria',desc:'Prancha emoldurada em parede de galeria para portfólio e apresentação formal.',thumb:'wall'},
+    desk:{name:'Mesa de estudo',desc:'Vista em perspectiva sobre mesa, boa para bastidores e processo de projeto.',thumb:'desk'},
+    studio:{name:'Estúdio escuro',desc:'Cena com contraste alto para redes sociais, capa de portfólio e destaque visual.',thumb:'studio'},
+    laptop:{name:'Tela de apresentação',desc:'Mockup de notebook para reunião online, entrega digital e apresentação remota.',thumb:'laptop'},
+    pinboard:{name:'Painel de referências',desc:'Prancha presa em mural para estudos, TCC, moodboard e revisão interna.',thumb:'pinboard'},
+    spread:{name:'Pranchas sobrepostas',desc:'Composição com folhas sobre a mesa para mostrar conjunto de entrega.',thumb:'spread'}
+  };
+  const state = window.__hbState || (window.__hbState={
+    scene:'wall', pdfUrl:null, pdfName:'', zoom:100, shadow:52, caption:true, texture:true, format:'A1', ratio:'landscape', project:''
+  });
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function setText(id,value){ const el=$(id); if(el) el.textContent=value; }
+  function setStatus(title,msg,type=''){
+    const el=$('hb-status'); if(!el) return;
+    el.className='hb-status'+(type?' '+type:'');
+    el.innerHTML='<strong>'+esc(title)+'</strong>'+esc(msg);
+  }
+  function fileSize(bytes){
+    if(!Number.isFinite(bytes)) return '';
+    if(bytes < 1024*1024) return Math.max(1,Math.round(bytes/1024))+' KB';
+    return (bytes/1024/1024).toFixed(bytes>10*1024*1024?0:1)+' MB';
+  }
+  function updateFromInputs(){
+    state.project=($('hb-project')?.value||'').trim();
+    state.format=$('hb-format')?.value || 'A1';
+    state.ratio=$('hb-ratio')?.value || 'landscape';
+    state.zoom=parseInt($('hb-zoom')?.value||state.zoom||100,10);
+    state.shadow=parseInt($('hb-shadow')?.value||state.shadow||52,10);
+    state.caption=$('hb-caption-toggle')?.classList.contains('on') ?? true;
+    state.texture=$('hb-texture-toggle')?.classList.contains('on') ?? true;
+  }
+  function buildModels(){
+    const host=$('hb-models'); if(!host) return;
+    host.innerHTML=Object.entries(scenes).map(([key,s],i)=>
+      '<button type="button" class="hb-model '+(key===state.scene?'on':'')+'" data-scene="'+key+'">'+
+        '<span class="hb-thumb '+esc(s.thumb)+'"></span>'+
+        '<span class="hb-copy"><h3>'+String(i+1).padStart(2,'0')+' · '+esc(s.name)+'</h3><p>'+esc(s.desc)+'</p></span>'+
+        '<span class="hb-check">✓</span>'+
+      '</button>'
+    ).join('');
+    host.querySelectorAll('[data-scene]').forEach(btn=>btn.addEventListener('click',()=>window.hbSetScene(btn.dataset.scene)));
+  }
+  function placeholderHtml(){
+    const title=(state.project || 'Sua prancha aqui').toUpperCase();
+    return '<div class="hb-placeholder" id="hb-placeholder">'+
+      '<div class="hb-ph-head"><h3 id="hb-placeholder-title">'+esc(title)+'</h3><p>Prévia humanizada com mockup aplicado</p></div>'+
+      '<div class="hb-ph-main"><div class="hb-ph-diag"></div><div class="hb-ph-side"><div></div><div></div><div></div></div></div>'+
+      '<div class="hb-ph-foot"><span>Projeto</span><span>Cliente</span><span>Conteúdo</span><span>Escala</span><span>Data</span><span>Formato</span><strong>01</strong></div>'+
+    '</div>';
+  }
+  function pdfHtml(){
+    const url=state.pdfUrl;
+    if(!url) return placeholderHtml();
+    const src=url+'#toolbar=0&navpanes=0&scrollbar=0&view=FitH';
+    return '<object class="hb-pdf-object" data="'+esc(src)+'" type="application/pdf">'+
+      '<iframe title="Prévia do PDF" src="'+esc(src)+'"></iframe>'+
+    '</object><a class="hb-pdf-fallback" href="'+esc(url)+'" target="_blank" rel="noopener">abrir PDF</a>';
+  }
+  window.hbRender=function(){
+    updateFromInputs();
+    const s=scenes[state.scene]||scenes.wall;
+    const scene=$('hb-scene');
+    const mock=$('hb-mockup');
+    const sheet=$('hb-sheet');
+    if(scene){
+      scene.className='hb-scene '+state.scene+(state.texture?'':' no-texture');
+      scene.style.setProperty('--hb-overlay', state.texture ? '.22' : '.07');
+    }
+    if(mock){
+      const z=Math.max(.7,Math.min(1.3,state.zoom/100));
+      mock.style.setProperty('--hb-zoom', z);
+      mock.style.filter='drop-shadow(0 '+Math.round(8+state.shadow*.28)+'px '+Math.round(12+state.shadow*.45)+'px rgba(0,0,0,'+(0.12+state.shadow/340).toFixed(2)+'))';
+      mock.style.aspectRatio=state.ratio==='portrait' ? '.707/1' : (state.ratio==='square' ? '1/1' : '1.414/1');
+    }
+    if(sheet) sheet.innerHTML=pdfHtml();
+    buildModels();
+    setText('hb-scene-name',s.name);
+    setText('hb-chip-scene',s.name);
+    setText('hb-chip-pdf',state.pdfName?'carregado':'exemplo');
+    setText('hb-preview-meta',state.format+' · '+(state.ratio==='portrait'?'retrato':state.ratio==='square'?'quadrado':'paisagem')+' · '+s.name.toLowerCase());
+    setText('hb-zoom-label',state.zoom+'%');
+    setText('hb-zoom-txt',state.zoom+'%');
+    setText('hb-shadow-txt',String(state.shadow));
+    const cap=$('hb-caption');
+    if(cap) cap.classList.toggle('show',!!state.caption);
+    setText('hb-caption-title', state.project ? state.project : 'Apresentação profissional da prancha');
+    setText('hb-caption-text', state.pdfName ? 'PDF carregado: '+state.pdfName+'. Use os modelos para testar a apresentação da prancha.' : 'Modelo ideal para mostrar a prancha em contexto, sem parecer apenas um PDF cru na tela.');
+  };
+  window.hbSetScene=function(key){
+    if(!scenes[key]) return;
+    state.scene=key;
+    window.hbRender();
+  };
+  window.hbReset=function(){
+    if(state.pdfUrl) URL.revokeObjectURL(state.pdfUrl);
+    Object.assign(state,{scene:'wall',pdfUrl:null,pdfName:'',zoom:100,shadow:52,caption:true,texture:true,format:'A1',ratio:'landscape',project:''});
+    ['hb-project'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+    const fmt=$('hb-format'); if(fmt) fmt.value='A1';
+    const ratio=$('hb-ratio'); if(ratio) ratio.value='landscape';
+    const zoom=$('hb-zoom'); if(zoom) zoom.value='100';
+    const shadow=$('hb-shadow'); if(shadow) shadow.value='52';
+    const cap=$('hb-caption-toggle'); if(cap) cap.classList.add('on');
+    const tex=$('hb-texture-toggle'); if(tex) tex.classList.add('on');
+    const input=$('hb-pdf-input'); if(input) input.value='';
+    setStatus('Nenhum PDF carregado','Será usado um exemplo visual até você subir uma prancha.');
+    window.hbRender();
+  };
+  function handlePdf(file){
+    if(!file) return;
+    const isPdf=file.type==='application/pdf' || /\.pdf$/i.test(file.name||'');
+    if(!isPdf){ setStatus('Arquivo não aceito','Envie um arquivo PDF da prancha.','err'); return; }
+    if(state.pdfUrl) URL.revokeObjectURL(state.pdfUrl);
+    state.pdfUrl=URL.createObjectURL(file);
+    state.pdfName=file.name || 'prancha.pdf';
+    setStatus('PDF carregado',state.pdfName+' · '+fileSize(file.size)+'. A prévia foi aplicada ao mockup.','ok');
+    window.hbRender();
+  }
+  window.hbInit=function(){
+    buildModels();
+    const input=$('hb-pdf-input');
+    if(input && !input.dataset.hbBound){
+      input.dataset.hbBound='1';
+      input.addEventListener('change',ev=>handlePdf(ev.target.files && ev.target.files[0]));
+    }
+    const upload=document.querySelector('#humanboards-view .hb-upload');
+    if(upload && !upload.dataset.hbDropBound){
+      upload.dataset.hbDropBound='1';
+      ['dragenter','dragover'].forEach(type=>upload.addEventListener(type,ev=>{ev.preventDefault();upload.classList.add('dragover');}));
+      ['dragleave','drop'].forEach(type=>upload.addEventListener(type,ev=>{ev.preventDefault();upload.classList.remove('dragover');}));
+      upload.addEventListener('drop',ev=>handlePdf(ev.dataTransfer?.files?.[0]));
+    }
+    ['hb-project','hb-format','hb-ratio','hb-zoom','hb-shadow'].forEach(id=>{
+      const el=$(id);
+      if(el && !el.dataset.hbBound){
+        el.dataset.hbBound='1';
+        el.addEventListener('input',window.hbRender);
+        el.addEventListener('change',window.hbRender);
+      }
+    });
+    const zoomIn=$('hb-zoom-in');
+    if(zoomIn && !zoomIn.dataset.hbBound){ zoomIn.dataset.hbBound='1'; zoomIn.addEventListener('click',()=>{ const z=$('hb-zoom'); if(z){ z.value=Math.min(130,parseInt(z.value||100,10)+5); window.hbRender(); }}); }
+    const zoomOut=$('hb-zoom-out');
+    if(zoomOut && !zoomOut.dataset.hbBound){ zoomOut.dataset.hbBound='1'; zoomOut.addEventListener('click',()=>{ const z=$('hb-zoom'); if(z){ z.value=Math.max(70,parseInt(z.value||100,10)-5); window.hbRender(); }}); }
+    ['hb-caption-toggle','hb-texture-toggle'].forEach(id=>{
+      const el=$(id);
+      if(el && !el.dataset.hbBound){
+        el.dataset.hbBound='1';
+        el.addEventListener('click',()=>{ el.classList.toggle('on'); window.hbRender(); });
+      }
+    });
+    window.hbRender();
+  };
+  window.addEventListener('beforeunload',()=>{ if(state.pdfUrl) URL.revokeObjectURL(state.pdfUrl); });
+})();
+</script>
 
 </body>
 <script>
