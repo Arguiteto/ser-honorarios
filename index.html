@@ -1841,7 +1841,7 @@ function writeLocalProposals(list){
 function mergeLocalProposals(remote=[]){
   const local=readLocalProposals().map(p=>Object.assign({_local:true},p));
   const ids=new Set((remote||[]).map(p=>String(p.id)));
-  return [...local.filter(p=>!ids.has(String(p.id))), ...(remote||[])].sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));
+  return [...local.filter(p=>!ids.has(String(p.id))), ...(remote||[])].sort((a,b)=>new Date(b.updated_at||b.created_at||0).getTime()-new Date(a.updated_at||a.created_at||0).getTime());
 }
 function saveProposalLocal(payload,id){
   const now=new Date().toISOString();
@@ -2011,7 +2011,7 @@ function tpToggle(e){
 }
 document.addEventListener('click',e=>{
   const picker=$('theme-picker');
-  if(picker&&!picker.contains(e.target)){
+  if(picker && e.target instanceof Node && !picker.contains(e.target)){
     const dd=$('tp-dropdown');
     if(dd) dd.classList.remove('open');
   }
@@ -2581,6 +2581,7 @@ function ctInit3D(){
   if(!host) return;
   if(ct3d.ready){ ctUpdate(); return; }
   if(!window.THREE){ ctSetStatus('Three.js não carregou. Verifique a conexão.', 'err'); return; }
+  const THREE=window.THREE;
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(50,1,.1,1000);
   const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});
@@ -2606,6 +2607,7 @@ function ctClearRoot(){
   }
 }
 function ctRoofGeometry(d){
+  const THREE=window.THREE;
   const w=d.planWid,l=d.planLen,rise=d.roofRise;
   let vertices=[], indices=[];
   if(d.type==='uma'){
@@ -3166,7 +3168,7 @@ function plannerRenderDayList(){
   const title=$('planner-day-title'); if(title) title.textContent=plannerDateLabel(key);
   const dateInput=$('pl-date'); if(dateInput) dateInput.value=key;
   const list=$('planner-day-list'); if(!list) return;
-  const evs=plannerEventsForDate(key).sort((a,b)=>new Date(a.inicio)-new Date(b.inicio));
+  const evs=plannerEventsForDate(key).sort((a,b)=>new Date(a.inicio).getTime()-new Date(b.inicio).getTime());
   const createBtn = plannerCanManage()
     ? `<button class="btn solid planner-create-day-btn" type="button" onclick="plannerOpenCreateForm()" style="width:100%;justify-content:center;margin-bottom:6px">＋ Criar aviso neste dia</button>`
     : '';
@@ -3266,7 +3268,7 @@ async function plannerCreateEvent(){
 }
 function plannerTodayEvents(){
   const today=plannerDateKey(new Date());
-  return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===today).sort((a,b)=>new Date(a.inicio)-new Date(b.inicio));
+  return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===today).sort((a,b)=>new Date(a.inicio).getTime()-new Date(b.inicio).getTime());
 }
 function plannerRenderFloatingAlert(){
   const alert=$('planner-alert'); if(!alert) return;
@@ -3276,7 +3278,7 @@ function plannerRenderFloatingAlert(){
   const first=evs[0];
   const txt=$('planner-alert-text');
   if(txt) txt.innerHTML=`<strong>Você tem ${evs.length} aviso${evs.length>1?'s':''} hoje</strong><span>${esc(plannerTimeLabel(first.inicio)||'Hoje')} · ${esc(first.titulo||'Compromisso')}</span>`;
-  const count=$('planner-alert-count'); if(count) count.textContent=evs.length;
+  const count=$('planner-alert-count'); if(count) count.textContent=String(evs.length);
   plannerRenderPanel();
 }
 function plannerTogglePanel(){
@@ -3698,9 +3700,23 @@ function matClearCompare(){ _matCmp=[]; matRenderTray(); matRender(); }
 function matCloseCmp(){ const m=$('mat-cmp-modal'); if(m){ m.style.opacity='0'; m.style.pointerEvents='none'; } }
 function matOpenCompare(){
   if(_matCmp.length<2){ alert('Selecione ao menos 2 materiais.'); return; }
-  const mats=_matCmp.map(id=>MAT_DB.find(m=>m.id===id));
-  const rows=[['Categoria',m=>m.cat,false],['Inércia',m=>m.inVal>=70?'Alta':m.inVal>=30?'Média':'Baixa',false],['Cap. térmica ct',m=>m.ct+' kJ/m²K',true,'max'],['Condutividade λ',m=>m.lambda+' W/m·K',true,'min'],['Densidade ρ',m=>m.rho+' kg/m³',false],['Calor específico c',m=>m.c+' kJ/kg·K',false],['Absortância α',m=>''+m.alfa,true,'min'],['CO₂',m=>m.co2+' kgCO₂eq/kg',true,'min'],['Custo mín.',m=>'R$'+m.custo.min+'/m²',true,'min'],['Disponibilidade',m=>m.disponibilidade,false],['Sustentabilidade',m=>m.sustentabilidade,false],[`Rec. ZB${_matZB}`,m=>m.zbRec.includes(_matZB)?'✓ Sim':m.zbNao.includes(_matZB)?'✗ Não':'— Aceitável',false]];
-  const s=`<table style="width:100%;border-collapse:collapse;min-width:400px"><tr><th style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">Propriedade</th>${mats.map(m=>`<th style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">${m.nome}</th>`).join('')}</tr>${rows.map(([lbl,fn,cmp,mode])=>{ const vals=mats.map(fn); const nums=cmp?mats.map(m=>parseFloat(fn(m))):null; const best=nums?(mode==='max'?Math.max(...nums):Math.min(...nums)):null; const worst=nums?(mode==='max'?Math.min(...nums):Math.max(...nums)):null; return `<tr><td style="font-size:10px;color:var(--muted);padding:7px 9px;border-bottom:0.5px solid var(--border);width:34%">${lbl}</td>${mats.map((m,i)=>{ const v=vals[i]; const n=nums?nums[i]:null; const style=n===best?'color:#3B6D11;font-weight:600':n===worst?'color:var(--err)':''; return `<td style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 9px;border-bottom:0.5px solid var(--border);${style}">${v}</td>`; }).join('')}</tr>`; }).join('')}</table><p style="font-size:9px;color:var(--faint);margin-top:.8rem;text-align:center;line-height:1.6"><span style="color:var(--green)">■ Verde</span> = melhor valor &nbsp; <span style="color:var(--err)">■ Vermelho</span> = pior valor<br>Ref.: ABNT NBR 15220, ICE Database, estimativas de mercado.</p>`;
+  const mats=_matCmp.map(id=>MAT_DB.find(m=>m.id===id)).filter(Boolean);
+  if(mats.length<2){ alert('Selecione ao menos 2 materiais válidos.'); return; }
+  const rows=[
+    {lbl:'Categoria',fn:m=>m.cat,cmp:false},
+    {lbl:'Inércia',fn:m=>m.inVal>=70?'Alta':m.inVal>=30?'Média':'Baixa',cmp:false},
+    {lbl:'Cap. térmica ct',fn:m=>m.ct+' kJ/m²K',cmp:true,mode:'max'},
+    {lbl:'Condutividade λ',fn:m=>m.lambda+' W/m·K',cmp:true,mode:'min'},
+    {lbl:'Densidade ρ',fn:m=>m.rho+' kg/m³',cmp:false},
+    {lbl:'Calor específico c',fn:m=>m.c+' kJ/kg·K',cmp:false},
+    {lbl:'Absortância α',fn:m=>String(m.alfa),cmp:true,mode:'min'},
+    {lbl:'CO₂',fn:m=>m.co2+' kgCO₂eq/kg',cmp:true,mode:'min'},
+    {lbl:'Custo mín.',fn:m=>'R$'+m.custo.min+'/m²',cmp:true,mode:'min'},
+    {lbl:'Disponibilidade',fn:m=>m.disponibilidade,cmp:false},
+    {lbl:'Sustentabilidade',fn:m=>m.sustentabilidade,cmp:false},
+    {lbl:`Rec. ZB${_matZB}`,fn:m=>m.zbRec.includes(_matZB)?'✓ Sim':m.zbNao.includes(_matZB)?'✗ Não':'— Aceitável',cmp:false}
+  ];
+  const s=`<table style="width:100%;border-collapse:collapse;min-width:400px"><tr><th style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">Propriedade</th>${mats.map(m=>`<th style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">${m.nome}</th>`).join('')}</tr>${rows.map(row=>{ const vals=mats.map(row.fn); const nums=row.cmp?mats.map(m=>parseFloat(String(row.fn(m)))):null; const best=nums?(row.mode==='max'?Math.max(...nums):Math.min(...nums)):null; const worst=nums?(row.mode==='max'?Math.min(...nums):Math.max(...nums)):null; return `<tr><td style="font-size:10px;color:var(--muted);padding:7px 9px;border-bottom:0.5px solid var(--border);width:34%">${row.lbl}</td>${mats.map((m,i)=>{ const v=vals[i]; const n=nums?nums[i]:null; const style=n===best?'color:#3B6D11;font-weight:600':n===worst?'color:var(--err)':''; return `<td style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 9px;border-bottom:0.5px solid var(--border);${style}">${v}</td>`; }).join('')}</tr>`; }).join('')}</table><p style="font-size:9px;color:var(--faint);margin-top:.8rem;text-align:center;line-height:1.6"><span style="color:var(--green)">■ Verde</span> = melhor valor &nbsp; <span style="color:var(--err)">■ Vermelho</span> = pior valor<br>Ref.: ABNT NBR 15220, ICE Database, estimativas de mercado.</p>`;
   const bod=$('mat-cmp-body'); const mod=$('mat-cmp-modal');
   if(bod) bod.innerHTML=s;
   if(mod){ mod.style.opacity='1'; mod.style.pointerEvents='auto'; }
@@ -3773,6 +3789,7 @@ function initThreejsTool(){
     tjSetStatus('Three.js (ES Module) não carregou. Verifique sua conexão.', 'err');
     return;
   }
+  const THREE=window.THREE;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true, alpha:true});
@@ -3832,6 +3849,7 @@ function initThreejsTool(){
 }
 
 function threejsMaterial(kind){
+  const THREE=window.THREE;
   const map={
     concreto:{color:0xd8d2c4, roughness:.82, metalness:0},
     terracota:{color:0xb46a42, roughness:.72, metalness:0},
@@ -4048,11 +4066,12 @@ function renderDash(){
 
 // ── CHARTS ───────────────────────────────────────
 function renderCharts(){
-  if(typeof Chart === 'undefined'){ console.warn('Chart.js ainda não carregou.'); return; }
+  const ChartCtor=window['Chart'];
+  if(typeof ChartCtor === 'undefined'){ console.warn('Chart.js ainda não carregou.'); return; }
   const count=proposals.length;
   const total=proposals.reduce((s,p)=>s+(Number(p.total)||0),0);
   const avg=count?total/count:0;
-  $('st-count').textContent=count;
+  $('st-count').textContent=String(count);
   $('st-total').textContent='R$ '+fmtI(total);
   $('st-avg').textContent='R$ '+fmtI(avg);
 
@@ -4061,11 +4080,11 @@ function renderCharts(){
   const gridColor='rgba(0,0,0,.05)';
 
   // Bar chart: propostas em ordem de criação
-  const sorted=[...proposals].sort((a,b)=>new Date(a.created_at||a.updated_at)-new Date(b.created_at||b.updated_at));
+  const sorted=[...proposals].sort((a,b)=>new Date(a.created_at||a.updated_at).getTime()-new Date(b.created_at||b.updated_at).getTime());
   const labels=sorted.map(p=>p.name||'—');
   const vals=sorted.map(p=>Number(p.total)||0);
   if(chartProps) chartProps.destroy();
-  chartProps=new Chart($('chart-props'),{
+  chartProps=new ChartCtor($('chart-props'),{
     type:'bar',
     data:{labels,datasets:[{label:'Valor (R$)',data:vals,backgroundColor:accent+'cc',borderColor:accent,borderWidth:1,borderRadius:4}]},
     options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R$ '+fmtI(c.raw)}}},scales:{y:{ticks:{callback:v=>'R$ '+fmtI(v)},grid:{color:gridColor}},x:{grid:{display:false}}}}
@@ -4078,7 +4097,7 @@ function renderCharts(){
   const tipoCounts=Object.values(tipoMap);
   const colors=['#8B5E3C','#D4B896','#2A6B4F','#5AA17A','#D07A3B','#E27D60','#3B707D'];
   if(chartTipo) chartTipo.destroy();
-  chartTipo=new Chart($('chart-tipo'),{
+  chartTipo=new ChartCtor($('chart-tipo'),{
     type:'doughnut',
     data:{labels:tipoLabels,datasets:[{data:tipoCounts,backgroundColor:colors.slice(0,tipoLabels.length),borderWidth:2,borderColor:el1}]},
     options:{responsive:true,plugins:{legend:{position:'bottom'}}}
@@ -4097,7 +4116,7 @@ function renderCharts(){
   });
   const userEntries=Object.entries(userMap).sort((a,b)=>b[1]-a[1]);
   if(chartUsers) chartUsers.destroy();
-  chartUsers=new Chart($('chart-users'),{
+  chartUsers=new ChartCtor($('chart-users'),{
     type:'bar',
     data:{labels:userEntries.map(e=>e[0]),datasets:[{label:'Total em propostas (R$)',data:userEntries.map(e=>e[1]),backgroundColor:accent+'cc',borderColor:accent,borderWidth:1,borderRadius:4}]},
     options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R$ '+fmtI(c.raw)}}},scales:{x:{ticks:{callback:v=>'R$ '+fmtI(v)},grid:{color:gridColor}},y:{grid:{display:false}}}}
@@ -4629,7 +4648,7 @@ function waitForImages(root,timeoutMs=3000){
 // Aguarda html2pdf carregar via CDN (até 8s) antes de usar
 async function pdfReady(){
   for(let i=0;i<80;i++){
-    if(typeof html2pdf==='function') return true;
+    if(typeof window['html2pdf']==='function') return true;
     await new Promise(r=>setTimeout(r,100));
   }
   return false;
@@ -4726,12 +4745,13 @@ _${arq}_`
       <div class="cv-text">${renderWhatsAppPreview(v.text)}</div>
       <button class="btn cv-btn" onclick="copyVariant(${i})" id="cv-btn-${i}">Copiar texto</button>
     </div>`).join('');
-  window._copyVariants=variants;
+  window['_copyVariants']=variants;
   $('copy-modal').style.display='flex';
 }
 
 async function copyVariant(i){
-  const text=window._copyVariants?.[i]?.text||'';
+  window['_copyVariants'] = Array.isArray(window['_copyVariants']) ? window['_copyVariants'] : [];
+  const text=window['_copyVariants']?.[i]?.text||'';
   const btn=$('cv-btn-'+i);
   let copied=false;
   try{
@@ -5448,7 +5468,7 @@ function usefulAttrs(attrs){
 
 function formatAttrValue(v){
   if(typeof v==='number'){
-    if(Math.abs(v)>1000000000000){ const d=new Date(v); if(!isNaN(d)) return d.toLocaleDateString('pt-BR'); }
+    if(Math.abs(v)>1000000000000){ const d=new Date(v); if(!isNaN(d.getTime())) return d.toLocaleDateString('pt-BR'); }
     return Number.isInteger(v)?String(v):v.toLocaleString('pt-BR',{maximumFractionDigits:4});
   }
   return String(v);
@@ -5524,7 +5544,7 @@ async function exportSimgeoPDF(){
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
-    await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
+    await withTimeout(window['html2pdf']().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha SIMGEO.');
     simgeoStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF SIMGEO:',e); simgeoStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
   finally{ cleanupPdfElement(); simgeoPdfBusy=false; }
@@ -5754,7 +5774,7 @@ function mapotecaAddressText(address){
 
 async function buscarMapoteca(){
   const btn=$('mt-buscar');
-  if(btn.disabled) return;
+  if(!btn || btn.disabled) return;
   btn.disabled=true; btn.textContent='Buscando...';
   $('mt-result').innerHTML='<div class="mapoteca-empty">Buscando endereço, terreno e arquivos da Mapoteca...</div>';
   try{
@@ -5834,7 +5854,7 @@ async function exportMapotecaPDF(){
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
-    await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
+    await withTimeout(window['html2pdf']().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha Mapoteca.');
     mapotecaStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF Mapoteca:',e); mapotecaStatus('Não consegui gerar o PDF da Mapoteca.','err'); }
   finally{ cleanupPdfElement(); mapotecaPdfBusy=false; }
@@ -6038,7 +6058,7 @@ async function exportLabeeePDF(){
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,300));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
-    await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha LabEEE.');
+    await withTimeout(window['html2pdf']().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a ficha LabEEE.');
     labeeeStatus('Ficha PDF gerada.','ok');
   }catch(e){ console.error('Erro PDF LabEEE:',e); labeeeStatus('Não consegui gerar o PDF da ficha. Tente novamente.','err'); }
   finally{ cleanupPdfElement(); labeeePdfBusy=false; }
@@ -6149,7 +6169,7 @@ async function exportPDF(){
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
       pagebreak:{mode:['css','legacy']}
     };
-    await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar o PDF. Tente novamente com menos conteúdo ou recarregue a página.');
+    await withTimeout(window['html2pdf']().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar o PDF. Tente novamente com menos conteúdo ou recarregue a página.');
     notifyStatus('✓ PDF gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar PDF:',e);
@@ -6219,7 +6239,7 @@ async function exportCarta(){
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
       pagebreak:{mode:['css','legacy']}
     };
-    await withTimeout(html2pdf().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a carta.');
+    await withTimeout(window['html2pdf']().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar a carta.');
     notifyStatus('✓ PDF da carta gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar carta:',e);
@@ -6937,7 +6957,7 @@ function addAlerta(n, anoDetectado){
   alerts.unshift({ id:n.id, codigo:n.codigo, titulo:n.titulo, anoBase:n.ano, anoDetectado, date:new Date().toLocaleDateString('pt-BR'), lido:false });
   saveAlerts(alerts);
   S.pendingAlerts++;
-  notifBubble.textContent = S.pendingAlerts;
+  notifBubble.textContent = String(S.pendingAlerts);
   notifBubble.classList.remove('hidden');
   document.getElementById('notif-toast').classList.add('show');
   document.getElementById('nbr-toast-title').textContent = '🔔 NORMA ATUALIZADA';
