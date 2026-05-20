@@ -1022,6 +1022,52 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 /* Remove texto flutuante acima do botão NBR */
 #nbr-badge{display:none!important}
 
+
+/* ── GERADOR DE PRANCHAS CAD ───────────────────── */
+#sheetgen-view{display:none;padding:1.5rem;max-width:1480px;margin:0 auto;flex:1;width:100%}
+@media(min-width:721px){#sheetgen-view{padding-left:180px}}
+.sg-shell{display:grid;grid-template-columns:minmax(300px,360px) minmax(0,1fr) minmax(260px,320px);gap:14px;align-items:start}
+.sg-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:1rem;flex-wrap:wrap}
+.sg-kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sg-title{font-family:Georgia,serif;font-size:28px;font-weight:400;color:var(--text);margin:0}
+.sg-sub{font-size:12px;color:var(--muted);line-height:1.55;margin-top:8px;max-width:760px}
+.sg-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.045);overflow:hidden}
+.sg-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 15px;border-bottom:0.5px solid var(--border)}
+.sg-card-head h2{font-size:13px;font-weight:600;margin:0;color:var(--text)}
+.sg-card-head small{font-size:10px;color:var(--faint);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+.sg-card-body{padding:14px 15px}
+.sg-form{display:grid;gap:12px}
+.sg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sg-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:5px;font-weight:700}
+.sg-input,.sg-select,.sg-textarea{width:100%;border:0.5px solid var(--border-em);border-radius:10px;background:var(--surf2);color:var(--text);font-family:inherit;font-size:12px;padding:9px 10px;outline:none;min-height:38px;transition:border-color .15s,box-shadow .15s,background .15s}
+.sg-textarea{resize:vertical;min-height:60px;line-height:1.4}
+.sg-input:focus,.sg-select:focus,.sg-textarea:focus{border-color:var(--e);box-shadow:0 0 0 3px color-mix(in srgb,var(--e) 14%,transparent);background:var(--surface)}
+.sg-format-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+.sg-pill{border:0.5px solid var(--border-em);border-radius:10px;background:var(--surf2);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:8px 0;cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform .15s}
+.sg-pill:hover{transform:translateY(-1px);border-color:var(--eb);color:var(--e)}
+.sg-pill.on{background:var(--e);border-color:var(--e);color:#fff}
+.sg-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.sg-tool-left,.sg-tool-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sg-chip{display:inline-flex;align-items:center;gap:6px;border:0.5px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font-size:11px;padding:8px 11px;white-space:nowrap}
+.sg-chip strong{color:var(--e);font-weight:700}
+.sg-action{border:0.5px solid var(--border-em);border-radius:999px;background:var(--surf2);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .15s,color .15s,border-color .15s,transform .15s}
+.sg-action:hover{transform:translateY(-1px);background:var(--el);color:var(--e);border-color:var(--eb)}
+.sg-action.primary{background:var(--e);border-color:var(--e);color:#fff}
+.sg-stage{position:relative;min-height:620px;border-radius:14px;background:linear-gradient(90deg,rgba(var(--bg-rgb),.18) 1px,transparent 1px),linear-gradient(0deg,rgba(var(--bg-rgb),.18) 1px,transparent 1px),var(--surf2);background-size:28px 28px;padding:22px;display:grid;place-items:center;overflow:hidden;border:0.5px solid var(--border)}
+.sg-paper{position:relative;width:min(100%,980px);aspect-ratio:1.414/1;background:#fff;color:#111;border:1px solid rgba(0,0,0,.6);box-shadow:0 22px 58px rgba(0,0,0,.22);overflow:hidden;border-radius:2px;--sg-accent:var(--e)}
+.sg-paper.portrait{width:min(68%,560px);aspect-ratio:.707/1}
+.sg-paper::before{content:'';position:absolute;inset:12px;border:1px solid rgba(0,0,0,.48);pointer-events:none}
+.sg-paper::after{content:'';position:absolute;inset:24px;border:1px dashed rgba(0,0,0,.13);pointer-events:none}
+.sg-paper.compact .sg-viewport{position:absolute;left:8%;top:12%;width:50%;height:50%;border:1px dashed rgba(0,0,0,.14);display:grid;place-items:center;color:rgba(0,0,0,.44);font-size:13px;text-align:center}
+.sg-paper.compact .sg-cad-mark{position:absolute;left:8%;top:14%;width:34px;height:34px;border-left:1px solid rgba(0,0,0,.25);border-top:1px solid rgba(0,0,0,.25)}
+.sg-titleblock{position:absolute;right:20px;bottom:22px;width:34%;min-width:270px;height:32%;border:1.2px solid #111;background:rgba(255,255,255,.92);display:grid;grid-template-rows:1fr auto;font-family:Arial,sans-serif;font-size:7px;z-index:2}
+.sg-tb-grid{display:grid;grid-template-columns:1.15fr .75fr;border-bottom:1px solid #111}
+.sg-tb-cell{padding:5px 6px;border-right:1px solid #111;border-bottom:1px solid rgba(0,0,0,.45);min-width:0;overflow:hidden}
+.sg-tb-cell:nth-child(2n){border-right:0}.sg-tb-cell.full{grid-column:1/-1;border-right:0}.sg-tb-label{display:block;font-size:5.7px;text-transform:uppercase;font-weight:800;letter-spacing:.04em;opacity:.7;margin-bottom:2px}.sg-tb-value{display:block;font-size:7.2px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sg-tb-value.big{font-size:18px;line-height:1.1}.sg-tb-footer{display:grid;grid-template-columns:1fr 1fr 1fr}.sg-tb-logo{display:flex;align-items:center;gap:7px;padding:6px;border-top:1px solid #111}.sg-tb-icon{width:22px;height:22px;border:1px solid #111;transform:rotate(30deg);flex:0 0 auto}.sg-tb-logo b{font-size:9px}.sg-paper.bottom .sg-viewport{position:absolute;left:4%;right:4%;top:8%;bottom:18%;border:1px solid rgba(0,0,0,.11);display:grid;place-items:center;color:rgba(0,0,0,.32);font-size:14px}.sg-bottom-band{position:absolute;left:12px;right:12px;bottom:14px;height:72px;border-top:1.3px solid #111;display:grid;grid-template-columns:1.1fr repeat(6,.9fr);align-items:center;background:#fff;z-index:2}.sg-band-logo{display:flex;align-items:center;gap:10px;padding:8px 12px;border-right:1px solid rgba(0,0,0,.32);height:100%}.sg-band-symbol{width:28px;height:32px;border:2px solid var(--sg-accent);border-radius:2px}.sg-band-logo b{font-size:12px}.sg-band-cell{height:100%;display:flex;flex-direction:column;justify-content:center;padding:6px 10px;border-right:1px solid rgba(0,0,0,.22);min-width:0}.sg-band-cell small{font-size:5.8px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:var(--sg-accent)}.sg-band-cell span{font-size:7.4px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sg-band-page{font-size:18px;font-weight:900;text-align:center;color:#111}.sg-paper.academic{border-color:color-mix(in srgb,var(--e) 68%,#111);padding:22px;background:linear-gradient(#fff,#fff)}.sg-paper.academic::before{inset:14px;border-color:color-mix(in srgb,var(--e) 72%,#111);opacity:.75}.sg-acad-head{position:absolute;left:34px;right:34px;top:30px;height:76px;display:grid;grid-template-columns:1fr 200px;gap:24px;border-bottom:1px solid color-mix(in srgb,var(--e) 42%,transparent);z-index:2}.sg-acad-title b{font-size:20px;color:var(--sg-accent);letter-spacing:.02em}.sg-acad-title span{display:block;margin-top:6px;font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#333}.sg-acad-note{font-size:7.4px;line-height:1.4;color:#333}.sg-acad-photos{position:absolute;left:34px;right:34px;top:124px;height:118px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.sg-photo{background:linear-gradient(135deg,#d8d8d8,#fff);border:1px solid rgba(0,0,0,.12);position:relative;overflow:hidden}.sg-photo::before{content:'';position:absolute;left:-8%;right:-8%;bottom:0;height:44%;background:linear-gradient(120deg,color-mix(in srgb,var(--e) 35%,#211),color-mix(in srgb,var(--e) 16%,#fff));clip-path:polygon(0 45%,25% 28%,55% 62%,80% 18%,100% 44%,100% 100%,0 100%);opacity:.72}.sg-acad-main{position:absolute;left:34px;right:34px;top:258px;bottom:88px;display:grid;grid-template-columns:1.5fr .9fr;gap:22px}.sg-axon{position:relative;border-bottom:1px solid color-mix(in srgb,var(--e) 26%,transparent);overflow:hidden}.sg-axon svg,.sg-plan svg{width:100%;height:100%;display:block}.sg-plan-wrap{display:grid;grid-template-rows:1fr auto;gap:12px}.sg-plan{border:1px solid color-mix(in srgb,var(--e) 20%,transparent);background:color-mix(in srgb,var(--e) 4%,white)}.sg-icons{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}.sg-icons i{display:block;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--e) 52%,transparent);border-radius:999px;margin:0 auto 4px}.sg-icons span{font-size:6.5px;color:#333}.sg-acad-band{position:absolute;left:22px;right:22px;bottom:18px;height:54px;border-top:1.4px solid var(--sg-accent);display:grid;grid-template-columns:1.1fr repeat(5,1fr) .7fr;background:#fff;z-index:3}.sg-acad-cell{padding:7px 10px;border-right:1px solid color-mix(in srgb,var(--e) 35%,transparent);display:flex;flex-direction:column;justify-content:center;min-width:0}.sg-acad-cell small{font-size:5.6px;text-transform:uppercase;color:var(--sg-accent);font-weight:900}.sg-acad-cell span{font-size:7px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sg-acad-page{font-size:18px;font-weight:900;color:var(--sg-accent);align-items:center;text-align:center}.sg-models{display:grid;gap:10px}.sg-model{display:grid;grid-template-columns:72px 1fr auto;gap:10px;align-items:center;border:0.5px solid var(--border);border-radius:12px;background:var(--surf2);padding:10px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}.sg-model:hover{transform:translateY(-1px);border-color:var(--eb)}.sg-model.on{border-color:var(--e);background:var(--el)}.sg-thumb{height:46px;border:1px solid var(--border-em);border-radius:6px;background:var(--surface);position:relative;overflow:hidden}.sg-thumb::before{content:'';position:absolute;inset:7px;border:1px solid var(--border-em)}.sg-thumb.compact::after{content:'';position:absolute;right:8px;bottom:8px;width:32px;height:14px;border:1px solid var(--e)}.sg-thumb.bottom::after{content:'';position:absolute;left:7px;right:7px;bottom:8px;height:9px;border-top:1px solid var(--e)}.sg-thumb.academic::after{content:'';position:absolute;left:10px;right:10px;top:10px;height:13px;background:linear-gradient(90deg,color-mix(in srgb,var(--e) 22%,transparent),transparent 70%);box-shadow:0 18px 0 color-mix(in srgb,var(--e) 16%,transparent)}.sg-model h3{margin:0;font-size:12px;color:var(--text)}.sg-model p{margin:3px 0 0;font-size:10.5px;color:var(--muted);line-height:1.35}.sg-check{width:20px;height:20px;border-radius:999px;border:1px solid var(--border-em);display:grid;place-items:center;color:transparent;background:var(--surface);font-size:11px}.sg-model.on .sg-check{background:var(--e);border-color:var(--e);color:#fff}.sg-layer-list{display:grid;gap:8px}.sg-layer{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0.5px solid var(--border);border-radius:10px;padding:9px 10px;font-size:11px;color:var(--muted);background:var(--surf2)}.sg-dot{width:9px;height:9px;border-radius:999px;background:var(--e);box-shadow:0 0 0 3px color-mix(in srgb,var(--e) 12%,transparent)}.sg-toast{position:fixed;left:50%;bottom:24px;z-index:100;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;background:var(--surface);border:0.5px solid var(--border-em);border-radius:999px;color:var(--text);box-shadow:0 12px 35px rgba(0,0,0,.18);padding:10px 14px;font-size:12px;transition:.18s}
+.sg-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1180px){.sg-shell{grid-template-columns:340px minmax(0,1fr)}.sg-right{display:none}.sg-stage{min-height:560px}.sg-titleblock{width:42%}}
+@media(max-width:880px){#sheetgen-view{padding:1rem}.sg-shell{grid-template-columns:1fr}.sg-stage{min-height:430px;padding:12px}.sg-paper{max-height:390px}.sg-titleblock{width:48%;min-width:220px;height:34%;right:14px;bottom:18px}.sg-toolbar{align-items:flex-start}.sg-format-tabs{grid-template-columns:repeat(3,1fr)}}
+
 </style>
 </head>
 <body class="auth-mode">
@@ -1142,12 +1188,99 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
     <button class="dock-btn" id="tool-calctec" onclick="showCalcTec()"><span class="ico">⌁</span>Cálculos técnicos</button>
+    <button class="dock-btn" id="tool-sheetgen" onclick="showSheetGen()"><span class="ico">▤</span>Pranchas CAD</button>
     <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-materiais" onclick="showMateriais()"><span class="ico">🧱</span>Materiais</button>
     <button class="dock-btn" id="tool-nbr" onclick="nbrTogglePanel()"><span class="ico">⚖</span>Normas NBR</button>
     <button class="dock-btn" id="tool-equipe" onclick="showEquipe()"><span class="ico">👥</span>Equipe</button>
   </nav>
+
+
+  <!-- GERADOR DE PRANCHAS CAD -->
+  <div id="sheetgen-view" style="display:none">
+    <div class="sg-hero">
+      <div>
+        <div class="sg-kicker">ferramenta em protótipo</div>
+        <h1 class="sg-title">Gerador de Prancha AutoCAD</h1>
+        <div class="sg-sub">Crie uma prancha base em A0 até A5 com campos editáveis, carimbo e modelos visuais. A interface usa as variáveis do tema atual do sistema.</div>
+      </div>
+      <div class="sg-tool-right">
+        <button type="button" class="sg-action" onclick="sgReset()">Limpar</button>
+        <button type="button" class="sg-action primary" onclick="sgExportJson()">Exportar modelo</button>
+      </div>
+    </div>
+
+    <div class="sg-shell">
+      <section class="sg-card">
+        <div class="sg-card-head"><h2>Dados da prancha</h2><small>A0–A5</small></div>
+        <div class="sg-card-body">
+          <div class="sg-format-tabs" id="sg-format-tabs"></div>
+          <div class="sg-form">
+            <div class="sg-row">
+              <div class="sg-field"><label for="sg-orientation">Orientação</label><select class="sg-select" id="sg-orientation"><option value="landscape">Paisagem</option><option value="portrait">Retrato</option></select></div>
+              <div class="sg-field"><label for="sg-scale">Escala</label><select class="sg-select" id="sg-scale"><option>Indicada</option><option>1:25</option><option>1:50</option><option selected>1:100</option><option>1:200</option><option>1:500</option></select></div>
+            </div>
+            <div class="sg-field"><label for="sg-project">Projeto</label><input class="sg-input" id="sg-project" value="Centro Cultural Mata do Jacinto"></div>
+            <div class="sg-field"><label for="sg-client">Cliente</label><input class="sg-input" id="sg-client" value="Universidade Anhanguera - Uniderp"></div>
+            <div class="sg-field"><label for="sg-address">Endereço da obra</label><input class="sg-input" id="sg-address" value="Campo Grande - MS"></div>
+            <div class="sg-field"><label for="sg-content">Conteúdo</label><input class="sg-input" id="sg-content" value="Projeto layout, cortes e fachada"></div>
+            <div class="sg-row">
+              <div class="sg-field"><label for="sg-date">Data</label><input class="sg-input" id="sg-date" value="Maio/2026"></div>
+              <div class="sg-field"><label for="sg-revision">Revisão</label><input class="sg-input" id="sg-revision" value="R00"></div>
+            </div>
+            <div class="sg-row">
+              <div class="sg-field"><label for="sg-sheet">Folha</label><input class="sg-input" id="sg-sheet" value="01/02"></div>
+              <div class="sg-field"><label for="sg-responsible">Resp. técnico</label><input class="sg-input" id="sg-responsible" value="Arq. Caio A. Baico"></div>
+            </div>
+            <div class="sg-field"><label for="sg-company">Empresa</label><input class="sg-input" id="sg-company" value="Chaos + Arq & Art"></div>
+            <div class="sg-field"><label for="sg-areas">Quadro de áreas</label><textarea class="sg-textarea" id="sg-areas">Área do terreno (m²): 10.000,00
+Área construída (m²): 2.850,00
+Área livre (m²): 7.150,00
+Área total construída (m²): 2.850,00</textarea></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sg-card">
+        <div class="sg-card-head"><h2>Prévia da prancha</h2><small id="sg-subtitle">A1 · 841 × 594 mm</small></div>
+        <div class="sg-card-body">
+          <div class="sg-toolbar">
+            <div class="sg-tool-left">
+              <span class="sg-chip">Modelo <strong id="sg-chip-model">Acadêmica</strong></span>
+              <span class="sg-chip">Formato <strong id="sg-chip-format">A1</strong></span>
+              <span class="sg-chip">Tema <strong>sincronizado</strong></span>
+            </div>
+            <div class="sg-tool-right">
+              <button type="button" class="sg-action" onclick="sgFit()">Ajustar à tela</button>
+            </div>
+          </div>
+          <div class="sg-stage">
+            <div class="sg-paper academic" id="sg-paper"></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sg-card sg-right">
+        <div class="sg-card-head"><h2>Modelos de prancha</h2><small>3 opções</small></div>
+        <div class="sg-card-body">
+          <div class="sg-models" id="sg-models"></div>
+        </div>
+        <div class="sg-card-head"><h2>Camadas sugeridas</h2><small>DWG</small></div>
+        <div class="sg-card-body">
+          <div class="sg-layer-list">
+            <div class="sg-layer"><span>00-MARGENS</span><span class="sg-dot"></span></div>
+            <div class="sg-layer"><span>01-CARIMBO</span><span class="sg-dot"></span></div>
+            <div class="sg-layer"><span>02-TEXTO</span><span class="sg-dot"></span></div>
+            <div class="sg-layer"><span>03-LINHAS</span><span class="sg-dot"></span></div>
+            <div class="sg-layer"><span>04-COTAS</span><span class="sg-dot"></span></div>
+            <div class="sg-layer"><span>99-NÃO PLOTAR</span><span class="sg-dot"></span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="sg-toast" id="sg-toast">Modelo exportado.</div>
 
 
   <!-- PROTÓTIPO AMPLIFICADOR / ÁUDIO -->
@@ -2460,7 +2593,7 @@ function canUseTool(tool){
   const r=normalizedRole(currentRole);
   if(!r) return true; // evita bloquear enquanto o perfil carrega
   if(r==='dono' || r==='arquiteto') return true;
-  const minionTools=['home','new','props','simgeo','labeee','mapoteca','calctec','materiais','nbr'];
+  const minionTools=['home','new','props','simgeo','labeee','mapoteca','calctec','sheetgen','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
   if(r==='minion') return minionTools.includes(tool);
   if(r==='financeiro') return financeiroTools.includes(tool);
@@ -2476,7 +2609,7 @@ function guardTool(tool){
 
 
 function applyRoleUI(){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -2589,7 +2722,7 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -2700,6 +2833,115 @@ function showCalcTec(){
   setTool('calctec');
   waitForThree().then(()=>ctInit3D());
   ctUpdate();
+}
+
+
+function showSheetGen(){
+  if(guardTool('sheetgen')) return;
+  hideViews();
+  $('sheetgen-view').style.display='block';
+  setTool('sheetgen');
+  if(!window._sgInit){ window._sgInit=true; sgInit(); }
+  sgRender();
+}
+
+// ── GERADOR DE PRANCHAS CAD ─────────────────────
+const sgSizes={A0:{w:1189,h:841},A1:{w:841,h:594},A2:{w:594,h:420},A3:{w:420,h:297},A4:{w:297,h:210},A5:{w:210,h:148}};
+const sgModelInfo={
+  compact:{name:'Carimbo compacto',sub:'Bloco inferior direito',thumb:'compact'},
+  bottom:{name:'Faixa inferior minimalista',sub:'Informações essenciais na base',thumb:'bottom'},
+  academic:{name:'Prancha acadêmica',sub:'Apresentação com imagens e diagramas',thumb:'academic'}
+};
+let sgState={size:'A1',model:'academic'};
+function sgVal(id,fallback='—'){ const el=$(id); const v=(el?.value||'').trim(); return v||fallback; }
+function sgData(){
+  return {
+    size:sgState.size,model:sgState.model,
+    orientation:sgVal('sg-orientation','landscape'),scale:sgVal('sg-scale','Indicada'),project:sgVal('sg-project','Projeto'),client:sgVal('sg-client','Cliente'),address:sgVal('sg-address','—'),content:sgVal('sg-content','Conteúdo'),date:sgVal('sg-date','—'),revision:sgVal('sg-revision','R00'),sheet:sgVal('sg-sheet','01/01'),responsible:sgVal('sg-responsible','Responsável'),company:sgVal('sg-company','Chaos + Arq & Art'),areas:sgVal('sg-areas','')
+  };
+}
+function sgEsc(v){ return String(v??'').replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+function sgAreaRows(text){
+  const rows=String(text||'').split('\n').map(x=>x.trim()).filter(Boolean).slice(0,4);
+  return rows.map(line=>{ const [a,...rest]=line.split(':'); return `<div class="sg-tb-cell"><span class="sg-tb-label">${sgEsc(a||'Área')}</span><span class="sg-tb-value">${sgEsc(rest.join(':').trim()||'0,00')}</span></div>`; }).join('');
+}
+function sgInit(){
+  sgBuildFormats(); sgBuildModels();
+  ['sg-orientation','sg-scale','sg-project','sg-client','sg-address','sg-content','sg-date','sg-revision','sg-sheet','sg-responsible','sg-company','sg-areas'].forEach(id=>{
+    const el=$(id); if(el){ el.addEventListener('input',sgRender); el.addEventListener('change',sgRender); }
+  });
+}
+function sgBuildFormats(){
+  const host=$('sg-format-tabs'); if(!host) return;
+  host.innerHTML=Object.keys(sgSizes).map(k=>`<button type="button" class="sg-pill ${k===sgState.size?'on':''}" onclick="sgSetSize('${k}')">${k}</button>`).join('');
+}
+function sgBuildModels(){
+  const host=$('sg-models'); if(!host) return;
+  host.innerHTML=Object.entries(sgModelInfo).map(([key,m],i)=>`<button type="button" class="sg-model ${key===sgState.model?'on':''}" onclick="sgSetModel('${key}')"><span class="sg-thumb ${m.thumb}"></span><span><h3>${String(i+1).padStart(2,'0')} · ${m.name}</h3><p>${m.sub}</p></span><span class="sg-check">✓</span></button>`).join('');
+}
+function sgSetSize(size){ sgState.size=size; sgBuildFormats(); sgRender(); }
+function sgSetModel(model){ sgState.model=model; sgBuildModels(); sgRender(); }
+function sgRender(){
+  const paper=$('sg-paper'); if(!paper) return;
+  const d=sgData(), s=sgSizes[d.size]||sgSizes.A1;
+  const portrait=d.orientation==='portrait';
+  const w=portrait?s.h:s.w, h=portrait?s.w:s.h;
+  paper.className='sg-paper '+d.model+(portrait?' portrait':'');
+  paper.style.aspectRatio=`${w}/${h}`;
+  if($('sg-subtitle')) $('sg-subtitle').textContent=`${d.size} · ${w} × ${h} mm`;
+  if($('sg-chip-format')) $('sg-chip-format').textContent=d.size;
+  if($('sg-chip-model')) $('sg-chip-model').textContent=sgModelInfo[d.model]?.name||d.model;
+  if(d.model==='compact') paper.innerHTML=sgRenderCompact(d);
+  else if(d.model==='bottom') paper.innerHTML=sgRenderBottom(d);
+  else paper.innerHTML=sgRenderAcademic(d);
+}
+function sgRenderCompact(d){
+  return `<div class="sg-cad-mark"></div><div class="sg-viewport"><div>Área do desenho / viewport</div></div><div class="sg-titleblock">
+    <div class="sg-tb-grid">
+      <div class="sg-tb-cell full"><span class="sg-tb-label">Projeto</span><span class="sg-tb-value">${sgEsc(d.project)}</span></div>
+      <div class="sg-tb-cell"><span class="sg-tb-label">Conteúdo</span><span class="sg-tb-value">${sgEsc(d.content)}</span></div>
+      <div class="sg-tb-cell"><span class="sg-tb-label">Folha</span><span class="sg-tb-value big">${sgEsc(d.sheet)}</span></div>
+      <div class="sg-tb-cell"><span class="sg-tb-label">Quadro de áreas</span>${sgAreaRows(d.areas)}</div>
+      <div class="sg-tb-cell"><span class="sg-tb-label">Cliente</span><span class="sg-tb-value">${sgEsc(d.client)}</span><br><span class="sg-tb-label">Endereço</span><span class="sg-tb-value">${sgEsc(d.address)}</span></div>
+      <div class="sg-tb-cell"><span class="sg-tb-label">Resp. técnico</span><span class="sg-tb-value">${sgEsc(d.responsible)}</span></div>
+      <div class="sg-tb-cell"><span class="sg-tb-label">Data / Rev.</span><span class="sg-tb-value">${sgEsc(d.date)} · ${sgEsc(d.revision)}</span></div>
+    </div>
+    <div class="sg-tb-logo"><span class="sg-tb-icon"></span><div><span class="sg-tb-label">Empresa</span><b>${sgEsc(d.company)}</b></div></div>
+  </div>`;
+}
+function sgRenderBottom(d){
+  return `<div class="sg-viewport"><div>Área principal do desenho</div></div><div class="sg-bottom-band">
+    <div class="sg-band-logo"><span class="sg-band-symbol"></span><b>${sgEsc(d.company)}</b></div>
+    <div class="sg-band-cell"><small>Projeto</small><span>${sgEsc(d.project)}</span></div>
+    <div class="sg-band-cell"><small>Cliente</small><span>${sgEsc(d.client)}</span></div>
+    <div class="sg-band-cell"><small>Conteúdo</small><span>${sgEsc(d.content)}</span></div>
+    <div class="sg-band-cell"><small>Escala</small><span>${sgEsc(d.scale)}</span></div>
+    <div class="sg-band-cell"><small>Data</small><span>${sgEsc(d.date)}</span></div>
+    <div class="sg-band-page">${sgEsc(d.sheet)}</div>
+  </div>`;
+}
+function sgRenderAcademic(d){
+  const accent='var(--sg-accent)';
+  return `<div class="sg-acad-head"><div class="sg-acad-title"><b>${sgEsc(d.project)}</b><span>${sgEsc(d.content)}</span></div><div class="sg-acad-note"><b style="color:${accent}">PARTIDO</b><br>Organização visual para apresentação, concursos, TCC e estudos conceituais, com campos editáveis e paleta vinculada ao tema.</div></div>
+    <div class="sg-acad-photos"><div class="sg-photo"></div><div class="sg-photo"></div><div class="sg-photo"></div></div>
+    <div class="sg-acad-main"><div class="sg-axon"><svg viewBox="0 0 600 320" preserveAspectRatio="none"><g fill="none" stroke="var(--sg-accent)" stroke-width="1.2" opacity=".52"><path d="M20 230 L250 100 L565 190 L330 300 Z"/><path d="M70 220 L275 125 L505 188 L315 270 Z"/><path d="M100 200 L310 145 L450 180 L245 250 Z"/><path d="M55 245 L330 115 L520 170"/><path d="M120 285 L395 155 L590 210"/></g><g fill="var(--sg-accent)" opacity=".18"><path d="M92 214 L320 125 L388 146 L160 240 Z"/><path d="M270 258 L445 182 L505 198 L332 280 Z"/></g><g fill="none" stroke="var(--sg-accent)" stroke-width=".7" opacity=".32">${Array.from({length:24},(_,i)=>`<circle cx="${40+i*22}" cy="${250+(i%5)*10}" r="9"/>`).join('')}</g></svg></div><div class="sg-plan-wrap"><div class="sg-plan"><svg viewBox="0 0 280 180"><g fill="none" stroke="var(--sg-accent)" stroke-width="1" opacity=".42"><path d="M10 90 H270"/><path d="M40 20 V160"/><path d="M82 20 V160"/><path d="M124 20 V160"/><path d="M166 20 V160"/><path d="M208 20 V160"/><path d="M250 20 V160"/><path d="M20 35 H260"/><path d="M20 65 H260"/><path d="M20 115 H260"/><path d="M20 145 H260"/></g><rect x="55" y="78" width="170" height="24" fill="var(--sg-accent)" opacity=".25"/></svg></div><div class="sg-icons"><div><i></i><span>Trabalhar</span></div><div><i></i><span>Aprender</span></div><div><i></i><span>Criar</span></div><div><i></i><span>Conectar</span></div><div><i></i><span>Descansar</span></div></div></div></div>
+    <div class="sg-acad-band"><div class="sg-acad-cell"><small>Empresa</small><span>${sgEsc(d.company)}</span></div><div class="sg-acad-cell"><small>Projeto</small><span>${sgEsc(d.project)}</span></div><div class="sg-acad-cell"><small>Cliente</small><span>${sgEsc(d.client)}</span></div><div class="sg-acad-cell"><small>Conteúdo</small><span>${sgEsc(d.content)}</span></div><div class="sg-acad-cell"><small>Escala</small><span>${sgEsc(d.scale)}</span></div><div class="sg-acad-cell"><small>Data</small><span>${sgEsc(d.date)}</span></div><div class="sg-acad-cell sg-acad-page"><small>Folha</small><span>${sgEsc(d.sheet)}</span></div></div>`;
+}
+function sgReset(){
+  sgState={size:'A1',model:'academic'};
+  const defaults={
+    'sg-orientation':'landscape','sg-scale':'Indicada','sg-project':'Centro Cultural Mata do Jacinto','sg-client':'Universidade Anhanguera - Uniderp','sg-address':'Campo Grande - MS','sg-content':'Projeto layout, cortes e fachada','sg-date':'Maio/2026','sg-revision':'R00','sg-sheet':'01/02','sg-responsible':'Arq. Caio A. Baico','sg-company':'Chaos + Arq & Art','sg-areas':'Área do terreno (m²): 10.000,00\nÁrea construída (m²): 2.850,00\nÁrea livre (m²): 7.150,00\nÁrea total construída (m²): 2.850,00'
+  };
+  Object.entries(defaults).forEach(([id,v])=>{ const el=$(id); if(el) el.value=v; });
+  sgBuildFormats(); sgBuildModels(); sgRender(); sgToast('Campos restaurados.');
+}
+function sgFit(){ sgToast('Prévia ajustada à tela.'); }
+function sgToast(msg){ const t=$('sg-toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(sgToast._t); sgToast._t=setTimeout(()=>t.classList.remove('show'),2200); }
+function sgExportJson(){
+  const d=sgData(); const s=sgSizes[d.size]||sgSizes.A1; const portrait=d.orientation==='portrait';
+  const payload={tipo:'gerador_prancha_cad',formato:d.size,modelo:d.model,dimensoes_mm:{largura:portrait?s.h:s.w,altura:portrait?s.w:s.h},campos:d,camadas:['00-MARGENS','01-CARIMBO','02-TEXTO','03-LINHAS','04-COTAS','99-NÃO PLOTAR'],observacao:'Protótipo integrado ao sistema. Pode servir como base para gerar DXF, script AutoLISP ou PDF.'};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a');
+  a.href=url; a.download='modelo_prancha_'+d.size+'_'+d.model+'.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); sgToast('Modelo exportado em JSON.');
 }
 
 
