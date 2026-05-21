@@ -277,15 +277,13 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 .theme-picker{position:relative;display:flex;align-items:center}
 .tp-trigger{display:flex;align-items:center;gap:6px;background:var(--surface);border:0.5px solid var(--border-em);border-radius:20px;padding:5px 10px 5px 7px;cursor:pointer;font-size:11px;color:var(--muted);font-family:inherit;transition:all .15s;white-space:nowrap}
 .tp-trigger:hover{border-color:var(--eb);color:var(--e)}
-.tp-preview{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--border-em);background-position:center;overflow:hidden}
-.tp-dropdown{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:0.5px solid var(--border-em);border-radius:16px;padding:12px;box-shadow:0 14px 42px rgba(0,0,0,.18);z-index:1000;width:min(280px,calc(100vw - 24px));max-width:calc(100vw - 24px)}
+.tp-preview{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--border-em)}
+.tp-dropdown{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:0.5px solid var(--border-em);border-radius:14px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:999;width:220px}
 .tp-dropdown.open{display:block}
 .tp-dropdown-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
-.tp-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 8px;align-items:start}
-.tp-option{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:var(--faint);font-family:inherit;padding:0;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;min-width:0;text-align:center}
-.tp-option:hover{color:var(--e)}
-.tp-dot{width:30px;height:30px;border-radius:10px;border:2px solid transparent;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;position:relative;display:block;flex:0 0 auto}
-.tp-option:hover .tp-dot,.tp-dot:hover{transform:translateY(-1px) scale(1.08)}
+.tp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tp-dot{width:28px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:all .18s;position:relative}
+.tp-dot:hover{transform:scale(1.12)}
 .tp-dot.active{border-color:var(--text);box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text)}
 .tp-dot[data-t="0"]{background:linear-gradient(135deg,#8B5E3C,#EDE8DC)}
 .tp-dot[data-t="1"]{background:linear-gradient(135deg,#2A6B4F,#D07A3B)}
@@ -298,8 +296,10 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 .tp-dot[data-t="8"]{background:linear-gradient(135deg,#5aA84A,#0d1e14)}
 .tp-dot[data-t="9"]{background:linear-gradient(135deg,#E07820,#0a1628)}
 .tp-dot[data-t="10"]{background:linear-gradient(135deg,#C8A26E,#F3E7D2);overflow:hidden}
-.tp-dot[data-t="10"]::after{content:'';position:absolute;inset:4px;border-radius:6px;background:conic-gradient(from 45deg,#1E1E1E 0 25%,#FAF7F0 0 50%,#1E1E1E 0 75%,#FAF7F0 0);background-size:12px 12px}
-.tp-name{font-size:8.5px;color:currentColor;text-align:center;line-height:1.15;max-width:54px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp-dot[data-t="10"]::after{content:'';position:absolute;inset:4px;border-radius:5px;background:conic-gradient(from 45deg,#1E1E1E 0 25%,#FAF7F0 0 50%,#1E1E1E 0 75%,#FAF7F0 0);background-size:12px 12px;transform:rotate(45deg) scale(1.25)}
+.tp-names{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:5px}
+.tp-name{font-size:8px;color:var(--faint);text-align:center;line-height:1.2}
+
 /* ── SHARED COMPONENTS ──────────────────────────── */
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
 .field label{font-size:11px;color:var(--muted)}
@@ -546,7 +546,7 @@ body.nbr-open #online-bar{display:none}
   .hdr{align-items:center;padding:.6rem 1rem}
   .hdr-right{margin-left:auto;gap:6px}
   .tp-trigger span:last-child{display:none} /* esconde label "Tema" no mobile */
-  .tp-dropdown{right:0;width:min(280px,calc(100vw - 24px))} /* dropdown corrigido sem corte no mobile */
+  .tp-dropdown{right:-60px;width:230px} /* reposiciona dropdown no mobile */
   .tool-dock{
     left:0;right:0;top:auto;bottom:0;
     flex-direction:row;align-items:center;
@@ -1197,17 +1197,30 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <div class="tp-dropdown" id="tp-dropdown">
           <div class="tp-dropdown-title">Aparência</div>
           <div class="tp-grid">
-            <button type="button" class="tp-option" onclick="setTheme(0)" title="Areia"><span class="tp-dot" data-t="0"></span><span class="tp-name">Areia</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(1)" title="Selva"><span class="tp-dot" data-t="1"></span><span class="tp-name">Selva</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(2)" title="Cerrado"><span class="tp-dot" data-t="2"></span><span class="tp-name">Cerrado</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(3)" title="Brasa"><span class="tp-dot" data-t="3"></span><span class="tp-name">Brasa</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(4)" title="Teal"><span class="tp-dot" data-t="4"></span><span class="tp-name">Teal</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(5)" title="Midnight"><span class="tp-dot" data-t="5"></span><span class="tp-name">Midnight</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(6)" title="Slate"><span class="tp-dot" data-t="6"></span><span class="tp-name">Slate</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(7)" title="Lavanda"><span class="tp-dot" data-t="7"></span><span class="tp-name">Lavanda</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(8)" title="Floresta"><span class="tp-dot" data-t="8"></span><span class="tp-name">Floresta</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(9)" title="Blueprint"><span class="tp-dot" data-t="9"></span><span class="tp-name">Blueprint</span></button>
-            <button type="button" class="tp-option" onclick="setTheme(10)" title="Combos"><span class="tp-dot" data-t="10"></span><span class="tp-name">Combos</span></button>
+            <div class="tp-dot" data-t="0" onclick="setTheme(0)" title="Areia"></div>
+            <div class="tp-dot" data-t="1" onclick="setTheme(1)" title="Selva"></div>
+            <div class="tp-dot" data-t="2" onclick="setTheme(2)" title="Cerrado"></div>
+            <div class="tp-dot" data-t="3" onclick="setTheme(3)" title="Brasa"></div>
+            <div class="tp-dot" data-t="4" onclick="setTheme(4)" title="Teal"></div>
+            <div class="tp-dot" data-t="5" onclick="setTheme(5)" title="Midnight"></div>
+            <div class="tp-dot" data-t="6" onclick="setTheme(6)" title="Slate"></div>
+            <div class="tp-dot" data-t="7" onclick="setTheme(7)" title="Lavanda"></div>
+            <div class="tp-dot" data-t="8" onclick="setTheme(8)" title="Floresta"></div>
+            <div class="tp-dot" data-t="9" onclick="setTheme(9)" title="Blueprint"></div>
+            <div class="tp-dot" data-t="10" onclick="setTheme(10)" title="Color Combos"></div>
+          </div>
+          <div class="tp-names">
+            <div class="tp-name">Areia</div>
+            <div class="tp-name">Selva</div>
+            <div class="tp-name">Cerrado</div>
+            <div class="tp-name">Brasa</div>
+            <div class="tp-name">Teal</div>
+            <div class="tp-name">Midnight</div>
+            <div class="tp-name">Slate</div>
+            <div class="tp-name">Lavanda</div>
+            <div class="tp-name">Floresta</div>
+            <div class="tp-name">Blueprint</div>
+            <div class="tp-name">Combos</div>
           </div>
         </div>
       </div>
@@ -2243,7 +2256,6 @@ function startHallStopMotion(){
 
   const frames = [HALL_STOPMOTION_ANIM].concat(HALL_STOPMOTION_FRAMES || []).filter(Boolean);
   const uniqueFrames = frames.filter((frame,idx,arr)=>arr.indexOf(frame)===idx);
-  preloadHallStopMotionFrames(uniqueFrames);
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   hallStopMotionIndex = 0;
@@ -2311,7 +2323,7 @@ const THEME_PREVIEWS=[
   'linear-gradient(135deg,#7A4AC0,#ece8f5)',
   'linear-gradient(135deg,#5aA84A,#0d1e14)',
   'linear-gradient(135deg,#E07820,#0a1628)',
-  'conic-gradient(from 45deg,#1E1E1E 0 25%,#FAF7F0 0 50%,#1E1E1E 0 75%,#FAF7F0 0)',
+  'linear-gradient(135deg,#C8A26E 0 46%,#1E1E1E 46% 54%,#FAF7F0 54% 100%)',
 ];
 
 function themeKey(){
@@ -2320,7 +2332,6 @@ function themeKey(){
 function setTheme(n){
   n = Math.max(0,Math.min(THEME_PREVIEWS.length-1,parseInt(n,10)||0));
   document.documentElement.setAttribute('data-theme',n);
-  document.body?.setAttribute('data-theme',n);
   localStorage.setItem(themeKey(),n);
   if(!user) localStorage.setItem('chaos-theme',n);
   // Atualiza dots
@@ -2329,11 +2340,7 @@ function setTheme(n){
   });
   // Atualiza preview no botão trigger
   const prev=$('tp-preview');
-  if(prev){
-    prev.style.background=THEME_PREVIEWS[n]||THEME_PREVIEWS[0];
-    prev.style.backgroundSize = n===10 ? '10px 10px' : 'auto';
-    prev.style.backgroundPosition = 'center';
-  }
+  if(prev) prev.style.background=THEME_PREVIEWS[n]||THEME_PREVIEWS[0];
   // Fecha dropdown após escolha
   const dd=$('tp-dropdown');
   if(dd) dd.classList.remove('open');
