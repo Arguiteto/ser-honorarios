@@ -828,80 +828,6 @@ body.nbr-open #online-bar{display:none}
 
 
 
-/* ── PLANURB / TCC STUDIO ───────────────────────── */
-#planurb-view{display:none;padding:1.5rem;max-width:1320px;margin:0 auto;flex:1;width:100%}
-.planurb-sub{font-size:11px;color:var(--faint);line-height:1.5;margin-top:3px}
-.planurb-shell{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}
-.planurb-main{display:flex;flex-direction:column;gap:14px;min-width:0}
-.planurb-hero{background:linear-gradient(135deg,var(--surface),var(--surf2));border:0.5px solid var(--border);border-radius:16px;padding:1.1rem 1.2rem;display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:center;box-shadow:0 2px 14px rgba(0,0,0,.04)}
-.planurb-hero h2{font-family:Georgia,serif;font-size:22px;font-weight:400;color:var(--text);margin-bottom:.35rem}
-.planurb-hero p{font-size:12px;color:var(--muted);line-height:1.65;max-width:720px}
-.planurb-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.planurb-badge{font-size:10px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:5px 9px;white-space:nowrap}
-.planurb-card,.planurb-panel,.planurb-package-box{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1rem;box-shadow:0 2px 12px rgba(0,0,0,.035)}
-.planurb-card h2,.planurb-panel h3{font-size:15px;font-weight:600;color:var(--text);margin:0 0 .35rem}
-.planurb-muted{font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem}
-.planurb-config{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:.1rem}
-.planurb-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:.8rem}
-.planurb-section-head p{font-size:11px;color:var(--faint);line-height:1.55;margin-top:3px}
-.planurb-tools-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.planurb-tool-card{position:relative;border:0.5px solid var(--border);border-radius:13px;background:var(--surf2);min-height:168px;padding:.85rem;display:grid;grid-template-rows:auto 1fr auto;gap:8px;cursor:pointer;text-align:left;transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;color:inherit;font-family:inherit;overflow:hidden}
-.planurb-tool-card:hover{border-color:var(--eb);background:var(--el);transform:translateY(-1px)}
-.planurb-tool-card.active{border-color:var(--e);box-shadow:inset 0 0 0 1px var(--e),0 10px 26px rgba(0,0,0,.06)}
-.planurb-tool-card.selected::after{content:'✓';position:absolute;right:10px;top:10px;width:20px;height:20px;border-radius:6px;background:var(--e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.planurb-tool-top{display:flex;gap:10px;align-items:center;padding-right:22px}
-.planurb-tool-num{width:30px;height:30px;border-radius:10px;background:var(--surface);border:0.5px solid var(--border-em);display:flex;align-items:center;justify-content:center;color:var(--e);font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;flex-shrink:0}
-.planurb-tool-title{font-size:13px;color:var(--text);font-weight:700;line-height:1.2}
-.planurb-tool-desc{font-size:10.5px;color:var(--muted);line-height:1.45;max-width:210px}
-.planurb-tool-tags{display:flex;gap:4px;flex-wrap:wrap}
-.planurb-tag{font-size:9px;color:var(--muted);background:var(--surface);border:0.5px solid var(--border);border-radius:999px;padding:2px 7px}
-.planurb-visual{height:56px;border:0.5px solid var(--border);border-radius:10px;background:linear-gradient(135deg,var(--surface),var(--el));position:relative;overflow:hidden;margin-top:2px}
-.planurb-visual::before,.planurb-visual::after{content:'';position:absolute;border-radius:999px;border:1px solid var(--eb);opacity:.8}.planurb-visual::before{width:90px;height:36px;left:16px;top:12px;transform:rotate(-8deg)}.planurb-visual::after{width:70px;height:26px;right:16px;top:17px;transform:rotate(12deg)}
-.planurb-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.8rem}
-.planurb-preview{border:0.5px solid var(--border);border-radius:12px;background:var(--surf2);padding:1rem;margin-bottom:10px}
-.planurb-preview-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:.8rem;flex-wrap:wrap}
-.planurb-kicker{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
-.planurb-title{font-family:Georgia,serif;font-size:20px;color:var(--text);font-weight:400;line-height:1.2}
-.planurb-desc{font-size:12px;color:var(--muted);line-height:1.65;margin:.55rem 0 .85rem}
-.planurb-mini-list{display:flex;flex-direction:column;gap:6px}
-.planurb-mini-item{border:0.5px solid var(--border);border-radius:9px;padding:.62rem .7rem;background:var(--surface);display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--muted);line-height:1.45}
-.planurb-mini-item .mark{color:var(--e);font-weight:700;flex-shrink:0}.planurb-mini-item input{margin-top:2px;accent-color:var(--e)}
-.planurb-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.planurb-status{font-size:11px;color:var(--faint);min-height:16px;line-height:1.45}
-.planurb-status.ok{color:var(--green)}.planurb-status.err{color:var(--err)}
-.planurb-preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.planurb-preset{border:0.5px solid var(--border-em);border-radius:12px;background:var(--surf2);padding:.9rem;text-align:left;cursor:pointer;color:inherit;font-family:inherit;display:flex;gap:10px;align-items:center;transition:border-color .16s,background .16s,transform .16s}
-.planurb-preset:hover,.planurb-preset.active{border-color:var(--e);background:var(--el);transform:translateY(-1px)}
-.planurb-preset .ico{font-size:22px;color:var(--icon-accent,var(--e));line-height:1}.planurb-preset strong{display:block;font-size:12px;color:var(--text);margin-bottom:3px}.planurb-preset span:last-child{font-size:10px;color:var(--faint);line-height:1.4}
-.planurb-action-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:10px}
-.planurb-action-card{border:0.5px solid var(--border);border-radius:13px;background:var(--surface);padding:.9rem;display:flex;gap:10px;align-items:center;justify-content:space-between}
-.planurb-action-card strong{font-size:12px;color:var(--text)}.planurb-action-card span{display:block;font-size:10px;color:var(--faint);line-height:1.45;margin-top:3px}
-.planurb-side{display:flex;flex-direction:column;gap:10px;position:sticky;top:70px;max-height:calc(100vh - 84px);overflow:auto;padding-right:2px}
-.planurb-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:.4rem}
-.planurb-count{font-family:'IBM Plex Mono',monospace;font-size:9px;background:var(--el);border:0.5px solid var(--eb);color:var(--e);border-radius:999px;padding:3px 8px;white-space:nowrap}
-.planurb-checklist{display:flex;flex-direction:column;gap:5px;margin-top:.8rem}
-.planurb-check-row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;border-bottom:0.5px solid var(--border);padding:6px 0;font-size:11px;color:var(--muted)}
-.planurb-check-row:last-child{border-bottom:none}.planurb-check-row input{accent-color:var(--e)}
-.planurb-check-name{line-height:1.35;color:var(--text)}.planurb-check-meta{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--faint);background:var(--surf2);border-radius:999px;padding:2px 7px;white-space:nowrap}
-.planurb-import-row{grid-template-columns:22px 1fr auto;cursor:pointer}.planurb-import-icon{width:18px;height:18px;border-radius:6px;background:var(--el);border:0.5px solid var(--eb);display:flex;align-items:center;justify-content:center;color:var(--icon-accent,var(--e));font-size:10px;flex-shrink:0}
-.planurb-import-status{font-family:'IBM Plex Mono',monospace;font-size:9px;border-radius:999px;padding:3px 7px;white-space:nowrap;border:0.5px solid var(--border)}
-.planurb-import-status.importado{background:var(--greenl);color:var(--green);border-color:var(--green)}
-.planurb-import-status.pendente{background:var(--warnl);color:var(--warn);border-color:var(--warnb)}
-.planurb-import-status.nao{background:var(--errl);color:var(--err);border-color:var(--errb)}
-.planurb-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:.8rem;font-size:9px;color:var(--faint)}.planurb-legend span{display:flex;align-items:center;gap:4px}.planurb-dot{width:7px;height:7px;border-radius:50%;display:inline-block}.planurb-dot.ok{background:var(--green)}.planurb-dot.warn{background:var(--warn)}.planurb-dot.err{background:var(--err)}
-.planurb-package{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px;margin-top:.9rem}
-.planurb-pack-card{border:0.5px solid var(--border);border-radius:10px;background:var(--surface);padding:.85rem;min-height:106px}
-.planurb-pack-card .tag{display:inline-flex;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:2px 7px;margin-bottom:7px}
-.planurb-pack-card h3{font-size:12px;color:var(--text);line-height:1.35;margin-bottom:5px}.planurb-pack-card p{font-size:10px;color:var(--muted);line-height:1.55}
-.planurb-roadmap{border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1rem;background:var(--surface)}
-.planurb-roadmap-row{display:grid;grid-template-columns:76px 1fr 88px;gap:10px;padding:8px 10px;border-bottom:0.5px solid var(--border);align-items:center;font-size:11px}.planurb-roadmap-row:last-child{border-bottom:none}.planurb-roadmap-row .fase{font-family:'IBM Plex Mono',monospace;color:var(--e);font-size:10px}.planurb-roadmap-row .nome{color:var(--text);font-weight:500}.planurb-roadmap-row .tempo{color:var(--faint);text-align:right;font-size:10px}
-.planurb-summary{border:0.5px solid var(--border);border-radius:10px;background:var(--surf2);padding:.8rem;margin-top:.8rem;font-size:11px;color:var(--muted);line-height:1.55}
-@media(min-width:721px){#planurb-view{padding-left:180px}}
-@media(max-width:1120px){.planurb-shell{grid-template-columns:1fr}.planurb-side{position:static;max-height:none;overflow:visible}.planurb-tools-grid{grid-template-columns:repeat(2,1fr)}.planurb-config{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:720px){#planurb-view{padding:1rem!important}.planurb-hero,.planurb-detail-grid{grid-template-columns:1fr}.planurb-badges{justify-content:flex-start}.planurb-tools-grid,.planurb-config,.planurb-preset-grid,.planurb-action-grid{grid-template-columns:1fr}.planurb-roadmap-row{grid-template-columns:1fr}.planurb-roadmap-row .tempo{text-align:left}}
-
-
-
 /* ── CÁLCULOS TÉCNICOS / TELHADO / COBERTURA / ESCADA ─────────────── */
 #calc-tecnico-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
 .ct-sub{font-size:11px;color:var(--faint);line-height:1.5;margin-top:3px}
@@ -1233,7 +1159,6 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
     <button class="dock-btn" id="tool-calctec" onclick="showCalcTec()"><span class="ico">⌁</span>Cálculos técnicos</button>
     <button class="dock-btn" id="tool-sheetgen" onclick="showSheetGen()"><span class="ico">▤</span>Pranchas CAD</button>
-    <button class="dock-btn" id="tool-planurb" onclick="showPlanurb()"><span class="ico">◈</span>Planej. Urbano</button>
     <button class="dock-btn" id="tool-simgeo" onclick="showSimgeo()"><span class="ico">⌖</span>SIMGEO</button>
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-materiais" onclick="showMateriais()"><span class="ico">🧱</span>Materiais</button>
@@ -1663,118 +1588,6 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       </section>
     </div>
   </div>
-
-
-
-
-
-  <!-- PLANEJAMENTO URBANÍSTICO / PLANURB -->
-  <div id="planurb-view" style="display:none">
-    <div class="dash-top" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
-      <div>
-        <div class="dash-title">Planejamento Urbano</div>
-        <div class="planurb-sub">Monte o escopo do projeto, selecione entregáveis por bloco técnico e exporte o pacote como proposta ou briefing de equipe.</div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <button class="btn ghost" onclick="planurbCopyBrief()" title="Copiar brief completo">📋 Copiar brief</button>
-        <button class="btn solid" onclick="planurbSendToProposal()" title="Adicionar serviços à proposta">→ Enviar à proposta</button>
-      </div>
-    </div>
-
-    <!-- Config do projeto -->
-    <div class="planurb-card" style="margin-bottom:14px">
-      <div class="planurb-section-head">
-        <div><h2>Dados do projeto</h2><p class="planurb-muted">Preenchidos automaticamente no pacote gerado.</p></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="planurb-badge active" id="pl-preset-tcc"    onclick="planurbApplyPreset('tcc')">TCC</button>
-          <button class="planurb-badge"         id="pl-preset-cliente" onclick="planurbApplyPreset('cliente')">Cliente</button>
-          <button class="planurb-badge"         id="pl-preset-concurso" onclick="planurbApplyPreset('concurso')">Concurso</button>
-        </div>
-      </div>
-      <div class="planurb-config">
-        <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pl-projeto" placeholder="Ex: Parque Linear Anhanduí" oninput="planurbRefreshPackage()"></div></div>
-        <div class="field"><label>Etapa</label><div class="iw">
-          <select id="pl-etapa" onchange="planurbRefreshPackage()">
-            <option>Estudo preliminar</option>
-            <option>Anteprojeto</option>
-            <option>Projeto básico</option>
-            <option>Projeto executivo</option>
-            <option>TCC / Trabalho acadêmico</option>
-            <option>Concurso</option>
-          </select>
-        </div></div>
-        <div class="field"><label>Formato de entrega</label><div class="iw">
-          <select id="pl-formato" onchange="planurbRefreshPackage()">
-            <option>Pranchas A1</option>
-            <option>Pranchas A0</option>
-            <option>Pranchas A2</option>
-            <option>Caderno A3</option>
-            <option>PDF digital</option>
-            <option>Apresentação slides</option>
-          </select>
-        </div></div>
-        <div class="field"><label>Local / endereço</label><div class="iw"><input type="text" id="pl-local-proj" placeholder="Ex: Campo Grande, MS" oninput="planurbRefreshPackage()"></div></div>
-      </div>
-    </div>
-
-    <div class="planurb-shell">
-      <!-- Coluna principal -->
-      <div class="planurb-main">
-
-        <!-- Grade de ferramentas/blocos -->
-        <div class="planurb-card">
-          <div class="planurb-section-head">
-            <div><h2>Blocos técnicos</h2><p class="planurb-muted">Clique para abrir. Duplo clique seleciona/remove o bloco inteiro.</p></div>
-            <span class="planurb-badge" id="pl-tool-count">0 de 0 itens</span>
-          </div>
-          <div class="planurb-tools-grid" id="pl-tool-grid"></div>
-        </div>
-
-        <!-- Detalhe do bloco ativo -->
-        <div class="planurb-card" id="pl-tool-detail">
-          <div class="planurb-section-head">
-            <div>
-              <div class="planurb-kicker" id="pl-detail-sub">Selecione um bloco acima</div>
-              <h2 id="pl-detail-title">—</h2>
-            </div>
-          </div>
-          <p class="planurb-muted" style="margin-top:0">Clique em um bloco para ver seus entregáveis e checklist de produção.</p>
-        </div>
-
-      </div>
-
-      <!-- Coluna lateral -->
-      <aside style="display:flex;flex-direction:column;gap:14px;min-width:0">
-
-        <!-- Lista de entregáveis selecionados -->
-        <div class="planurb-panel">
-          <div class="planurb-section-head">
-            <div><h3>Entregáveis</h3></div>
-            <span class="planurb-badge" id="pl-delivery-count">0 selecionados</span>
-          </div>
-          <div id="pl-delivery-checklist" style="display:flex;flex-direction:column;gap:2px;max-height:260px;overflow-y:auto"></div>
-        </div>
-
-        <!-- Itens importados de outras ferramentas -->
-        <div class="planurb-panel">
-          <div class="planurb-section-head">
-            <div><h3>Dados importados</h3><p class="planurb-muted" style="margin:0;font-size:11px">CEP, coords e SIMGEO importados automaticamente.</p></div>
-            <span class="planurb-badge" id="pl-import-count">0 de 0</span>
-          </div>
-          <div id="pl-import-checklist" style="display:flex;flex-direction:column;gap:2px"></div>
-        </div>
-
-        <!-- Status -->
-        <div id="pl-status" class="planurb-status"></div>
-
-      </aside>
-    </div>
-
-    <!-- Pacote gerado -->
-    <div id="pl-package" style="margin-top:14px"></div>
-
-  </div>
-
 
   <!-- CÁLCULOS TÉCNICOS / TELHADO / COBERTURA / ESCADA -->
   <div id="calc-tecnico-view" style="display:none">
@@ -2226,8 +2039,8 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 const SUPABASE_URL = 'https://wbcefatwxorbepbjbokw.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BcGStnHOrhs_UHsg8hcLQA_Yt7nahWM';
 const LOGO_ICON = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8IS0tIENyZWF0b3I6IENvcmVsRFJBVyAtLT4NCjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNjkuNjAyNG1tIiBoZWlnaHQ9IjY0LjkzNjZtbSIgdmVyc2lvbj0iMS4xIiBzdHlsZT0ic2hhcGUtcmVuZGVyaW5nOmdlb21ldHJpY1ByZWNpc2lvbjsgdGV4dC1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyBpbWFnZS1yZW5kZXJpbmc6b3B0aW1pemVRdWFsaXR5OyBmaWxsLXJ1bGU6ZXZlbm9kZDsgY2xpcC1ydWxlOmV2ZW5vZGQiDQp2aWV3Qm94PSIwIDAgNjk2MC4yNCA2NDkzLjY2Ig0KIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIg0KIHhtbG5zOnhvZG09Imh0dHA6Ly93d3cuY29yZWwuY29tL2NvcmVsZHJhdy9vZG0vMjAwMyI+DQogPGRlZnM+DQogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQogICA8IVtDREFUQVsNCiAgICAuZmlsMCB7ZmlsbDpibGFja30NCiAgICAuZmlsMSB7ZmlsbDojN0M3QzdDfQ0KICAgXV0+DQogIDwvc3R5bGU+DQogPC9kZWZzPg0KIDxnIGlkPSJDYW1hZGFfeDAwMjBfMSI+DQogIDxtZXRhZGF0YSBpZD0iQ29yZWxDb3JwSURfMENvcmVsLUxheWVyIi8+DQogIDxnIGlkPSJfMjY1Njc1NTg3MTYxNiI+DQogICA8cGF0aCBjbGFzcz0iZmlsMCIgZD0iTTk4OS42NyA0Njk1LjQ2Yy00Ny40NywtMjQuMDEgLTEwMC43NywtOTIuMDEgLTEzNS4xNCwtMTQ4LjEgLTM2LjEsLTU4Ljg5IC02My44NSwtMTI3LjMxIC04Mi45OSwtMTk2LjYgLTE0Ni4zNSwtNTI5LjcgMTUxLjY5LC03NDkuMDcgMzYzLjg3LC02MTcuOTQgNzIuNjEsNDQuODcgOTcuNzgsNzkuODcgMTQ1LjQyLDEzNC4xMSAyOC44NiwzMi44NSA0MC4zNyw0OS44IDYyLjYsODEuMjdsNTYuMTMgODQuOTljMC4wNiwwLjAzIDM1Ni4wNyw0MzYuNjMgNDczLjUsNDAxLjIxIDI0Ljk1LC03MC42NSAtOTguMDgsLTI3OS4xMiAtODYuNywtNTk3LjYzbDIwLjUgMTkuOThjMzcuNiw0MC44OSAzOC4zMSw1NC4wOSA4Ny4zMiw5OS4zOSAyNi4wMywyNC4wNSA4Mi45Niw5OC42OSAxMzAuOTgsNzEuOTcgMTEuNTksLTIxLjExIDQuMDgsLTI5OS42MSAxMS4xNiwtMzYxLjE1bDU0LjIzIC0zMjQuODUgMjgxLjc0IC01Mi4wM2M1NC45OSwxMTMuNDggNDcuNDYsMzM0LjcgMzQ0LjMyLDU0Ni41IDE4NCwxMzEuMjkgNDI1LjM3LDE4NC4wOCA3MDUuNTUsMTU2LjFsOC4zNiAxOC42OGMxOC44MSwzNy4zNSAzOS42Niw0My4zMyA4NC41Niw0My43NSAxNjQuNzMsMS41NSAxNTEuODIsLTEyMC45OSAyNTMuMDEsLTE4OC43MSA1Ni42NCwtMzcuOTEgMTY5LjMxLC02My45NyAyNDEuMDUsLTI3LjA1IDg1Ljc0LDQ0LjEyIDc3Ljc5LDE0NS40IDg2Ljc1LDE3Ny4zNSAxMi42Niw0NS4xMyA4Mi4wMywzNC44NiAxMTkuMTEsMTcuNSAzMy4wNywtMTUuNSAzOC40MiwtNDYuNTYgMzYuMzIsLTg4LjM0IDExOS40MiwzMy40NCAyMTMuMzMsNjYuMTUgMzYwLjQ2LDUzLjY1IDIwOC4xNCwtMTcuNjggMzA4LjcsLTY4LjY5IDQ0Ny44MywtMTc5LjI3IDE2Ny4wNywtMTMyLjc4IDE5NS44OCwtMjU0LjQxIDI2Ny41NSwtMzUxLjAxIDM5Ljc5LDc0LjQ4IDUxLjg2LDM2OC4wOCAzNS4zLDQ2Ni44NyAtMzUuMTksMjA5Ljk0IC0xMC4xMywyNS40MSAxNTguNzUsMzEzLjEgMTMyLjMzLDIyNS40MSAxNDkuNDYsNTY5Ljg5IDU2LjMyLDgzMy43OSAtMTc0LjAxLDQ5My4wMSAtNTk2LjI2LDgwNC41MyAtMTA4NS41OCw5NDYuOTkgLTYwNy45OSwxNzcgLTExOTUuNzMsNTIuMDYgLTE2OTAuMjIsLTE4Ny4yMyAtMzI2Ljg0LC0xNTguMTYgLTYxOS43MiwtNDI1LjM1IC04MjEuNTYsLTcwMi4zNSAtNDguNzQsLTY2Ljg5IC0xNTYuMzUsLTIzNS40OCAtMTgzLjc4LC0zMjUuMTQgLTE1OC41OSwyLjMxIC0yODEuMjksNDMuMjIgLTQ1OC45NSwyMC4xIC0xMTkuODgsLTE1LjYxIC0zMDUuNDgsLTYyLjg1IC0zNDcuNzcsLTEzOS45em0yOTcuNSAtMTE2Ni41M2MzOS4xLC0yMC45MyAyMDEuNzIsLTQ2Ljk0IDI1OC44MywtNTUuNzggLTMuNTYsMzM1LjU2IDQ4Ljc4LDM3Ni42OSA2MC45NSw1NDMuNjQgLTg5LjQ0LC05NC4yNCAtOTcuNjEsLTg4LjY2IC0xODMuOTksLTIxNS44NiAtNDQuNzUsLTY1Ljg5IC0xMTYuNTksLTE4OC4wMSAtMTM1Ljc5LC0yNzJ6bTMzNTIuMjUgMzE4LjQyYy0zMjcuOCw1Mi40NCAtNTgzLjI5LC0xOTguOTYgLTY1OS4xOSwtNDI4LjE0IC0xMzIuNzcsLTQwMC45MiAxMjUuNDIsLTk0NS41MSA1NDYuOTMsLTEwMjAuNiAxODAuMzIsLTMyLjEyIDMyMC41MSwyOC44NCA0MjIuNjgsMTEwLjYzIDI0OS44MywxOTkuOTggMzUyLjczLDY4MC4xIDEyNi4xOSw5ODguNiAtMTIwLjM0LDE2My44NyAtMzgwLjU3LDIzMi43NyAtNTc1Ljk5LDEzMC4yMyAtMTIyLjQ1LC02NC4yNSAtMTk4LjU0LC0xNTYuNyAtMjM2LjEyLC0zMDUuODEgLTM5LjEyLC0xNTUuMjUgMTUuNzgsLTMyOC42MyA5MC42NSwtNDI3LjM2IDIyMy43LC0yOTUgNTkxLjg5LC0xMjkuNzMgNTYyLjEsMjA4LjgyIC0xMi4wNiwxMzcuMTIgLTEwNy40MywzMDYuODggLTI3Mi4xNCwyNDQuNzkgLTE2OS4wNCwtNjMuNzMgLTk5LjE2LC0zNDYuOTcgMTguNTgsLTI5MC41IDIyLjkyLDY2LjgzIC0zNS4xNSw5OS42NyAxLjQ3LDE0My4xOSA5OC4xNSw0NS43NyAxNzAuNDEsLTEwOC4xMyAxMjIuODIsLTIxNi40NyAtMzcuMjMsLTg0Ljc3IC0xMzIuODMsLTEzOS42MyAtMjQ2Ljg1LC04MS4zNSAtMjcxLjUsMTM4LjggLTE5NS40NCw2NTMuNTggMTk0LjI5LDYyOC44OCAzMzguNzgsLTIxLjQ3IDQxOS44NywtNDcwLjk5IDI4NC4wNywtNzM2LjQ4IC0xODkuNzcsLTM3MC45OSAtNzE5LjM0LC0zMjIuNDUgLTg4OC4xNSwxMzcuNDMgLTc0LjQsMjAyLjcxIC01Ni43MSw0NDAuODggNTIuMTEsNjE0LjI2IDQ1LjkxLDczLjE0IDExNi4zMiwxNTAuOTggMTg2LjI4LDE5NC4zMyA0My40NSwyNi45MSA4MS44OCw0OC40OCAxMjguOTgsNjUuNyA0Mi45NSwxNS43IDEwNS4xLDIzLjk2IDE0MS4yOSwzOS44NXptLTcwOS41IC0xNzUuNjZjLTE5OS42MiwtMi40NyAtMjc2LjE5LDExMy4yNyAtNDY2LjA0LDE1My4yIC0xNzEuNDMsMzYuMDUgLTM2NS44MSwzMS41MyAtNTE3Ljg3LC0zOS44NSAtNzA5LjQzLC0zMzMuMDUgLTQyNC42NiwtMTI5NS45MiAxNDguMDgsLTE0NDYuOTYgNTY3LjAyLC0xNDkuNTQgOTQ4Ljc5LDQyOC45OSA2NzcuMTgsOTM4Ljg0IC0yODUuNiw1MzYuMTEgLTEwNTAuNDMsMjQwLjI4IC04ODUuNTksLTM0My4xNyA0MS42OSwtMTQ3LjU0IDE0NSwtMjc0LjggMzE2LjA2LC0yOTQuNTUgMjk5LjU0LC0zNC41OSA0NDIuMTEsMzA2LjY1IDI4OS41MSw1MTAuMDEgLTM3Ljc2LDUwLjMyIC0xMjguMzIsMTA1LjA2IC0yMjAuMTQsNjUuNDcgLTE2MS4yMiwtNjkuNTMgLTEwNy41MSwtMjg3LjQ0IC0xMi42MSwtMjYwLjY3IDQwLjg0LDExLjUzIDMyLjEzLDY0LjczIDUzLjY5LDEwMC43OSA5MS4zMSw2Mi4yNCAxNzAuMSwtMTIxLjYzIDUwLjcsLTIyOC43IC05Ny43NywtODcuNjcgLTIyMS45MiwtNDAuOTUgLTI4Ny4xLDM0LjY5IC02OC4zNiw3OS4zNCAtODUuODMsMjE2LjkxIC00Ni42NSwzMzIuOTQgNzguMjEsMjMxLjY2IDM2MC4yOCwyNzguNjIgNTQwLjk5LDExOC45OCAxOTguNjksLTE3NS41MSAyMzQuNzcsLTY5Ni45IC0xNjUuMDUsLTgyNS4yOSAtNDg2LjYzLC0xNTYuMjggLTg1OC41MSw0MTkuNTcgLTY2My40Myw4NzUuNTcgMTM2LjMsMzE4LjYxIDUzOC44Myw0NTQuMTMgODU2Ljg0LDMwOC4zOSA1MS44MSwtMjMuNzQgODcuNSwtNDYuNTEgMTMwLjY5LC04MC45IDMzLjA4LC0yNi4zNCA3Ny40MiwtODEuNzYgMTA2LjQ3LC0xMDEuNDQgMTcuOTYsMzMuMDMgMjcuMzUsNjQuNjQgNDUuMzIsOTcuODIgMTcuNDYsMzIuMjQgMzcuNTEsNTcuNTUgNDguOTUsODQuODN6bS0xODY5LjA2IC0xOTM0LjQ1bDIuODMgLTE5LjY4Yy01NS40NywtNTQuMTMgLTI5Ny4xMywtMTk2Ljk1IC0zNzAuMTMsLTIzNi4zMmwtMTI1LjQ3IC03Mi41MmMzMTQuNTQsLTcuMzUgNTg3Ljc3LDE3LjggODg2LjgsODEuOTIgNTQuMzQsMTEuNjUgMjE0LjUyLDYxLjU5IDI1Mi4yNiw2MS42MSAtMTMyLjE2LC0zMjAuNzUgLTI5My44MSwtMzkyLjEyIC0zMzYuNDMsLTQ2OC43MSAyMjkuNCw2OS45IDMyMy4yNCwxNzYuNzQgNDUzLjI4LDIzOC4zNyAtMzMuMDUsLTEzMS44NiAtMTE4LjY5LC0yNjcuNTIgLTE4NC44MSwtMzYyLjc0IC0zNy4xOSwtNTMuNTcgLTc1LjI1LC05OC42MSAtMTIzLjM4LC0xNDcuNTEgLTI1LjY0LC0yNi4wNSAtMTA5LjczLC0xMTAuNjggLTEyMy40OCwtMTMyLjU1IDU4LjA2LDE5Ljk0IDI5MC4xLDE0Ny4yIDM1OC42NiwxODUuMzkgMTU3LjQ4LDg3LjcxIDQ4Ni44MSwzMDQuMDYgNTk2LjI2LDM2MC4zOCA1MS42NiwyNi41OSA2Mi4yOSwxMC42NyA5Ni45NywtMTkuMDhsMjk4LjAyIC0yNDMuOThjMTEyLjQ4LC04Mi40NiAxOTcuMjcsLTE0Ni40NCAzMzMuMzMsLTIxNy4xNyAyNzMuMTYsLTE0Mi4wMSA0NzYuMDgsLTIyOS41OCA3NzMuNjEsLTMxNy43MSA3My43MywtMjEuODQgMTM2LC00MS42MyAyMTAuNTYsLTYxLjA2IDc1Ljg5LC0xOS43NyAxNTQuMzMsLTI1LjkgMjIzLjIxLC00My4zNyAtNi40OCwxNS45MyAtMTIyLjA2LDEzMi4wNSAtMTUwLjcyLDE1OC4zMyAtODMuMzUsNzYuNDUgLTE1My42NCwxNjIuNjUgLTIyOC4zMywyNDUuODEgLTY4Ljc5LDc2LjYgLTE2MS4yNCwxNjMuMzcgLTIwNi40NSwyNjMuMjUgMTY3LjkxLC00OC41NyAyODMuMDEsLTEzMy41NCA1MzYuNiwtMTM0LjIgMzEzLjE5LC0wLjgzIDY3Mi44MywyNjcuNzYgODcyLjk4LDQ2Mi41MSA0OS43Myw0OC4zOCAxMTEuMTYsMTEzLjYxIDE1OC4xMSwxNzIuMTcgNDAuOSw1MS4wMiAxMDMuMTgsMTMwLjk4IDEzNS4yMSwxOTAuMTQgLTEzMi44NiwtMjguMjEgLTIyNC4wMiwtNTYuMzggLTM3OC42MywtNjguNTUgLTkwLjQyLC03LjEyIC0zMzQuOTYsLTE1LjcyIC00MTEuNzYsMTUuNDQgMjEuMzgsMjAuOTMgNTQuODIsMzUuMjUgODMuNDMsNTMuNDRsMjQ0LjE1IDE3OS41MWMzMjYuOTgsMjY2LjU2IDU2NC4yNyw2NTAuMzkgNTU0LjgsMTEyMy43NiAtMjQuOSwtMTcuNDIgLTMwNy43NSwtMzAwLjQ0IC00MjkuMzksLTM0Mi45NSAtMTcuNzYsMTc3LjQ1IC0yLjI0LDEzNi42NyAtMzguOTUsMzM5LjI3IC05LjcsNTMuNTggLTUxLjE1LDI2Ny4xMiAtNjguNzcsMzAwLjUyIC0zNS43NywtNDkuNyAtNTguOTYsLTExMi41MyAtOTIuNiwtMTY5LjMxIC0zNS44MywtNjAuNDcgLTEwMS4xMiwtMTAwLjI1IC0xMTkuNTQsLTE0Mi4wNSA3NS4wMiwtMjQuOTQgMTUwLjUsLTU2Ljk0IDIxNS43NSwtOTYuMDggMTMuNTksLTE0NC42MyAtMzYuOSwtNjMwLjEyIC0xMTIuNzEsLTY4NC44NiAtMzYuNjQsLTE5LjQ2IC0zMTIuMTgsOTcuNzkgLTM2OC44NywxMTguOTIgLTYyLjU2LDIzLjMyIC0xMTcuODIsNDIuMDUgLTE4MC4xLDY1LjM1IC01NC4wNiwyMC4yMyAtMTI5LjUxLDUxLjk2IC0xODMuMjQsNjMuOTQgLTQ1LjIzLC02NS4wNyAtMTU0LjgxLC0xMzQuODQgLTI1NC4yLC0xNzUuOTMgLTMwOS4xLC0xMjcuNzcgLTY1MC40MiwxNi4yNiAtODM5LjgxLDI2NS4zMSAtOS42NCwxMi42OSAtMTAuOTYsMTcuODIgLTIwLjc4LDMwLjM0bC0yNi42NCAyMy45N2MtODguNDYsLTExOS42MiAtNzMuNCwtMTU2LjMyIC0yMzIuOTQsLTI4My40MyAtODkuNCwtNzEuMjMgLTIzMC4xOCwtMTI1LjE1IC0zNzIuMjIsLTE0NS40NyAtMzIwLjA4LC00NS44MSAtNTg0LjUzLDEwMC4wOSAtNzQ5LjEyLDI1MS42MiAtMjE3Ljg0LDIwMC41NSAtMTkuMjMsMTQwLjg2IC0zMDcuNTgsMjA4LjY0IC0xNDEuNTksMzMuMjggLTI3MS40OSw2NS4zNSAtNDExLjU0LDk3LjQ2IC0yNTkuMjMsNTkuNDMgLTU4OS4zNSwxNTUuMzEgLTgyNS42MSwyMDQuNjYgLTM1LjE5LC0xNDYuMTEgLTg1LjgsLTI4My41NCAtODIuODYsLTQ1NS42Mmw1MjEuNjcgLTIwNC4wNWM4MC4yNywtMzAuMDMgNDg2LjE4LC0xNjIuMTYgNTIwLjcyLC0xOTguNjQgLTMwLjAyLC02Ni41IC0zMTUuOSwtMjQwLjA3IC00MDIuNDQsLTMwMS4wMiAxMzQuMTksLTE2Ljg0IDI5My45Nyw0LjIyIDQzMC4yOSwtMTcuNDd6bTI1OTQuNTUgLTE0MjEuODZsLTMzOS43NyAxMzYuNTVjLTEwNy45OCw0Ny4zNiAtMjIzLjAxLDEwMy4xOSAtMzI0Ljc5LDE1Ny4zNiAtMTA5LjY3LDU4LjM3IC0yMDcuNDIsMTE1LjE2IC0zMDUuNjUsMTc3LjAyIC04Miw1MS42MyAtMjA2LjQ4LDE0Ny43NyAtMjYwLjgsMjExLjI2bC0yMDguOTIgLTE2NS45N2MtNzIuMTEsLTUzLjU5IC0xMzkuMjgsLTEwMi44OSAtMjE4LjE5LC0xNTQuNTUgLTc3LjE5LC01MC41NCAtMTQ3LjMsLTk0Ljg1IC0yMjkuODQsLTE0Mi41NCAtNDYuNiwtMjYuOTMgLTIxOC40NSwtMTA3LjUxIC0yNDEuMjksLTEzMy4yOWwtMzgwLjg5IC0xNDEuOTRjLTIxMS40NCwtNjMuMjYgLTIwMi42NywtODYuOTMgLTQwOC4xMywxLjYyIC0xMTYuNiw1MC4yNSAtMjM3LjQ2LDExOC4wOSAtMzQwLjk5LDE4My45MiAtNTkuMDksMzcuNTggLTEwMS4xMyw2OC4xNiAtMTU0LjE5LDEwNy45OCAtMzAuNjYsMjMgLTEzOS4xNSw4OS42MyAtMTE0LjMzLDEzOS44IDM2LjksMzUuOTQgMzQzLjksMTI5LjU0IDQyOC4yMiwxNjQuMzkgNzIuMzQsMjkuOSAxMzMuMTEsNjcuNDQgMTkzLjI5LDEwMy4yNiAzMi4wNSwxOS4wNyA1OC41NywzNy4xOCA4Ni42LDU3LjAzbDc1Ljc3IDYwLjc0Yy0zMC42OSwyLjQyIC0yMTYuNzQsLTI5LjI3IC0yNzAuMTMsLTM0LjkzIC0xNjUuNDUsLTE3LjU0IC03MjIuNTgsLTYuMTcgLTgxOC45Miw4MC44OGwtMTQ5LjYyIDE2My43MWMtNDkuNjQsNjkgLTQwNC42NCw1MDMuNiAtMzE1LjYxLDU3MS45NiAzMi4xNSwyNC42OCAzNTcuNiwtOTMuNjUgNTgyLjk0LC02NS4yMSAtMTg5LjMzLDEzMy44MiAtMTk3LjI2LDkxLjI0IC00MDEuNzUsMjk4LjU5IC0yNjIuNSwyNjYuMTkgLTQ3OC41NCw3MTguODcgLTQ0MS4zNywxMDY3LjA2IDEuMzYsMS4wMSAzLjI3LDEuMjUgMy44OCwzLjI5IDAuMSwwLjMgMzYuNTMsNDMuNjUgODguMDMsLTMxLjMyIDcwLjI1LC0xMDIuMjggMTI0LjIxLC0xNzEuNTYgMjM0Ljg4LC0yNDcuMDUgLTIxLjQ5LDM5Ljc2IC00NS4yNCw3MC4wMSAtNzAuNDIsMTE1LjI0IC0xNjcuODIsMzAxLjM3IC0yMDcuNDUsNTg3LjA2IC02Mi45Niw5MDguNTkgNzMuOTksMTY0LjY2IDkxLjI3LDEyOS4yIDEzOS4xNywzOS43OCAxNS41MiwtMjguOTggMzIuOCwtNTguNjUgNTEuMTUsLTg0LjU0IDMxLjUxLC00NC40NSA5MC43MSwtMTExLjI2IDE0MS4xMywtMTMwLjYyIC0xMS4xNSw2MSAtNDEuMTUsMTAwLjU5IC02MS4xMiwyMzYuNiAtMTMuNjEsOTIuNjggLTE0LjQ4LDE5NC4yMyAtMS43NiwyODcuNjEgNDQuNjQsMzI3LjcyIDE5Mi44LDU3Ny4xNSA1MDUuNCw3MDYuNCAxODEuNjUsNzUuMTEgMzI5Ljc3LDYxLjE2IDU0MC45Niw1My45MSA3NS41NSwxODcuNzggMjc0LjIyLDQ0Ny4xNSA0MjQuMzMsNTk3LjcyIDE2OS4zMSwxNjkuODQgMzMxLjEzLDMwNi45MSA1NzYuMDIsNDQ4LjIzIDQ2NC4wMywyNjcuNzcgMTA1MS4wMSw0MDUuMTIgMTY3Ni44NSwyODguNDEgMjc3LjMyLC01MS43MiA1MjQuMzMsLTE2MS4wMyA3MzYuMjEsLTI4Ni45NSA1Mi45NCwtMzEuNDcgMTA3LjcxLC02OS42MiAxNTEuNywtMTAyLjA5IDI1LjcyLC0xOC45OSA1MC4zNywtMzYuOTYgNzEuNzYsLTU1Ljc0IDE1NC40NCwtMTM1LjU3IDE5MC45NCwtMTYwLjgzIDMxOC4wNiwtMzI1LjEgMjQxLjUzLC0zMTIuMTQgMzkzLjc5LC03NjEuMTUgMzA2Ljk3LC0xMTc5LjUyIC0zNC4zNywtMTY1LjY0IC03OS43NiwtMjQyLjgyIC0xNTQuMzQsLTM1OS44OGwtNzUuODcgLTg3LjRjLTIzLjk0LC0yNS41OCAtNTIuMTcsLTUyLjY4IC03OC40OCwtNzkuNTkgMTMuMDQsLTM0LjUxIDM4LjY4LC03NC4zMiA1NS41NywtMTE5LjExIDU3Ljc3LC0xNTMuMTkgNzcuMzYsLTI3MS40MSA4Ni44OSwtNDQwLjE5IDQyLjU2LDMxLjM0IDEwNy4wOCwxMjkuMDQgMTQzLjU0LDE4NS43NyAxMDAuMjUsMTU2LjAzIDg5LjAyLDMwMS42OCAxNzUuMTEsMTYwLjM1IDM1LjE1LC01Ny42OSA4Ny42MSwtMTg4Ljc4IDExMS4xNSwtMjUyLjk2IDM1LjE5LC05NS45NCA5Mi42NiwtMjY5LjE2IDEwNS41LC0zNzcuMTEgNTQuMzUsMjIuNTEgMTk4Ljc2LDE1Ni4zNiAyMjguNzIsMTk2LjM4IDMxLjMxLDQxLjg0IDYzLjA3LDc4LjMxIDkxLjEsMTI4Ljk1IDE4LjkyLDM0LjIgNDcuMjksMTI4LjIgOTkuNTQsMTA4Ljg1IDczLjg4LC02Ni41NCA3OC4wMSwtMzMxLjg1IDc0LjczLC00NTQuOCAtNy41NCwtMjgyLjkyIC0xMDEuMjQsLTU4Ny4zOSAtMjMwLjkzLC04MjUuMDUgLTgyLjc5LC0xNTEuNzIgLTE3Ny4zMywtMjU4LjU0IC0yMTIuMzUsLTMyMC45OCAxMjcuOTcsMjEuOCAzMzMuNSw4Ny4xOCA0NDEuNDIsMTU5Ljc5IDI5LjE5LDE5LjY0IDg1Ljg1LDc1Ljc4IDExOS43OSwzNS4wNCA1NC44NSwtNjcuNTIgLTM4My43MiwtNjE5LjMxIC00NzQuNjIsLTcxMy4yNiAtMjEuMjcsLTIxLjk4IC0zNC4wNywtMzQuOTcgLTUyLjgyLC01Ny4xMiAtNjEuMzcsLTcyLjUyIC0xOTUuODUsLTE3OS45NiAtMjIwLjQ4LC0yMjIuNjcgLTMyLjA2LC05LjMxIC02OC40OSwtNDcuMDEgLTEwMS41NiwtNzMuMzEgLTIwLjg5LC0xNi42MSAtNzkuNDQsLTUyLjc2IC05MC4wOSwtNzUuNzIgLTMwLjI3LC0xMS4wNCAtNzAuMDcsLTMzLjY3IC04OC44NCwtNjEuMTkgLTEwNy4yMSwtMTUuMDEgLTE5Ni45MSwtMTg4LjAzIC02OTMuODYsLTE3Ni4zNyAyNS4yLC02MC41NyAzNTguNzIsLTM0Ni44OSA0NDUuOTcsLTQyMS4yOCA2Ny41NywtNTcuNiAxMzkuMSwtOTQuODcgMTI5LjA3LC0xNDYuODggLTg3LjM0LC00Mi45NCAtNDQ1LjI3LDM1LjIxIC01NDcuMjksNTguMDcgLTIxNi44OCw0OC41OCAtMzI1LjI0LDk5LjE0IC00OTguNDUsMTQ0LjEyeiIvPg0KICAgPHBhdGggY2xhc3M9ImZpbDAiIGQ9Ik0zNDk5LjMzIDQzMzcuMjhjMS42MywxMDguMjkgMjEuMjgsMjIwLjEyIDMwLjc4LDMyNi4xIDE0LjMzLDE1OS44NyAxMDIuMDgsODkxLjk3IDEwMS45MSw5NjMuNjQgLTY2LjI4LC0yNi42MSAtMzY3LjE4LC0yMTkuNzUgLTM5Ni4yNSwtMjYwLjk4IC00MS43MywtNTkuMTYgLTg3Ljg0LC05MTIuNiAtODcuNjcsLTEwMTAuNTFsMzUxLjIzIC0xOC4yNXptMTM2Mi4zOSA1NDYuMDFjLTMuNDgsOS4xNiAtNS4xMSwxNSAtMTAuNTUsMjQuNDIgLTExLjE5LDE5LjM1IC02LjMxLDExLjQ2IC0xNS45MSwyMi44M2wtODUuNjQgLTUxNy44NiAyMjQuNDggNTQuOTFjLTkuMDYsMTAyLjQxIC01Ny4xLDI1OC4wMSAtOTIuNTUsMzU5LjgyIC03LjU2LDIxLjcgLTEyLjk0LDM3LjcyIC0xOS44Myw1NS44OHptLTIxMDkuNDMgLTUwMS4wNmM1Ny4zNSwtMjIuMjYgMTgxLjU2LC0xOS44IDI1Mi41NCwtMjEuMDcgMTEuNjMsMTQ4LjgzIDEyLjg4LDI5NS4xNCAyMy41LDQ0NS44OCA5Ljg0LDEzOS43MyAzMi42LDI4MS40NSA0Mi4xMiw0MTkuMzggLTI0Ljk4LC0xMS45MyAtMy40NiwtMC4xMiAtMTkuNTksLTEyLjM1IC00MS43LC0zMS42MSAtOTUuNjgsLTEwNC4wOSAtMTI1LjMzLC0xNDcuMjUgLTQwLjIzLC01OC41NSAtNjkuMjgsLTExNi42MyAtOTcuOCwtMTg5Ljg2IC0zMC40LC03OC4wMyAtMTA4LjM2LC00MTUuNDQgLTc1LjQ0LC00OTQuNzN6bTE2MTEuODggLTIzLjExYzU1LjUsLTcuODkgMjM4LjU4LDIwLjEyIDI4MC4xOCwzOC44MSAzNi4wNywxMDYuOTEgODAuNDksNDcyLjA1IDkzLjAzLDYwMC4yMiA2LjMxLDY0LjU3IDE2LjMzLDEwNy4xMyAtMTYuMDMsMTUxLjczIC01My42Myw3My45MSAtMTc5LjQ1LDIzOS4yMSAtMjQwLjE2LDI3NS44NSAtMjAuOTQsLTE3NC4yNiAtMzguMzUsLTM1OC4xNSAtNjEuNjksLTUyOS45NWwtODAuOTMgLTUxMS42NmMtNi40NSwtOC41OSAtMS43NSwzLjA3IC0xMC42OSwtMTguOTIgLTUuOTMsLTE0LjYgMC4wNywzLjU4IC0zLjQ1LC0yMS41NmwzOS43NCAxNS40OHptLTc1LjgyIDU2Ni4zNmMxNC43NCwxMzEuMzMgNjYuNzMsNDkzLjMzIDY0LjMxLDYwMi4yOCAtMTk3LjUxLDExMi4zOSAtMjk2Ljc3LDE2Ny44NyAtNTc0LjM3LDE0NC42NmwtMTQzLjcgLTEzMzkuMTljODkuNiwtMTggNDY2LjM2LC01LjggNTY0LjMsMTAuNDYgMzAuOTQsMTk0LjE4IDY2Ljg1LDM4MC40MSA4OS40Niw1ODEuNzl6bS0yMTQ1LjE5IC03MDIuMTJjLTU4LjA3LDE0Ny45NyAxNTQuNTgsNTA2LjIxIDI0OS45Miw2MzkuNCAyMy4wOCwzMi4yNCA0NS4wNiw1NS4zMyA2Ny4zNSw4NS4wNiA3MS43LDk1LjYxIDU3LjgyLDY3LjA5IDEwMi4yNiwxMTcuOGwxMTAuNDggMTE4LjMyYzUwLjUzLDQ1LjkgMTA0LjYyLDkwLjczIDE1OS41MywxMzYuNzUgMTEyLjMyLDk0LjE0IDIxNi42NCwxNzAuODQgMzQzLjcyLDI1Ny4yNCA2NTMuOCw0NDQuNDggMTI1NS4wNSwzMTEuODMgMTY1NC45NywtMjA3Ljg2IDE1Ni4xMSwtMjAyLjg2IDMyOS42NiwtNTAxLjYgMzg2Ljg4LC04MTYuMTUgMzQuNTMsLTE4OS44MiAxOS44OCwtMTc3Ljg1IC02MS43MywtMjEwLjk3IC0yMDAuNzMsLTgxLjQ2IC01MTIuNjgsLTEzNy44MiAtNzMyLjQzLC0xNjUuNTcgLTMzNi4xOCwtNDIuNDcgLTgwOC43OSwtNjEuNDcgLTExNTAuMjQsLTIzLjkgLTE0Ny4wNywxNi4xOCAtMTEwMS45OSw1OC41MiAtMTEzMC43MSw2OS44OHoiLz4NCiAgIDxwYXRoIGNsYXNzPSJmaWwwIiBkPSJNMzE5NC41NiAxNzgxLjYyYzIyLjQxLC0zNS4wNCA5MS4xLC01MC40MyAxMTYuMDQsLTEwMC40MiAzMi41NiwtNjUuMjYgLTUwLjc0LC05My4xNSAtMTE2Ljg2LC05My4xNCAtMjI1LjA3LDAuMDYgLTY1NS43NSwxNjYuMjcgLTg2MC4yNCwyNjcuOTIgLTQyNC42NCwyMTEuMSAzOTkuNTEsMTUyLjE5IDQ3Mi4zLDE1MC41OSAtMjIuODEsMzUgLTQ0Ljc4LDE5Ljk2IC00My40NCw3NS44MyA1OS43Miw0NS45NCAxNzUuODEsMTYuODYgMjUyLjc3LDYuOCAyMzcuNDEsLTMxLjAzIDYyNC4wNywtMTA0LjA2IDgwMS4yMSwtMTE5LjYxIC0zMS42NSw0NC41IC0xMTkuMjYsMTM0LjM4IC0xMjAuMTEsMTk1LjE0IDQ4Ljc1LDEzMS4xNSA4NzAuNjYsLTE4NC40NyA5NzYuNTEsLTIzMC4wOCA5NS4xNywtNDEuMDIgMzUxLjY5LC0xODMuNzkgMzYxLjU0LC0yNzEuNSAxNS4yNywtMTM1LjkyIC00MjUuODEsMTMuOTIgLTQ5NC42NiwyOS42OWw2NC4xMyAtMzguOTljMTQwLjMxLC03NS45NCAzNTcuOTksLTE5NC41NiA0NzQuMzMsLTI3OC45MSA0OS43NCwtMzYuMDcgNjkuMjQsLTk1LjI0IC0yMS4xNywtMTAxLjY1IC0xMzcuMTEsLTkuNzIgLTQ1Ny41OCw0Mi4xNSAtNTg1LjU0LDcwLjQyIC01OTIuMDMsMTMwLjc4IC05NDIuODUsMzU5LjI4IC0xMjc2LjgxLDQzNy45MXoiLz4NCiAgIDxwYXRoIGNsYXNzPSJmaWwwIiBkPSJNMTE1NC45MyA0NjU4LjI5bDI1LjM1IC04Ljc4YzcuNDUsLTExOS42MiA0Ljk0LC0yMTYuMzggNzIuNDIsLTI5Mi43NyA5MS44MiwtMTAzLjk1IDE1Ny4zLDExLjg5IDIyOS43OSw1My4xOSAtMS4wMiwtNjkuOTMgLTU2Ljk2LC0xOTkuNTkgLTk0LjE1LC0yNjEuM2wtMzYuNzcgLTU2LjExYy0xMC4xMiwtMTguMzUgLTUuMDIsLTIuMjkgLTkuMDUsLTIxLjEyIC0yMS42MiwtMTQuNTMgLTE4Ljk5LC0xNS41NSAtMzcuMTMsLTM0LjczIC0yOTAuMDIsLTMwNi41OSAtNTMzLjU0LC0xNzkuODQgLTQ1Mi4xMSwxMjkuNDcgMzguMzksLTEyLjQxIDMxLjMsLTIwLjExIDY0LjM5LC02OC4wNSA5MC42NCwtMTMxLjM0IDE0NS41OCwtMjMuODggMjQ3LjQsMTIuMiAtNDMuNjMsOTEuNTUgLTEwOS4yLDExOS44MyAtMTEyLjQyLDI3My42OSAtMy42NywxNzUuMTcgNzcuMTgsMjIzLjg3IDEwMi4yOCwyNzQuMzF6Ii8+DQogICA8cG9seWdvbiBjbGFzcz0iZmlsMSIgcG9pbnRzPSIyMDYwLjg2LDE3MzcuMjQgMjA3Ni4zOCwxNzI4LjQgMjA2My42OSwxNzE3LjU2ICIvPg0KICA8L2c+DQogPC9nPg0KPC9zdmc+DQo=';
-const LOGO_MINIMALIST = LOGO_ICON; // usa base64 embutido para PDF/standalone
-const LOGO_B64 = LOGO_ICON;
+const LOGO_MINIMALIST = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8IS0tIENyZWF0b3I6IENvcmVsRFJBVyAtLT4NCjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNzAuNzMyNm1tIiBoZWlnaHQ9IjE2LjM0M21tIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJzaGFwZS1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyB0ZXh0LXJlbmRlcmluZzpnZW9tZXRyaWNQcmVjaXNpb247IGltYWdlLXJlbmRlcmluZzpvcHRpbWl6ZVF1YWxpdHk7IGZpbGwtcnVsZTpldmVub2RkOyBjbGlwLXJ1bGU6ZXZlbm9kZCINCnZpZXdCb3g9IjAgMCA3MDczLjI2IDE2MzQuMyINCiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayINCiB4bWxuczp4b2RtPSJodHRwOi8vd3d3LmNvcmVsLmNvbS9jb3JlbGRyYXcvb2RtLzIwMDMiPg0KIDxkZWZzPg0KICA8Zm9udCBpZD0iRm9udElEMSIgaG9yaXotYWR2LXg9IjY2NyIgZm9udC12YXJpYW50PSJub3JtYWwiIHN0eWxlPSJmaWxsLXJ1bGU6bm9uemVybyIgZm9udC1zdHlsZT0ibm9ybWFsIiBmb250LXdlaWdodD0iNDAwIj4NCgk8Zm9udC1mYWNlIA0KCQlmb250LWZhbWlseT0iQXJpYWwiPg0KCQk8Zm9udC1mYWNlLXNyYz4NCgkJCTxmb250LWZhY2UtbmFtZSBuYW1lPSJBcmlhbCIvPg0KCQk8L2ZvbnQtZmFjZS1zcmM+DQoJPC9mb250LWZhY2U+DQogICA8bWlzc2luZy1nbHlwaD48cGF0aCBkPSJNMCAweiIvPjwvbWlzc2luZy1nbHlwaD4NCiAgIDxnbHlwaCB1bmljb2RlPSI6IiBob3Jpei1hZHYteD0iMjc3IiBkPSJNODkuOTk4IDQxOS4wMWwwIDk5Ljk4MDEgMTAwLjAyIDAgMCAtOTkuOTgwMSAtMTAwLjAyIDB6bTAgLTQxOS4wMWwwIDk5Ljk4MDEgMTAwLjAyIDAgMCAtOTkuOTgwMSAtMTAwLjAyIDB6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iRiIgaG9yaXotYWR2LXg9IjYxMCIgZD0iTTgyLjAwNDQgMGwwIDcxNi4wMDcgNDgyLjk5OSAwIDAgLTgzLjk5MjggLTM4Ny45OSAwIDAgLTIyMy4wMjYgMzM1Ljk3MSAwIDAgLTgzLjk5MjggLTMzNS45NzEgMCAwIC0zMjQuOTk1IC05NS4wMDg5IDB6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iTCIgaG9yaXotYWR2LXg9IjU1NiIgZD0iTTczLjAxNjUgMGwwIDcxNi4wMDcgOTQuOTY5MiAwIDAgLTYzMi4wMTQgMzUxLjk5OCAwIDAgLTgzLjk5MjggLTQ0Ni45NjggMHoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJPIiBob3Jpei1hZHYteD0iNzc3IiBkPSJNNDguMDAxNiAzNDguNDk5YzAsMTE4LjY3MiAzMi4wMTQzLDIxMS42NTIgOTUuODQ0MSwyNzguODIzIDYzLjgyOTgsNjcuMTcwNCAxNDYuMTUyLDEwMC42OTYgMjQ3LjE2NiwxMDAuNjk2IDY2LjEzNjQsMCAxMjUuNjcxLC0xNS44NjggMTc4LjgwMywtNDcuMzY1MyA1My4wMTI1LC0zMS40OTczIDkzLjUzNzUsLTc1LjQ4MjIgMTIxLjMzNiwtMTMxLjk5NCAyNy44Mzg1LC01Ni4zMTM0IDQxLjgzNzMsLTEyMC4zNDIgNDEuODM3MywtMTkxLjgwOCAwLC03Mi40OTk1IC0xNC42NzQ5LC0xMzcuNTIyIC00My45ODQ5LC0xOTQuNjcxIC0yOS4zNDk4LC01Ny4zNDc0IC03MC44MjkyLC0xMDAuNjk2IC0xMjQuNTE4LC0xMzAuMDA2IC01My44MDc5LC0yOS41MDg4IC0xMTEuODMxLC00NC4xODM3IC0xNzMuOTkxLC00NC4xODM3IC02Ny40ODg2LDAgLTEyNy42NiwxNi4zNDUyIC0xODAuODMxLDQ4LjgzNjcgLTUzLjAxMjUsMzIuNDkxNSAtOTMuMzM4Niw3Ni44MzQ0IC0xMjAuNjYsMTMzLjE4OCAtMjcuMzIxNSw1Ni4xNTQzIC00MS4wMDIyLDExNS42NDkgLTQxLjAwMjIsMTc4LjQ4NXptOTcuOTkxNiAtMS42NzAzMWMwLC04Ni4xODAyIDIzLjE4NTUsLTE1My45ODcgNjkuNTE2OCwtMjAzLjUgNDYuMzMxMywtNDkuNTEyOCAxMDQuNDc0LC03NC4zMjg5IDE3NC41MDgsLTc0LjMyODkgNzEuMzA2NCwwIDEyOS44MDcsMjUuMDE0OSAxNzUuOTc5LDc1LjAwNSA0Ni4wMTMxLDQ5Ljk5MDEgNjguOTk5OCwxMjAuOTc4IDY4Ljk5OTgsMjEzLjAwNSAwLDU4LjE0MjggLTkuODIzMDMsMTA5LjAwOCAtMjkuNTA4OCwxNTIuMzE3IC0xOS42NDYxLDQzLjM0ODYgLTQ4LjQ3ODgsNzYuOTkzNCAtODYuMzM5MiwxMDAuODU1IC0zNy45Nzk3LDIzLjgyMTggLTgwLjQ5MzEsMzUuODMyMiAtMTI3LjY2LDM1LjgzMjIgLTY2Ljk3MTYsMCAtMTI0LjYzNywtMjMuMDI2NCAtMTcyLjk5NywtNjguOTk5OCAtNDguMzE5NywtNDYuMDEzMSAtNzIuNDk5NSwtMTIyLjY4OCAtNzIuNDk5NSwtMjMwLjE4NXoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJSIiBob3Jpei1hZHYteD0iNzIyIiBkPSJNNzguOTgxOSAwbDAgNzE2LjAwNyAzMTcuMzU5IDBjNjMuODI5OCwwIDExMi4zMDksLTYuNTIyMTcgMTQ1LjQ3NiwtMTkuMzI3OSAzMy4xNjc2LC0xMi44NDU1IDU5LjY5MzgsLTM1LjUxNCA3OS40OTg5LC02OC4wMDU2IDE5Ljg0NDksLTMyLjQ5MTUgMjkuNjY3OSwtNjguNTIyNiAyOS42Njc5LC0xMDcuODU0IDAsLTUwLjgyNTIgLTE2LjQ2NDUsLTkzLjY1NjggLTQ5LjMxNCwtMTI4LjQ5NSAtMzIuODQ5NSwtMzQuODM3OSAtODMuNTE1NiwtNTYuODMwNCAtMTUyLjE1NywtNjYuMzM1MyAyNS4xMzQyLC0xMS45NzA2IDQ0LjE0NCwtMjMuOTgwOSA1Ny4xNDg1LC0zNS42NzMxIDI3LjY3OTUsLTI1LjMzMzEgNTMuODQ3NywtNTcuMTQ4NSA3OC4zNDU2LC05NS4zMjcxbDEyMy44NDIgLTE5NC45ODkgLTExOC4zNTQgMCAtOTQuNjUxIDE0OS4wMTZjLTI3LjUyMDQsNDMuMTQ5NyAtNTAuMzQ4LDc1Ljk5OTIgLTY4LjE2NDYsOTguODI2OCAtMTguMDE1NSwyMi44Mjc2IC0zNC4wMDI4LDM4LjY1NTggLTQ4LjE2MDcsNDcuODQyNSAtMTQuMDM4Niw4Ljk4Nzg3IC0yOC41MTQ2LDE1LjMxMTIgLTQzLjE4OTUsMTguOTcgLTEwLjY1ODIsMi4xODczMSAtMjguMTU2NywzLjM0MDYyIC01Mi42NTQ2LDMuMzQwNjJsLTEwOS42ODQgMCAwIC0zMTcuOTk2IC05NS4wMDg5IDB6bTk1LjAwODkgNDAwbDIwMy4zNDEgMGM0My4zNDg2LDAgNzYuOTkzNCw0LjQ5Mzk0IDEwMS4zMzIsMTMuNDgxOCAyNC4zMzg4LDguODY4NTYgNDIuODMxNiwyMy4xODU1IDU1LjMxOTEsNDMuMDMwNCAxMi42ODY0LDE5LjY0NjEgMTkuMDA5Nyw0MS4wMDIyIDE5LjAwOTcsNjQuMTQ3OSAwLDMzLjg0MzcgLTEyLjE2OTQsNjEuODQxMyAtMzYuNjY3Myw4My42NzQ3IC0yNC40OTc5LDIxLjgzMzQgLTYzLjE1MzcsMzIuNjUwNiAtMTE2LjAwNywzMi42NTA2bC0yMjYuMzI3IDAgMCAtMjM2Ljk4NXoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJTIiBob3Jpei1hZHYteD0iNjY3IiBkPSJNNDYuMDEzMSAyMjkuOTg2bDg5LjAwMzggOC4wMzM0MWM0LjEzNjAxLC0zNi4wMzEgMTMuOTk4OCwtNjUuNTAwMSAyOS40NjkxLC04OC42ODU2IDE1LjUxLC0yMi45ODY3IDM5LjUzMDcsLTQxLjY3ODMgNzIuMDIyMywtNTUuOTk1MiAzMi40OTE1LC0xNC4xNTc5IDY5LjE1ODksLTIxLjM1NjEgMTA5Ljg0MywtMjEuMzU2MSAzNi4xNTAzLDAgNjcuOTY1OCw1LjM2ODg2IDk1LjY0NTMsMTYuMTg2MSAyNy42Nzk1LDEwLjgxNzMgNDguMTYwNywyNS42NTEyIDYxLjY4MjIsNDQuNTAxOSAxMy40ODE4LDE4LjgxMDkgMjAuMzIyMSwzOS4zMzE5IDIwLjMyMjEsNjEuMzI0MyAwLDIyLjM1MDQgLTYuNDgyNCw0MS44MzczIC0xOS40ODcsNTguNjU5OCAtMTMuMDA0NiwxNi42NjM0IC0zNC41MTk4LDMwLjY2MjIgLTY0LjUwNTksNDIuMTk1MyAtMTkuMTY4OCw3LjMxNzU2IC02MS42ODIyLDE4Ljk3IC0xMjcuNSwzNC43OTgyIC02NS44NTgsMTUuODY4IC0xMTEuODMxLDMwLjcwMTkgLTEzOC4xNTksNDQuNzAwNyAtMzQuMjAxNiwxNy45NzU3IC01OS41MzQ3LDQwLjMyNjEgLTc2LjE5ODEsNjYuODEyNSAtMTYuODIyNCwyNi40ODY0IC0yNS4xMzQyLDU2LjM1MzIgLTI1LjEzNDIsODkuMTYyOSAwLDM2LjM0OTIgMTAuMzAwMyw3MC4xOTI5IDMwLjgyMTIsMTAxLjQ5MSAyMC40ODEyLDMxLjUzNzEgNTAuMzQ4LDU1LjM1ODkgODkuODM4OSw3MS43MDQxIDM5LjMzMTksMTYuMzA1NCA4My4xNTc3LDI0LjQ5NzkgMTMxLjMxOCwyNC40OTc5IDUzLjAxMjUsMCA5OS44MjEsLTguNTEwNjQgMTQwLjM0NiwtMjUuNjkxIDQwLjQ4NTIsLTE2Ljk4MTUgNzEuNjY0MywtNDIuMTU1NSA5My40OTc3LC03NS40ODIyIDIxLjgzMzQsLTMzLjE2NzYgMzMuNDg1OCwtNzAuODI5MiAzNS4xNTYxLC0xMTIuODI2bC05MC45OTIyIC02Ljk5OTRjLTQuODUxODYsNDUuMTM4MiAtMjEuMzE2NCw3OS4zMDAxIC00OS41MTI4LDEwMi4zMjcgLTI4LjE1NjcsMjMuMTQ1OCAtNjkuODM1LDM0LjYzOTEgLTEyNC44MzYsMzQuNjM5MSAtNTcuMzA3NiwwIC05OS4xNDUsLTEwLjQ5OTEgLTEyNS4zMTMsLTMxLjQ5NzMgLTI2LjE2ODIsLTIwLjk5ODIgLTM5LjMzMTksLTQ2LjMzMTMgLTM5LjMzMTksLTc1Ljk5OTIgMCwtMjUuNjUxMiA5LjMwNjAzLC00Ni44MDg1IDI3LjgzODUsLTYzLjQ3MTkgMTguMzMzNywtMTYuNTA0MyA2NS44MTgzLC0zMy42ODQ2IDE0Mi44MTIsLTUxLjAyNDEgNzYuOTkzNCwtMTcuNDk4NSAxMjkuODQ3LC0zMi42NTA2IDE1OC41MjEsLTQ1LjY1NTIgNDEuNDc5NCwtMTkuMTY4OCA3Mi4zMDA3LC00My4zNDg2IDkyLjE0NTYsLTcyLjgxNzcgMTkuODQ0OSwtMjkuMzQ5OCAyOS42Njc5LC02My4xOTM1IDI5LjY2NzksLTEwMS41MzEgMCwtMzguMTM4OCAtMTAuODE3MywtNzMuODExOSAtMzIuNjUwNiwtMTA3LjQ5NyAtMjEuODMzNCwtMzMuNjQ0OSAtNTMuMDEyNSwtNTkuODEzMSAtOTMuODU1NiwtNzguNTA0NyAtNDAuODAzMywtMTguNjUxOCAtODYuNjU3NCwtMjcuOTk3NiAtMTM3LjgwMSwtMjcuOTk3NiAtNjQuNzA0NywwIC0xMTguODcxLDkuNTA0ODcgLTE2Mi41MzcsMjguMzU1NSAtNDMuODI1OCwxOC44MTA5IC03Ny45ODc3LDQ3LjE2NjQgLTEwMi44MDQsODUuMTQ2MiAtMjUuMDE0OSwzNy44NjA0IC0zOC4wMTk1LDgwLjY5MiAtMzkuMzMxOSwxMjguNDk1eiIvPg0KICAgPGdseXBoIHVuaWNvZGU9IlUiIGhvcml6LWFkdi14PSI3MjIiIGQ9Ik01NDUuOTkzIDcxNi4wMDdsOTUuMDA4OSAwIDAgLTQxMy41MjJjMCwtNzEuOTgyNSAtOC4xNTI3MSwtMTI5LjE3MSAtMjQuMzM4OCwtMTcxLjQ4NSAtMTYuMzQ1MiwtNDIuMTU1NSAtNDUuNjU1MiwtNzYuNjc1MyAtODguMDA5NSwtMTAzLjE2MiAtNDIuNDczNywtMjYuNDg2NCAtOTcuOTkxNiwtMzkuODQ4OSAtMTY2Ljk5MSwtMzkuODQ4OSAtNjYuODEyNSwwIC0xMjEuNjU0LDExLjQ5MzMgLTE2NC4xNjgsMzQuNjc4OSAtNDIuNjcyNSwyMy4xNDU4IC03Mi45NzY3LDU2LjUxMjIgLTkxLjE1MTMsMTAwLjMzOCAtMTguMTc0Niw0My44MjU4IC0yNy4zNjEzLDEwMy42NzkgLTI3LjM2MTMsMTc5LjQ3OWwwIDQxMy41MjIgOTUuMDA4OSAwIDAgLTQxMy4zMjNjMCwtNjIuMTk5MiA1Ljg0NjA5LC0xMDguMTczIDE3LjMzOTQsLTEzNy41MjIgMTEuNDkzMywtMjkuNTA4OCAzMS4xNzkyLC01Mi4zMzY0IDU5LjMzNTksLTY4LjE2NDYgMjcuOTk3NiwtMTUuOTg3MyA2Mi4zMTg2LC0yMy45ODA5IDEwMi44NDQsLTIzLjk4MDkgNjkuMzE4LDAgMTE4LjgzMSwxNS44MjgyIDE0OC4zNCw0Ny4zMjU1IDI5LjQ2OTEsMzEuNjU2NCA0NC4xNDQsOTIuMzQ0NCA0NC4xNDQsMTgyLjM0MmwwIDQxMy4zMjN6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iYiIgaG9yaXotYWR2LXg9IjU1NiIgZD0iTTE0Ni45ODcgMGwtODIuMDA0NCAwIDAgNzE2LjAwNyA4OC4wMDk1IDAgMCAtMjU1LjUxOGMzNy4xODQzLDQ2LjMzMTMgODQuNTA5OCw2OS41MTY4IDE0Mi4xNzUsNjkuNTE2OCAzMS44MTU1LDAgNjIuMTU5NSwtNi4zMjMzMiA5MC42NzQxLC0xOS4xNjg4IDI4LjQ3NDgsLTEyLjg0NTUgNTEuODE5NCwtMzEuMDIwMSA3MC4zMTIyLC01NC4xNjU4IDE4LjMzMzcsLTIzLjM0NDYgMzIuODQ5NSwtNTEuMzQyMiA0My4xODk1LC04NC4xNTE5IDEwLjQ5OTEsLTMyLjY5MDQgMTUuNjY5MSwtNjcuODQ2NSAxNS42NjkxLC0xMDUuMTkgMCwtODguNjQ1OSAtMjIuMDMyMiwtMTU3LjMyOCAtNjUuODU4LC0yMDUuNjQ3IC00My45ODQ5LC00OC41MTg2IC05Ni42Mzk1LC03Mi42OTgzIC0xNTguMTYzLC03Mi42OTgzIC02MS4xNjUyLDAgLTEwOS4xNjcsMjUuNTMxOSAtMTQ0LjAwNSw3Ni4zNTcxbDAgLTY1LjM0MXptLTAuOTk0MjMzIDI2My4zNTNjMCwtNjIuMDAwNCA4LjUxMDY0LC0xMDYuODYgMjUuMzMzMSwtMTM0LjUgMjcuNjc5NSwtNDUuMTc4IDY1LjAyMjksLTY3Ljg0NjUgMTEyLjE4OSwtNjcuODQ2NSAzOC40OTY3LDAgNzEuNjY0MywxNi42NjM0IDk5LjUwMjksNDkuOTkwMSAyNy45OTc2LDMzLjMyNjcgNDEuOTk2NCw4Mi45OTg2IDQxLjk5NjQsMTQ5LjAxNiAwLDY3LjY0NzYgLTEzLjM2MjUsMTE3LjQ3OSAtNDAuMTY3LDE0OS42NTIgLTI2Ljg0NDMsMzIuMTczNCAtNTkuMzM1OSw0OC4zMTk3IC05Ny4zNTUzLDQ4LjMxOTcgLTM4LjQ5NjcsMCAtNzEuNjY0MywtMTYuNjYzNCAtOTkuNTAyOSwtNDkuOTkwMSAtMjcuOTk3NiwtMzMuMzI2NyAtNDEuOTk2NCwtODEuNDg3NCAtNDEuOTk2NCwtMTQ0LjY0MXoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJkIiBob3Jpei1hZHYteD0iNTU2IiBkPSJNNDAwLjk5NCAwbDAgNjUuODE4M2MtMzIuODA5NywtNTEuMTQzNCAtODEuMTY5MiwtNzYuODM0NCAtMTQ0Ljk5OSwtNzYuODM0NCAtNDEuMzIwMywwIC03OS4zMzk4LDExLjMzNDMgLTExMy44MiwzNC4yMDE2IC0zNC42Nzg5LDIyLjYyODggLTYxLjUyMzIsNTQuNDg0IC04MC42OTIsOTUuMTI4MyAtMTguOTcsNDAuODQzMSAtMjguNDc0OCw4Ny42OTE0IC0yOC40NzQ4LDE0MC43MDQgMCw1MS42NjA0IDguNjY5NzIsOTguNDY4OSAyNS44MTAzLDE0MC42NjQgMTcuMzM5NCw0MS45OTY0IDQzLjE4OTUsNzQuMzI4OSA3Ny42Njk1LDk2LjYzOTUgMzQuMzYwNywyMi41MDk0IDczLjAxNjUsMzMuNjg0NiAxMTUuNTMsMzMuNjg0NiAzMS4yOTg1LDAgNTkuMTM3LC02LjY4MTI1IDgzLjQ3NTgsLTE5Ljg0NDkgMjQuMzM4OCwtMTMuMTYzNyA0NC4xODM3LC0zMC41MDMxIDU5LjQ5NDksLTUxLjY2MDRsMCAyNTcuNTA2IDg4LjAwOTUgMCAwIC03MTYuMDA3IC04Mi4wMDQ0IDB6bS0yNzcuOTg4IDI1OC44MTljMCwtNjYuMzM1MyAxMy45OTg4LC0xMTUuODA4IDQyLjE1NTUsLTE0OC42NTggMjcuOTk3NiwtMzIuODA5NyA2MS4xNjUyLC00OS4xNTQ5IDk5LjM0MzgsLTQ5LjE1NDkgMzguNDk2NywwIDcxLjE0NzMsMTUuNjY5MSA5OC4xNTA3LDQ3LjAwNzQgMjYuODQ0MywzMS4zMzgyIDQwLjMyNjEsNzkuMTQxIDQwLjMyNjEsMTQzLjQ4OCAwLDcwLjY3MDEgLTEzLjY0MDksMTIyLjY0OSAtNDEuMTYxMywxNTUuODE2IC0yNy4zMjE1LDMzLjE2NzYgLTYxLjE2NTIsNDkuNjcxOSAtMTAxLjMzMiw0OS42NzE5IC0zOS4xNzI4LDAgLTcxLjgyMzQsLTE1LjgyODIgLTk4LjE1MDcsLTQ3LjY0MzcgLTI2LjE2ODIsLTMxLjg1NTIgLTM5LjMzMTksLTgyLjAwNDQgLTM5LjMzMTksLTE1MC41Mjd6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iZSIgaG9yaXotYWR2LXg9IjU1NiIgZD0iTTQyMC4wMDQgMTY3Ljk4Nmw5MC45OTIyIC0xMS45NzA2Yy0xNC4xNTc5LC01Mi44NTM0IC00MC42NDQzLC05NC4wMTQ3IC03OS4zMzk4LC0xMjMuMTY2IC0zOC42NTU4LC0yOS4xOTA3IC04OC4wMDk1LC00My44NjU2IC0xNDguMTQxLC00My44NjU2IC03NS42ODEsMCAtMTM1LjY5MywyMy4zNDQ2IC0xNzkuOTk2LDcwLjAzMzggLTQ0LjM0MjgsNDYuNDkwNCAtNjYuNTM0MSwxMTEuOTkgLTY2LjUzNDEsMTk2LjE0MiAwLDg3LjAxNTMgMjIuMzUwNCwxNTQuNjYzIDY3LjE3MDQsMjAyLjY2NSA0NC44NTk4LDQ4LjE2MDcgMTAzLjAwMyw3Mi4xODEzIDE3NC41MDgsNzIuMTgxMyA2OS4xNTg5LDAgMTI1LjY3MSwtMjMuNTAzNyAxNjkuNDk3LC03MC42NzAxIDQzLjgyNTgsLTQ3LjE2NjQgNjUuODU4LC0xMTMuNTAyIDY1Ljg1OCwtMTk5LjAwNiAwLC01LjE3MDAxIC0wLjE5ODg0NywtMTMuMDA0NiAtMC41MTcwMDEsLTIzLjM0NDZsLTM4Ni41MTggMGMzLjM0MDYyLC01Ni44MzA0IDE5LjM2NzcsLTEwMC40OTcgNDguMzU5NSwtMTMwLjY0MiAyOC44MzI4LC0zMC4xODQ5IDY0Ljk4MzEsLTQ1LjMzNyAxMDguMTczLC00NS4zMzcgMzIuMTMzNiwwIDU5LjY1NCw4LjUxMDY0IDgyLjMyMjUsMjUuNDkyMSAyMi44Mjc2LDE3LjAyMTMgNDAuODQzMSw0NC4xODM3IDU0LjE2NTgsODEuNDg3NHptLTI4OC4wMSAxNDEuMDIybDI4OS4wMDQgMGMtMy44MTc4Niw0My42NjY3IC0xNC45OTMsNzYuMzE3NCAtMzMuMTY3Niw5OC4xNTA3IC0yNy44Mzg1LDMzLjg0MzcgLTY0LjE0NzksNTAuODI1MiAtMTA4LjY1LDUwLjgyNTIgLTQwLjM2NTksMCAtNzQuMTY5OCwtMTMuNDgxOCAtMTAxLjY5LC00MC40ODUyIC0yNy4zMjE1LC0yNy4wMDM0IC00Mi40NzM3LC02My4xNTM3IC00NS40OTYxLC0xMDguNDkxeiIvPg0KICAgPGdseXBoIHVuaWNvZGU9ImkiIGhvcml6LWFkdi14PSIyMjIiIGQ9Ik02Ni4wMTcxIDYxNS45ODdsMCAxMDAuMDIgODcuOTY5OCAwIDAgLTEwMC4wMiAtODcuOTY5OCAwem0wIC02MTUuOTg3bDAgNTE4Ljk5IDg3Ljk2OTggMCAwIC01MTguOTkgLTg3Ljk2OTggMHoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJsIiBob3Jpei1hZHYteD0iMjIyIiBkPSJNNjMuOTg4OSAwbDAgNzE2LjAwNyA4OC4wMDk1IDAgMCAtNzE2LjAwNyAtODguMDA5NSAweiIvPg0KICAgPGdseXBoIHVuaWNvZGU9Im0iIGhvcml6LWFkdi14PSI4MzMiIGQ9Ik02Ni4wMTcxIDBsMCA1MTguOTkgNzguOTgxOSAwIDAgLTczLjMzNDdjMTYuMTg2MSwyNS4zMzMxIDM3LjgyMDYsNDUuODU0IDY0LjgyNCw2MS4xNjUyIDI3LjAwMzQsMTUuNTEgNTcuNjY1NSwyMy4xODU1IDkyLjE4NTMsMjMuMTg1NSAzOC4zMzc2LDAgNjkuODM1LC03Ljk5MzY0IDk0LjMzMjksLTIzLjgyMTggMjQuNDk3OSwtMTYuMDI3IDQxLjgzNzMsLTM4LjE3ODYgNTEuODE5NCwtNjYuODUyMyA0MS4zMjAzLDYwLjQ4OTIgOTQuODQ5OSw5MC42NzQxIDE2MC44MjcsOTAuNjc0MSA1MS42NjA0LDAgOTEuNTA5MiwtMTQuMTU3OSAxMTkuMTg5LC00Mi42NzI1IDI3LjgzODUsLTI4LjUxNDYgNDEuODM3MywtNzIuMzQwNCA0MS44MzczLC0xMzEuNTE3bDAgLTM1NS44MTYgLTg4LjAwOTUgMCAwIDMyNi42NjVjMCwzNC45OTcgLTMuMDIyNDcsNjAuMzMwMSAtOC42Njk3Miw3NS44NDAxIC01LjY4NzAyLDE1LjUxIC0xNS45ODczLDI3LjgzODUgLTMxLjE3OTIsMzcuMzQzNCAtMTQuOTkzLDkuNDY1MSAtMzIuNjUwNiwxNC4xNTc5IC01Mi44MTM3LDE0LjE1NzkgLTM2LjY2NzMsMCAtNjcuMDExMywtMTIuMTY5NCAtOTEuMTkxMSwtMzYuMzQ5MiAtMjQuMTQsLTI0LjMzODggLTM2LjE1MDMsLTYzLjE1MzcgLTM2LjE1MDMsLTExNi40ODRsMCAtMzAxLjE3MyAtODguMDA5NSAwIDAgMzM2Ljg0NmMwLDM4Ljk3NCAtNy4xNTg0OCw2OC4zMjM3IC0yMS40NzU0LDg3LjgxMDcgLTE0LjM1NjcsMTkuNTI2NyAtMzcuODYwNCwyOS4zNDk4IC03MC4zNTIsMjkuMzQ5OCAtMjQuNjU3LDAgLTQ3LjQ4NDYsLTYuNTIyMTcgLTY4LjQ4MjgsLTE5LjQ4NyAtMjAuOTk4MiwtMTMuMDA0NiAtMzYuMTkwMSwtMzIuMDE0MyAtNDUuNjk1LC01Ny4xODgzIC05LjMwNjAzLC0yNS4wMTQ5IC0xMy45OTg4LC02MS4xNjUyIC0xMy45OTg4LC0xMDguMzMybDAgLTI2OSAtODcuOTY5OCAweiIvPg0KICAgPGdseXBoIHVuaWNvZGU9Im4iIGhvcml6LWFkdi14PSI1NTYiIGQ9Ik02Ni4wMTcxIDBsMCA1MTguOTkgNzguOTgxOSAwIDAgLTczLjY1MjhjMzguMDE5NSw1Ni41MTIyIDkzLjAyMDUsODQuNjY4OSAxNjQuODQ0LDg0LjY2ODkgMzEuMzM4MiwwIDU5Ljk3MjIsLTUuNjg3MDIgODYuMTQwNCwtMTYuODIyNCAyNi4xNjgyLC0xMS4xNzUyIDQ1Ljg1NCwtMjYuMDA5MSA1OC44NTg2LC00NC4xODM3IDEzLjAwNDYsLTE4LjE3NDYgMjIuMTUxNSwtMzkuODQ4OSAyNy4zMjE1LC02NC44MjQgMy4xODE1NSwtMTYuMzQ1MiA0Ljg1MTg2LC00NC44NTk4IDQuODUxODYsLTg1LjUwNDFsMCAtMzE4LjY3MiAtODguMDA5NSAwIDAgMzE1LjMzMWMwLDM1LjgzMjIgLTMuMzQwNjIsNjIuNjc2NSAtMTAuMTgxLDgwLjMzNDEgLTYuODQwMzMsMTcuNjU3NiAtMTkuMDA5NywzMS44MTU1IC0zNi4zMDk0LDQyLjUxMzQgLTE3LjMzOTQsMTAuNDk5MSAtMzcuODYwNCwxNS44MjgyIC02MS4xNjUyLDE1LjgyODIgLTM3LjM0MzQsMCAtNjkuNTE2OCwtMTEuODUxMyAtOTYuNjc5MywtMzUuNjczMSAtMjcuMTYyNSwtMjMuNjYyOCAtNDAuNjg0LC02OC44NDA3IC00MC42ODQsLTEzNS4xNzZsMCAtMjgzLjE1OCAtODcuOTY5OCAweiIvPg0KICAgPGdseXBoIHVuaWNvZGU9Im8iIGhvcml6LWFkdi14PSI1NTYiIGQ9Ik0zMy4wMDg2IDI1OS40OTVjMCw5NS44NDQxIDI2LjY0NTUsMTY2LjgzMiA4MC4xNzUsMjEzLjAwNSA0NC41MDE5LDM4LjMzNzYgOTguOTg1OSw1Ny41MDY1IDE2My4xMzQsNTcuNTA2NSA3MS4xODcxLDAgMTI5LjUyOSwtMjMuMzQ0NiAxNzQuODY2LC02OS45OTQgNDUuMTM4MiwtNDYuNTMwMSA2Ny44MDY3LC0xMTAuOTk2IDY3LjgwNjcsLTE5My4xNiAwLC02Ni42OTMyIC05Ljk4MjEsLTExOS4wMyAtMjkuOTg2MSwtMTU3LjE2OCAtMjAuMDA0LC0zOC4xNzg2IC00OS4xNTQ5LC02Ny44NDY1IC04Ny40OTI1LC04OS4wMDM4IC0zOC4xNzg2LC0yMS4xOTcxIC04MC4wMTU5LC0zMS42OTYyIC0xMjUuMTk0LC0zMS42OTYyIC03Mi42NTg2LDAgLTEzMS4zMTgsMjMuMTg1NSAtMTc2LjEzOCw2OS42NzU5IC00NC44NTk4LDQ2LjQ5MDQgLTY3LjE3MDQsMTEzLjUwMiAtNjcuMTcwNCwyMDAuODM1em04OS45OTggLTAuMTU5MDc3YzAsLTY2LjMzNTMgMTQuNDc2LC0xMTYuMDA3IDQzLjUwNzcsLTE0OC44MTcgMjkuMTUwOSwtMzMuMDA4NiA2NS42NTkyLC00OS41MTI4IDEwOS44MDMsLTQ5LjUxMjggNDMuNjY2NywwIDgwLjAxNTksMTYuNTA0MyAxMDkuMTY3LDQ5LjY3MTkgMjkuMDMxNiwzMy4xNjc2IDQzLjUwNzcsODMuNjc0NyA0My41MDc3LDE1MS40ODEgMCw2My45ODg5IC0xNC42NzQ5LDExMi41MDcgLTQzLjgyNTgsMTQ1LjM1NyAtMjkuMTUwOSwzMi45Njg4IC02NS41MDAxLDQ5LjQ3MzEgLTEwOC44NDksNDkuNDczMSAtNDQuMTQ0LDAgLTgwLjY1MjIsLTE2LjMwNTQgLTEwOS44MDMsLTQ5LjE1NDkgLTI5LjAzMTYsLTMyLjg0OTUgLTQzLjUwNzcsLTgyLjMyMjUgLTQzLjUwNzcsLTE0OC40OTl6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0idCIgaG9yaXotYWR2LXg9IjI3NyIgZD0iTTI1Ni45ODkgNzguNTA0N2wxMi4wMTAzIC03Ny42Njk1Yy0yNC42NTcsLTUuMTcwMDEgLTQ2Ljg0ODMsLTcuODM0NTYgLTY2LjE3NjIsLTcuODM0NTYgLTMxLjgxNTUsMCAtNTYuNDcyNSw1LjAxMDk0IC03NC4xNjk4LDE1LjE1MjEgLTE3LjQ5ODUsMTAuMTgxIC0yOS44MjcsMjMuMzQ0NiAtMzYuOTg1NSwzOS44NDg5IC03LjE1ODQ4LDE2LjUwNDMgLTEwLjY1ODIsNTEuMTgzMSAtMTAuNjU4MiwxMDMuOTk3bDAgMjk4Ljk4NiAtNjUuMDIyOSAwIDAgNjguMDA1NiA2NS4wMjI5IDAgMCAxMjguMzM2IDg4LjAwOTUgNTIuODUzNCAwIC0xODEuMTg5IDg3Ljk2OTggMCAwIC02OC4wMDU2IC04Ny45Njk4IDAgMCAtMzAzLjk5N2MwLC0yNS4xNzQgMS40NzE0NywtNDEuMzIwMyA0LjY1MzAxLC00OC40Nzg4IDIuOTgyNywtNy4xNTg0OCA3Ljk5MzY0LC0xMi44NDU1IDE0Ljk5MywtMTcuMTgwNCA2Ljk5OTQsLTQuMTc1NzggMTYuOTgxNSwtNi4zMjMzMiAyOS45ODYxLC02LjMyMzMyIDkuNjYzOTUsMCAyMi41MDk0LDEuMTUzMzEgMzguMzM3NiwzLjQ5OTd6Ii8+DQogIDwvZm9udD4NCiAgPGZvbnQgaWQ9IkZvbnRJRDAiIGhvcml6LWFkdi14PSI3MDAiIGZvbnQtdmFyaWFudD0ibm9ybWFsIiBzdHlsZT0iZmlsbC1ydWxlOm5vbnplcm8iIGZvbnQtc3R5bGU9Im5vcm1hbCIgZm9udC13ZWlnaHQ9IjYwMCI+DQoJPGZvbnQtZmFjZSANCgkJZm9udC1mYW1pbHk9IkZMVVJPIFNlbWlib2xkIj4NCgkJPGZvbnQtZmFjZS1zcmM+DQoJCQk8Zm9udC1mYWNlLW5hbWUgbmFtZT0iRkxVUk8gU2VtaWJvbGQiLz4NCgkJPC9mb250LWZhY2Utc3JjPg0KCTwvZm9udC1mYWNlPg0KICAgPG1pc3NpbmctZ2x5cGg+PHBhdGggZD0iTTAgMHoiLz48L21pc3NpbmctZ2x5cGg+DQogICA8Z2x5cGggdW5pY29kZT0iJmFtcDsiIGhvcml6LWFkdi14PSI2MzUiIGQ9Ik0zNDMuOTk1IDQuMDAzOTJjMjguMDAzOCwxMC45OTYgNTAuOTk5OCwyNi45OTk5IDcwLjAwMzcsNDYuOTk1OWw0OC44Mzg0IC01Mi4wMDM3IDE0My45OTkgMCAtMTMxLjAwNyAxMzYuMDAzIDExLjAwNzggMjMuOTk5OWM0Ljk5NjA0LDEwLjAwMzkgOC45OTk5NiwxOS45OTYgMTIuOTkyMSwyOS45OTk5IDIuOTk5OTksMTAuOTk2IDUuOTk5OTgsMjIuMDAzOSA4LjAwNzg0LDM0LjAwMzggMS45OTYwNiwxMiAzLjk5MjExLDI2Ljk5OTkgNS45OTk5OCw0Mi45OTJsMS45OTYwNiAxOS4wMDM5IC0xMDcuMTYxIDAgLTEuMDAzOTMgLTE2LjAwMzljLTEuMDAzOTMsLTE2Ljk5NiAtNC4wMDM5MiwtMzQuOTk1OSAtOC45OTk5NiwtNTIuOTk1OWwtNzYuOTk1OCA4Mi45OTU3YzkuMzMwNjcsNS4wMDc4NSAxOC4zMzA2LDExLjAwNzggMjYuMzI2NywxNy4wMDc4IDE0Ljk5OTksOS45OTIwOSAyOC45OTU5LDIxLjk5MiA0MC45OTU5LDMzLjk5MiAxMiwxMy4wMDM5IDIwLjk5OTksMjguMDAzOCAyOC4wMDM4LDQ0LjAwNzcgNy45OTYwMywxNS45OTIxIDEwLjk5NiwzMi45OTk5IDEwLjk5Niw1MS45OTE5IDAsMjAuOTk5OSAtNC45OTYwNCw0MC4wMDM4IC0xMy45OTYsNTcuMDExNiAtMTAuMDAzOSwxNS45OTIxIC0yMi45OTYsMjkuOTk5OSAtMzguOTk5OCwzOS45OTIgLTE0Ljk5OTksMTEuMDA3OCAtMzQuMDAzOCwxOS4wMDM5IC01My45OTk4LDIzLjk5OTkgLTE5LjAwMzksNS4wMDc4NSAtNDAuMDAzOCw4LjAwNzg0IC01OS45OTk4LDguMDA3ODQgLTI1LjAwMzgsMCAtNDYuOTk1OSwtNC4wMDM5MiAtNjcuMDAzNywtMTEuMDA3OCAtMTguOTkyMSwtNS45OTk5OCAtMzUuOTk5OSwtMTUuOTkyMSAtNDguOTkxOSwtMjcuOTkyIC0xNC4wMDc4LC0xMiAtMjMuOTk5OSwtMjYuMDA3OCAtMzEuMDAzOCwtNDIuMDExNiAtNy4wMDM5MSwtMTQuOTk5OSAtMTAuOTk2LC0zMS45OTU5IC0xMC45OTYsLTQ4Ljk5MTkgMCwtMTQuOTk5OSAxLjk5NjA2LC0yOS45OTk5IDYuOTkyMSwtNDEuOTk5OCA0LjAwMzkyLC0xMiAxMC4wMDM5LC0yMy45OTk5IDE3LjAwNzgsLTM1LjAwNzcgNi45OTIxLC0xMC45OTYgMTQuOTk5OSwtMjAuOTk5OSAyMi45OTYsLTMxLjk5NTkgNC4wMDM5MiwtNC4wMDM5MiA3Ljk5NjAzLC04Ljk5OTk2IDEzLjAwMzksLTE0Ljk5OTkgLTE0LjAwNzgsLTUuOTk5OTggLTI2Ljk5OTksLTEzLjk5NiAtMzguOTk5OCwtMjAuOTk5OSAtMTkuMDAzOSwtMTAuOTk2IC0zNS4wMDc3LC0yMy45OTk5IC00OS4wMDM3LC0zNy45OTU5IC0xNC45OTk5LC0xNC4wMDc4IC0yNS45OTYsLTMxLjAwMzggLTM0Ljk5NTksLTQ5LjAwMzcgLTguOTk5OTYsLTE3Ljk5OTkgLTEzLjAwMzksLTQwLjAwMzggLTEzLjAwMzksLTYyLjk5OTggMCwtMTMuMDAzOSAxLjk5NjA2LC0yOC4wMDM4IDcuMDAzOTEsLTQ2Ljk5NTkgNC45OTYwNCwtMTkuMDAzOSAxNC45OTk5LC0zOC4wMDc3IDMwLjk5MiwtNTUuMDAzNyAxNC45OTk5LC0xNy45OTk5IDM3LjAwMzgsLTM0LjAwMzggNjUuMDA3NiwtNDYuMDAzOCAyNy45OTIsLTEyIDYzLjk5MTksLTE3Ljk5OTkgMTA4LC0xNy45OTk5IDM1Ljk5OTksMCA3MS45OTk3LDcuMDAzOTEgMTA1Ljk5MiwyMC4wMDc4em0tMzguOTk5OCA0NjYuOTk0YzguOTk5OTYsLTcuOTk2MDMgMTQuMDA3OCwtMTcuOTk5OSAxNC4wMDc4LC0yOC45OTU5IDAsLTguOTk5OTYgLTIuMDA3ODcsLTE3LjAwNzggLTUuOTk5OTgsLTIzLjk5OTkgLTUuMDA3ODUsLTguMDA3ODQgLTEwLjAwMzksLTE2LjAwMzkgLTE3LjAwNzgsLTIyLjAwMzkgLTYuOTkyMSwtNy4wMDM5MSAtMTQuOTk5OSwtMTMuMDAzOSAtMjMuOTk5OSwtMTkuMDAzOWwtMTMuOTk2IC03Ljk5NjAzIC0xMC4wMDM5IDEwLjk5NmMtNi45OTIxLDguMDA3ODQgLTEyLjk5MjEsMTQuOTk5OSAtMTcuOTk5OSwyMi4wMDM5IC00Ljk5NjA0LDcuMDAzOTEgLTkuOTkyMDksMTQuOTk5OSAtMTIuOTkyMSwyMi4wMDM5IC0yLjk5OTk5LDUuOTk5OTggLTQuMDAzOTIsMTIgLTQuMDAzOTIsMTcuOTk5OSAwLDE4Ljk5MjEgNy45OTYwMywyNi45OTk5IDE0Ljk5OTksMzAuOTkyIDEyLDcuMDAzOTEgMjMuOTk5OSwxMS4wMDc4IDM3Ljk5NTksMTEuMDA3OCAxNy4wMDc4LDAgMjkuOTk5OSwtNC4wMDM5MiAzOC45OTk4LC0xMy4wMDM5em0tNzguOTkxOCAtMjE3Ljk5NWwxMjMgLTEzMS4wMDdjLTEyLC0xMi45OTIxIC0yNi4wMDc4LC0yMy45OTk5IC00MS45OTk4LC0zMi45OTk5IC0xOS4wMDM5LC05Ljk5MjA5IC00MS4wMDc3LC0xNC45OTk5IC02NS45OTk3LC0xNC45OTk5IC0xMy4wMDM5LDAgLTI2LjAwNzgsMi4wMDc4NyAtMzguMDA3Nyw1Ljk5OTk4IC0xMiw0LjAwMzkyIC0yMi45OTYsOC45OTk5NiAtMzIuOTk5OSwxNi4wMDM5IC03Ljk5NjAzLDUuOTk5OTggLTE1Ljk5MjEsMTQuOTk5OSAtMjAuOTk5OSwyMy45OTk5IC00Ljk5NjA0LDguOTk5OTYgLTcuOTk2MDMsMTkuMDAzOSAtNy45OTYwMywyOS45OTk5IDAsMTMuOTk2IDEuOTk2MDYsMjUuOTk2IDcuMDAzOTEsMzUuOTk5OSA0Ljk5NjA0LDEwLjk5NiAxMiwxOS45OTYgMTkuOTk2LDI4LjAwMzggOC45OTk5Niw4Ljk5OTk2IDE5LjAwMzksMTYuOTk2IDMxLjAwMzgsMjMuOTk5OWwyNi45OTk5IDE0Ljk5OTl6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iKyIgaG9yaXotYWR2LXg9IjU2MyIgZD0iTTIzNC45OTYgMGw5NC4wMDI3IDAgMCAxNTguOTk2IDE4My4wMDYgMCAwIDgyLjAwODIgLTE4My4wMDYgMCAwIDE2MC4wMDQgLTk0LjAwMjcgMCAwIC0xNjAuMDA0IC0xODMuMDA2IDAgMCAtODIuMDA4MiAxODMuMDA2IDAgMCAtMTU4Ljk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJBIiBob3Jpei1hZHYteD0iNzAwIiBkPSJNNTM5LjAwNiAwbDEzMi45OTIgMCAtMjYzLjk5OSA1NjYuMDA2IC0xMTguMDAzIDAgLTI2Mi45OTUgLTU2Ni4wMDYgMTI2IDAgNzAuOTk1OCAxNjAuMDAzIDI0NS4wMDcgMCA3MC4wMDM3IC0xNjAuMDAzem0tMTExLjAxMSAyNTMuMDAzbC0xNjEuOTk5IDAgODIuMDAzNiAxODguOTk5IDc5Ljk5NTcgLTE4OC45OTl6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iQyIgaG9yaXotYWR2LXg9IjY2NyIgZD0iTTU0Mi42NjcgNDMuOTk1OWM1MC4xNjEyLDM4Ljk5OTggODEuMTY1LDk4Ljk5OTYgOTAuMTY1LDE3Mi4wMDNsMS45OTYwNiAxNy45OTk5IC0xMjIuMTYxIDAgLTEuMDAzOTMgLTE0Ljk5OTljLTEuOTk2MDYsLTIyLjAwMzkgLTcuOTk2MDMsLTQzLjk5NTkgLTE0Ljk5OTksLTU5Ljk5OTggLTcuOTk2MDMsLTE2Ljk5NiAtMTguOTkyMSwtMzEuMDAzOCAtMzIuOTk5OSwtNDMuMDAzOCAtMTMuOTk2LC0xMi45OTIxIC0zMS45OTU5LC0yMS45OTIgLTUwLjk5OTgsLTI4Ljk5NTkgLTE5Ljk5NiwtNy4wMDM5MSAtNDIuODI2NiwtMTAuOTk2IC02OC44MzQ0LC0xMC45OTYgLTM0Ljk5NTksMCAtNjUuOTk5Nyw1Ljk5OTk4IC05MC45OTE4LDE2Ljk5NiAtMjUuMDAzOCwxMC45OTYgLTQ2LjAwMzgsMjUuMDAzOCAtNjIuMDA3Niw0My4wMDM4IC0xNS45OTIxLDE4Ljk5MjEgLTI3LjgyNjcsNDAuOTk1OSAtMzQuODMwNiw2NC45OTU4IC03Ljk5NjAzLDI1Ljk5NiAtMTIsNTIuOTk1OSAtMTIsODIuMDAzNiAwLDI1Ljk5NiA0LjAwMzkyLDUxLjk5MTkgMTAuOTk2LDc1Ljk5MTggOC4wMDc4NCwyMy45OTk5IDE5Ljg0MjQsNDQuOTk5OCAzNS44MzQ1LDYyLjk5OTggMTYuMDAzOSwxOS4wMDM5IDM3LjAwMzgsMzIuOTk5OSA2Mi4wMDc2LDQ0LjAwNzcgMjMuOTk5OSwxMC45OTYgNTQuOTkxOSwxNS45OTIxIDg5Ljk5OTYsMTUuOTkyMWwxLjk5NjA2IDBjMCwwIDEuMDAzOTMsMS4wMDM5MyA0LjAwMzkyLDEuMDAzOTMgMzIuOTk5OSwwIDE0Mi44MywtMTAuOTk2IDE2OS44MywtMTQyLjk5NmwyLjk5OTk5IC0xMy4wMDM5IDEyMS4xNjkgMCAtMi45OTk5OSAxOS4wMDM5Yy0zNS45OTk5LDIyMy4wMDMgLTI2NS4wMDMsMjI5LjAwMyAtMjkwLjk5OSwyMjkuMDAzbC01LjAwNzg1IDBjLTUwLjk5OTgsMCAtOTcuOTk1NywtOC4wMDc4NCAtMTM3Ljk5OSwtMjMuMDA3OCAtMzkuODI2NiwtMTUuOTkyMSAtNzMuODMwNCwtMzYuOTkyIC0xMDAuODMsLTY0LjAwMzcgLTI2Ljk5OTksLTI2Ljk5OTkgLTQ3Ljk5OTgsLTU4Ljk5NTggLTYxLjk5NTgsLTk0Ljk5NTcgLTE0LjAwNzgsLTM1Ljk5OTkgLTIwLjk5OTksLTc0Ljk5OTcgLTIwLjk5OTksLTExNS4wMDMgMCwtNDAuOTk1OSA2Ljk5MjEsLTc4Ljk5MTggMTguOTkyMSwtMTE0IDEzLjAwMzksLTM1Ljk5OTkgMzIuOTk5OSwtNjcuOTk1OCA1OS4wMDc2LC05My45OTE4IDI2Ljk5OTksLTI2Ljk5OTkgNTkuOTk5OCwtNDcuOTk5OCA5OS44MjY0LC02Mi45OTk4IDM4Ljk5OTgsLTE0Ljk5OTkgODUuMDAzNiwtMjMuMDA3OCAxMzcuMDA3LC0yMy4wMDc4IDg1LjgzMDQsMCAxNTUuODM0LDIwLjAwNzggMjA1LjgzLDU5Ljk5OTh6Ii8+DQogICA8Z2x5cGggdW5pY29kZT0iSCIgaG9yaXotYWR2LXg9IjYzMiIgZD0iTTQ2MS45OTggMGwxMTkuMDA3IDAgMCA1NjYuMDA2IC0xMTkuMDA3IDAgMCAtMjI5LjAwMyAtMjkwLjk5OSAwIDAgMjI5LjAwMyAtMTE4Ljk5NiAwIDAgLTU2Ni4wMDYgMTE4Ljk5NiAwIDAgMjQ0LjAwMyAyOTAuOTk5IDAgMCAtMjQ0LjAwM3oiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJPIiBob3Jpei1hZHYteD0iNjc3IiBkPSJNNDc2Ljk5OCA3Ljk5NjAzYzM4Ljk5OTgsMTYuMDAzOSA3My4wMDM2LDM4Ljk5OTggOTguOTk5Niw2NS45OTk3IDI2Ljk5OTksMjguMDAzOCA0Ny4wMDc3LDU5Ljk5OTggNTkuOTk5OCw5NS4wMDc1IDEzLjAwMzksMzQuOTk1OSAyMC4wMDc4LDcxLjk5OTcgMjAuMDA3OCwxMDkuOTk2IDAsMzcuOTk1OSAtNy4wMDM5MSw3Ni4wMDM2IC0yMC4wMDc4LDExMSAtMTIuOTkyMSwzNC45OTU5IC0zMi45OTk5LDY3LjAwMzcgLTU5Ljk5OTgsOTQuOTk1NyAtMjUuOTk2LDI3LjAxMTcgLTU5Ljk5OTgsNDkuMDAzNyAtOTguOTk5Niw2Ni4wMTE2IC00MC4wMDM4LDE1Ljk5MjEgLTg1Ljk5NTcsMjMuOTk5OSAtMTM3Ljk5OSwyMy45OTk5IC01Mi4wMDM3LDAgLTk3Ljk5NTcsLTguMDA3ODQgLTEzNy45OTksLTIzLjk5OTkgLTM4Ljk5OTgsLTE3LjAwNzggLTczLjAwMzYsLTM4Ljk5OTggLTk4Ljk5OTYsLTY2LjAxMTYgLTI2Ljk5OTksLTI3Ljk5MiAtNDYuOTk1OSwtNTkuOTk5OCAtNTkuOTk5OCwtOTQuOTk1NyAtMTMuMDAzOSwtMzQuOTk1OSAtMTkuOTk2LC03My4wMDM2IC0xOS45OTYsLTExMSAwLC0zNy45OTU5IDYuOTkyMSwtNzQuOTk5NyAxOS45OTYsLTEwOS45OTYgMTMuMDAzOSwtMzUuMDA3NyAzMi45OTk5LC02Ny4wMDM3IDU5Ljk5OTgsLTk1LjAwNzUgMjUuOTk2LC0yNi45OTk5IDU5Ljk5OTgsLTQ5Ljk5NTkgOTguOTk5NiwtNjUuOTk5NyA0MC4wMDM4LC0xNS45OTIxIDg1Ljk5NTcsLTIzLjk5OTkgMTM3Ljk5OSwtMjMuOTk5OSA1Mi4wMDM3LDAgOTcuOTk1Nyw4LjAwNzg0IDEzNy45OTksMjMuOTk5OXptLTQ3Ljk5OTggNDU3LjAwMmMyNS4wMDM4LC0xMC45OTYgNDQuOTk5OCwtMjYuOTk5OSA2MS4wMDM3LC00Ni4wMDM4IDE2LjAwMzksLTE4Ljk5MjEgMjguMDAzOCwtNDAuOTk1OSAzNC45OTU5LC02NC45OTU4IDguMDA3ODQsLTIzLjk5OTkgMTIsLTQ5LjAwMzcgMTIsLTc0Ljk5OTcgMCwtMjUuMDAzOCAtMy45OTIxMSwtNDkuOTk1OSAtMTIsLTc0Ljk5OTcgLTYuOTkyMSwtMjMuOTk5OSAtMTguOTkyMSwtNDQuOTk5OCAtMzQuOTk1OSwtNjQuOTk1OCAtMTYuMDAzOSwtMTcuOTk5OSAtMzUuOTk5OSwtMzQuMDAzOCAtNjEuMDAzNywtNDQuOTk5OCAtMjUuMDAzOCwtMTIgLTU1LjAwMzcsLTE3Ljk5OTkgLTg5Ljk5OTYsLTE3Ljk5OTkgLTM0Ljk5NTksMCAtNjQuOTk1OCw1Ljk5OTk4IC04OS45OTk2LDE3Ljk5OTkgLTI1LjAwMzgsMTAuOTk2IC00NC45OTk4LDI2Ljk5OTkgLTYxLjAwMzcsNDQuOTk5OCAtMTUuOTkyMSwxOS45OTYgLTI3Ljk5Miw0MC45OTU5IC0zNC45OTU5LDY0Ljk5NTggLTcuOTk2MDMsMjUuMDAzOCAtMTIsNDkuOTk1OSAtMTIsNzQuOTk5NyAwLDI1Ljk5NiA0LjAwMzkyLDUwLjk5OTggMTIsNzQuOTk5NyA3LjAwMzkxLDIzLjk5OTkgMTkuMDAzOSw0Ni4wMDM4IDM0Ljk5NTksNjQuOTk1OCAxNi4wMDM5LDE5LjAwMzkgMzUuOTk5OSwzNS4wMDc3IDYxLjAwMzcsNDYuMDAzOCAyNS4wMDM4LDEyIDU1LjAwMzcsMTYuOTk2IDg5Ljk5OTYsMTYuOTk2IDM0Ljk5NTksMCA2NC45OTU4LC00Ljk5NjA0IDg5Ljk5OTYsLTE2Ljk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJRIiBob3Jpei1hZHYteD0iNjgyIiBkPSJNNDg1Ljk5OCAxNi4wMDM5bDkyLjk5OTYgLTcxLjk5OTcgNzQuOTk5NyA4MC45OTk3IC03Ni45OTU4IDU3Ljk5MTljMTkuOTk2LDIyLjAwMzkgMzIuOTk5OSw0MS4wMDc3IDQ2Ljk5NTksNzQuMDA3NiAxNi4wMDM5LDM4Ljk5OTggMjMuOTk5OSw3OS45OTU3IDIzLjk5OTksMTIzIDAsMzcuOTk1OSAtNS45OTk5OCw3NC45OTk3IC0xOC45OTIxLDEwOS45OTYgLTEzLjAwMzksMzQuOTk1OSAtMzIuOTk5OSw2Ny4wMDM3IC01OS4wMDc2LDk0Ljk5NTcgLTI2Ljk5OTksMjcuMDExNyAtNTkuOTk5OCw0OS4wMDM3IC05OC45OTk2LDY2LjAxMTYgLTM4Ljk5OTgsMTUuOTkyMSAtODUuMDAzNiwyMy45OTk5IC0xMzYuMDAzLDIzLjk5OTkgLTUwLjk5OTgsMCAtOTYuOTkxNywtOC4wMDc4NCAtMTM1Ljk5MiwtMjMuOTk5OSAtMzguOTk5OCwtMTcuMDA3OCAtNzEuOTk5NywtMzguOTk5OCAtOTguMDA3NSwtNjYuMDExNiAtMjYuOTk5OSwtMjcuOTkyIC00NS45OTE5LC01OS45OTk4IC01OC45OTU4LC05NC45OTU3IC0xMy4wMDM5LC0zNC45OTU5IC0xOS45OTYsLTcxLjk5OTcgLTE5Ljk5NiwtMTA5Ljk5NiAwLC0zOC4wMDc3IDYuOTkyMSwtNzQuOTk5NyAxOS45OTYsLTExMSAxMy4wMDM5LC0zNS4wMDc3IDMyLjk5OTksLTY3LjAwMzcgNTguOTk1OCwtOTQuMDAzNiAyNi4wMDc4LC0yOC4wMDM4IDU5LjAwNzYsLTQ5Ljk5NTkgOTguMDA3NSwtNjUuOTk5NyAzOC45OTk4LC0xNi4wMDM5IDg0Ljk5MTgsLTIzLjk5OTkgMTM1Ljk5MiwtMjMuOTk5OSA1My4wMDc3LDAgMTA3LjAwNywxMC45OTYgMTUxLjAwMywzMS4wMDM4em0tNjEuOTk1OCA0NDkuOTk4YzI0Ljk5MiwtMTIgNDQuOTk5OCwtMjYuOTk5OSA1OS45OTk4LC00Ni4wMDM4IDE2LjAwMzksLTE5LjAwMzkgMjguMDAzOCwtNDAuOTk1OSAzNC45OTU5LC02NC45OTU4IDguMDA3ODQsLTIzLjk5OTkgMTIsLTUwLjAwNzcgMTIsLTc0Ljk5OTcgMCwtMzEuMDAzOCAtNS45OTk5OCwtNjEuMDAzNyAtMTUuOTkyMSwtODkuMDA3NSAtOC4wMDc4NCwtMjAuOTk5OSAtMTMuMDAzOSwtMjYuOTk5OSAtMjMuMDA3OCwtNDAuOTk1OWwtNzQuOTk5NyA1OC4wMDM3IC03OS4wMDM2IC03Ni4wMDM2IDU5Ljk5OTggLTQ2Ljk5NTljLTE5Ljk5NiwtNS4wMDc4NSAtMzkuOTkyLC04LjAwNzg0IC02MS45OTU4LC04LjAwNzg0IC0zNC45OTU5LDAgLTY0LjAwMzcsNS45OTk5OCAtODguOTk1NywxNy4wMDc4IC0yMy45OTk5LDEyIC00NC4wMDc3LDI2Ljk5OTkgLTU5Ljk5OTgsNDUuOTkxOSAtMTYuMDAzOSwxOS4wMDM5IC0yNi45OTk5LDQxLjAwNzcgLTM1LjAwNzcsNjUuMDA3NiAtNi45OTIxLDI0Ljk5MiAtMTAuOTk2LDQ5Ljk5NTkgLTEwLjk5Niw3NC45OTk3IDAsMjQuOTkyIDQuMDAzOTIsNTAuOTk5OCAxMC45OTYsNzQuOTk5NyA4LjAwNzg0LDIzLjk5OTkgMTkuMDAzOSw0NS45OTE5IDM1LjAwNzcsNjQuOTk1OCAxNS45OTIxLDE5LjAwMzkgMzUuOTk5OSwzNC4wMDM4IDU5Ljk5OTgsNDYuMDAzOCAyNC45OTIsMTAuOTk2IDUzLjk5OTgsMTYuOTk2IDg4Ljk5NTcsMTYuOTk2IDM0LjAwMzgsMCA2NC4wMDM3LC01Ljk5OTk4IDg4LjAwMzYsLTE2Ljk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJSIiBob3Jpei1hZHYteD0iNTk2IiBkPSJNNDMzLjAwMiAwbDExNS4wMDMgMCAwIDEyNC45OTZjMCwxMy4wMDM5IC0xLjAwMzkzLDI2Ljk5OTkgLTIuMDA3ODcsNDAuMDAzOGwwIDEuMDAzOTNjLTEuOTk2MDYsMTIuOTkyMSAtNC45OTYwNCwyNS45OTYgLTcuOTk2MDMsMzguOTk5OCAtNC4wMDM5MiwxMi45OTIxIC04Ljk5OTk2LDI1Ljk5NiAtMTYuOTk2LDM2Ljk5MiAtOC4wMDc4NCwxMiAtMTcuOTk5OSwyMi4wMDM5IC0zMS4wMDM4LDI5Ljk5OTkgLTIuMDA3ODcsMS4wMDM5MyAtNC4wMDM5MiwyLjAwNzg3IC01LjAwNzg1LDIuOTk5OTkgMjAuMDA3OCwxMC4wMDM5IDM2LjAxMTcsMjMuOTk5OSA0Ny4wMDc3LDQxLjAwNzcgMTkuMDAzOSwyNi45OTk5IDI4LjAwMzgsNTcuOTkxOSAyOC4wMDM4LDkzLjk5MTggMCw0Ny45OTk4IC0xNy45OTk5LDg2Ljk5OTcgLTU1LjAwMzcsMTE1LjAwMyAtMzUuOTk5OSwyNi45OTk5IC04Ni4wMDc1LDQxLjAwNzcgLTE0OC4wMDMsNDEuMDA3N2wtMzA0Ljk5NSAwIDAgLTU2Ni4wMDYgMTE3IDAgMCAyMjcuOTk5IDE3OS45OTkgMGMxNi45OTYsMCAzMC45OTIsLTIuOTk5OTkgMzkuOTkyLC03LjAwMzkxIDEwLjAwMzksLTMuOTkyMTEgMTcuMDA3OCwtOC45OTk5NiAyMy4wMDc4LC0xNS45OTIxIDAsMCAyMC45OTk5LC0yMy45OTk5IDIwLjk5OTksLTU2Ljk5OThsMCAtMTQ4LjAwM3ptLTExMy4wMDcgMzE5Ljk5NWwtMTUwLjk5MiAwIDAgMTUyLjk5OSAxODMuOTkxIDBjMzIuMDA3NywwIDU2LjAwNzcsLTYuOTkyMSA2OC45OTk3LC0xOS45OTYgMTQuMDA3OCwtMTMuOTk2IDIwLjk5OTksLTMxLjk5NTkgMjAuOTk5OSwtNTMuOTk5OCAwLC0xNi45OTYgLTIuOTk5OTksLTI5Ljk5OTkgLTguOTk5OTYsLTM4Ljk5OTggLTUuOTk5OTgsLTEwLjAwMzkgLTEzLjk5NiwtMTcuOTk5OSAtMjQuOTkyLC0yMy45OTk5IC0xMC4wMDM5LC01Ljk5OTk4IC0yMy4wMDc4LC0xMC4wMDM5IC0zOC4wMDc3LC0xMiAtMTUuOTkyMSwtMS45OTYwNiAtMzIuOTk5OSwtNC4wMDM5MiAtNTAuOTk5OCwtNC4wMDM5MnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJTIiBob3Jpei1hZHYteD0iNTg3IiBkPSJNMzg4LjAwMiAtNy4wMDM5MWMzMC45OTIsNS45OTk5OCA1OC45OTU4LDE2LjAwMzkgODIuOTk1NywyOS45OTk5IDI1Ljk5NiwxNC4wMDc4IDQ3LjAwNzcsMzIuMDA3NyA2Mi45OTk4LDUzLjk5OTggMTYuMDAzOSwyMy4wMDc4IDI1LjAwMzgsNTAuOTk5OCAyNS4wMDM4LDgyLjAwMzYgMCwyOC45OTU5IC03LjAwMzkxLDUzLjk5OTggLTE5Ljk5Niw3My45OTU4IC0xMiwyMC4wMDc4IC0yOS4wMDc4LDM1Ljk5OTkgLTUwLjAwNzcsNDkuMDAzNyAtMTkuOTk2LDEyIC00My4wMDM4LDIyLjAwMzkgLTY3Ljk5NTgsMjguOTk1OSAtMjMuOTk5OSw3LjAwMzkxIC00OS4wMDM3LDEzLjAwMzkgLTc0LjAwNzYsMTcuOTk5OSAtMjQuOTkyLDUuMDA3ODUgLTQ4Ljk5MTksMTAuMDAzOSAtNzIuOTkxOCwxNC4wMDc4IC0yMi4wMDM5LDMuOTkyMTEgLTQzLjAwMzgsOC45OTk5NiAtNTkuOTk5OCwxNC45OTk5IC0xNy4wMDc4LDUuOTk5OTggLTI5Ljk5OTksMTIuOTkyMSAtMzguOTk5OCwyMS45OTIgLTguMDA3ODQsNy4wMDM5MSAtMTIsMTYuMDAzOSAtMTIsMjguMDAzOCAwLDEzLjk5NiAyLjk5OTk5LDI1Ljk5NiA4Ljk5OTk2LDM0Ljk5NTkgNi45OTIxLDguOTk5OTYgMTQuOTk5OSwxNy4wMDc4IDI0Ljk5MiwyMi4wMDM5IDExLjAwNzgsNS45OTk5OCAyNS4wMDM4LDEwLjk5NiAzOC45OTk4LDEzLjAwMzkgMTYuMDAzOSwyLjk5OTk5IDMyLjAwNzcsMy45OTIxMSA0Ny45OTk4LDMuOTkyMTEgMzguOTk5OCwwIDcwLjE2OSwtNi45OTIxIDk1LjE3MjksLTIxLjk5MiAyMi45OTYsLTE0Ljk5OTkgMzUuOTk5OSwtMzguMDA3NyA0MC4wMDM4LC03MS4wMDc2bDEuOTk2MDYgLTE0Ljk5OTkgMTEzLjE2MSAwIC0wLjk5MjEyMiAxNy4wMDc4Yy0xLjAwMzkzLDMxLjk5NTkgLTguMDA3ODQsNTguOTk1OCAtMjIuMDAzOSw4MS45OTE4IC0xMy4wMDM5LDIzLjk5OTkgLTMxLjAwMzgsNDMuMDAzOCAtNTMuMTYxMiw1OS4wMDc2IC0yMy4wMDc4LDE0Ljk5OTkgLTQ5LjAwMzcsMjUuOTk2IC03Ny45OTk3LDMyLjk5OTkgLTI4LjAwMzgsNy4wMDM5MSAtNjAuMTc2OSwxMC4wMDM5IC05My4xNzY4LDEwLjAwMzkgLTI4Ljk5NTksMCAtNTguOTk1OCwtMi45OTk5OSAtODYuOTk5NywtOC45OTk5NiAtMjguOTk1OSwtNy4wMDM5MSAtNTQuOTkxOSwtMTcuMDA3OCAtNzYuOTk1OCwtMzEuMDAzOCAtMjIuOTk2LC0xMy45OTYgLTQxLjk5OTgsLTMxLjk5NTkgLTU1Ljk5NTgsLTUzLjk5OTggLTE0Ljk5OTksLTIyLjAwMzkgLTIyLjAwMzksLTQ5LjAwMzcgLTIyLjAwMzksLTc3Ljk5OTcgMCwtMjguMDAzOCA3LjAwMzkxLC01MC45OTk4IDE5Ljk5NiwtNzAuMDAzNyAxMy4wMDM5LC0xOS4wMDM5IDI5Ljk5OTksLTM0LjAwMzggNTAuOTk5OCwtNDQuOTk5OCAyMC4wMDc4LC0xMC45OTYgNDMuMDAzOCwtMTkuOTk2IDY4LjAwNzYsLTI1Ljk5NiAyMy45OTk5LC03LjAwMzkxIDQ3Ljk5OTgsLTEyIDcyLjk5MTgsLTE3LjAwNzggMjUuMDAzOCwtNC45OTYwNCA0OS4wMDM3LC05Ljk5MjA5IDcxLjk5OTcsLTEzLjk5NiAyMy4wMDc4LC00LjAwMzkyIDQzLjAwMzgsLTEwLjAwMzkgNjEuMDAzNywtMTYuOTk2IDE2LjAwMzksLTUuOTk5OTggMjguOTk1OSwtMTQuMDA3OCAzNy45OTU5LC0yMy4wMDc4IDguMDA3ODQsLTguOTk5OTYgMTIsLTE5Ljk5NiAxMiwtMzMuOTkyIDAsLTE2LjAwMzkgLTIuOTk5OTksLTI5LjAwNzggLTkuOTkyMDksLTM4Ljk5OTggLTguMDA3ODQsLTEwLjAwMzkgLTE3Ljk5OTksLTE3Ljk5OTkgLTI5Ljk5OTksLTIzLjk5OTkgLTEzLjAwMzksLTUuOTk5OTggLTI5LjAwNzgsLTExLjAwNzggLTQ0Ljk5OTgsLTEzLjAwMzkgLTE3Ljk5OTksLTIuOTk5OTkgLTM1Ljk5OTksLTQuOTk2MDQgLTUzLjAwNzcsLTQuOTk2MDQgLTIxLjk5MiwwIC00Mi45OTIsMi45OTk5OSAtNjIuOTk5OCw2Ljk5MjEgLTE5Ljk5Niw1LjAwNzg1IC0zNi45OTIsMTIgLTUxLjk5MTksMjAuOTk5OSAtMTQuMDA3OCw4Ljk5OTk2IC0yNS4wMDM4LDIwLjk5OTkgLTM0LjAwMzgsMzUuMDA3NyAtNy45OTYwMywxMi45OTIxIC0xMy4wMDM5LDIzLjk5OTkgLTEzLjAwMzksNDMuOTk1OWwwIDE2LjAwMzkgLTExNCAwIDAgLTE2LjAwMzljMCwtMzIuOTk5OSA3LjAwMzkxLC01OC45OTU4IDIyLjAwMzksLTg2Ljk5OTcgMTQuOTk5OSwtMjUuMDAzOCAzNS45OTk5LC00Ni45OTU5IDYxLjAwMzcsLTY0LjAwMzcgMjQuOTkyLC0xNS45OTIxIDU0Ljk5MTksLTI3Ljk5MiA4Ny45OTE4LC0zNS45OTk5IDMyLjAwNzcsLTcuOTk2MDMgNjUuOTk5NywtMTIgMTAyLC0xMiAyOS45OTk5LDAgNTkuOTk5OCwyLjk5OTk5IDg5LjAwNzUsOC45OTk5NnoiLz4NCiAgIDxnbHlwaCB1bmljb2RlPSJUIiBob3Jpei1hZHYteD0iNTk5IiBkPSJNMjQxLjAwMyAwbDExNy45OTIgMCAwIDQ3Mi45OTQgMjA2LjAwNyAwIDAgOTMuMDExNCAtNTMwLjAwNiAwIDAgLTkzLjAxMTQgMjA2LjAwNyAwIDAgLTQ3Mi45OTR6Ii8+DQogIDwvZm9udD4NCiAgPHN0eWxlIHR5cGU9InRleHQvY3NzIj4NCiAgIDwhW0NEQVRBWw0KICAgIEBmb250LWZhY2UgeyBmb250LWZhbWlseToiQXJpYWwiO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC1zdHlsZTpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO3NyYzp1cmwoIiNGb250SUQxIikgZm9ybWF0KHN2Zyl9DQogICAgQGZvbnQtZmFjZSB7IGZvbnQtZmFtaWx5OiJGTFVSTyBTZW1pYm9sZCI7Zm9udC12YXJpYW50Om5vcm1hbDtmb250LXN0eWxlOm5vcm1hbDtmb250LXdlaWdodDo2MDA7c3JjOnVybCgiI0ZvbnRJRDAiKSBmb3JtYXQoc3ZnKX0NCiAgICAuZmlsMSB7ZmlsbDojMzczNDM1fQ0KICAgIC5maWwwIHtmaWxsOiMzNzM0MzV9DQogICAgLmZudDIge2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXNpemU6MjUxLjQ1cHg7Zm9udC1mYW1pbHk6J0FyaWFsJ30NCiAgICAuZm50MSB7Zm9udC13ZWlnaHQ6NjAwO2ZvbnQtc2l6ZTo0NzYuMDVweDtmb250LWZhbWlseTonRkxVUk8gU2VtaWJvbGQnfQ0KICAgIC5mbnQwIHtmb250LXdlaWdodDo2MDA7Zm9udC1zaXplOjg0Ni42N3B4O2ZvbnQtZmFtaWx5OidGTFVSTyBTZW1pYm9sZCd9DQogICBdXT4NCiAgPC9zdHlsZT4NCiA8L2RlZnM+DQogPGcgaWQ9IkNhbWFkYV94MDAyMF8xIj4NCiAgPG1ldGFkYXRhIGlkPSJDb3JlbENvcnBJRF8wQ29yZWwtTGF5ZXIiLz4NCiAgPHRleHQgeD0iNzQuMjMiIHk9IjU4Ny4zNiIgIGNsYXNzPSJmaWwwIGZudDAiPkNIQU9TPC90ZXh0Pg0KICA8dGV4dCB4PSIyNzUzLjA5IiB5PSIxNDg3LjQyIiAgY2xhc3M9ImZpbDAgZm50MCI+QVJRICZhbXA7IEFSVDwvdGV4dD4NCiAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC44NTIwMjIgMC41MjM1MDcgLTAuNTIzNTA3IDAuODUyMDIyIDgzLjM3MTcgLTE3MzUuODkpIj4NCiAgIDx0ZXh0IHg9IjM1MzYuNjMiIHk9IjgxNy4xNSIgIGNsYXNzPSJmaWwwIGZudDEiPis8L3RleHQ+DQogIDwvZz4NCiAgPHRleHQgeD0iLTIyOTEuNTYiIHk9IjMxODAuNiIgIGNsYXNzPSJmaWwxIGZudDIiPkZMVVJPIFNlbWlib2xkPC90ZXh0Pg0KICA8dGV4dCB4PSItMjI5MS41NiIgeT0iMjYwNC4wMSIgIGNsYXNzPSJmaWwxIGZudDIiPkZvbnQ6PC90ZXh0Pg0KIDwvZz4NCjwvc3ZnPg0K'; // SVG minimalista correto para PDF/standalone
+const LOGO_B64 = LOGO_MINIMALIST;
 let HALL_STOPMOTION_ANIM = '';
 const HALL_STOPMOTION_FRAMES = [];
 const HALL_STOPMOTION_INTERVAL_MS = 250; // 4 FPS no APNG embutido (250 ms por frame)
@@ -2767,7 +2580,7 @@ function guardTool(tool){
 
 
 function applyRoleUI(){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','planurb','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -2880,7 +2693,7 @@ async function initPresence(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','planurb-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -2890,7 +2703,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','planurb','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -3003,15 +2816,6 @@ function showSheetGen(){
   setTool('sheetgen');
   if(!window._sgInit){ window._sgInit=true; sgInit(); }
   sgRender();
-}
-
-function showPlanurb(){
-  if(guardTool('planurb')) return;
-  hideViews();
-  $('planurb-view').style.display='block';
-  setTool('planurb');
-  planurbSyncImports();
-  if(!planurbReady) planurbInit(); else planurbRenderAll();
 }
 
 // ── GERADOR DE PRANCHAS CAD ─────────────────────
@@ -3540,292 +3344,6 @@ function ctExportPNG(){
   a.download='calculo-tecnico-volume-3d-chaos.png';
   document.body.appendChild(a);a.click();a.remove();
   ctSetStatus('PNG do volume 3D gerado.','ok');
-}
-
-
-// ── PLANURB / TCC STUDIO ─────────────────────────
-const PLANURB_TOOLS=[
-  {
-    id:'terreno',num:'1',title:'Modelagem de Terrenos',icon:'▥',short:'Topografia + entorno',
-    desc:'Transforma levantamento, curvas de nível, lote e contexto imediato em uma base limpa para iniciar implantação, cortes e volumetria.',
-    outputs:[
-      {id:'modelagem-terreno',name:'Modelagem de terreno'},
-      {id:'entorno-imediato',name:'Entorno urbano modelado'},
-      {id:'declividades',name:'Mapa de cotas / declividades'},
-      {id:'base-projeto',name:'Base pronta para inserir o projeto'}
-    ],
-    checklist:['Curvas de nível ou pontos cotados','Limites do lote e testadas','Acessos, calçadas e esquinas','Norte, escala e cotas principais'],
-    prompt:'Base técnica para modelagem do terreno com leitura de topografia, entorno e condicionantes de implantação.'
-  },
-  {
-    id:'area',num:'2',title:'Diagramas da Área',icon:'◎',short:'Diagnóstico urbano',
-    desc:'Organiza mapas de leitura do lugar para justificar o partido: uso do solo, gabaritos, sistema viário, bioclima, hipsometria e áreas verdes.',
-    outputs:[
-      {id:'uso-solo',name:'Uso do solo'},
-      {id:'gabaritos',name:'Gabaritos'},
-      {id:'sistema-viario',name:'Sistema viário'},
-      {id:'bioclimatico',name:'Bioclimático'},
-      {id:'hipsometrico',name:'Hipsométrico'},
-      {id:'areas-verdes',name:'Áreas verdes'}
-    ],
-    checklist:['Raio de análise definido','Legenda cromática consistente','Fonte dos dados anotada','Escala gráfica e norte'],
-    prompt:'Conjunto de diagramas urbanos para explicar contexto, conflitos, potenciais e diretrizes do terreno.'
-  },
-  {
-    id:'projeto',num:'3',title:'Diagramas de Projeto',icon:'⇄',short:'Partido + fluxos',
-    desc:'Converte a ideia arquitetônica em diagramas rápidos para mostrar setorização, circulação, estrutura e evolução volumétrica.',
-    outputs:[
-      {id:'setorizacao',name:'Setorização'},
-      {id:'fluxos',name:'Fluxos'},
-      {id:'estrutura',name:'Estrutura'},
-      {id:'evolucao-forma',name:'Evolução da forma'},
-      {id:'cheio-vazio',name:'Relação cheio-vazio'},
-      {id:'implantacao',name:'Estratégias de implantação'}
-    ],
-    checklist:['Programa agrupado por setores','Fluxos principais separados','Acessos e permanências marcados','Forma explicada em etapas'],
-    prompt:'Diagramas de partido arquitetônico para comunicar decisões de projeto de forma sintética e visual.'
-  },
-  {
-    id:'pranchas',num:'4',title:'Diagramação de Pranchas',icon:'▦',short:'Apresentação organizada',
-    desc:'Monta uma estrutura de apresentação com hierarquia visual, grid, sequência de leitura e espaço para plantas, cortes, diagramas e imagens.',
-    outputs:[
-      {id:'pranchas-finais',name:'Pranchas finais'},
-      {id:'grid-prancha',name:'Grid de prancha A1/A2'},
-      {id:'hierarquia-grafica',name:'Hierarquia de títulos e legendas'},
-      {id:'sequencia-leitura',name:'Sequência de leitura'},
-      {id:'check-exportacao',name:'Checklist de impressão/exportação'}
-    ],
-    checklist:['Formato e margens definidos','Títulos com escala e norte','Peso de linha padronizado','Contraste suficiente para banca'],
-    prompt:'Sistema gráfico de pranchas com leitura clara, ritmo visual e organização para apresentação acadêmica ou cliente.'
-  },
-  {
-    id:'colagens',num:'5',title:'Colagens',icon:'◧',short:'Ambiência sem render pesado',
-    desc:'Cria cenas e atmosfera do projeto usando colagem, pessoas, vegetação, materiais e paleta para comunicar ambiência rapidamente.',
-    outputs:[
-      {id:'colagens',name:'Colagens'},
-      {id:'colagem-fachada',name:'Colagem de fachada/implantação'},
-      {id:'colagem-interna',name:'Colagem interna ou externa'},
-      {id:'paleta-materiais',name:'Paleta de materiais'},
-      {id:'banco-personagens',name:'Banco de personagens e vegetação'}
-    ],
-    checklist:['Imagem-base ou vista escolhida','Paleta cromática definida','Escala humana inserida','Texturas coerentes com conceito'],
-    prompt:'Colagens conceituais para transmitir atmosfera, escala humana e identidade do projeto sem necessidade de renderização realista.'
-  },
-  {
-    id:'caderno',num:'6',title:'Diagramação de Caderno',icon:'▤',short:'Memorial + identidade',
-    desc:'Transforma pesquisa, diagnóstico, conceito, peças gráficas e memorial em um caderno com identidade visual consistente.',
-    outputs:[
-      {id:'caderno-memorial',name:'Caderno / Memorial'},
-      {id:'sumario-caderno',name:'Sumário do caderno'},
-      {id:'grid-paginas',name:'Grid de páginas'},
-      {id:'capa-separadores',name:'Capa e separadores'},
-      {id:'pdf-final',name:'PDF final para banca/cliente'}
-    ],
-    checklist:['Ordem narrativa definida','Estilos de título e texto','Imagens com legenda/fonte','PDF revisado e leve para envio'],
-    prompt:'Caderno final com narrativa visual, memorial e organização profissional para apresentar o processo completo do projeto.'
-  }
-];
-const PLANURB_IMPORTS=[
-  {id:'cep',name:'CEP / endereço do terreno',icon:'⌖',status:'importado'},
-  {id:'coords',name:'Coordenadas geográficas',icon:'◎',status:'importado'},
-  {id:'mapa-base',name:'Mapa base (Google/ArcGIS)',icon:'▤',status:'importado'},
-  {id:'simgeo',name:'Dados SIMGEO / Planurb',icon:'▦',status:'importado'},
-  {id:'entorno',name:'Entorno urbano',icon:'▥',status:'importado'},
-  {id:'zoneamento',name:'Zoneamento / LabEEE',icon:'☀',status:'importado'},
-  {id:'topografia',name:'Topografia',icon:'≋',status:'pendente'},
-  {id:'curvas',name:'Curvas de nível',icon:'≋',status:'pendente'},
-  {id:'referencias',name:'Referências visuais',icon:'□',status:'pendente'},
-  {id:'arquivos',name:'Arquivos PDF / DWG / JPG',icon:'▣',status:'pendente'},
-  {id:'fotos',name:'Levantamento fotográfico',icon:'◉',status:'pendente'},
-  {id:'relatorio-terreno',name:'Relatório do terreno',icon:'☷',status:'pendente'}
-];
-const PLANURB_PRESETS={
-  tcc:['modelagem-terreno','uso-solo','gabaritos','sistema-viario','bioclimatico','hipsometrico','areas-verdes','setorizacao','fluxos','estrutura','evolucao-forma','pranchas-finais','colagens','caderno-memorial','pdf-final'],
-  cliente:['modelagem-terreno','setorizacao','fluxos','implantacao','pranchas-finais','colagens','paleta-materiais','pdf-final'],
-  concurso:['uso-solo','gabaritos','sistema-viario','bioclimatico','areas-verdes','setorizacao','fluxos','evolucao-forma','pranchas-finais','colagens','caderno-memorial','pdf-final']
-};
-let planurbActive='terreno';
-let planurbLastBrief='';
-let planurbReady=false;
-let planurbPreset='tcc';
-let planurbSelected=new Set(PLANURB_PRESETS.tcc);
-let planurbImports={};
-function planurbAllDeliverables(){
-  return PLANURB_TOOLS.flatMap(tool=>tool.outputs.map((o,idx)=>({...o,tool:tool.id,toolNum:tool.num,toolTitle:tool.title,toolPrompt:tool.prompt,order:Number(tool.num)*100+idx})));
-}
-function planurbDeliveryById(id){ return planurbAllDeliverables().find(d=>d.id===id); }
-function planurbTool(){ return PLANURB_TOOLS.find(t=>t.id===planurbActive)||PLANURB_TOOLS[0]; }
-function planurbInit(){
-  if(!Object.keys(planurbImports).length){ PLANURB_IMPORTS.forEach(i=>planurbImports[i.id]=i.status); }
-  planurbSyncImports();
-  planurbReady=true;
-  planurbRenderAll();
-}
-function planurbRenderAll(){
-  planurbRenderTools();
-  planurbRenderDetail();
-  planurbRenderDeliverables();
-  planurbRenderImports();
-  planurbBuildPackage(false);
-}
-function planurbSyncImports(){
-  try{
-    const cep=($('sg-cep')?.value||$('le-cep')?.value||$('mt-cep')?.value||'').replace(/\D/g,'');
-    if(cep.length===8) planurbImports.cep='importado';
-    const lat=parseFloat($('sg-lat')?.value||$('le-lat')?.value||'');
-    const lng=parseFloat($('sg-lng')?.value||$('le-lng')?.value||'');
-    if(Number.isFinite(lat) && Number.isFinite(lng)) planurbImports.coords='importado';
-    if(typeof simgeoLastResult!=='undefined' && simgeoLastResult) planurbImports.simgeo='importado';
-  }catch(_e){}
-}
-function planurbToolSelectionCount(tool){ return tool.outputs.filter(o=>planurbSelected.has(o.id)).length; }
-function planurbRenderTools(){
-  const box=$('pl-tool-grid'); if(!box) return;
-  const total=PLANURB_TOOLS.reduce((n,t)=>n+t.outputs.length,0);
-  const count=$('pl-tool-count'); if(count) count.textContent=`${planurbSelected.size} de ${total} itens`;
-  box.innerHTML=PLANURB_TOOLS.map(t=>{
-    const qtd=planurbToolSelectionCount(t);
-    return `<button class="planurb-tool-card ${t.id===planurbActive?'active':''} ${qtd?'selected':''}" onclick="planurbSelect('${t.id}')" ondblclick="event.preventDefault(); planurbToggleTool('${t.id}')" title="Clique para abrir. Duplo clique seleciona/remove o bloco.">
-      <div class="planurb-tool-top"><span class="planurb-tool-num">${t.num}</span><span class="planurb-tool-title">${esc(t.title)}</span></div>
-      <div><p class="planurb-tool-desc">${esc(t.desc)}</p><div class="planurb-visual" aria-hidden="true"></div></div>
-      <div class="planurb-tool-tags"><span class="planurb-tag">${qtd}/${t.outputs.length} selecionados</span><span class="planurb-tag">${esc(t.short)}</span></div>
-    </button>`;
-  }).join('');
-}
-function planurbSelect(id){
-  planurbActive=id;
-  planurbRenderTools();
-  planurbRenderDetail();
-  planurbRefreshPackage();
-}
-function planurbToggleTool(id){
-  const tool=PLANURB_TOOLS.find(t=>t.id===id); if(!tool) return;
-  const allSelected=tool.outputs.every(o=>planurbSelected.has(o.id));
-  tool.outputs.forEach(o=> allSelected ? planurbSelected.delete(o.id) : planurbSelected.add(o.id));
-  planurbPreset='custom';
-  planurbRenderAll();
-  planurbSetStatus(allSelected?'Bloco removido dos entregáveis.':'Bloco adicionado aos entregáveis.','ok');
-}
-function planurbToggleActiveTool(){ planurbToggleTool(planurbActive); }
-function planurbToggleDelivery(id){
-  if(planurbSelected.has(id)) planurbSelected.delete(id); else planurbSelected.add(id);
-  planurbPreset='custom';
-  planurbRenderAll();
-}
-function planurbRenderDetail(){
-  const t=planurbTool(), box=$('pl-tool-detail'); if(!box) return;
-  const dt=$('pl-detail-title'); if(dt) dt.textContent=t.title;
-  const ds=$('pl-detail-sub'); if(ds) ds.textContent=t.short;
-  box.innerHTML=`<div class="planurb-preview">
-    <div class="planurb-preview-top"><div><div class="planurb-kicker">Ferramenta ${t.num}</div><div class="planurb-title">${esc(t.title)}</div></div><span class="planurb-badge">${planurbToolSelectionCount(t)} de ${t.outputs.length} selecionados</span></div>
-    <p class="planurb-desc">${esc(t.desc)}</p>
-    <div class="planurb-detail-grid">
-      <div><div class="slabel" style="margin-top:0">Entregáveis do bloco</div><div class="planurb-mini-list">${t.outputs.map(o=>`<label class="planurb-mini-item"><input type="checkbox" ${planurbSelected.has(o.id)?'checked':''} onchange="planurbToggleDelivery('${o.id}')"><span>${esc(o.name)}</span></label>`).join('')}</div></div>
-      <div><div class="slabel" style="margin-top:0">Checklist de produção</div><div class="planurb-mini-list">${t.checklist.map(o=>`<div class="planurb-mini-item"><span class="mark">✓</span><span>${esc(o)}</span></div>`).join('')}</div></div>
-    </div>
-    <div class="planurb-summary"><strong>Mini-brief:</strong> ${esc(t.prompt)}</div>
-  </div>`;
-}
-function planurbRenderDeliverables(){
-  const box=$('pl-delivery-checklist'); if(!box) return;
-  const all=planurbAllDeliverables().sort((a,b)=>a.order-b.order);
-  const count=$('pl-delivery-count'); if(count) count.textContent=`${planurbSelected.size} selecionados`;
-  box.innerHTML=all.map(d=>`<label class="planurb-check-row">
-    <input type="checkbox" ${planurbSelected.has(d.id)?'checked':''} onchange="planurbToggleDelivery('${d.id}')">
-    <span class="planurb-check-name">${esc(d.name)}</span>
-    <span class="planurb-check-meta">${esc(d.toolNum)}</span>
-  </label>`).join('');
-}
-function planurbRenderImports(){
-  const box=$('pl-import-checklist'); if(!box) return;
-  const total=PLANURB_IMPORTS.length;
-  const imported=PLANURB_IMPORTS.filter(i=>planurbImports[i.id]==='importado').length;
-  const count=$('pl-import-count'); if(count) count.textContent=`${imported} de ${total}`;
-  box.innerHTML=PLANURB_IMPORTS.map(i=>{
-    const st=planurbImports[i.id]||i.status||'pendente';
-    const label=st==='importado'?'Importado':(st==='nao'?'Não encontrado':'Pendente');
-    return `<div class="planurb-check-row planurb-import-row" onclick="planurbCycleImport('${i.id}')" title="Clique para alterar o status">
-      <span class="planurb-import-icon">${esc(i.icon||'•')}</span>
-      <span class="planurb-check-name">${esc(i.name)}</span>
-      <span class="planurb-import-status ${st}">${label}</span>
-    </div>`;
-  }).join('');
-}
-function planurbCycleImport(id){
-  const order=['importado','pendente','nao'];
-  const current=planurbImports[id]||'pendente';
-  planurbImports[id]=order[(order.indexOf(current)+1)%order.length];
-  planurbRenderImports();
-  planurbRefreshPackage();
-}
-function planurbData(){
-  return {
-    projeto:($('pl-projeto')?.value||'Projeto sem título').trim(),
-    etapa:($('pl-etapa')?.value||'Estudo preliminar').trim(),
-    local:($('pl-local-proj')?.value||'local a definir').trim(),
-    formato:($('pl-formato')?.value||'Pranchas A1').trim()
-  };
-}
-function planurbSelectedOutputs(){
-  return planurbAllDeliverables().filter(d=>planurbSelected.has(d.id)).sort((a,b)=>a.order-b.order);
-}
-function planurbImportedItems(status){
-  return PLANURB_IMPORTS.filter(i=>!status || (planurbImports[i.id]||i.status)===status);
-}
-function planurbSetStatus(msg,type=''){
-  const st=$('pl-status'); if(!st) return;
-  st.textContent=msg||''; st.className='planurb-status'+(type?' '+type:'');
-}
-function planurbBuildPackage(showStatus=true){
-  const data=planurbData();
-  const outs=planurbSelectedOutputs();
-  const packageBox=$('pl-package'); if(!packageBox) return;
-  const imported=planurbImportedItems('importado');
-  const pending=planurbImportedItems('pendente');
-  const missing=planurbImportedItems('nao');
-  const groups=outs.map(o=>`<article class="planurb-pack-card"><span class="tag">${esc(o.toolNum)} · ${esc(o.toolTitle)}</span><h3>${esc(o.name)}</h3><p>${esc(o.toolPrompt)}</p></article>`).join('') || '<div class="planurb-muted">Nenhum entregável selecionado ainda.</div>';
-  const roadmap=[
-    ['Fase 01','Conferir itens importados, pendências e referências','1 dia'],
-    ['Fase 02','Produzir base, diagramas, colagens e peças selecionadas','2–5 dias'],
-    ['Fase 03','Revisar narrativa, diagramar prancha/caderno e fechar PDF','1–2 dias']
-  ].map(r=>`<div class="planurb-roadmap-row"><span class="fase">${r[0]}</span><span class="nome">${r[1]}</span><span class="tempo">${r[2]}</span></div>`).join('');
-  planurbLastBrief=`Pacote Cálculos técnicos — ${data.projeto}\nEtapa: ${data.etapa}\nLocal: ${data.local}\nFormato: ${data.formato}\n\nEntregáveis selecionados (${outs.length}):\n${outs.map((o,i)=>`${i+1}. ${o.name} — ${o.toolTitle}`).join('\n') || 'Nenhum entregável selecionado'}\n\nItens importados (${imported.length}/${PLANURB_IMPORTS.length}):\n${imported.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como importado'}\n\nPendências:\n${pending.map(i=>`- ${i.name}`).join('\n') || '- Sem pendências'}\n\nNão encontrados:\n${missing.map(i=>`- ${i.name}`).join('\n') || '- Nenhum item marcado como não encontrado'}\n\nFluxo sugerido:\n- Conferir bases e referências\n- Produzir os entregáveis selecionados\n- Revisar narrativa gráfica e fechar PDF`;
-  packageBox.innerHTML=`<section class="planurb-package-box"><div class="planurb-kicker">${esc(data.etapa)} · ${esc(data.formato)}</div><div class="planurb-title">${esc(data.projeto)}</div><p class="planurb-desc">Pacote para ${esc(data.local)}, com ${outs.length} entregável(is) e ${imported.length} item(ns) já importado(s). Use isto como escopo de proposta, checklist de produção ou briefing para equipe.</p><div class="planurb-summary"><strong>Resumo automático:</strong> ${outs.length?`Produzir ${outs.length} entregável(is), começando pelas bases importadas e resolvendo ${pending.length} pendência(s).`:'Selecione entregáveis no painel lateral para gerar o pacote.'}</div><div class="planurb-package">${groups}</div><div class="planurb-roadmap">${roadmap}</div></section>`;
-  if(showStatus) planurbSetStatus('Pacote atualizado com checklist de entregáveis e itens importados.','ok');
-}
-function planurbRefreshPackage(){ if(planurbReady) { planurbRenderDeliverables(); planurbRenderImports(); planurbBuildPackage(false); } }
-function planurbApplyPreset(kind){
-  planurbPreset=kind;
-  planurbSelected=new Set(PLANURB_PRESETS[kind]||PLANURB_PRESETS.tcc);
-  ['tcc','cliente','concurso'].forEach(k=>{ const el=$('pl-preset-'+k); if(el) el.classList.toggle('active',k===kind); });
-  planurbRenderAll();
-  const st={tcc:'Preset TCC aplicado.',cliente:'Preset cliente aplicado.',concurso:'Preset concurso aplicado.'}[kind]||'Preset aplicado.';
-  planurbSetStatus(st,'ok');
-}
-async function planurbCopyBrief(){
-  planurbBuildPackage(false);
-  try{
-    await navigator.clipboard.writeText(planurbLastBrief||'');
-    planurbSetStatus('Brief copiado para a área de transferência.','ok');
-  }catch(e){
-    planurbSetStatus('Não consegui copiar automaticamente. Selecione o texto do pacote e copie manualmente.','err');
-  }
-}
-function planurbSendToProposal(){
-  planurbBuildPackage(false);
-  const data=planurbData();
-  const outs=planurbSelectedOutputs();
-  if(!outs.length){ planurbSetStatus('Selecione pelo menos um entregável antes de adicionar à proposta.','err'); return; }
-  if(typeof newProposal==='function') newProposal();
-  setTimeout(()=>{
-    const tipo=$('rel-tipo'); if(tipo) tipo.value='Urbanismo / paisagismo';
-    const nome=$('rel-nome'); if(nome && (!nome.value || nome.value==='')) nome.value=data.projeto;
-    outs.slice(0,18).forEach(o=>{
-      if(typeof addServico==='function') addServico(o.name,`${o.toolTitle}: ${o.toolPrompt}`);
-    });
-    if(typeof upRel==='function') upRel();
-    const st=$('save-status'); if(st) st.textContent='Serviços do Cálculos técnicos adicionados à proposta.';
-  },80);
 }
 
 
@@ -6310,7 +5828,7 @@ async function exportSimgeoPDF(){
       const rows=usefulAttrs(r.features[0]?.attributes).slice(0,18).map(([k,v])=>`<tr><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(cleanAttrKey(k))}</td><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(formatAttrValue(v))}</td></tr>`).join('');
       return `<div style="break-inside:avoid;margin-bottom:14px;border:1px solid #F2EDE2;border-radius:8px;overflow:hidden"><div style="background:#F5EDE2;padding:9px 11px;color:#8B5E3C;font-family:system-ui,sans-serif;font-size:11px;font-weight:600">${esc(r.layer.title)}</div><table style="width:100%;border-collapse:collapse">${rows||'<tr><td style="padding:9px;color:#B0A090;font-size:10px;font-family:system-ui,sans-serif">Sem atributos públicos úteis.</td></tr>'}</table></div>`;
     }).join(''):'<div style="font-size:12px;color:#B0A090;font-family:system-ui,sans-serif">Nenhuma camada retornou dados para este ponto.</div>';
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6620,7 +6138,7 @@ async function exportMapotecaPDF(){
   try{
     const d=mapotecaLastResult; const info=d.info||{}; const best=d.search.candidates[0];
     const rows=[['Endereço',mapotecaAddressText(d.point.address)],['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],['Bairro',info.bairro||d.point.address?.bairro||'—'],['Loteamento',info.loteamento||'—'],['Quadra',info.quadra||'—'],['Lote',info.lote||'—'],['Área',info.area||'—'],['Cadastro/inscrição',info.cadastro||'—'],['Arquivo',best?best.title:'Não confirmado'],['Link',best?best.url:MAPOTECA_URL]].map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:34%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px;word-break:break-word">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6824,7 +6342,7 @@ async function exportLabeeePDF(){
     const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
     const rows=[['Local',loc],['CEP',`${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`],['Endereço aproximado',d.endereco?.geocodificado||'Localizado pelo CEP'],['Ponto usado',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
     const tr=rows.map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6884,7 +6402,7 @@ async function exportPDF(){
       <div>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px;min-width:0">
-          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
           ${arq?`<div style="font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.35;max-width:180px">${arq}</div>`:''}
         </div>
         <div style="text-align:right">
@@ -6978,7 +6496,7 @@ async function exportCarta(){
       <div>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:16px;border-bottom:1.5px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px">
-          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
         </div>
         <div style="text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:#7A6A56">${dataBr}</div>
       </div>
