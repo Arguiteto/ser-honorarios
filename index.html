@@ -1811,10 +1811,11 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <div class="chart-title">Distribuição por tipologia</div>
         <canvas id="chart-tipo" height="220"></canvas>
       </div>
-      <div class="chart-box">
+      <div id="chart-scope-note" style="font-size:11px;color:var(--faint);line-height:1.55;margin:-.2rem 0 1rem;border:0.5px solid var(--border);border-radius:8px;padding:.7rem .8rem;background:var(--surf2)">Dono e financeiro veem valores consolidados da empresa. Os demais perfis visualizam somente os próprios valores.</div>
+      <div class="chart-box" id="chart-users-box">
         <div class="chart-title">Valores de propostas por login</div>
         <canvas id="chart-users" height="220"></canvas>
-        <div style="font-size:10px;color:var(--faint);margin-top:.8rem">Dono e financeiro veem propostas de todos os usuários. Arquiteto e Minion veem apenas as próprias propostas.</div>
+        <div style="font-size:10px;color:var(--faint);margin-top:.8rem">Visível apenas para Dono e Financeiro.</div>
       </div>
     </div>
   </div>
@@ -2026,7 +2027,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
           <button class="btn ghost" onclick="equipeLoad()">Atualizar lista</button>
         </div>
         <div id="eq-status" style="font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem"></div>
-        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis: <b>dono</b> tem acesso total; <b>Arquiteto</b> tem acesso total, mas não pode excluir o dono; <b>Minion</b> acessa propostas, projetos, anexos, escopos, SIMGEO, LabEEE, Mapoteca, Materiais e NBR; <b>financeiro</b> acessa propostas, valores, gráficos e pagamentos.</div>
+        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis: <b>dono</b> tem acesso total e vê valores da empresa nos gráficos; <b>financeiro</b> vê valores e gráficos da empresa; <b>Arquiteto</b> tem acesso às ferramentas, mas os gráficos financeiros ficam restritos às próprias propostas; <b>Minion</b> acessa propostas, projetos, anexos, escopos, SIMGEO, LabEEE, Mapoteca, Materiais e NBR.</div>
       </section>
       <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Usuários da empresa</h2>
@@ -2683,9 +2684,13 @@ function applyRoleUI(){
   if(chartTab) chartTab.style.display=canUseTool('chart')?'':'none';
 }
 
-function canSeeAllProposals(){
+function canSeeCompanyValues(){
   const r=normalizedRole(currentRole);
   return r==='dono' || r==='financeiro';
+}
+
+function canSeeAllProposals(){
+  return canSeeCompanyValues();
 }
 function isOwnProposal(p){
   return !p?.user_id || !user?.id || p.user_id===user.id;
@@ -4419,9 +4424,20 @@ function renderDash(){
 function renderCharts(){
   const ChartCtor=window['Chart'];
   if(typeof ChartCtor === 'undefined'){ console.warn('Chart.js ainda não carregou.'); return; }
-  const count=proposals.length;
-  const total=proposals.reduce((s,p)=>s+(Number(p.total)||0),0);
+
+  const companyValueAccess=canSeeCompanyValues();
+  const chartScope=companyValueAccess ? proposals : proposals.filter(isOwnProposal);
+  const count=chartScope.length;
+  const total=chartScope.reduce((s,p)=>s+(Number(p.total)||0),0);
   const avg=count?total/count:0;
+
+  const scopeNote=$('chart-scope-note');
+  if(scopeNote){
+    scopeNote.textContent=companyValueAccess
+      ? 'Visão financeira da empresa: Dono e Financeiro visualizam valores consolidados e valores por login.'
+      : 'Visão individual: seu perfil visualiza somente os valores das propostas criadas por você. Valores de outros usuários ficam bloqueados.';
+  }
+
   $('st-count').textContent=String(count);
   $('st-total').textContent='R$ '+fmtI(total);
   $('st-avg').textContent='R$ '+fmtI(avg);
@@ -4431,7 +4447,7 @@ function renderCharts(){
   const gridColor='rgba(0,0,0,.05)';
 
   // Bar chart: propostas em ordem de criação
-  const sorted=[...proposals].sort((a,b)=>new Date(a.created_at||a.updated_at).getTime()-new Date(b.created_at||b.updated_at).getTime());
+  const sorted=[...chartScope].sort((a,b)=>new Date(a.created_at||a.updated_at).getTime()-new Date(b.created_at||b.updated_at).getTime());
   const labels=sorted.map(p=>p.name||'—');
   const vals=sorted.map(p=>Number(p.total)||0);
   if(chartProps) chartProps.destroy();
@@ -4443,7 +4459,7 @@ function renderCharts(){
 
   // Doughnut by tipology
   const tipoMap={};
-  proposals.forEach(p=>{const t=p.typology||'Outro';tipoMap[t]=(tipoMap[t]||0)+1;});
+  chartScope.forEach(p=>{const t=p.typology||'Outro';tipoMap[t]=(tipoMap[t]||0)+1;});
   const tipoLabels=Object.keys(tipoMap);
   const tipoCounts=Object.values(tipoMap);
   const colors=['#8B5E3C','#D4B896','#2A6B4F','#5AA17A','#D07A3B','#E27D60','#3B707D'];
@@ -4454,14 +4470,22 @@ function renderCharts(){
     options:{responsive:true,plugins:{legend:{position:'bottom'}}}
   });
 
-  // Valores agrupados por login/usuário
+  // Valores agrupados por login/usuário — bloqueado para perfis sem visão financeira da empresa
+  const usersBox=$('chart-users-box');
+  if(!companyValueAccess){
+    if(chartUsers){ chartUsers.destroy(); chartUsers=null; }
+    if(usersBox) usersBox.style.display='none';
+    return;
+  }
+  if(usersBox) usersBox.style.display='block';
+
   const loginLabel=p=>{
     if(p.user_email) return p.user_email.split('@')[0];
     if(user?.id && p.user_id===user.id) return 'Você';
     return p.user_id ? 'Login '+String(p.user_id).slice(0,8) : 'Sem login';
   };
   const userMap={};
-  proposals.forEach(p=>{
+  chartScope.forEach(p=>{
     const label=loginLabel(p);
     userMap[label]=(userMap[label]||0)+(Number(p.total)||0);
   });
