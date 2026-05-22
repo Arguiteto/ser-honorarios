@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="10">
+<html lang="pt-BR" data-theme="0">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -155,84 +155,7 @@
   --bg-rgb:10,22,40;
   --green:#40a870;--greenl:#0a2018;
 }
-[data-theme="10"]{
-  --bg:#F3E7D2;--surface:#FAF7F0;--surf2:#F0E5D0;
-  --border:rgba(30,30,30,0.10);--border-em:rgba(30,30,30,0.22);
-  --text:#1E1E1E;--muted:#6F604D;--faint:#B4A189;
-  --e:#C8A26E;--el:#F1DEC0;--eb:#D7BA84;
-  --icon-accent:#C8A26E;
-  --err:#8B3A3A;--errl:#F7EAEA;--errb:#e8aaaa;
-  --warn:#8B6914;--warnl:#fbf0d8;--warnb:#e8cc88;
-  --green:#4F6B3A;--greenl:#E7EFD8;
-  --bg-rgb:243,231,210;
-  --pattern-dark:#1E1E1E;--pattern-light:#FAF7F0;
-  --harlequin:conic-gradient(from 45deg,var(--pattern-dark) 0 25%,var(--pattern-light) 0 50%,var(--pattern-dark) 0 75%,var(--pattern-light) 0);
-}
 
-/* Tema Color Combos: camel, creme, grafite e padrão losangular */
-[data-theme="10"] body{
-  background:
-    radial-gradient(circle at 18% 10%,rgba(200,162,110,.28),transparent 28%),
-    radial-gradient(circle at 84% 88%,rgba(30,30,30,.055),transparent 30%),
-    var(--bg);
-}
-[data-theme="10"] .hdr{
-  background:linear-gradient(135deg,#FAF7F0 0%,#F0E5D0 58%,#C8A26E 100%);
-  box-shadow:0 8px 30px rgba(30,30,30,.08);
-}
-[data-theme="10"] .hdr-logo{color:var(--text);font-weight:650;letter-spacing:.02em}
-[data-theme="10"] .hdr-logo img{filter:drop-shadow(0 2px 4px rgba(30,30,30,.16))}
-[data-theme="10"] .auth-card,
-[data-theme="10"] .prop-card,
-[data-theme="10"] .chart-box,
-[data-theme="10"] .carta-editor,
-[data-theme="10"] .simgeo-card,
-[data-theme="10"] .simgeo-result,
-[data-theme="10"] .labeee-card,
-[data-theme="10"] .labeee-result,
-[data-theme="10"] .mapoteca-card,
-[data-theme="10"] .mapoteca-result,
-[data-theme="10"] .threejs-card,
-[data-theme="10"] .threejs-stage,
-[data-theme="10"] .ct-card,
-[data-theme="10"] .ct-stage,
-[data-theme="10"] .sg-card{
-  border-color:rgba(30,30,30,.10);
-  box-shadow:0 14px 38px rgba(30,30,30,.075);
-}
-[data-theme="10"] .hall-hero,
-[data-theme="10"] .auth-card,
-[data-theme="10"] .carta-editor,
-[data-theme="10"] .sg-card{position:relative;overflow:hidden}
-[data-theme="10"] .hall-hero::before,
-[data-theme="10"] .auth-card::after,
-[data-theme="10"] .carta-editor::after,
-[data-theme="10"] .sg-card::after{
-  content:'';position:absolute;pointer-events:none;opacity:.96;background:var(--harlequin);background-size:30px 30px;
-  border:1px solid rgba(30,30,30,.08);box-shadow:0 10px 22px rgba(30,30,30,.08);
-}
-[data-theme="10"] .hall-hero::before{right:18px;bottom:18px;width:124px;height:44px;border-radius:12px;transform:rotate(-2deg);opacity:.78}
-[data-theme="10"] .auth-card::after{right:-28px;bottom:18px;width:138px;height:38px;border-radius:999px;transform:rotate(-7deg);opacity:.55}
-[data-theme="10"] .carta-editor::after{right:18px;top:18px;width:112px;height:34px;border-radius:10px;opacity:.34}
-[data-theme="10"] .sg-card::after{right:12px;bottom:12px;width:72px;height:22px;border-radius:8px;opacity:.16}
-[data-theme="10"] .dock-btn.active,
-[data-theme="10"] .dock-btn.primary.active{background:var(--text);border-color:var(--text);color:var(--surface);box-shadow:0 10px 26px rgba(30,30,30,.20)}
-[data-theme="10"] .dock-btn.primary{background:var(--el);border-color:var(--eb);color:var(--text)}
-[data-theme="10"] .dock-btn:hover{background:var(--el);border-color:var(--eb);color:var(--text)}
-[data-theme="10"] .dock-btn.active .ico{color:var(--surface)}
-[data-theme="10"] .btn.solid,
-[data-theme="10"] .sg-action.primary,
-[data-theme="10"] .nbr-send-btn,
-[data-theme="10"] .nbr-cep-btn{background:linear-gradient(135deg,#C8A26E,#B98D54)!important;border-color:#C8A26E!important;color:#fff!important}
-[data-theme="10"] .btn.ghost:hover,
-[data-theme="10"] .auth-tab.on,
-[data-theme="10"] .dash-tab.on{color:var(--text)}
-[data-theme="10"] .tp-preview{box-shadow:inset 0 0 0 1px rgba(30,30,30,.18)}
-[data-theme="10"] .mc.accent,
-[data-theme="10"] .stat-card,
-[data-theme="10"] .planurb-badge,
-[data-theme="10"] .sg-chip,
-[data-theme="10"] .portal-card-badge.municipal{background:var(--el);border-color:var(--eb);color:var(--text)}
 
 body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
 body.auth-mode{background:var(--bg)}
@@ -281,7 +204,7 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 .tp-dropdown{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:0.5px solid var(--border-em);border-radius:14px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:999;width:220px}
 .tp-dropdown.open{display:block}
 .tp-dropdown-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
-.tp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .tp-dot{width:28px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:all .18s;position:relative}
 .tp-dot:hover{transform:scale(1.12)}
 .tp-dot.active{border-color:var(--text);box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text)}
@@ -295,9 +218,7 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 .tp-dot[data-t="7"]{background:linear-gradient(135deg,#7A4AC0,#ece8f5)}
 .tp-dot[data-t="8"]{background:linear-gradient(135deg,#5aA84A,#0d1e14)}
 .tp-dot[data-t="9"]{background:linear-gradient(135deg,#E07820,#0a1628)}
-.tp-dot[data-t="10"]{background:linear-gradient(135deg,#C8A26E,#F3E7D2);overflow:hidden}
-.tp-dot[data-t="10"]::after{content:'';position:absolute;inset:4px;border-radius:5px;background:conic-gradient(from 45deg,#1E1E1E 0 25%,#FAF7F0 0 50%,#1E1E1E 0 75%,#FAF7F0 0);background-size:12px 12px;transform:rotate(45deg) scale(1.25)}
-.tp-names{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:5px}
+.tp-names{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:5px}
 .tp-name{font-size:8px;color:var(--faint);text-align:center;line-height:1.2}
 
 /* ── SHARED COMPONENTS ──────────────────────────── */
@@ -1188,6 +1109,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         </div>
       </div>
       <button class="btn ghost name-btn" onclick="changeDisplayName()" title="Alterar nome exibido online">Nome</button>
+      <button class="btn ghost name-btn" onclick="openLogoModal()" title="Personalizar logo e empresa nos PDFs e documentos">🖼 Logo</button>
       <div class="theme-picker" id="theme-picker">
         <button class="tp-trigger" onclick="tpToggle(event)" title="Escolher tema">
           <div class="tp-preview" id="tp-preview"></div>
@@ -1207,7 +1129,6 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
             <div class="tp-dot" data-t="7" onclick="setTheme(7)" title="Lavanda"></div>
             <div class="tp-dot" data-t="8" onclick="setTheme(8)" title="Floresta"></div>
             <div class="tp-dot" data-t="9" onclick="setTheme(9)" title="Blueprint"></div>
-            <div class="tp-dot" data-t="10" onclick="setTheme(10)" title="Color Combos"></div>
           </div>
           <div class="tp-names">
             <div class="tp-name">Areia</div>
@@ -1220,7 +1141,6 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
             <div class="tp-name">Lavanda</div>
             <div class="tp-name">Floresta</div>
             <div class="tp-name">Blueprint</div>
-            <div class="tp-name">Combos</div>
           </div>
         </div>
       </div>
@@ -1671,6 +1591,8 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
   </div>
 
+  
+
   <!-- CÁLCULOS TÉCNICOS / TELHADO / COBERTURA / ESCADA -->
   <div id="calc-tecnico-view" style="display:none">
     <div class="dash-top">
@@ -2076,6 +1998,19 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       <div class="dash-title">Equipe — Usuários e permissões</div>
       <button class="btn ghost" onclick="showHall()">← Início</button>
     </div>
+
+    <!-- Pendentes: novos cadastros aguardando aprovação -->
+    <div id="eq-pending-wrap" style="margin-bottom:14px;background:var(--surface);border:0.5px solid #D4A96A;border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035);display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px">
+        <div>
+          <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.2rem">⏳ Novos cadastros aguardando</h2>
+          <p style="font-size:11px;color:var(--faint);line-height:1.5;margin:0">Esses usuários criaram conta mas ainda não foram adicionados à equipe. Aprove ou ignore cada um.</p>
+        </div>
+        <button class="btn ghost" style="font-size:11px" onclick="equipeLoadPending()">↺ Atualizar</button>
+      </div>
+      <div id="eq-pending-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
     <div style="display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:14px;align-items:start">
       <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Adicionar usuário</h2>
@@ -2102,6 +2037,55 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <div class="online-dot"></div>
     <span style="color:var(--muted);font-weight:500">Online agora:</span>
     <div class="online-users" id="online-users"><span style="color:var(--faint)">—</span></div>
+  </div>
+</div>
+
+<!-- MODAL LOGO CUSTOMIZADO -->
+<div id="logo-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeLogoModal()">
+  <div class="modal" style="max-width:520px;width:100%">
+    <button class="modal-close" onclick="closeLogoModal()">✕</button>
+    <h2 style="font-size:17px;margin-bottom:.3rem">Identidade visual — PDFs e documentos</h2>
+    <p style="font-size:12px;color:var(--faint);line-height:1.6;margin-bottom:1.2rem">O logo e o nome da empresa que você definir aqui vão aparecer em todas as propostas, cartas e documentos gerados pelo sistema. As configurações ficam salvas neste dispositivo.</p>
+
+    <!-- Preview -->
+    <div style="background:var(--surf2);border:0.5px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:14px">
+      <img id="logo-preview-img" src="" alt="preview" style="width:56px;height:56px;object-fit:contain;object-position:center;border-radius:6px;background:#FAF7F1;border:0.5px solid var(--border);flex-shrink:0">
+      <div style="min-width:0">
+        <div id="logo-preview-nome" style="font-size:14px;font-weight:500;color:var(--text);word-break:break-word">—</div>
+        <div id="logo-preview-sub"  style="font-size:11px;color:var(--faint);margin-top:3px;word-break:break-word">—</div>
+      </div>
+    </div>
+
+    <!-- Upload do logo -->
+    <div class="field" style="margin-bottom:.9rem">
+      <label>Logo (PNG, SVG ou JPG — máx. 400 KB)</label>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label class="btn ghost" style="cursor:pointer;font-size:12px">
+          📁 Escolher arquivo
+          <input type="file" id="logo-file-input" accept="image/png,image/jpeg,image/svg+xml,image/webp" style="display:none" onchange="logoFileChange(event)">
+        </label>
+        <button class="btn ghost" style="font-size:12px" onclick="logoReset()">↺ Usar padrão</button>
+        <span id="logo-file-status" style="font-size:11px;color:var(--faint)"></span>
+      </div>
+    </div>
+
+    <!-- Nome da empresa -->
+    <div class="field" style="margin-bottom:.9rem">
+      <label>Nome da empresa / escritório</label>
+      <div class="iw"><input type="text" id="logo-nome" placeholder="Ex: Studio Arquitetura e Urbanismo" maxlength="80" oninput="logoPreviewUpdate()"></div>
+    </div>
+
+    <!-- Subtítulo / slogan -->
+    <div class="field" style="margin-bottom:1.2rem">
+      <label>Slogan ou especialidade (opcional)</label>
+      <div class="iw"><input type="text" id="logo-sub" placeholder="Ex: Projetos residenciais · Campo Grande, MS" maxlength="100" oninput="logoPreviewUpdate()"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn solid" onclick="logoSave()">💾 Salvar identidade</button>
+      <button class="btn ghost" onclick="closeLogoModal()">Cancelar</button>
+    </div>
+    <div id="logo-modal-status" style="font-size:11px;min-height:16px;margin-top:.7rem;color:var(--faint)"></div>
   </div>
 </div>
 
@@ -2307,7 +2291,7 @@ async function changeDisplayName(){
     if(!sb) sb = await initSupabaseClient();
     if(sb?.auth?.updateUser) await sb.auth.updateUser({data:{display_name:limpo,nome:limpo,full_name:limpo,name:limpo}});
   }catch(e){ console.warn('Não foi possível salvar nome no perfil Supabase:', e); }
-  try{ await initPresence(); }catch(e){ console.warn('Não foi possível atualizar presença:', e); }
+  try{ await initRealtimePresence(); }catch(e){ console.warn('Não foi possível atualizar presença:', e); }
   notifyStatus?.('✓ Nome de exibição atualizado','ok',2500);
 }
 
@@ -2574,7 +2558,8 @@ async function authSubmit(){
     } else {
       const c = $('auth-confirm').value;
       if(pass !== c){ $('auth-err').textContent='Senhas não coincidem.'; return; }
-      const { error } = await sb.auth.signUp({ email, password: pass });
+      const { data: signUpData, error } = await sb.auth.signUp({ email, password: pass });
+      if(signUpData?.user) await registrarUsuarioPendente(signUpData.user);
       if(error) throw error;
       $('auth-err').style.color='var(--green)';
       $('auth-err').textContent='✓ Verifique seu e-mail para confirmar a conta.';
@@ -2628,7 +2613,7 @@ function showApp(){
   syncBrandLogos();
   loadTheme();
   showHall();
-  initPresence();
+  initRealtimePresence();
   loadCurrentRole();
 }
 
@@ -2713,68 +2698,6 @@ async function loadCurrentRole(){
 }
 
 // ── PRESENCE (online users) ───────────────────────
-async function initPresence(){
-  const bar = $('online-users');
-  const selfEntry = ()=>({email:user?.email||'', nome:getDisplayName(), id:user?.id||'', papel:'você'});
-  const renderUsers = (entries=[])=>{
-    if(!bar) return;
-    const list = [];
-    const seen = new Set();
-    entries.forEach(u=>{
-      const email = String(u?.email || u || '').trim();
-      const nome = cleanDisplayName(u?.nome || u?.name || u?.display_name || (email?email.split('@')[0]:'usuário'));
-      const papel = String(u?.papel || '').trim();
-      if(!email && !nome) return;
-      const key = String(u?.user_id || u?.id || email || nome).toLowerCase();
-      if(seen.has(key)) return;
-      seen.add(key);
-      list.push({email, nome:nome || 'usuário', papel});
-    });
-    bar.innerHTML = list.length
-      ? list.map(u=>`<span class="online-chip" title="${esc([u.nome,u.email,u.papel].filter(Boolean).join(' · '))}">${esc(u.nome)}</span>`).join('')
-      : '<span style="color:var(--faint)">—</span>';
-  };
-
-  if(onlinePresenceTimer){ clearInterval(onlinePresenceTimer); onlinePresenceTimer=null; }
-  if(bar) bar.innerHTML = '<span style="color:var(--faint)">Conectando...</span>';
-  if(!user?.email || !sb){ renderUsers(user?.email ? [selfEntry()] : []); return; }
-
-  async function updateOnlineFromDatabase(){
-    try{
-      const nome = getDisplayName();
-      const reg = await sb.rpc('registrar_presenca_online', {p_nome:nome});
-      if(reg?.error) throw reg.error;
-      const {data, error} = await sb.rpc('listar_usuarios_online', {p_minutos:10});
-      if(error) throw error;
-      renderUsers((data && data.length) ? data : [selfEntry()]);
-    }catch(e){
-      console.warn('Presença online via banco indisponível:', e);
-      renderUsers([selfEntry()]);
-    }
-  }
-
-  // Atualiza agora e repete o heartbeat. Janela maior ajuda Safari/iPhone, que pode pausar timers.
-  await updateOnlineFromDatabase();
-  setTimeout(updateOnlineFromDatabase, 2000);
-  onlinePresenceTimer = setInterval(updateOnlineFromDatabase, 15000);
-
-  // Reativa presença quando o Safari volta para a aba/app, quando a rede retorna ou a janela ganha foco.
-  if(!window._chaosOnlinePresenceListeners){
-    window._chaosOnlinePresenceListeners = true;
-    document.addEventListener('visibilitychange', ()=>{
-      if(!document.hidden && typeof initPresence === 'function') initPresence();
-    });
-    window.addEventListener('focus', ()=>{
-      if(typeof initPresence === 'function') initPresence();
-    });
-    window.addEventListener('pageshow', ()=>{
-      if(typeof initPresence === 'function') initPresence();
-    });
-    window.addEventListener('online', ()=>{
-      if(typeof initPresence === 'function') initPresence();
-    });
-  }
-}
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
@@ -5913,7 +5836,7 @@ async function exportSimgeoPDF(){
       const rows=usefulAttrs(r.features[0]?.attributes).slice(0,18).map(([k,v])=>`<tr><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(cleanAttrKey(k))}</td><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(formatAttrValue(v))}</td></tr>`).join('');
       return `<div style="break-inside:avoid;margin-bottom:14px;border:1px solid #F2EDE2;border-radius:8px;overflow:hidden"><div style="background:#F5EDE2;padding:9px 11px;color:#8B5E3C;font-family:system-ui,sans-serif;font-size:11px;font-weight:600">${esc(r.layer.title)}</div><table style="width:100%;border-collapse:collapse">${rows||'<tr><td style="padding:9px;color:#B0A090;font-size:10px;font-family:system-ui,sans-serif">Sem atributos públicos úteis.</td></tr>'}</table></div>`;
     }).join(''):'<div style="font-size:12px;color:#B0A090;font-family:system-ui,sans-serif">Nenhuma camada retornou dados para este ponto.</div>';
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6223,7 +6146,7 @@ async function exportMapotecaPDF(){
   try{
     const d=mapotecaLastResult; const info=d.info||{}; const best=d.search.candidates[0];
     const rows=[['Endereço',mapotecaAddressText(d.point.address)],['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],['Bairro',info.bairro||d.point.address?.bairro||'—'],['Loteamento',info.loteamento||'—'],['Quadra',info.quadra||'—'],['Lote',info.lote||'—'],['Área',info.area||'—'],['Cadastro/inscrição',info.cadastro||'—'],['Arquivo',best?best.title:'Não confirmado'],['Link',best?best.url:MAPOTECA_URL]].map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:34%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px;word-break:break-word">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6427,7 +6350,7 @@ async function exportLabeeePDF(){
     const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
     const rows=[['Local',loc],['CEP',`${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`],['Endereço aproximado',d.endereco?.geocodificado||'Localizado pelo CEP'],['Ponto usado',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
     const tr=rows.map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6487,7 +6410,7 @@ async function exportPDF(){
       <div>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px;min-width:0">
-          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          <img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
           ${arq?`<div style="font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.35;max-width:180px">${arq}</div>`:''}
         </div>
         <div style="text-align:right">
@@ -6520,7 +6443,7 @@ async function exportPDF(){
       </div>
       <div style="font-size:10px;color:#B0A090;font-family:system-ui,sans-serif;text-align:center;margin-bottom:16px">Esta proposta tem validade de 30 dias a partir da data de emissão.</div>
       <div style="border-top:1px solid #F2EDE2;padding-top:12px;display:flex;justify-content:space-between">
-        <div style="font-size:9px;color:#D4B896;font-family:system-ui,sans-serif;letter-spacing:.5px;text-transform:uppercase">Chaos Arquitetura e Urbanismo</div>
+        <div style="font-size:9px;color:#D4B896;font-family:system-ui,sans-serif;letter-spacing:.5px;text-transform:uppercase">${logoGetNomeEmpresa()}</div>
         ${arq?`<div style="font-size:9px;color:#D4B896;font-family:system-ui,sans-serif">${arq}</div>`:''}
       </div>
     </div>`;
@@ -6569,7 +6492,7 @@ async function exportCarta(){
   try{
     const destRaw=$('carta-dest').value||'';
     const assuntoRaw=$('carta-assunto').value||'';
-    const arqRaw=$('carta-arq').value||'Chaos Arquitetura e Urbanismo';
+    const arqRaw=$('carta-arq').value||logoGetNomeEmpresa();
     const body=$('carta-body').value||'';
     const dataVal=$('carta-data').value;
     const dataBr=dataVal?new Date(dataVal+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
@@ -6581,7 +6504,7 @@ async function exportCarta(){
       <div>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:16px;border-bottom:1.5px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px">
-          <img src="${LOGO_MINIMALIST}" alt="Chaos Arquitetura e Urbanismo" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          <img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
         </div>
         <div style="text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:#7A6A56">${dataBr}</div>
       </div>
@@ -6591,7 +6514,7 @@ async function exportCarta(){
       <div style="margin-top:48px;padding-top:16px;border-top:0.5px solid #F2EDE2">
         <div style="font-size:12px;color:#7A6A56;margin-bottom:24px">Atenciosamente,</div>
         <div style="font-size:12px;color:#2C1F12;font-weight:500">${arq}</div>
-        <div style="font-size:10px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-top:2px">Chaos Arquitetura e Urbanismo</div>
+        <div style="font-size:10px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-top:2px">${logoGetNomeEmpresa()}</div>
       </div>
     </div>`;
 
@@ -6689,7 +6612,7 @@ async function exportPropostaDocx(){
 
     const nomeRaw = ($('rel-nome')?.value||'Projeto').trim();
     const cli     = ($('rel-cli')?.value||'Cliente').trim();
-    const arq     = ($('rel-arq')?.value||'Chaos Arquitetura e Urbanismo').trim();
+    const arq     = ($('rel-arq')?.value||logoGetNomeEmpresa()).trim();
     const tipRaw  = ($('rel-tipo')?.value||'').trim();
     const areaRaw = ($('rel-area')?.value||'').trim();
     const hoje    = new Date().toLocaleDateString('pt-BR');
@@ -6715,7 +6638,7 @@ async function exportPropostaDocx(){
     const children=[
       // Cabeçalho
       docxParagraph('CHAOS ARQUITETURA E URBANISMO',{ bold:true, size:28, color:'8B5E3C', alignment:'center', spaceAfter:40 }),
-      docxParagraph(arq!=='Chaos Arquitetura e Urbanismo'?arq:'',{ size:18, color:'7A6A56', alignment:'center', spaceAfter:120 }),
+      docxParagraph(arq!==logoGetNomeEmpresa()?arq:'',{ size:18, color:'7A6A56', alignment:'center', spaceAfter:120 }),
       docxSeparator(),
       docxParagraph('PROPOSTA DE SERVIÇOS',{ bold:true, size:32, color:'2C1F12', alignment:'center', spaceBefore:120, spaceAfter:60 }),
       docxParagraph(nomeRaw,{ bold:true, size:26, color:'8B5E3C', alignment:'center', spaceAfter:40 }),
@@ -6779,7 +6702,7 @@ async function exportPropostaDocx(){
       }),
       docxSeparator(),
       docxParagraph(`Validade desta proposta: ${validade}`,{ size:18, color:'B0A090', italic:true, alignment:'center', spaceBefore:120, spaceAfter:40 }),
-      docxParagraph('Chaos Arquitetura e Urbanismo',{ size:18, color:'D4B896', alignment:'center', spaceAfter:40 }),
+      docxParagraph(logoGetNomeEmpresa(),{ size:18, color:'D4B896', alignment:'center', spaceAfter:40 }),
       ...(arq?[docxParagraph(arq,{ size:18, color:'D4B896', alignment:'center', spaceAfter:0 })]:[]),
     ].filter(Boolean);
 
@@ -6811,7 +6734,7 @@ async function exportCartaDocx(){
 
     const dest    =($('carta-dest')?.value||'').trim();
     const assunto =($('carta-assunto')?.value||'').trim();
-    const arq     =($('carta-arq')?.value||'Chaos Arquitetura e Urbanismo').trim();
+    const arq     =($('carta-arq')?.value||logoGetNomeEmpresa()).trim();
     const bodyRaw =($('carta-body')?.value||'').trim();
     const dataVal =$('carta-data')?.value;
     const dataFmt =dataVal?new Date(dataVal+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
@@ -6842,7 +6765,7 @@ async function exportCartaDocx(){
       docxParagraph(' ',{ spaceAfter:120 }),
       docxParagraph('Atenciosamente,',{ size:22, color:'2C1F12', spaceAfter:200 }),
       docxParagraph(arq,{ bold:true, size:22, color:'8B5E3C', spaceAfter:40 }),
-      docxParagraph('Chaos Arquitetura e Urbanismo',{ size:20, color:'7A6A56', spaceAfter:0 }),
+      docxParagraph(logoGetNomeEmpresa(),{ size:20, color:'7A6A56', spaceAfter:0 }),
     ];
 
     const doc=new Document({
@@ -7982,6 +7905,281 @@ nbrSearch('');
   if(desktopMQ.addEventListener) desktopMQ.addEventListener('change', ev=>{ if(!ev.matches){ setOpen(false); stop({silent:true}); } else { build(); applyLevels(idleLevels()); } });
   build(); applyLevels(idleLevels()); refreshPermissionHint();
 })();
+
+
+// ══════════════════════════════════════════════
+// FEATURE: PENDENTES — novos cadastros aguardando
+// ══════════════════════════════════════════════
+
+async function equipeLoadPending(){
+  const wrap = $('eq-pending-wrap');
+  const list = $('eq-pending-list');
+  if(!list) return;
+  list.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--faint);font-size:12px">Verificando...</div>';
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    if(!sb) throw new Error('Sem conexão');
+    // Tenta via RPC dedicada primeiro
+    let rows = [];
+    const {data, error} = await sb.rpc('listar_usuarios_pendentes').maybeSingle ? 
+      sb.rpc('listar_usuarios_pendentes') : 
+      sb.from('usuarios_pendentes').select('*').eq('aprovado', false).order('criado_em', {ascending:false});
+    if(!error && data) rows = Array.isArray(data) ? data : [data];
+    if(wrap) wrap.style.display = rows.length ? 'block' : 'none';
+    if(!rows.length){ list.innerHTML = ''; return; }
+    list.innerHTML = rows.map(r => {
+      const email = esc(r.email || '');
+      const nome  = esc(r.display_name || r.nome || email.split('@')[0] || 'Sem nome');
+      const uid   = esc(r.user_id || r.id || '');
+      const dt    = r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : '—';
+      return `<div style="border:0.5px solid var(--border);border-radius:10px;padding:.85rem;background:var(--surf2);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center">
+        <div style="min-width:0">
+          <div style="font-size:13px;color:var(--text);font-weight:500">${nome}</div>
+          <div style="font-size:11px;color:var(--faint);margin-top:2px">${email}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px;font-family:monospace">${uid}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:3px">Cadastrado em: ${dt}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          <select id="pend-papel-${uid}" style="font-family:inherit;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none">
+            <option value="minion">Minion</option>
+            <option value="arquiteto">Arquiteto</option>
+            <option value="financeiro">Financeiro</option>
+            <option value="dono">Dono</option>
+          </select>
+          <button class="btn solid" style="font-size:10px;padding:5px 9px" onclick="equipeApprovePending('${uid}','${email}')">✓ Aprovar</button>
+          <button class="btn ghost"  style="font-size:10px;padding:5px 9px" onclick="equipeIgnorePending('${uid}')">Ignorar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    if(wrap) wrap.style.display = 'none';
+    console.warn('Pendentes:', e.message);
+  }
+}
+
+async function equipeApprovePending(userId, email){
+  if(!userId || !email) return;
+  equipeSetStatus('Aprovando usuário...');
+  const papel = $('pend-papel-'+userId)?.value || 'minion';
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    // Tenta via RPC de convite (mesmo fluxo do equipeAdd)
+    const {data, error} = await sb.rpc('convidar_usuario_empresa',{p_email:email, p_papel:papel, p_empresa_id:null});
+    if(error) throw error;
+    // Marca como aprovado na tabela de pendentes (se existir)
+    await sb.from('usuarios_pendentes').update({aprovado:true}).eq('user_id', userId).maybeSingle?.();
+    equipeSetStatus('✓ Usuário aprovado como '+equipeRoleLabel(papel)+'.','ok');
+    await equipeLoadPending();
+    await equipeLoad();
+  }catch(e){ equipeSetStatus(e?.message || String(e),'err'); }
+}
+
+async function equipeIgnorePending(userId){
+  if(!userId) return;
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    await sb.from('usuarios_pendentes').update({aprovado:true, ignorado:true}).eq('user_id', userId);
+    await equipeLoadPending();
+  }catch(e){ console.warn('Ignorar pendente:', e); }
+}
+
+// Registra novo usuário na tabela de pendentes ao fazer signup
+async function registrarUsuarioPendente(userObj){
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    if(!sb || !userObj?.id) return;
+    await sb.from('usuarios_pendentes').upsert({
+      user_id: userObj.id,
+      email: userObj.email || '',
+      display_name: userObj.user_metadata?.display_name || userObj.email?.split('@')[0] || '',
+      aprovado: false,
+      ignorado: false,
+      criado_em: new Date().toISOString()
+    }, {onConflict:'user_id', ignoreDuplicates:true});
+  }catch(e){ console.warn('registrarUsuarioPendente:', e.message); }
+}
+
+// ══════════════════════════════════════════════
+// FEATURE: PRESENÇA ONLINE — Supabase Realtime broadcast
+// (funciona sem precisar de RPC customizada no banco)
+// ══════════════════════════════════════════════
+
+function _presenceRenderFromMap(){
+  const bar = $('online-users');
+  if(!bar) return;
+  const now = Date.now();
+  // Remove entradas com heartbeat > 35s atrás
+  for(const [k,v] of _realtimePresenceMap){
+    if(now - v.ts > 35000) _realtimePresenceMap.delete(k);
+  }
+  const list = [..._realtimePresenceMap.values()];
+  if(!list.length){
+    bar.innerHTML = '<span style="color:var(--faint)">—</span>';
+    return;
+  }
+  bar.innerHTML = list.map(u => {
+    const nome = esc(u.nome || u.email?.split('@')[0] || 'usuário');
+    const title = esc([u.nome, u.email].filter(Boolean).join(' · '));
+    return `<span class="online-chip" title="${title}">${nome}</span>`;
+  }).join('');
+}
+
+async function initRealtimePresence(){
+  if(!sb || !user?.id) return;
+  const userId = user.id;
+  const nome   = getDisplayName();
+  const email  = user.email || '';
+
+  // Encerra canal anterior se existir
+  if(_realtimeChannel){
+    try{ await sb.removeChannel(_realtimeChannel); }catch(_){}
+    _realtimeChannel = null;
+  }
+
+  const channelName = 'chaos-presence-v2';
+  _realtimeChannel = sb.channel(channelName, {config:{broadcast:{self:true}}});
+
+  // Ao receber heartbeat de qualquer usuário
+  _realtimeChannel.on('broadcast', {event:'hb'}, ({payload})=>{
+    if(!payload?.id) return;
+    _realtimePresenceMap.set(payload.id, {
+      id: payload.id,
+      nome: payload.nome || '',
+      email: payload.email || '',
+      ts: Date.now()
+    });
+    _presenceRenderFromMap();
+  });
+
+  _realtimeChannel.subscribe(async (status)=>{
+    if(status !== 'SUBSCRIBED') return;
+    // Heartbeat imediato + a cada 20s
+    const sendHb = ()=> _realtimeChannel.send({
+      type:'broadcast', event:'hb',
+      payload:{id:userId, nome, email}
+    }).catch(()=>{});
+    sendHb();
+    if(onlinePresenceTimer) clearInterval(onlinePresenceTimer);
+    onlinePresenceTimer = setInterval(()=>{
+      sendHb();
+      _presenceRenderFromMap(); // limpa expirados
+    }, 20000);
+  });
+
+  // Adiciona o próprio usuário imediatamente no mapa
+  _realtimePresenceMap.set(userId, {id:userId, nome, email, ts:Date.now()});
+  _presenceRenderFromMap();
+}
+
+// ══════════════════════════════════════════════
+// FEATURE: LOGO CUSTOMIZADO por usuário
+// Armazenado em localStorage — sem dependência de servidor
+// ══════════════════════════════════════════════
+
+const LOGO_LS_KEY = 'chaos_custom_logo_v1'; // { src:base64, nome, sub }
+
+function logoGetCustom(){
+  try{
+    const raw = localStorage.getItem(LOGO_LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(_){ return null; }
+}
+
+function logoGetSrcForPDF(){
+  const c = logoGetCustom();
+  return (c?.src) ? c.src : LOGO_MINIMALIST;
+}
+
+function logoGetNomeEmpresa(){
+  const c = logoGetCustom();
+  return (c?.nome) ? c.nome : 'Chaos Arquitetura e Urbanismo';
+}
+
+function openLogoModal(){
+  const c = logoGetCustom();
+  const img = $('logo-preview-img');
+  if(img) img.src = c?.src || LOGO_MINIMALIST;
+  const n = $('logo-nome'); if(n) n.value = c?.nome || '';
+  const s = $('logo-sub');  if(s) s.value  = c?.sub  || '';
+  logoPreviewUpdate();
+  const st = $('logo-modal-status'); if(st) st.textContent='';
+  $('logo-file-status').textContent = c?.src ? '✓ Logo personalizado carregado' : 'Nenhum logo enviado';
+  $('logo-modal').style.display='flex';
+}
+
+function closeLogoModal(){
+  $('logo-modal').style.display='none';
+}
+
+function logoPreviewUpdate(){
+  const nome = $('logo-nome')?.value?.trim() || '—';
+  const sub  = $('logo-sub')?.value?.trim()  || '—';
+  const pn = $('logo-preview-nome'); if(pn) pn.textContent = nome;
+  const ps = $('logo-preview-sub');  if(ps) ps.textContent = sub;
+}
+
+function logoFileChange(evt){
+  const file = evt?.target?.files?.[0];
+  if(!file){ return; }
+  if(file.size > 400*1024){
+    $('logo-file-status').textContent = '✗ Arquivo muito grande (máx. 400 KB)';
+    $('logo-file-status').style.color='var(--err)';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    const src = e.target.result;
+    const img = $('logo-preview-img');
+    if(img) img.src = src;
+    window._logoTempSrc = src;
+    $('logo-file-status').textContent = '✓ '+file.name;
+    $('logo-file-status').style.color='var(--green)';
+  };
+  reader.readAsDataURL(file);
+}
+
+function logoSave(){
+  const nome = $('logo-nome')?.value?.trim() || '';
+  const sub  = $('logo-sub')?.value?.trim()  || '';
+  const src  = window._logoTempSrc || logoGetCustom()?.src || null;
+  const payload = {nome, sub};
+  if(src) payload.src = src;
+  try{
+    localStorage.setItem(LOGO_LS_KEY, JSON.stringify(payload));
+    const st = $('logo-modal-status');
+    if(st){ st.textContent='✓ Identidade salva com sucesso!'; st.style.color='var(--green)'; }
+    window._logoTempSrc = null;
+    setTimeout(closeLogoModal, 1200);
+  }catch(e){
+    const st = $('logo-modal-status');
+    if(st){ st.textContent='Erro ao salvar: '+e.message; st.style.color='var(--err)'; }
+  }
+}
+
+function logoReset(){
+  localStorage.removeItem(LOGO_LS_KEY);
+  window._logoTempSrc = null;
+  const img = $('logo-preview-img'); if(img) img.src = LOGO_MINIMALIST;
+  const n = $('logo-nome'); if(n) n.value='';
+  const s = $('logo-sub');  if(s) s.value='';
+  logoPreviewUpdate();
+  $('logo-file-status').textContent='Logo padrão restaurado';
+  $('logo-file-status').style.color='var(--faint)';
+}
+
+// ══════════════════════════════════════════════
+// FEATURE: PENDENTES — novos cadastros aguardando
+// ══════════════════════════════════════════════
+
+
+
+
+// ══════════════════════════════════════════════
+// FEATURE: LOGO CUSTOMIZADO por usuário
+// Armazenado em localStorage — sem dependência de servidor
+// ══════════════════════════════════════════════
+
+
 </script>
 
 </html>
