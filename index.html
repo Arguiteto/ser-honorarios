@@ -296,7 +296,12 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 .simgeo-attr .b{color:var(--text);word-break:break-word;font-family:monospace}
 .simgeo-empty{padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6}
 .simgeo-small-link{font-size:10px;color:var(--e);text-decoration:none;border-bottom:0.5px solid var(--eb)}
-@media(max-width:760px){.simgeo-wrap{grid-template-columns:1fr}.simgeo-kpis{grid-template-columns:1fr 1fr}.simgeo-attr{grid-template-columns:1fr}}
+.simgeo-filterbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-.2rem 0 1rem;padding:.75rem;border:0.5px solid var(--border);border-radius:10px;background:var(--surf2)}
+.simgeo-filterbar .iw{flex:1;min-width:190px;background:var(--surface);border:0.5px solid var(--border-em);border-radius:8px;padding:4px 9px}
+.simgeo-filterbar .iw input{font-size:12px}
+.simgeo-filter-count{font-size:10.5px;color:var(--faint);line-height:1.45;margin:-.45rem 0 .85rem}
+.simgeo-layer.sg-hidden{display:none!important}
+@media(max-width:760px){.simgeo-wrap{grid-template-columns:1fr}.simgeo-kpis{grid-template-columns:1fr 1fr}.simgeo-attr{grid-template-columns:1fr}.simgeo-filterbar{align-items:stretch}.simgeo-filterbar .btn{flex:1}}
 
 /* ── PORTAIS NACIONAIS ──────────────────────────── */
 .portal-section-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin:1.2rem 0 .6rem;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
@@ -5856,6 +5861,48 @@ function simgeoAddressText(address){
   return [via,geo].filter(Boolean).join(' · ');
 }
 
+function simgeoLayerSearchText(result){
+  const parts=[result?.layer?.title,result?.method,result?.layer?.url];
+  (result?.features||[]).slice(0,5).forEach(feature=>{
+    usefulAttrs(feature?.attributes).forEach(([k,v])=>{
+      parts.push(cleanAttrKey(k), formatAttrValue(v));
+    });
+  });
+  return normTxt(parts.filter(Boolean).join(' '));
+}
+
+function simgeoApplyLayerFilter(){
+  const input=$('sg-layer-filter');
+  const raw=String(input?.value||'').trim();
+  const terms=normTxt(raw).split(/\s+/).filter(Boolean);
+  const layers=[...document.querySelectorAll('#sg-result details.simgeo-layer[data-sg-search]')];
+  let visible=0;
+  layers.forEach(layer=>{
+    const hay=layer.getAttribute('data-sg-search')||'';
+    const match=!terms.length || terms.every(term=>hay.includes(term));
+    layer.classList.toggle('sg-hidden',!match);
+    if(match){
+      visible++;
+      if(terms.length) layer.open=true;
+    }
+  });
+  const count=$('sg-filter-count');
+  if(count){
+    count.textContent=terms.length
+      ? `Mostrando ${visible} de ${layers.length} camada(s) com dados para “${raw}”.`
+      : `Mostrando todas as ${layers.length} camada(s) com dados.`;
+  }
+  if(terms.length && !visible) simgeoStatus('Nenhuma camada com dados encontrou esse filtro. Tente outro termo.','err');
+  else if(terms.length) simgeoStatus(`Filtro aplicado: ${visible} camada(s) encontrada(s).`,'ok');
+}
+
+function simgeoClearLayerFilter(){
+  const input=$('sg-layer-filter');
+  if(input) input.value='';
+  simgeoApplyLayerFilter();
+  simgeoStatus('Filtro de camadas limpo.','ok');
+}
+
 function renderSimgeoResult(data){
   const found=data.results.filter(r=>r.features?.length);
   const cards=`
@@ -5872,15 +5919,20 @@ function renderSimgeoResult(data){
     <button class="btn ghost" onclick="copySimgeoResult()">Copiar resumo</button>
     <button class="btn ghost" onclick="abrirSimgeoMapa()">Abrir mapa oficial</button>
   </div>`;
+  const filterBar=found.length?`<div class="simgeo-filterbar" id="simgeo-filterbar">
+    <div class="iw"><input type="search" id="sg-layer-filter" placeholder="Filtrar nas camadas encontradas: zoneamento, lote, bairro, APP..." onkeydown="if(event.key==='Enter')simgeoApplyLayerFilter()"></div>
+    <button class="btn solid" onclick="simgeoApplyLayerFilter()">Filtrar camadas</button>
+    <button class="btn ghost" onclick="simgeoClearLayerFilter()">Mostrar todas</button>
+  </div><div class="simgeo-filter-count" id="sg-filter-count">Mostrando todas as ${found.length} camada(s) com dados.</div>`:'';
   const body=found.length ? found.map((r,idx)=>{
     const feature=r.features[0]||{};
     const attrs=usefulAttrs(feature.attributes);
     const rows=attrs.length?attrs.map(([k,v])=>`<div class="simgeo-attr"><div class="a">${esc(cleanAttrKey(k))}</div><div class="b">${esc(formatAttrValue(v))}</div></div>`).join(''):'<div class="simgeo-muted">A camada retornou feição, mas sem atributos públicos úteis.</div>';
-    return `<details class="simgeo-layer" ${idx<10?'open':''}><summary>${esc(r.layer.title)} <span>${r.features.length} registro(s) · ${esc(r.method||'consulta')}</span></summary><div class="simgeo-attrs">${rows}</div></details>`;
+    return `<details class="simgeo-layer" data-sg-search="${esc(simgeoLayerSearchText(r))}" ${idx<10?'open':''}><summary>${esc(r.layer.title)} <span>${r.features.length} registro(s) · ${esc(r.method||'consulta')}</span></summary><div class="simgeo-attrs">${rows}</div></details>`;
   }).join('') : `<div class="simgeo-empty">A varredura rodou, mas nenhuma camada pública retornou atributos para este ponto.<br><br>Isso costuma acontecer quando o WebMap permite visualizar a camada, mas o serviço bloqueia identificação/consulta externa, ou quando o endereço geocodificado caiu fora do lote correto. Tente clicar no mapa oficial, copiar a coordenada exata do lote e consultar novamente.</div>`;
   const err=data.errors.length?`<details class="simgeo-layer" style="margin-top:1rem"><summary>Diagnóstico técnico <span>${data.errors.length} aviso(s)</span></summary><div class="simgeo-attrs"><div class="simgeo-muted">A consulta agora usa ArcGIS JS API, identify em MapServer e query em FeatureLayer. Estes avisos indicam camadas que o serviço não deixou consultar.</div>${data.errors.slice(0,25).map(e=>`<div class="simgeo-attr"><div class="a">${esc(e.layer?.title||'Camada')}</div><div class="b">${esc(e.error)}</div></div>`).join('')}</div></details>`:'';
   const meta=`<div class="simgeo-muted" style="margin-top:1rem">WebMap: ${esc(data.webMapId)} · Camadas descobertas: ${data.totalDiscovered} · Serviços MapServer: ${data.mapServices?.length||0}</div>`;
-  $('sg-result').innerHTML=cards+actions+body+err+meta;
+  $('sg-result').innerHTML=cards+actions+filterBar+body+err+meta;
 }
 
 function simgeoPlainText(){
