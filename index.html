@@ -2500,14 +2500,12 @@ async function authRecover(){
   try{
     if(!sb) sb = await initSupabaseClient();
     if(!sb){ authSetMessage('Serviço indisponível. Verifique sua conexão e recarregue.'); return; }
-    const url = new URL(window.location.href);
-    url.hash = '';
-    url.search = '';
-    url.searchParams.set('type','recovery');
-    const redirectTo = url.toString();
+    // Página dedicada para recuperação de senha.
+    // Importante: esta URL precisa estar liberada no Supabase > Authentication > URL Configuration.
+    const redirectTo = getAuthRedirectUrl('recuperar-senha.html');
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
     if(error) throw error;
-    authSetMessage('✓ Solicitação enviada. Verifique a caixa de entrada e o spam. Se não chegar, confira a URL de redirecionamento no Supabase Auth.', true);
+    authSetMessage('✓ Se este e-mail estiver cadastrado, enviaremos um link de recuperação. Verifique caixa de entrada, spam e promoções.', true);
   }catch(e){
     const m = e?.message || String(e);
     authSetMessage(m.includes('Failed to fetch') ? 'Sem conexão com o servidor.' : 'Não foi possível enviar o e-mail de recuperação: '+m);
