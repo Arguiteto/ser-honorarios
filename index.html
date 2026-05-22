@@ -2026,13 +2026,13 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Adicionar usuário</h2>
         <p style="font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem">A pessoa precisa criar conta no sistema primeiro. Depois, adicione o e-mail aqui para liberar acesso à empresa.</p>
         <div class="field"><label>E-mail do usuário</label><div class="iw"><input type="email" id="eq-email" placeholder="usuario@email.com" autocomplete="off" onkeydown="if(event.key==='Enter')equipeAdd()"></div></div>
-        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="minion">Minion</option><option value="arquiteto">Arquiteto</option><option value="financeiro">Financeiro</option><option value="dono">Dono</option></select></div></div>
+        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="minion">Metecos</option><option value="arquiteto">Arquiteto</option><option value="financeiro">Financeiro</option><option value="dono">Dono</option></select></div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem">
           <button class="btn solid" onclick="equipeAdd()">Adicionar à equipe</button>
           <button class="btn ghost" onclick="equipeLoad()">Atualizar lista</button>
         </div>
         <div id="eq-status" style="font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem"></div>
-        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis: <b>dono</b> tem acesso total e vê valores da empresa nos gráficos; <b>financeiro</b> vê valores e gráficos da empresa; <b>Arquiteto</b> tem acesso às ferramentas, mas os gráficos financeiros ficam restritos às próprias propostas; <b>Minion</b> acessa propostas, projetos, anexos, escopos, SIMGEO, LabEEE, Mapoteca, Materiais e NBR.</div>
+        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis: <b>dono</b> tem acesso total e vê valores da empresa nos gráficos; <b>financeiro</b> vê valores e gráficos da empresa; <b>Arquiteto</b> tem acesso às ferramentas, mas os gráficos financeiros ficam restritos às próprias propostas; <b>Metecos</b> acessa apenas as ferramentas liberadas: Volumetria 3D, LabEEE, Mapoteca, Cálculos técnicos, Pranchas CAD, SIMGEO, Materiais e Normas NBR.</div>
       </section>
       <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Usuários da empresa</h2>
@@ -2657,14 +2657,14 @@ function normalizedRole(role){
 }
 
 function roleLabel(role){
-  return ({dono:'Dono',arquiteto:'Arquiteto',minion:'Minion',financeiro:'Financeiro'}[normalizedRole(role)] || role || '—');
+  return ({dono:'Dono',arquiteto:'Arquiteto',minion:'Metecos',financeiro:'Financeiro'}[normalizedRole(role)] || role || '—');
 }
 
 function canUseTool(tool){
   const r=normalizedRole(currentRole);
   if(!r) return true; // evita bloquear enquanto o perfil carrega
   if(r==='dono' || r==='arquiteto') return true;
-  const minionTools=['home','new','props','simgeo','labeee','mapoteca','calctec','sheetgen','materiais','nbr'];
+  const minionTools=['threejs','labeee','mapoteca','calctec','sheetgen','simgeo','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
   if(r==='minion') return minionTools.includes(tool);
   if(r==='financeiro') return financeiroTools.includes(tool);
@@ -3519,16 +3519,55 @@ async function plannerInit(){
   if(plannerTimer) clearInterval(plannerTimer);
   plannerTimer=setInterval(()=>plannerLoad(false),60000);
 }
+function plannerUserIsInEvent(ev){
+  const uid=String(user?.id||'');
+  if(!uid || !ev) return false;
+  if(String(ev.criado_por||'')===uid) return true;
+  const participantes=Array.isArray(ev.participantes)?ev.participantes:[];
+  return participantes.some(p=>String(p?.user_id||p?.id||p?.usuario_id||'')===uid);
+}
+function plannerFilterVisibleEvents(rows){
+  const all=Array.isArray(rows)?rows:[];
+  // A notificação e a lista do usuário devem mostrar somente avisos em que ele foi marcado
+  // ou avisos criados por ele. Isso evita alerta para toda a equipe.
+  return all.filter(plannerUserIsInEvent);
+}
+async function plannerLoadUsers(){
+  let rows=[];
+  let firstError=null;
+  try{
+    const usersRes=await sb.rpc('planner_listar_usuarios');
+    if(usersRes.error) throw usersRes.error;
+    rows=Array.isArray(usersRes.data)?usersRes.data:[];
+  }catch(e){
+    firstError=e;
+  }
+
+  // Fallback: em algumas instalações a RPC do Planner fica limitada pela RLS
+  // e retorna só o login atual. Para Dono/Arquiteto/Financeiro usamos a mesma
+  // listagem da tela Equipe para montar os marcáveis.
+  const onlyMe=rows.length<=1 && rows.every(u=>String(u.user_id||'')===String(user?.id||''));
+  if(onlyMe && ['dono','arquiteto','financeiro'].includes(normalizedRole(currentRole))){
+    try{
+      const eqRes=await sb.rpc('listar_equipe',{p_empresa_id:null});
+      if(eqRes.error) throw eqRes.error;
+      const equipeRows=Array.isArray(eqRes.data)?eqRes.data:[];
+      if(equipeRows.length){ rows=equipeRows.filter(r=>r.ativo!==false); }
+    }catch(e){
+      console.warn('Fallback listar_equipe para Planner indisponível:', e?.message||e);
+      if(!rows.length && firstError) throw firstError;
+    }
+  }
+  return rows;
+}
 async function plannerLoad(forceRender=true){
   if(!sb || !user) return;
   const range=plannerMonthRange();
   try{
-    const usersRes=await sb.rpc('planner_listar_usuarios');
-    if(usersRes.error) throw usersRes.error;
-    plannerUsers=Array.isArray(usersRes.data)?usersRes.data:[];
+    plannerUsers=await plannerLoadUsers();
     const {data,error}=await sb.rpc('planner_listar_eventos',{p_de:plannerDateKey(range.start),p_ate:plannerDateKey(range.end)});
     if(error) throw error;
-    plannerEvents=Array.isArray(data)?data:[];
+    plannerEvents=plannerFilterVisibleEvents(data);
     plannerSetStatus('');
     if(forceRender) plannerRenderAll(); else plannerRenderFloatingAlert();
   }catch(e){
@@ -3546,12 +3585,14 @@ function plannerRenderAll(){
 }
 function plannerRenderUsers(){
   const wrap=$('planner-users'); if(!wrap) return;
-  if(!plannerUsers.length){ wrap.innerHTML='<span class="planner-muted">Nenhum usuário da equipe encontrado.</span>'; return; }
-  wrap.innerHTML=plannerUsers.map(u=>{
-    const id=esc(u.user_id||'');
-    const nome=esc(u.nome || (u.email||'').split('@')[0] || 'usuário');
+  const rows=(Array.isArray(plannerUsers)?plannerUsers:[]).filter(u=>u && u.ativo!==false);
+  if(!rows.length){ wrap.innerHTML='<span class="planner-muted">Nenhum usuário da equipe encontrado. Abra Equipe, aprove os usuários e atualize o Planner.</span>'; return; }
+  wrap.innerHTML=rows.map(u=>{
+    const rawId=String(u.user_id||u.id||'');
+    const id=esc(rawId);
+    const nome=esc(u.nome || u.display_name || (u.email||'').split('@')[0] || 'usuário');
     const email=esc(u.email || '');
-    const checked=(u.user_id===user?.id)?'checked':'';
+    const checked=(rawId===String(user?.id||''))?'checked':'';
     return `<label class="planner-user-check" title="${email}"><input type="checkbox" class="pl-user" value="${id}" ${checked}> <span>${nome}<span style="color:var(--faint)"> · ${roleLabel(u.papel)}</span></span></label>`;
   }).join('');
 }
@@ -6990,7 +7031,7 @@ init();
       <div class="planner-head">
         <div>
           <h2>Planner</h2>
-          <p class="planner-muted">Calendário da equipe. Marque usuários para eles receberem aviso no sistema.</p>
+          <p class="planner-muted">Calendário da equipe. A notificação aparece somente para os usuários marcados.</p>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
           <button class="btn ghost" onclick="plannerChangeMonth(-1)">←</button>
@@ -8142,7 +8183,7 @@ async function equipeLoadPending(){
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
           <select id="pend-papel-${uid}" style="font-family:inherit;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none">
-            <option value="minion">Minion</option>
+            <option value="minion">Metecos</option>
             <option value="arquiteto">Arquiteto</option>
             <option value="financeiro">Financeiro</option>
             <option value="dono">Dono</option>
