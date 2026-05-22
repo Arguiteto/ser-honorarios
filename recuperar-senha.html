@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="8">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Recuperar senha — Chaos</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+(function(){
+  function tryLoad(urls, idx){
+    if(idx >= urls.length) return;
+    var s = document.createElement('script');
+    s.src = urls[idx];
+    s.onerror = function(){ tryLoad(urls, idx+1); };
+    document.head.appendChild(s);
+  }
+  tryLoad([
+    'https://unpkg.com/@supabase/supabase-js@2.46.1/dist/umd/supabase.js',
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.46.1/dist/umd/supabase.js',
+    'https://esm.sh/@supabase/supabase-js@2.46.1/dist/umd/supabase.js'
+  ], 0);
+})();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1e14;--surface:#142010;--surf2:#1c2e18;--border:rgba(80,160,80,.22);--border-em:rgba(80,160,80,.34);--text:#d8f0d0;--muted:#80b878;--faint:#55784d;--e:#5aa84a;--el:#0e1e0a;--eb:#284820;--err:#d05050;--errl:#1a0808;--errb:#a03030;--green:#5aa84a}
+body{min-height:100vh;background:radial-gradient(circle at 50% 0,rgba(90,168,74,.16),transparent 34%),var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:min(92vw,440px);background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:32px 28px;box-shadow:0 24px 80px rgba(0,0,0,.32)}
+.brand{text-align:center;font-family:Georgia,serif;font-size:24px;color:var(--e);margin-bottom:6px}.sub{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:24px}.icon{width:54px;height:54px;border-radius:16px;background:var(--el);border:1px solid var(--eb);display:grid;place-items:center;margin:0 auto 18px;color:var(--e);font-size:23px}h1{text-align:center;font-family:Georgia,serif;font-size:27px;font-weight:400;line-height:1.15;margin-bottom:10px}p{text-align:center;font-size:13px;line-height:1.65;color:var(--muted);margin:0 auto 20px;max-width:360px}.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}.field label{font-size:11px;color:var(--muted)}.iw{display:flex;align-items:center;border-bottom:1px solid var(--border-em);transition:border-color .2s;padding-bottom:3px}.iw:focus-within{border-bottom-color:var(--e)}input{border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);width:100%;padding:7px 0}input::placeholder{color:var(--faint)}.btn{width:100%;display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 18px;border-radius:8px;border:1px solid var(--e);background:var(--e);color:#fff;text-decoration:none;font-size:13px;font-weight:600;cursor:pointer;transition:transform .15s,opacity .15s;margin-top:6px}.btn:hover{transform:translateY(-1px);opacity:.9}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.btn.ghost{background:transparent;border-color:var(--border-em);color:var(--muted)}.msg{min-height:18px;text-align:center;font-size:11px;line-height:1.5;color:var(--err);margin-top:13px}.msg.ok{color:var(--green)}.small{text-align:center;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--faint);line-height:1.5}.hidden{display:none!important}.warn{border:1px solid var(--border);background:var(--surf2);border-radius:12px;padding:12px 14px;margin:16px 0;color:var(--muted);font-size:12px;line-height:1.55;text-align:center}.error .icon{background:var(--errl);border-color:var(--errb);color:var(--err)}
+</style>
+</head>
+<body>
+  <main class="card" id="card">
+    <div class="brand">Chaos</div>
+    <div class="sub">Arquitetura e Urbanismo</div>
+    <div class="icon" id="icon">↺</div>
+    <h1 id="title">Criar nova senha</h1>
+    <p id="lead">Digite uma nova senha para finalizar a recuperação da sua conta.</p>
+
+    <div id="form-wrap">
+      <div class="field"><label for="new-pass">Nova senha</label><div class="iw"><input type="password" id="new-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div></div>
+      <div class="field"><label for="confirm-pass">Confirmar nova senha</label><div class="iw"><input type="password" id="confirm-pass" placeholder="Repita a nova senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')updatePassword()"></div></div>
+      <button class="btn" id="save-btn" onclick="updatePassword()">Atualizar senha</button>
+    </div>
+
+    <div class="warn hidden" id="success-box">Senha atualizada com sucesso. Agora volte para o login e entre com sua nova senha.</div>
+    <a class="btn ghost hidden" id="login-link" href="index.html">Voltar para o login</a>
+    <div class="msg" id="msg">Validando link de recuperação...</div>
+    <div class="small">Se o link tiver expirado, volte ao login e peça uma nova recuperação.</div>
+  </main>
+<script>
+const SUPABASE_URL = 'https://wbcefatwxorbepbjbokw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BcGStnHOrhs_UHsg8hcLQA_Yt7nahWM';
+let sb = null;
+let recoveryReady = false;
+const $ = id => document.getElementById(id);
+function cleanUrl(){ try{ history.replaceState(null, document.title, window.location.pathname); }catch(_e){} }
+function setMsg(text, ok=false){ const el=$('msg'); el.textContent=text||''; el.classList.toggle('ok', !!ok); }
+function showInvalid(text){ $('card').classList.add('error'); $('icon').textContent='!'; $('title').textContent='Link não validado'; $('lead').textContent='Não conseguimos validar a recuperação de senha.'; $('form-wrap').classList.add('hidden'); $('login-link').classList.remove('hidden'); setMsg(text || 'Volte ao login e solicite outro link de recuperação.'); }
+function showReady(){ recoveryReady = true; $('card').classList.remove('error'); $('icon').textContent='✓'; setMsg('Link validado. Você já pode criar uma nova senha.', true); }
+function showSuccess(){ $('icon').textContent='✓'; $('title').textContent='Senha atualizada'; $('lead').textContent='Tudo certo. Sua senha foi alterada.'; $('form-wrap').classList.add('hidden'); $('success-box').classList.remove('hidden'); $('login-link').classList.remove('hidden'); setMsg(''); cleanUrl(); }
+async function waitForSupabase(){
+  for(let i=0;i<60;i++){
+    if(window.supabase?.createClient) return true;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  return false;
+}
+async function init(){
+  const ok = await waitForSupabase();
+  if(!ok){ showInvalid('Biblioteca do Supabase não carregou. Verifique a conexão e recarregue.'); return; }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { detectSessionInUrl: true, persistSession: true, autoRefreshToken: true, flowType: 'pkce' } });
+  sb.auth.onAuthStateChange((event, session)=>{
+    if(event === 'PASSWORD_RECOVERY' || (session?.user && !recoveryReady)) showReady();
+  });
+  const search = new URLSearchParams(window.location.search || '');
+  const hash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+  const err = search.get('error_description') || hash.get('error_description') || search.get('error') || hash.get('error');
+  if(err){ showInvalid(decodeURIComponent(err).replace(/\+/g,' ')); return; }
+  try{
+    const code = search.get('code');
+    if(code){
+      const { error } = await sb.auth.exchangeCodeForSession(code);
+      if(error) throw error;
+    }
+    await new Promise(r=>setTimeout(r,700));
+    const { data } = await sb.auth.getSession();
+    if(data?.session?.user) showReady();
+    else showInvalid('Sessão de recuperação não encontrada. O link pode ter expirado ou já ter sido usado.');
+  }catch(e){
+    showInvalid(e?.message || 'Não foi possível validar o link de recuperação.');
+  }
+}
+async function updatePassword(){
+  if(!recoveryReady){ setMsg('O link ainda não foi validado.'); return; }
+  const p = $('new-pass').value;
+  const c = $('confirm-pass').value;
+  if(p.length < 6){ setMsg('A senha precisa ter ao menos 6 caracteres.'); return; }
+  if(p !== c){ setMsg('As senhas não coincidem.'); return; }
+  const btn = $('save-btn');
+  btn.disabled = true; btn.textContent = 'Atualizando...';
+  try{
+    const { error } = await sb.auth.updateUser({ password: p });
+    if(error) throw error;
+    try{ await sb.auth.signOut(); }catch(_e){}
+    showSuccess();
+  }catch(e){
+    setMsg('Não foi possível atualizar a senha: ' + (e?.message || String(e)));
+  }finally{
+    btn.disabled = false; btn.textContent = 'Atualizar senha';
+  }
+}
+init();
+</script>
+</body>
+</html>
