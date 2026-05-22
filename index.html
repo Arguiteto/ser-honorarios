@@ -2000,15 +2000,19 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
 
     <!-- Pendentes: novos cadastros aguardando aprovação -->
-    <div id="eq-pending-wrap" style="margin-bottom:14px;background:var(--surface);border:0.5px solid #D4A96A;border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035);display:none">
+    <div id="eq-pending-wrap" style="margin-bottom:14px;background:var(--surface);border:0.5px solid #D4A96A;border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px">
         <div>
-          <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.2rem">⏳ Novos cadastros aguardando</h2>
-          <p style="font-size:11px;color:var(--faint);line-height:1.5;margin:0">Esses usuários criaram conta mas ainda não foram adicionados à equipe. Aprove ou ignore cada um.</p>
+          <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.2rem">⏳ Novos cadastros aguardando aprovação</h2>
+          <p style="font-size:11px;color:var(--faint);line-height:1.5;margin:0">Usuários que criaram conta mas ainda não foram vinculados à equipe. Defina o papel e aprove.</p>
         </div>
         <button class="btn ghost" style="font-size:11px" onclick="equipeLoadPending()">↺ Atualizar</button>
       </div>
-      <div id="eq-pending-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div id="eq-pending-list">
+        <div style="padding:1.2rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6">
+          Carregando…
+        </div>
+      </div>
     </div>
 
     <div style="display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:14px;align-items:start">
@@ -2804,6 +2808,7 @@ function showEquipe(){
   $('equipe-view').style.display='block';
   setTool('equipe');
   equipeLoad();
+  equipeLoadPending(); // carrega pendentes automaticamente ao abrir
 }
 
 
@@ -5836,7 +5841,8 @@ async function exportSimgeoPDF(){
       const rows=usefulAttrs(r.features[0]?.attributes).slice(0,18).map(([k,v])=>`<tr><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(cleanAttrKey(k))}</td><td style="padding:6px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(formatAttrValue(v))}</td></tr>`).join('');
       return `<div style="break-inside:avoid;margin-bottom:14px;border:1px solid #F2EDE2;border-radius:8px;overflow:hidden"><div style="background:#F5EDE2;padding:9px 11px;color:#8B5E3C;font-family:system-ui,sans-serif;font-size:11px;font-weight:600">${esc(r.layer.title)}</div><table style="width:100%;border-collapse:collapse">${rows||'<tr><td style="padding:9px;color:#B0A090;font-size:10px;font-family:system-ui,sans-serif">Sem atributos públicos úteis.</td></tr>'}</table></div>`;
     }).join(''):'<div style="font-size:12px;color:#B0A090;font-family:system-ui,sans-serif">Nenhuma camada retornou dados para este ponto.</div>';
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
+    const logoPng = await logoSvgToPng(logoGetSrcForPDF());
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:8px">Local consultado</div><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#2C1F12;margin-bottom:6px">${esc(simgeoAddressText(d.point.address))}</div><div style="font-size:12px;color:#8B5E3C;font-family:monospace">${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}</div><div style="font-size:10px;color:#7A6A56;margin-top:6px">Camadas lidas: ${d.results.length} · Camadas com dados: ${found.length}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Dados retornados</div>${layerBlocks}<div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: camadas públicas disponíveis no WebApp SIMGEO/CTM. Esta ficha é uma coleta auxiliar; confira informações oficiais no portal antes de protocolar ou tomar decisão técnica.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('consulta-simgeo-'+d.when.toISOString().slice(0,10),'consulta-simgeo');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6146,7 +6152,8 @@ async function exportMapotecaPDF(){
   try{
     const d=mapotecaLastResult; const info=d.info||{}; const best=d.search.candidates[0];
     const rows=[['Endereço',mapotecaAddressText(d.point.address)],['Coordenadas',`${d.point.lat.toFixed(7)}, ${d.point.lng.toFixed(7)}`],['Bairro',info.bairro||d.point.address?.bairro||'—'],['Loteamento',info.loteamento||'—'],['Quadra',info.quadra||'—'],['Lote',info.lote||'—'],['Área',info.area||'—'],['Cadastro/inscrição',info.cadastro||'—'],['Arquivo',best?best.title:'Não confirmado'],['Link',best?best.url:MAPOTECA_URL]].map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:34%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px;word-break:break-word">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
+    const logoPng = await logoSvgToPng(logoGetSrcForPDF());
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Terreno e arquivo encontrado</div><table style="width:100%;border-collapse:collapse">${rows}</table><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte: CEP/ViaCEP, geocodificação ArcGIS, camadas públicas do SIMGEO e links públicos da Mapoteca quando disponíveis. Conferir no portal oficial antes de protocolar.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('mapoteca-'+(info.bairro||d.point.address?.bairro||'terreno')+'-'+d.when.toISOString().slice(0,10),'mapoteca');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6350,7 +6357,8 @@ async function exportLabeeePDF(){
     const loc=[d.cidade,d.uf].filter(Boolean).join(' / ') || 'Local não informado';
     const rows=[['Local',loc],['CEP',`${d.cep?d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2'):'—'}${d.numero?' · nº '+d.numero:''}`],['Endereço aproximado',d.endereco?.geocodificado||'Localizado pelo CEP'],['Ponto usado',`${Number.isFinite(d.lat)?d.lat.toFixed(6):'—'}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):'—'}`],['Zona bioclimática 2005',d.zb?`ZB ${d.zb}`:'Confirmar no ZBBR'],['Zona LabEEE 2024',d.zb2024?`${d.zb2024} — ${d.zbi2024||''}`:'Não informada'],['Fachada',`${d.fachadaNome} (${d.fachada}°)`],['Alt. solar verão',d.alt.verao==null?'—':fmt(d.alt.verao)+'°'],['Alt. solar equinócio',d.alt.equinocio==null?'—':fmt(d.alt.equinocio)+'°'],['Alt. solar inverno',d.alt.inverno==null?'—':fmt(d.alt.inverno)+'°'],['Estratégia da fachada',d.estr.tipo],['Brise horizontal',d.pH>0?fmt(d.pH)+' m':'Não calculado'],['Brise vertical',d.pV>0?fmt(d.pV)+' m':'Não calculado'],['Ventilação mínima',d.zbi&&d.area>0?fmt(d.ventMin)+' m²':d.zbi?d.zbi.vent+'% da área do piso':'Confirmar ZB'],['Obstrução',d.alpha>0?fmt(d.alpha)+'°':'Não calculada']];
     const tr=rows.map(([a,b])=>`<tr><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;width:38%;font-family:system-ui,sans-serif;font-size:10px">${esc(a)}</td><td style="padding:7px 8px;border-bottom:0.5px solid #F2EDE2;color:#2C1F12;font-family:monospace;font-size:10px">${esc(b)}</td></tr>`).join('');
-    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
+    const logoPng = await logoSvgToPng(logoGetSrcForPDF());
+    const htmlContent=`<div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1;position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896"><div style="display:flex;align-items:center;gap:12px"><img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0"></div><div style="font-size:10px;color:#7A6A56;font-family:system-ui,sans-serif;text-align:right">${d.when.toLocaleString('pt-BR')}</div></div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:system-ui,sans-serif;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Síntese</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px">${tr}</table><div style="background:#F5EDE2;border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:system-ui,sans-serif"><div style="font-size:12px;color:#8B5E3C;font-weight:600;margin-bottom:6px">Diretriz preliminar</div><div style="font-size:11px;color:#2C1F12;line-height:1.6">${esc(d.estr.texto)} ${d.zbi?`Para ${'ZB '+d.zb}, priorizar ${esc(d.zbi.solar)} e ${esc(d.zbi.prot)}.`:'Confirme a zona bioclimática no ZBBR antes de fechar as recomendações.'}</div></div><div style="font-size:9px;color:#B0A090;font-family:system-ui,sans-serif;margin-top:18px;line-height:1.5">Fonte conceitual: ferramentas públicas do LabEEE/UFSC. Esta ficha é auxiliar e não substitui consulta ao Zoneamento Bioclimático Brasileiro, Analysis SOL-AR, Analysis BIO, ZBBR ou simulação termoenergética.</div></div>`;
     el=createPdfElement(htmlContent); await waitForImages(el); if(document.fonts?.ready) await document.fonts.ready; await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,900));
     const fn=safeFileName('labeee-'+(d.cidade||'analise')+'-'+d.when.toISOString().slice(0,10),'labeee');
     const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
@@ -6405,12 +6413,13 @@ async function exportPDF(){
         <td style="padding:8px 0;border-bottom:0.5px solid #F2EDE2;text-align:right;font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif">${esc((a.ext||'').toUpperCase())} · ${fmtBytes(a.size)}</td>
       </tr>`).join('');
 
+    const logoPng = await logoSvgToPng(logoGetSrcForPDF());
     const htmlContent=`
     <div style="font-family:Georgia,serif;color:#2C1F12;padding:40px 48px;max-width:700px;margin:0 auto;background:#FAF7F1">
       <div>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px;min-width:0">
-          <img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          <img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
           ${arq?`<div style="font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.35;max-width:180px">${arq}</div>`:''}
         </div>
         <div style="text-align:right">
@@ -6499,12 +6508,13 @@ async function exportCarta(){
     const dest=esc(destRaw), assunto=esc(assuntoRaw), arq=esc(arqRaw);
     const paragrafos=body.split('\n').map(p=>p.trim()?`<p style="margin:0 0 12px 0;font-size:13px;color:#2C1F12;line-height:1.8;text-align:justify">${esc(p)}</p>`:'<br>').join('');
 
+    const logoPng = await logoSvgToPng(logoGetSrcForPDF());
     const htmlContent=`
     <div style="font-family:Georgia,serif;color:#2C1F12;padding:60px 64px;max-width:680px;margin:0 auto;background:#FAF7F1;min-height:900px">
       <div>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:16px;border-bottom:1.5px solid #D4B896">
         <div style="display:flex;align-items:center;gap:12px">
-          <img src="${logoGetSrcForPDF()}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
+          <img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block;flex-shrink:0">
         </div>
         <div style="text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:#7A6A56">${dataBr}</div>
       </div>
@@ -7915,28 +7925,33 @@ async function equipeLoadPending(){
   const wrap = $('eq-pending-wrap');
   const list = $('eq-pending-list');
   if(!list) return;
-  list.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--faint);font-size:12px">Verificando...</div>';
+  list.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--faint);font-size:12px">Verificando…</div>';
   try{
     if(!sb) sb = await initSupabaseClient();
-    if(!sb) throw new Error('Sem conexão');
-    // Tenta via RPC dedicada primeiro
+    if(!sb) throw new Error('Sem conexão com o Supabase');
     let rows = [];
-    const {data, error} = await sb.rpc('listar_usuarios_pendentes').maybeSingle ? 
-      sb.rpc('listar_usuarios_pendentes') : 
-      sb.from('usuarios_pendentes').select('*').eq('aprovado', false).order('criado_em', {ascending:false});
-    if(!error && data) rows = Array.isArray(data) ? data : [data];
-    if(wrap) wrap.style.display = rows.length ? 'block' : 'none';
-    if(!rows.length){ list.innerHTML = ''; return; }
-    list.innerHTML = rows.map(r => {
+    // Busca direto na tabela — sem RPC customizada necessária
+    const {data, error} = await sb
+      .from('usuarios_pendentes')
+      .select('*')
+      .eq('aprovado', false)
+      .eq('ignorado', false)
+      .order('criado_em', {ascending: false});
+    if(!error && data) rows = data;
+    if(!rows.length){
+      list.innerHTML = '<div style="padding:1.2rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6">Nenhum cadastro pendente no momento.<br><span style="font-size:11px;opacity:.7">Novos usuários que criarem conta aparecerão aqui.</span></div>';
+      return;
+    }
+    list.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' + rows.map(r => {
       const email = esc(r.email || '');
       const nome  = esc(r.display_name || r.nome || email.split('@')[0] || 'Sem nome');
       const uid   = esc(r.user_id || r.id || '');
       const dt    = r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : '—';
-      return `<div style="border:0.5px solid var(--border);border-radius:10px;padding:.85rem;background:var(--surf2);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center">
+      return `<div style="border:0.5px solid var(--border);border-radius:10px;padding:.85rem;background:var(--surf2);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;flex-wrap:wrap">
         <div style="min-width:0">
           <div style="font-size:13px;color:var(--text);font-weight:500">${nome}</div>
           <div style="font-size:11px;color:var(--faint);margin-top:2px">${email}</div>
-          <div style="font-size:10px;color:var(--faint);margin-top:2px;font-family:monospace">${uid}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px;font-family:monospace;word-break:break-all">${uid}</div>
           <div style="font-size:10px;color:var(--faint);margin-top:3px">Cadastrado em: ${dt}</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
@@ -7950,9 +7965,12 @@ async function equipeLoadPending(){
           <button class="btn ghost"  style="font-size:10px;padding:5px 9px" onclick="equipeIgnorePending('${uid}')">Ignorar</button>
         </div>
       </div>`;
-    }).join('');
+    }).join('') + '</div>';
   }catch(e){
-    if(wrap) wrap.style.display = 'none';
+    list.innerHTML = `<div style="padding:1rem;color:var(--err);font-size:12px;text-align:center">
+      Não foi possível carregar pendentes.<br>
+      <span style="font-size:11px;opacity:.8">${esc(e?.message||String(e))}</span>
+    </div>`;
     console.warn('Pendentes:', e.message);
   }
 }
@@ -7978,7 +7996,9 @@ async function equipeIgnorePending(userId){
   if(!userId) return;
   try{
     if(!sb) sb = await initSupabaseClient();
-    await sb.from('usuarios_pendentes').update({aprovado:true, ignorado:true}).eq('user_id', userId);
+    await sb.from('usuarios_pendentes')
+      .update({aprovado:true, ignorado:true})
+      .eq('user_id', userId);
     await equipeLoadPending();
   }catch(e){ console.warn('Ignorar pendente:', e); }
 }
@@ -8077,6 +8097,31 @@ async function initRealtimePresence(){
 // ══════════════════════════════════════════════
 
 const LOGO_LS_KEY = 'chaos_custom_logo_v1'; // { src:base64, nome, sub }
+
+// Converte SVG data-url para PNG via canvas
+// html2canvas não renderiza SVGs com <font>/<text> embutidos corretamente
+function logoSvgToPng(src, w=356, h=84){
+  return new Promise(resolve=>{
+    if(!src || !src.startsWith('data:image/svg')){
+      resolve(src); return; // já é PNG ou custom
+    }
+    try{
+      const img = new Image();
+      img.onload = ()=>{
+        try{
+          const cv = document.createElement('canvas');
+          cv.width  = w * 2; // 2x para nitidez
+          cv.height = h * 2;
+          const ctx = cv.getContext('2d');
+          ctx.drawImage(img, 0, 0, cv.width, cv.height);
+          resolve(cv.toDataURL('image/png'));
+        }catch(e){ resolve(src); }
+      };
+      img.onerror = ()=>resolve(src);
+      img.src = src;
+    }catch(e){ resolve(src); }
+  });
+}
 
 function logoGetCustom(){
   try{
