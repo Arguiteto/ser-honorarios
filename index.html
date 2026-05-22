@@ -859,6 +859,16 @@ body.nbr-open #online-bar{display:none}
 @media(max-width:720px){#calc-tecnico-view{padding:1rem!important}.ct-kpis{grid-template-columns:1fr 1fr}.ct-tabs{flex-direction:column}.ct-tab{border-right:none;border-bottom:0.5px solid var(--border)}.ct-tab:last-child{border-bottom:none}}
 
 /* ── PLANNER / CALENDÁRIO ───────────────────────── */
+
+/* ── METECOS: acesso simplificado ───────────────── */
+#metecos-help-btn{display:none;align-items:center;gap:6px;font-size:10px!important;padding:6px 10px!important;border-radius:999px!important}
+body.role-minion #metecos-help-btn{display:inline-flex!important}
+body.role-minion #logo-admin-btn,
+body.role-minion #planner-toggle,
+body.role-minion #planner-alert,
+body.role-minion #planner-panel,
+body.role-minion #planner-hall-card{display:none!important}
+
 body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #planner-panel,body.auth-mode #planner-hall-card{display:none!important}
 #planner-toggle{position:fixed;right:24px;bottom:86px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--e),var(--eb));border:1px solid var(--border-em);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s,border-color .2s;z-index:9998;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.15rem}
 #planner-toggle:hover,#planner-toggle.open{transform:scale(1.08);box-shadow:0 12px 36px rgba(0,0,0,.24);border-color:var(--e)}
@@ -1073,6 +1083,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       <img id="hdr-logo-img" src="" alt="Chaos">
       Chaos
     </div>
+    <button class="btn ghost name-btn" id="metecos-help-btn" onclick="openMetecosHelp()" title="Instruções de uso para Metecos">❔ Como usar</button>
     <div style="flex:1"></div>
     <div class="hdr-right">
       <span class="hdr-user" id="hdr-user"></span>
@@ -1114,7 +1125,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         </div>
       </div>
       <button class="btn ghost name-btn" onclick="changeDisplayName()" title="Alterar nome exibido online">Nome</button>
-      <button class="btn ghost name-btn" onclick="openLogoModal()" title="Personalizar logo e empresa nos PDFs e documentos">🖼 Logo</button>
+      <button class="btn ghost name-btn" id="logo-admin-btn" onclick="openLogoModal()" title="Personalizar logo e empresa nos PDFs e documentos">🖼 Logo</button>
       <div class="theme-picker" id="theme-picker">
         <button class="tp-trigger" onclick="tpToggle(event)" title="Escolher tema">
           <div class="tp-preview" id="tp-preview"></div>
@@ -2051,6 +2062,21 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 </div>
 
 <!-- MODAL LOGO CUSTOMIZADO -->
+<div id="metecos-help-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeMetecosHelp()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeMetecosHelp()">✕</button>
+    <h2>Como usar — Metecos</h2>
+    <p style="font-size:12px;color:var(--faint);line-height:1.65;margin-bottom:1rem">Este perfil tem acesso somente às ferramentas técnicas liberadas. O Planner e a personalização de Logo ficam ocultos para manter a tela mais simples.</p>
+    <div style="display:grid;gap:8px;margin-bottom:1rem">
+      <div style="border:0.5px solid var(--border);border-radius:10px;padding:.8rem;background:var(--surf2);font-size:12px;line-height:1.55;color:var(--muted)"><b style="color:var(--text)">1. Escolha uma ferramenta</b><br>Use o menu lateral para abrir Volumetria 3D, LabEEE, Mapoteca, Cálculos técnicos, Pranchas CAD, SIMGEO, Materiais ou Normas NBR.</div>
+      <div style="border:0.5px solid var(--border);border-radius:10px;padding:.8rem;background:var(--surf2);font-size:12px;line-height:1.55;color:var(--muted)"><b style="color:var(--text)">2. Preencha os campos</b><br>Digite as informações pedidas pela ferramenta e clique no botão principal, como Gerar, Calcular, Buscar ou Exportar.</div>
+      <div style="border:0.5px solid var(--border);border-radius:10px;padding:.8rem;background:var(--surf2);font-size:12px;line-height:1.55;color:var(--muted)"><b style="color:var(--text)">3. Use os resultados</b><br>Copie, exporte ou consulte os resultados conforme a opção disponível em cada ferramenta.</div>
+    </div>
+    <div style="font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem">Ferramentas disponíveis para Metecos: Volumetria 3D, LabEEE, Mapoteca, Cálculos técnicos, Pranchas CAD, SIMGEO, Materiais e Normas NBR.</div>
+    <button class="btn solid" onclick="closeMetecosHelp()">Entendi</button>
+  </div>
+</div>
+
 <div id="logo-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeLogoModal()">
   <div class="modal" style="max-width:520px;width:100%">
     <button class="modal-close" onclick="closeLogoModal()">✕</button>
@@ -2680,12 +2706,27 @@ function guardTool(tool){
 
 
 function applyRoleUI(){
+  const isMetecos = normalizedRole(currentRole)==='minion';
+  document.body.classList.toggle('role-minion', isMetecos);
   ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
   const chartTab=$('dt-chart');
   if(chartTab) chartTab.style.display=canUseTool('chart')?'':'none';
+  const logoBtn=$('logo-admin-btn');
+  if(logoBtn) logoBtn.style.display=isMetecos?'none':'';
+  const helpBtn=$('metecos-help-btn');
+  if(helpBtn) helpBtn.style.display=isMetecos?'inline-flex':'none';
+  if(isMetecos){
+    ['planner-toggle','planner-alert','planner-panel','planner-hall-card'].forEach(id=>{
+      const el=$(id);
+      if(el){ el.style.display='none'; el.classList.remove('open'); }
+    });
+    if(plannerTimer){ clearInterval(plannerTimer); plannerTimer=null; }
+    plannerLoaded=false;
+    plannerEvents=[];
+  }
 }
 
 function canSeeCompanyValues(){
@@ -2780,7 +2821,7 @@ async function loadCurrentRole(){
     console.warn('Não foi possível carregar perfil da empresa:', e);
   }
   applyRoleUI();
-  plannerInit();
+  if(normalizedRole(currentRole)!=='minion') plannerInit();
 }
 
 // ── PRESENCE (online users) ───────────────────────
@@ -3507,9 +3548,10 @@ function plannerEventsForDate(key){
 }
 function plannerCanManage(){
   const r=normalizedRole(currentRole);
-  return ['dono','arquiteto','minion','financeiro'].includes(r);
+  return ['dono','arquiteto','financeiro'].includes(r);
 }
 async function plannerInit(){
+  if(normalizedRole(currentRole)==='minion') return;
   if(plannerLoaded || !user || !sb) return;
   plannerLoaded=true;
   plannerSelectedDate=new Date();
@@ -3724,6 +3766,7 @@ function plannerTodayEvents(){
   return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===today).sort((a,b)=>new Date(a.inicio).getTime()-new Date(b.inicio).getTime());
 }
 function plannerRenderFloatingAlert(){
+  if(normalizedRole(currentRole)==='minion') return;
   const alert=$('planner-alert'); if(!alert) return;
   const evs=plannerTodayEvents();
   if(!evs.length){ alert.style.display='none'; plannerClosePanel(); return; }
@@ -8377,6 +8420,15 @@ function logoGetSrcForPDF(){
 function logoGetNomeEmpresa(){
   const c = logoGetCustom();
   return (c?.nome) ? c.nome : 'Chaos Arquitetura e Urbanismo';
+}
+
+function openMetecosHelp(){
+  const modal=$('metecos-help-modal');
+  if(modal) modal.style.display='flex';
+}
+function closeMetecosHelp(){
+  const modal=$('metecos-help-modal');
+  if(modal) modal.style.display='none';
 }
 
 function openLogoModal(){
