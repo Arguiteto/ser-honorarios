@@ -2132,6 +2132,7 @@ const DOCS_ALLOWED_EXT = ['dwg','pdf','jpg','jpeg','cdr','ai','psd'];
 // ── STATE ─────────────────────────────────────────
 let user=null, proposals=[], currentId=null;
 let currentRole=null, currentEmpresaId=null;
+let equipeUserMap=new Map();
 let horaG=0, fasesT=0, visitaV=0, taxT=0, descV=0, totalH=0, dType='pct';
 let chartProps=null, chartTipo=null, chartUsers=null;
 let presenceChannel=null, onlinePresenceTimer=null, pdfBusy=false, cartaPdfBusy=false;
@@ -2706,11 +2707,63 @@ function canDeleteProposal(p){
   const r=normalizedRole(currentRole);
   return r==='dono' || isOwnProposal(p);
 }
+function cacheEquipeRows(rows=[]){
+  if(!Array.isArray(rows)) return;
+  rows.forEach(r=>{
+    const id=String(r.user_id||r.id||'').trim();
+    if(!id) return;
+    const email=String(r.email||'').trim();
+    const display=String(r.display_name||r.nome||'').trim();
+    equipeUserMap.set(id,{email,display_name:display,papel:r.papel||'',ativo:r.ativo!==false});
+  });
+}
+
+async function ensureEquipeUserMap(force=false){
+  if(!force && equipeUserMap.size) return equipeUserMap;
+  try{
+    if(!sb) sb = await initSupabaseClient();
+    if(!sb) return equipeUserMap;
+
+    // RPC nova, liberada para Dono e Financeiro, usada apenas para resolver nomes/e-mails nos gráficos.
+    let res = await sb.rpc('listar_autores_propostas_empresa',{p_empresa_id:null});
+
+    // Fallback para instalações que ainda não rodaram o SQL novo.
+    if(res.error){
+      res = await sb.rpc('listar_equipe',{p_empresa_id:null});
+    }
+
+    if(res.error) throw res.error;
+    cacheEquipeRows(Array.isArray(res.data)?res.data:[]);
+  }catch(e){
+    console.warn('Não foi possível carregar nomes/e-mails da equipe:', e?.message||e);
+  }
+  return equipeUserMap;
+}
+
+function ownerInfoFromDirectory(userId){
+  const id=String(userId||'').trim();
+  return id ? equipeUserMap.get(id) : null;
+}
+
+function hydrateProposalOwners(list=[]){
+  return (Array.isArray(list)?list:[]).map(p=>{
+    if(!p || !p.user_id) return p;
+    const info=ownerInfoFromDirectory(p.user_id);
+    if(info?.email && !p.user_email) p.user_email=info.email;
+    if(info?.display_name && !p.user_display_name) p.user_display_name=info.display_name;
+    return p;
+  });
+}
+
 function proposalOwnerLabel(p){
   if(!p) return '—';
+  if(p.user_display_name) return String(p.user_display_name);
   if(isLocalProposal(p) && p.user_email) return String(p.user_email).split('@')[0]+' (local)';
   if(p.user_email) return String(p.user_email).split('@')[0];
-  if(user?.id && p.user_id===user.id) return 'Você';
+  const info=ownerInfoFromDirectory(p.user_id);
+  if(info?.display_name) return String(info.display_name);
+  if(info?.email) return String(info.email).split('@')[0];
+  if(user?.id && p.user_id===user.id) return getDisplayName ? getDisplayName() : 'Você';
   return p.user_id ? 'Usuário '+String(p.user_id).slice(0,8) : 'Sem autor';
 }
 
@@ -3732,6 +3785,7 @@ async function equipeLoad(){
     const {data,error}=await sb.rpc('listar_equipe',{p_empresa_id:null});
     if(error) throw error;
     const rows=Array.isArray(data)?data:[];
+    cacheEquipeRows(rows);
     if(!rows.length){
       list.innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6">Nenhum usuário encontrado na empresa.</div>';
       return;
@@ -4382,6 +4436,7 @@ async function loadProposals(){
   if(user && currentRole===null){
     try{ await loadCurrentRole(); }catch(_e){}
   }
+  if(canSeeAllProposals()) await ensureEquipeUserMap();
   let q = sb.from('proposals').select('*').order('updated_at',{ascending:false});
   if(user?.id && !canSeeAllProposals()) q = q.eq('user_id', user.id);
   const {data,error} = await q;
@@ -4391,7 +4446,7 @@ async function loadProposals(){
     notifyStatus?.('Erro ao carregar do servidor. Mostrando salvos locais.','err',4000);
     return;
   }
-  proposals = mergeLocalProposals(data||[]);
+  proposals = mergeLocalProposals(hydrateProposalOwners(data||[]));
   renderDash();
 }
 
@@ -4482,11 +4537,7 @@ function renderCharts(){
   }
   if(usersBox) usersBox.style.display='block';
 
-  const loginLabel=p=>{
-    if(p.user_email) return p.user_email.split('@')[0];
-    if(user?.id && p.user_id===user.id) return 'Você';
-    return p.user_id ? 'Login '+String(p.user_id).slice(0,8) : 'Sem login';
-  };
+  const loginLabel=p=>proposalOwnerLabel(p);
   const userMap={};
   chartScope.forEach(p=>{
     const label=loginLabel(p);
