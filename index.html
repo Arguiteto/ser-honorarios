@@ -2446,8 +2446,17 @@ async function init(){
 // ── AUTH ──────────────────────────────────────────
 let authMode='login';
 function isPasswordRecoveryUrl(){
-  const raw = (window.location.hash || '') + ' ' + (window.location.search || '');
-  return /type=recovery|access_token=|code=/.test(raw);
+  // Só considera recuperação quando o link veio do fluxo "Esqueci minha senha".
+  // Antes o código aceitava qualquer "code=" e confundia confirmação de e-mail com troca de senha.
+  const searchParams = new URLSearchParams(window.location.search || '');
+  const hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+  return searchParams.get('type') === 'recovery' || hashParams.get('type') === 'recovery';
+}
+function getAuthRedirectUrl(fileName){
+  const url = new URL(fileName, window.location.href);
+  url.search = '';
+  url.hash = '';
+  return url.toString();
 }
 function authSetMessage(msg, ok=false){
   const err=$('auth-err');
@@ -2567,11 +2576,16 @@ async function authSubmit(){
     } else {
       const c = $('auth-confirm').value;
       if(pass !== c){ $('auth-err').textContent='Senhas não coincidem.'; return; }
-      const { data: signUpData, error } = await sb.auth.signUp({ email, password: pass });
-      if(signUpData?.user) await registrarUsuarioPendente(signUpData.user);
+      const emailRedirectTo = getAuthRedirectUrl('email-verificado.html');
+      const { data: signUpData, error } = await sb.auth.signUp({
+        email,
+        password: pass,
+        options: { emailRedirectTo }
+      });
       if(error) throw error;
+      if(signUpData?.user) await registrarUsuarioPendente(signUpData.user);
       $('auth-err').style.color='var(--green)';
-      $('auth-err').textContent='✓ Verifique seu e-mail para confirmar a conta.';
+      $('auth-err').textContent='✓ Verifique seu e-mail. Depois da confirmação, volte aqui e faça login com e-mail e senha.';
     }
 
   }catch(e){
@@ -7968,14 +7982,23 @@ async function equipeLoadPending(){
     if(!sb) sb = await initSupabaseClient();
     if(!sb) throw new Error('Sem conexão com o Supabase');
     let rows = [];
-    // Busca direto na tabela — sem RPC customizada necessária
-    const {data, error} = await sb
-      .from('usuarios_pendentes')
-      .select('*')
-      .eq('aprovado', false)
-      .eq('ignorado', false)
-      .order('criado_em', {ascending: false});
-    if(!error && data) rows = data;
+    // Primeiro usa RPC robusta: ela sincroniza auth.users -> usuarios_pendentes
+    // e corrige usuários criados antes do trigger existir.
+    const rpcRes = await sb.rpc('listar_usuarios_pendentes', {p_empresa_id:null});
+    if(!rpcRes.error && rpcRes.data){
+      rows = rpcRes.data;
+    }else{
+      console.warn('listar_usuarios_pendentes fallback:', rpcRes.error?.message || rpcRes.error);
+      // Fallback: busca direto na tabela caso o SQL novo ainda não tenha sido rodado.
+      const {data, error} = await sb
+        .from('usuarios_pendentes')
+        .select('*')
+        .eq('aprovado', false)
+        .eq('ignorado', false)
+        .order('criado_em', {ascending: false});
+      if(error) throw error;
+      if(data) rows = data;
+    }
     if(!rows.length){
       list.innerHTML = '<div style="padding:1.2rem;text-align:center;color:var(--faint);font-size:12px;line-height:1.6">Nenhum cadastro pendente no momento.<br><span style="font-size:11px;opacity:.7">Novos usuários que criarem conta aparecerão aqui.</span></div>';
       return;
