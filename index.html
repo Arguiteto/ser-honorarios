@@ -553,14 +553,17 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 
 /* ── COPY MODAL ─────────────────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem}
-.modal{background:var(--surface);border-radius:10px;padding:1.5rem;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
-.modal h2{font-size:15px;font-weight:500;margin-bottom:1rem}
-.copy-variant{border:0.5px solid var(--border);border-radius:6px;padding:.9rem;margin-bottom:.8rem;cursor:pointer;transition:border-color .2s}
-.copy-variant:hover{border-color:var(--eb)}
-.copy-variant .cv-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--e);margin-bottom:.5rem;font-weight:500}
-.copy-variant .cv-text{font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
+.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22)}
+.modal h2{font-size:15px;font-weight:600;margin-bottom:.3rem}
+.modal-subtitle{font-size:11px;color:var(--faint);margin-bottom:1.2rem;line-height:1.5}
+.copy-variant{border:0.5px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:.8rem;transition:border-color .2s,box-shadow .2s;background:var(--surf2)}
+.copy-variant:hover{border-color:var(--eb);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.copy-variant .cv-label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--e);margin-bottom:.3rem;font-weight:600}
+.copy-variant .wz-preview{background:#e9fbe5;border-radius:10px 10px 2px 10px;padding:.8rem 1rem;font-size:12.5px;color:#111;line-height:1.65;white-space:pre-wrap;font-family:system-ui,sans-serif;border:0.5px solid rgba(0,0,0,.06);margin-bottom:.5rem;position:relative}
+.copy-variant .wz-preview::after{content:'';position:absolute;bottom:-1px;right:-7px;width:0;height:0;border-left:8px solid #e9fbe5;border-top:6px solid transparent;border-bottom:6px solid transparent}
 .copy-variant .cv-btn{margin-top:.6rem}
-.modal-close{float:right;background:none;border:none;cursor:pointer;font-size:18px;color:var(--faint)}
+.modal-close{float:right;background:none;border:none;cursor:pointer;font-size:18px;color:var(--faint);transition:color .15s;margin-top:-4px}
+.modal-close:hover{color:var(--e)}
 
 /* ── ONLINE BAR ─────────────────────────────────── */
 #online-bar{position:fixed;right:96px;bottom:18px;left:auto;min-height:34px;max-width:min(280px,calc(100vw - 132px));background:var(--surface);border:0.5px solid var(--border);border-radius:18px;display:flex;align-items:center;padding:7px 12px;gap:.6rem;z-index:25;font-size:11px;color:var(--faint);box-shadow:0 6px 20px rgba(0,0,0,.08)}
@@ -2211,6 +2214,8 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       <div class="g2">
         <div class="field"><label>Entrada</label><div class="iw"><input type="number" id="pd-pg-ent" placeholder="50" min="0" max="100" oninput="pdCalcD()"><span class="sfx">%</span></div></div>
         <div class="field"><label>Parcelas restantes</label><div class="iw"><input type="number" id="pd-pg-parc" placeholder="2" min="1" max="36" oninput="pdCalcD()"><span class="sfx">×</span></div></div>
+        <div class="field"><label>Desconto PIX / dinheiro</label><div class="iw"><input type="number" id="pd-desc-pix" placeholder="5" min="0" max="30" step="0.5" value="5" oninput="pdCalcD()"><span class="sfx">%</span></div><span class="hint">Aparece automaticamente nas mensagens do WhatsApp.</span></div>
+        <div class="field"><label>Prazo de fabricação / entrega</label><div class="iw"><input type="text" id="pd-fabricacao" placeholder="Ex: 4 dias úteis" oninput="pdUpRel()"></div><span class="hint">Aparece nas mensagens do WhatsApp.</span></div>
       </div>
       <div style="border:0.5px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin-top:1rem">
         <div class="rel-row"><span>Honorário bruto</span><span class="rv" id="pd-pg-bruto">R$ 0</span></div>
@@ -2294,6 +2299,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       <div class="rel-box"><h3>Encargos e ajustes</h3>
         <div class="rel-row"><span>Total de encargos</span><span class="rv warn" id="pd-rr-tax">R$ 0</span></div>
         <div class="rel-row"><span>Desconto concedido</span><span class="rv neg" id="pd-rr-desc">— R$ 0</span></div>
+        <div class="rel-row" style="color:var(--green)"><span>Desconto PIX/dinheiro (oferta)</span><span class="rv" id="pd-rr-pix" style="color:var(--green)">5%</span></div>
       </div>
       <div class="grand"><span class="gl">Total da proposta</span><span class="gv" id="pd-rr-total">R$ 0</span></div>
       <div class="mc2" style="grid-template-columns:1fr 1fr">
@@ -2304,7 +2310,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <button class="btn solid" id="pd-save-btn" onclick="pdSaveProposal()">Salvar proposta</button>
         <button class="btn" id="pd-pdf-btn" onclick="pdExportPDF()">⬇ Baixar PDF</button>
         <button class="btn ghost" id="pd-docx-btn" onclick="pdExportDocx()">⬇ Word (.docx)</button>
-        <button class="btn ghost" onclick="pdOpenCopyModal()">📋 Copiar para WhatsApp</button>
+        <button class="btn" onclick="pdOpenCopyModal()" style="background:var(--greenl);border-color:var(--green);color:var(--green)">📲 Copiar para WhatsApp</button>
         <span class="save-status" id="pd-save-status"></span>
         <div class="pd-export-hint">Os arquivos usam o nome atual do projeto. Edite o nome acima antes de exportar.</div>
       </div>
@@ -2340,13 +2346,13 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Adicionar usuário</h2>
         <p style="font-size:11px;color:var(--faint);line-height:1.55;margin-bottom:1rem">A pessoa precisa criar conta no sistema primeiro. Depois, adicione o e-mail aqui para liberar acesso à empresa.</p>
         <div class="field"><label>E-mail do usuário</label><div class="iw"><input type="email" id="eq-email" placeholder="usuario@email.com" autocomplete="off" onkeydown="if(event.key==='Enter')equipeAdd()"></div></div>
-        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="minion">Metecos</option><option value="arquiteto">Arquiteto</option><option value="financeiro">Financeiro</option><option value="dono">Dono</option></select></div></div>
+        <div class="field"><label>Papel</label><div class="iw"><select id="eq-papel"><option value="minion">Metecos</option><option value="designer">Designer</option><option value="arquiteto">Arquiteto</option><option value="financeiro">Financeiro</option><option value="dono">Dono</option></select></div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem">
           <button class="btn solid" onclick="equipeAdd()">Adicionar à equipe</button>
           <button class="btn ghost" onclick="equipeLoad()">Atualizar lista</button>
         </div>
         <div id="eq-status" style="font-size:11px;color:var(--faint);line-height:1.5;min-height:18px;margin-top:.8rem"></div>
-        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis: <b>dono</b> tem acesso total e vê valores da empresa nos gráficos; <b>financeiro</b> vê valores e gráficos da empresa; <b>Arquiteto</b> tem acesso às ferramentas, mas os gráficos financeiros ficam restritos às próprias propostas; <b>Metecos</b> acessa apenas as ferramentas liberadas: Volumetria 3D, LabEEE, Mapoteca, Cálculos técnicos, Pranchas CAD, SIMGEO, Materiais e Normas NBR.</div>
+        <div style="font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem">Papéis: <b>Dono</b> tem acesso total e vê valores da empresa nos gráficos; <b>Financeiro</b> vê valores e gráficos da empresa; <b>Arquiteto</b> tem acesso às ferramentas, mas os gráficos financeiros ficam restritos às próprias propostas; <b>Designer</b> acessa somente a ferramenta Prop.Design para montar e exportar propostas de design; <b>Metecos</b> acessa apenas as ferramentas técnicas: Volumetria 3D, LabEEE, Mapoteca, Cálculos, Pranchas CAD, SIMGEO, Materiais e Normas NBR.</div>
       </section>
       <section style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
         <h2 style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem">Usuários da empresa</h2>
@@ -2432,8 +2438,8 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 <div id="copy-modal" class="modal-overlay" style="display:none">
   <div class="modal">
     <button class="modal-close" onclick="closeCopyModal()">✕</button>
-    <h2>Copiar para WhatsApp</h2>
-    <p style="font-size:12px;color:var(--faint);margin-bottom:1rem">Escolha o estilo da mensagem e clique para copiar:</p>
+    <h2>📲 Copiar para WhatsApp</h2>
+    <p class="modal-subtitle">Escolha o modelo de mensagem e clique em <strong>Copiar texto</strong>. Cole direto no WhatsApp — formatação com negrito (*) é mantida.</p>
     <div id="copy-variants"></div>
   </div>
 </div>
@@ -2982,11 +2988,12 @@ function normalizedRole(role){
   if(r==='admin') return 'arquiteto';
   if(r==='operador') return 'minion';
   if(r==='visualizador') return 'minion';
+  if(r==='designer') return 'designer';
   return r;
 }
 
 function roleLabel(role){
-  return ({dono:'Dono',arquiteto:'Arquiteto',minion:'Metecos',financeiro:'Financeiro'}[normalizedRole(role)] || role || '—');
+  return ({dono:'Dono',arquiteto:'Arquiteto',minion:'Metecos',financeiro:'Financeiro',designer:'Designer'}[normalizedRole(role)] || role || '—');
 }
 
 function canUseTool(tool){
@@ -2995,8 +3002,10 @@ function canUseTool(tool){
   if(r==='dono' || r==='arquiteto') return true;
   const minionTools=['threejs','labeee','mapoteca','calctec','sheetgen','simgeo','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
+  const designerTools=['home','propdesign'];
   if(r==='minion') return minionTools.includes(tool);
   if(r==='financeiro') return financeiroTools.includes(tool);
+  if(r==='designer') return designerTools.includes(tool);
   return tool==='home';
 }
 
@@ -3010,7 +3019,9 @@ function guardTool(tool){
 
 function applyRoleUI(){
   const isMetecos = normalizedRole(currentRole)==='minion';
+  const isDesigner = normalizedRole(currentRole)==='designer';
   document.body.classList.toggle('role-minion', isMetecos);
+  document.body.classList.toggle('role-designer', isDesigner);
   ['home','props','chart','new','carta','propdesign','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
@@ -3018,10 +3029,10 @@ function applyRoleUI(){
   const chartTab=$('dt-chart');
   if(chartTab) chartTab.style.display=canUseTool('chart')?'':'none';
   const logoBtn=$('logo-admin-btn');
-  if(logoBtn) logoBtn.style.display=isMetecos?'none':'';
+  if(logoBtn) logoBtn.style.display=(isMetecos||isDesigner)?'none':'';
   const helpBtn=$('metecos-help-btn');
   if(helpBtn) helpBtn.style.display=isMetecos?'inline-flex':'none';
-  if(isMetecos){
+  if(isMetecos||isDesigner){
     ['planner-toggle','planner-alert','planner-panel','planner-hall-card'].forEach(id=>{
       const el=$(id);
       if(el){ el.style.display='none'; el.classList.remove('open'); }
@@ -3286,6 +3297,7 @@ function pdUpRel(){
   if($('pd-rr-vis'))   $('pd-rr-vis').textContent=pdBr(m.producao);
   if($('pd-rr-tax'))   $('pd-rr-tax').textContent=pdBr(m.taxas);
   if($('pd-rr-desc'))  $('pd-rr-desc').textContent='— '+pdBr(m.desconto);
+  if($('pd-rr-pix'))   $('pd-rr-pix').textContent=(pdFlt('pd-desc-pix')||5)+'%';
   if($('pd-rr-total')) $('pd-rr-total').textContent=pdBr(m.total);
   if($('pd-rr-ent'))   $('pd-rr-ent').textContent=pdBr(m.entrada);
   if($('pd-rr-parc'))  $('pd-rr-parc').textContent=m.parc+'× '+pdBr(m.parcela);
@@ -3372,6 +3384,8 @@ function pdGetData(){
     prazo:pdVal('pd-rel-prazo'), revisoes:pdFlt('pd-rel-revisoes')||0, validade,
     objetivo:pdVal('pd-rel-objetivo'), escopo:pdVal('pd-rel-escopo'), exclusoes:pdVal('pd-rel-exclusoes'), obs:pdVal('pd-rel-obs'),
     servicos:pdGetServicos(), fases:pdGetPhaseRows(), money:m,
+    descPix:pdFlt('pd-desc-pix')||5,
+    fabricacao:pdVal('pd-fabricacao'),
     data:new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}),
     validadeData:new Date(Date.now()+validade*24*60*60*1000).toLocaleDateString('pt-BR'),
   };
@@ -3394,6 +3408,7 @@ function pdBuildPayload(){
     visita:pdFlt('pd-visita'),
     taxes:{iss:pdFlt('pd-t-iss'),ir:pdFlt('pd-t-ir'),pis:pdFlt('pd-t-pis'),out:pdFlt('pd-t-out')},
     descType:pdDType,descPct:pdFlt('pd-desc-pct'),descFix:pdFlt('pd-desc-fix'),pgEnt:pdFlt('pd-pg-ent'),pgParc:pdFlt('pd-pg-parc'),
+    descPix:pdFlt('pd-desc-pix')||5, fabricacao:pdVal('pd-fabricacao'),
     total:data.money.total, servicos:pdGetServicos(), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(),
   };
 }
@@ -3411,6 +3426,8 @@ function pdLoadFromPayload(d){
   if(d.taxes){['iss','ir','pis','out'].forEach(k=>pdSetVal('pd-t-'+k,d.taxes[k]));}
   pdSetD(d.descType||'pct');
   pdSetVal('pd-desc-pct',d.descPct); pdSetVal('pd-desc-fix',d.descFix); pdSetVal('pd-pg-ent',d.pgEnt); pdSetVal('pd-pg-parc',d.pgParc);
+  if(d.descPix!==undefined) pdSetVal('pd-desc-pix',d.descPix);
+  if(d.fabricacao) pdSetVal('pd-fabricacao',d.fabricacao);
   pdServicosListD=Array.isArray(d.servicos)?d.servicos.map(pdNormServico):[];
   pdEnsureDefaults(); pdRenderServicos(); pdCalc(); pdSyncTitle();
 }
@@ -3435,21 +3452,52 @@ function pdSaveProposal(){
 function pdOpenCopyModal(){
   const d=pdGetData();
   const first=d.cliente?d.cliente.split(' ')[0]:'';
-  const pag=d.money.parc===1 ? `entrada de R$ ${fmtI(d.money.entrada)} + 1 parcela de R$ ${fmt(d.money.parcela)}` : `entrada de R$ ${fmtI(d.money.entrada)} + ${d.money.parc} parcelas de R$ ${fmt(d.money.parcela)}`;
-  const entregas=d.servicos.map(s=>s.nome).filter(Boolean).slice(0,5).join(', ') || d.tipo || 'entregas previstas no briefing';
   const ass=d.designer||logoGetNomeEmpresa();
+  const totalFmt='R$ '+fmtI(d.money.total);
+  const entFmt='R$ '+fmtI(d.money.entrada);
+  const parcFmt=d.money.parc+'× R$ '+fmt(d.money.parcela);
+  const entradaPct=d.money.entPct||50;
+  const pixDesc=d.descPix||5;
+  const fabricacao=d.fabricacao||d.prazo||'a combinar';
+  const prazoLabel=fabricacao.toLowerCase().includes('dia')||fabricacao.toLowerCase().includes('após')?'Fabricação':'Prazo';
+
+  // Entregas como lista compacta ou resumo
+  const entregasList=d.servicos.map(s=>s.nome).filter(Boolean);
+  const entregasStr=entregasList.length
+    ? entregasList.slice(0,5).join(' + ')
+    : (d.tipo || 'conforme briefing');
+
+  // Linha de peças + tipo para o cabeçalho
+  const cabecalho=d.pecas
+    ? `${d.pecas} ${d.nome||d.tipo||'itens'}`
+    : (d.nome||d.tipo||'Projeto de Design');
+
+  // ── Formato 1: RESUMO DIRETO (modelo do usuário)
+  const txtResumo=`Segue o resumo da proposta de\n*${cabecalho}*:\n\n🎨 *Entregas:* ${entregasStr}\n💰 *Total:* ${totalFmt}\n📥 *Formas de pagamento* (Cartão/Dinheiro/Pix)\n📥 *Dinheiro ou PIX* (${pixDesc}% de desconto)\n📆 *${prazoLabel}:* ${fabricacao} após o envio do comprovante\n\n       *(Também deixei um modelo ilustrativo abaixo ⬇️)*\n\nQualquer dúvida estou à disposição!\n\n_${ass}_`;
+
+  // ── Formato 2: RESUMO COM PAGAMENTO DETALHADO
+  const txtPagamento=`Olá${first?', '+first:''}! Segue o resumo da proposta:\n\n*${d.nome || d.tipo || 'Projeto'}*\n\n🎨 *Entregas:* ${entregasStr}\n💰 *Total:* ${totalFmt}\n\n*Condições de pagamento:*\n📌 Entrada (${entradaPct}%): ${entFmt}\n📌 Saldo: ${parcFmt}\n📥 Formas: Cartão / Dinheiro / PIX\n📥 PIX ou dinheiro à vista: ${pixDesc}% de desconto\n\n📆 *${prazoLabel}:* ${fabricacao}\n♻️ *Revisões:* ${d.revisoes||2} rodada(s)\n\n_${ass}_`;
+
+  // ── Formato 3: PROPOSTA COMPLETA (para enviar com PDF)
+  const objetivo=d.objetivo?`\n\n*Objetivo:* ${d.objetivo}`:'';
+  const txtCompleto=`Olá${first?', '+first:''}! Tudo bem?\n\nPreparei a proposta para *${d.nome||d.tipo||'seu projeto'}*.${objetivo}\n\n🎨 *Entregas:* ${entregasStr}\n💰 *Investimento:* ${totalFmt}\n📥 Entrada: ${entFmt} · Saldo: ${parcFmt}\n📥 Aceito: Cartão / Dinheiro / PIX (${pixDesc}% desc.)\n📆 *${prazoLabel}:* ${fabricacao}\n♻️ *Revisões inclusas:* ${d.revisoes||2}\n\nO detalhamento completo segue em anexo.\n\n_${ass}_`;
+
+  // ── Formato 4: PRÓXIMOS PASSOS (pós aprovação)
+  const txtPassos=`Olá${first?', '+first:''}!\n\nPara darmos início ao projeto *${d.nome||''}*, os próximos passos são:\n\n1️⃣ Aprovação da proposta\n2️⃣ Pagamento da entrada: *${entFmt}*\n3️⃣ Envio do briefing e referências\n4️⃣ Início do desenvolvimento\n\nSaldo: ${parcFmt} · PIX/dinheiro com ${pixDesc}% desconto.\nPrazo começa a contar após o comprovante.\n\nFico à disposição para ajustar qualquer detalhe!\n\n_${ass}_`;
+
   const variants=[
-    {label:'Profissional — enviar com PDF',text:`Olá${first?', '+first:''}! Tudo bem?\n\nPreparei a proposta de *${d.tipo||'design'}* para o projeto *${d.nome}*.\n\n*Objetivo:* ${d.objetivo||'desenvolver as entregas alinhadas ao briefing.'}\n*Entregas:* ${entregas}\n*Investimento:* R$ ${fmtI(d.money.total)}\n*Pagamento:* ${pag}\n*Prazo:* ${d.prazo||'a combinar'}\n\nO PDF/Word com o escopo completo segue em anexo.\n\n_${ass}_`},
-    {label:'Objetivo — resumo rápido',text:`Olá${first?', '+first:''}!\n\nResumo da proposta para *${d.nome}*:\n\n• Categoria: ${d.tipo||'Design'}\n• Entregas: ${entregas}\n• Total: *R$ ${fmtI(d.money.total)}*\n• Entrada: R$ ${fmtI(d.money.entrada)}\n• Saldo: ${d.money.parc}× R$ ${fmt(d.money.parcela)}\n\nPosso enviar o PDF detalhado para aprovação.\n\n_${ass}_`},
-    {label:'Com validade — comercial',text:`Olá${first?', '+first:''}!\n\nConforme alinhado, segue a proposta para *${d.nome}*.\n\nO investimento é de *R$ ${fmtI(d.money.total)}*, com ${pag}.\n\nA proposta inclui ${d.revisoes||2} rodada(s) de revisão e tem validade até ${d.validadeData}.\n\nSerá um prazer desenvolver esse projeto com você.\n\n_${ass}_`},
-    {label:'Aprovação — próximos passos',text:`Olá${first?', '+first:''}!\n\nPara iniciarmos o projeto *${d.nome}*, os próximos passos são:\n\n1. Aprovação da proposta\n2. Pagamento da entrada de R$ ${fmtI(d.money.entrada)}\n3. Envio/validação do briefing e referências\n4. Início do desenvolvimento dentro do prazo combinado\n\nO restante fica em ${d.money.parc}× R$ ${fmt(d.money.parcela)}.\n\nFico à disposição para ajustar qualquer ponto.\n\n_${ass}_`}
+    {label:'📋 Resumo direto — WhatsApp',emoji:'📋',desc:'Modelo compacto com emojis, ideal para primeiro contato',text:txtResumo},
+    {label:'💳 Com pagamento detalhado',emoji:'💳',desc:'Detalha entrada, parcelas e formas de pagamento',text:txtPagamento},
+    {label:'📄 Completo — enviar com PDF',emoji:'📄',desc:'Versão formal para acompanhar o arquivo da proposta',text:txtCompleto},
+    {label:'✅ Próximos passos',emoji:'✅',desc:'Pós-aprovação: orienta o cliente sobre o fluxo',text:txtPassos}
   ];
   const wrap=$('copy-variants');
   wrap.innerHTML=variants.map((v,i)=>`
-    <div class="copy-variant">
+    <div class="copy-variant" style="position:relative">
       <div class="cv-label">${esc(v.label)}</div>
-      <div class="cv-text">${renderWhatsAppPreview(v.text)}</div>
-      <button class="btn cv-btn" onclick="copyVariant(${i})" id="cv-btn-${i}">Copiar texto</button>
+      <div style="font-size:10px;color:var(--faint);margin-bottom:.5rem;line-height:1.4">${esc(v.desc)}</div>
+      <div class="cv-text wz-preview">${renderWhatsAppPreview(v.text)}</div>
+      <button class="btn cv-btn solid" onclick="copyVariant(${i})" id="cv-btn-${i}" style="margin-top:.7rem;width:100%">📋 Copiar texto</button>
     </div>`).join('');
   window['_copyVariants']=variants;
   $('copy-modal').style.display='flex';
@@ -4580,7 +4628,7 @@ async function equipeLoad(){
           </div>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
             <select onchange="equipeChangeRole('${r.user_id}',this.value)" style="font-family:inherit;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none">
-              ${['minion','arquiteto','financeiro','dono'].map(p=>`<option value="${p}" ${normalizedRole(r.papel)===p?'selected':''}>${equipeRoleLabel(p)}</option>`).join('')}
+              ${['minion','designer','arquiteto','financeiro','dono'].map(p=>`<option value="${p}" ${normalizedRole(r.papel)===p?'selected':''}>${equipeRoleLabel(p)}</option>`).join('')}
             </select>
             <button class="btn danger" style="font-size:10px;padding:5px 9px" onclick="equipeDeactivate('${r.user_id}')">Desativar</button>
           </div>
@@ -8921,6 +8969,7 @@ async function equipeLoadPending(){
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
           <select id="pend-papel-${uid}" style="font-family:inherit;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:6px;background:var(--surface);color:var(--muted);outline:none">
             <option value="minion">Metecos</option>
+            <option value="designer">Designer</option>
             <option value="arquiteto">Arquiteto</option>
             <option value="financeiro">Financeiro</option>
             <option value="dono">Dono</option>
