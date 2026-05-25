@@ -865,8 +865,9 @@ body.nbr-open #online-bar{display:none}
 body.role-minion #metecos-help-btn{display:inline-flex!important}
 body.role-minion #logo-admin-btn,
 body.role-minion #planner-toggle,
+body.role-minion #planner-alert,
+body.role-minion #planner-panel,
 body.role-minion #planner-hall-card{display:none!important}
-/* Metecos veem o alerta flutuante e o painel de avisos em que foram marcados */
 
 body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #planner-panel,body.auth-mode #planner-hall-card{display:none!important}
 #planner-toggle{position:fixed;right:24px;bottom:86px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--e),var(--eb));border:1px solid var(--border-em);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s,border-color .2s;z-index:9998;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.15rem}
@@ -2820,7 +2821,7 @@ async function loadCurrentRole(){
     console.warn('Não foi possível carregar perfil da empresa:', e);
   }
   applyRoleUI();
-  plannerInit(); // Metecos também precisam inicializar para receber alertas dos avisos em que foram marcados
+  if(normalizedRole(currentRole)!=='minion') plannerInit();
 }
 
 // ── PRESENCE (online users) ───────────────────────
@@ -3550,7 +3551,7 @@ function plannerCanManage(){
   return ['dono','arquiteto','financeiro'].includes(r);
 }
 async function plannerInit(){
-  // Metecos (minion) não podem criar avisos, mas devem receber alertas quando marcados
+  if(normalizedRole(currentRole)==='minion') return;
   if(plannerLoaded || !user || !sb) return;
   plannerLoaded=true;
   plannerSelectedDate=new Date();
@@ -3765,7 +3766,7 @@ function plannerTodayEvents(){
   return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===today).sort((a,b)=>new Date(a.inicio).getTime()-new Date(b.inicio).getTime());
 }
 function plannerRenderFloatingAlert(){
-  // Metecos sem eventos não chegam aqui — a lógica de filtragem já garante isso
+  if(normalizedRole(currentRole)==='minion') return;
   const alert=$('planner-alert'); if(!alert) return;
   const evs=plannerTodayEvents();
   if(!evs.length){ alert.style.display='none'; plannerClosePanel(); return; }
@@ -5963,7 +5964,146 @@ async function consultarSimgeo(){
   }
 }
 
-function cleanAttrKey(k){ return String(k||'').replace(/_/g,' ').replace(/\s+/g,' ').trim(); }
+const SIMGEO_FIELD_LABELS={
+  /* ── Identificação cadastral ── */
+  inscricao:'Inscrição Cadastral',
+  inscricao_imobiliaria:'Inscrição Imobiliária',
+  inscricao_cadastral:'Inscrição Cadastral',
+  cod_lote:'Código do Lote',
+  numero_lote:'Número do Lote',
+  lote:'Número do Lote',
+  numero_quadra:'Número da Quadra',
+  quadra:'Número da Quadra',
+  setor:'Setor Cadastral',
+  cod_setor:'Código do Setor',
+  cod_bairro:'Código do Bairro',
+  bairro:'Bairro',
+  logradouro:'Logradouro',
+  numero:'Número',
+  complemento:'Complemento',
+  cep:'CEP',
+  municipio:'Município',
+  uf:'UF',
+  nome:'Nome',
+  descricao:'Descrição',
+  tipo:'Tipo',
+
+  /* ── Zoneamento / PDDUA ── */
+  sigla:'Sigla da Zona',
+  zona:'Zona Urbana',
+  cod_zona:'Código de Zona',
+  macrozona:'Macrozona',
+  subzona:'Subzona',
+  zoneamento:'Zoneamento Urbano',
+  uso_predominante:'Uso Predominante',
+  uso_solo:'Uso do Solo',
+  tipo_uso:'Tipo de Uso',
+  classe:'Classe',
+  categoria:'Categoria',
+  classif:'Classificação',
+  industrial:'Atividade Industrial Permitida',
+  especial:'Zona / Área Especial',
+  residencial:'Uso Residencial',
+  comercial:'Uso Comercial',
+  misto:'Uso Misto Permitido',
+
+  /* ── Índices urbanísticos ── */
+  camin:'Coeficiente de Aproveitamento Mínimo (CA mín)',
+  cabas:'Coeficiente de Aproveitamento Básico (CA básico)',
+  camax:'Coeficiente de Aproveitamento Máximo (CA máx)',
+  ca:'Coeficiente de Aproveitamento',
+  ca_min:'Coeficiente de Aproveitamento Mínimo',
+  ca_bas:'Coeficiente de Aproveitamento Básico',
+  ca_max:'Coeficiente de Aproveitamento Máximo',
+  to:'Taxa de Ocupação (%)',
+  to_max:'Taxa de Ocupação Máxima (%)',
+  tp:'Taxa de Permeabilidade (%)',
+  tp_min:'Taxa de Permeabilidade Mínima (%)',
+  gabarito:'Gabarito de Altura (m)',
+  altura_max:'Altura Máxima Permitida (m)',
+  altura_min:'Altura Mínima Permitida (m)',
+  pavimentos:'Número Máximo de Pavimentos',
+  num_pavimentos:'Número de Pavimentos',
+
+  /* ── Recuos e afastamentos ── */
+  recuo_frontal:'Recuo Frontal (m)',
+  recuo_lateral:'Recuo Lateral (m)',
+  recuo_fundos:'Recuo de Fundos (m)',
+  recuo:'Recuo (m)',
+  afastamento:'Afastamento (m)',
+  esquina_m:'Afastamento de Esquina (m)',
+  esquina:'Afastamento de Esquina (m)',
+
+  /* ── OODC / Fator Beta ── */
+  fator_beta:'Fator Beta — Outorga Onerosa',
+  fator:'Fator Beta',
+  oo_t_dc:'Outorga Onerosa do Direito de Construir (OODC)',
+  oodc:'Outorga Onerosa do Direito de Construir (OODC)',
+  outorga:'Outorga Onerosa',
+
+  /* ── Dimensões do lote ── */
+  area_m2:'Área do Lote (m²)',
+  area_lote:'Área do Lote (m²)',
+  area_terreno:'Área do Terreno (m²)',
+  area_construida:'Área Construída (m²)',
+  area_util:'Área Útil (m²)',
+  area_total:'Área Total (m²)',
+  area:'Área (m²)',
+  testada:'Testada do Lote (m)',
+  testada_frontal:'Testada Frontal (m)',
+  perimetro:'Perímetro do Lote (m)',
+  profundidade:'Profundidade do Lote (m)',
+  largura:'Largura do Lote (m)',
+  comprimento:'Comprimento (m)',
+
+  /* ── Topografia / Altimetria ── */
+  elevacao:'Cota Altimétrica (m)',
+  cota:'Cota Altimétrica (m)',
+  cota_terreno:'Cota do Terreno (m)',
+  declividade:'Declividade (%)',
+
+  /* ── Campos geométricos GIS ── */
+  'st_area(shape)':'Área Geométrica da Feição (m²)',
+  'st_length(shape)':'Comprimento Geométrico da Feição (m)',
+  st_area:'Área Geométrica (m²)',
+  st_length:'Comprimento Geométrico (m)',
+  shape_area:'Área da Geometria (m²)',
+  shape_length:'Comprimento da Geometria (m)',
+  area_shape:'Área da Geometria (m²)',
+  length_shape:'Comprimento da Geometria (m)',
+
+  /* ── Dados complementares ── */
+  cod_uso:'Código de Uso',
+  cod_tipo:'Código do Tipo',
+  cod_classif:'Código de Classificação',
+  cod_zona_id:'ID da Zona',
+  id_lote:'ID do Lote',
+  id_quadra:'ID da Quadra',
+  situacao:'Situação',
+  status:'Status',
+  ativo:'Ativo',
+  observacao:'Observação',
+  obs:'Observação',
+  fonte:'Fonte dos Dados',
+  data_atualizacao:'Data de Atualização',
+  data_cadastro:'Data de Cadastro',
+  responsavel:'Responsável',
+  proprietario:'Proprietário',
+  contribuinte:'Contribuinte',
+  valor_venal:'Valor Venal (R$)',
+  valor_venal_imovel:'Valor Venal do Imóvel (R$)',
+  valor_venal_terreno:'Valor Venal do Terreno (R$)',
+  iptu:'IPTU',
+};
+function cleanAttrKey(k){
+  const raw=String(k||'').trim();
+  const lookup=raw.toLowerCase().replace(/\s+/g,'_');
+  if(SIMGEO_FIELD_LABELS[lookup]) return SIMGEO_FIELD_LABELS[lookup];
+  // fallback: tenta a chave original sem transformar (ex: "st_area(shape)")
+  const lookupRaw=raw.toLowerCase();
+  if(SIMGEO_FIELD_LABELS[lookupRaw]) return SIMGEO_FIELD_LABELS[lookupRaw];
+  return raw.replace(/_/g,' ').replace(/\s+/g,' ').trim();
+}
 
 function usefulAttrs(attrs){
   const hidden=/^(objectid|fid|shape|shape_|globalid|created_|creator|edit|st_area|st_length|objectid_1)$/i;
