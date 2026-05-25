@@ -1171,6 +1171,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-props" onclick="showDash('props')"><span class="ico">▦</span>Propostas</button>
     <button class="dock-btn" id="tool-chart" onclick="showDash('chart')"><span class="ico">◔</span>Gráficos</button>
     <button class="dock-btn" id="tool-carta" onclick="showCarta()"><span class="ico">✉</span>Carta</button>
+    <button class="dock-btn" id="tool-propdesign" onclick="showDesignProposal()"><span class="ico">✦</span>Prop. Design</button>
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-threejs" onclick="showThreejs()"><span class="ico">▥</span>Volumetria 3D</button>
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
@@ -2007,7 +2008,166 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
   </div>
 
+  <!-- CALCULADORA PROPOSTA DESIGN -->
+  <div id="prop-design-view" style="display:none">
+    <div class="calc-top">
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+      <div class="calc-title" id="pd-calc-title">Nova proposta — Design</div>
+    </div>
+    <div class="stepper">
+      <div class="sitem" onclick="pdGo(0)"><div class="sdot active" id="pd-sd0">1</div><div class="sline" id="pd-sl0"></div></div>
+      <div class="sitem" onclick="pdGo(1)"><div class="sdot" id="pd-sd1">2</div><div class="sline" id="pd-sl1"></div></div>
+      <div class="sitem" onclick="pdGo(2)"><div class="sdot" id="pd-sd2">3</div><div class="sline" id="pd-sl2"></div></div>
+      <div class="sitem" onclick="pdGo(3)"><div class="sdot" id="pd-sd3">4</div><div class="sline" id="pd-sl3"></div></div>
+      <div class="sitem" onclick="pdGo(4)"><div class="sdot" id="pd-sd4">5</div></div>
+    </div>
 
+    <!-- PD-P1 ESTÚDIO -->
+    <div class="panel active" id="pd-p0">
+      <div class="slabel">Custos fixos mensais do estúdio</div>
+      <div class="g2">
+        <div class="field"><label>Pró-labore</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-prolabore" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Contabilidade</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-contabilidade" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Telefone / internet</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-telefone" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Adobe CC / ferramentas</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-software" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Aluguel / coworking</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-aluguel" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Tarifa bancária</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-tarifa" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Marketing / portfólio</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-marketing" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+        <div class="field"><label>Outros custos fixos</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-outros" placeholder="0" min="0" oninput="pdCalc()"></div></div>
+      </div>
+      <div class="slabel">Capacidade produtiva</div>
+      <div class="g2">
+        <div class="field"><label>Horas produtivas / mês</label><div class="iw"><input type="number" id="pd-horas" placeholder="160" min="1" oninput="pdCalc()"><span class="sfx">h</span></div><span class="hint">8h/dia × 20 dias = 160h</span></div>
+        <div class="field"><label>Margem de lucro</label><div class="iw"><input type="number" id="pd-margem" placeholder="30" min="0" max="200" oninput="pdCalc()"><span class="sfx">%</span></div><span class="hint">Recomendado: 30–50%</span></div>
+      </div>
+      <div class="mc-row">
+        <div class="mc"><div class="l">Custo mensal</div><div class="v" id="pd-r-total">R$ 0</div></div>
+        <div class="mc"><div class="l">Custo/hora</div><div class="v" id="pd-r-ch">R$ 0,00</div></div>
+        <div class="mc accent"><div class="l">Hora criativa</div><div class="v" id="pd-r-hora">R$ 0,00</div></div>
+      </div>
+      <p class="note">Abaixo deste valor, você está pagando para criar.</p>
+      <div class="nav-row"><span></span><button class="btn" onclick="pdGo(1)">Próximo →</button></div>
+    </div>
+
+    <!-- PD-P2 SERVIÇOS -->
+    <div class="panel" id="pd-p1">
+      <div class="slabel">Horas estimadas por serviço</div>
+      <div id="pd-fases">
+        <div class="fase-row"><span class="fn">Briefing e pesquisa</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Moodboard e conceituação</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Identidade visual (logo)</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Tipografia e paleta cromática</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Papelaria e aplicações</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Social media kit</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Embalagem / packaging</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Editorial / catálogo</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Pitch deck / apresentação</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Material impresso (flyer, folder)</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Landing page (layout/UI)</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Motion / animação</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Revisões e ajustes</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+        <div class="fase-row"><span class="fn">Reuniões e gestão</span><input class="pd-fi" type="number" placeholder="0" min="0" oninput="pdCalcF()"><span class="fu">h</span><span class="fv">R$ 0</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:.9rem;padding-top:.9rem;border-top:0.5px dashed var(--border-em)">
+        <span style="font-size:11px;color:var(--faint);flex:1">Impressão / produção gráfica — orçamento à parte</span>
+        <div class="iw" style="width:140px"><span class="pfx">R$</span><input type="number" id="pd-visita" placeholder="0" min="0" oninput="pdCalcF()"></div>
+      </div>
+      <div class="total-strip">
+        <div class="tl"><span id="pd-th">0 h</span> estimadas · hora criativa <span id="pd-hr-ref">R$ 0,00</span></div>
+        <div class="tr" id="pd-tf">R$ 0</div>
+      </div>
+      <div class="nav-row"><button class="btn ghost" onclick="pdGo(0)">← Voltar</button><button class="btn" onclick="pdGo(2)">Próximo →</button></div>
+    </div>
+
+    <!-- PD-P3 IMPOSTOS -->
+    <div class="panel" id="pd-p2">
+      <div class="slabel">Incidência sobre o honorário bruto</div>
+      <div class="tax-row"><span class="tn">ISS (serviços municipais)</span><div class="tr-right"><div class="iw" style="width:70px"><input class="pd-ti" type="number" id="pd-t-iss" value="5" min="0" max="100" step="0.5" oninput="pdCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pd-tv-iss">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">IRPJ + CSLL (Simples est.)</span><div class="tr-right"><div class="iw" style="width:70px"><input class="pd-ti" type="number" id="pd-t-ir" value="6" min="0" max="100" step="0.5" oninput="pdCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pd-tv-ir">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">PIS + COFINS</span><div class="tr-right"><div class="iw" style="width:70px"><input class="pd-ti" type="number" id="pd-t-pis" value="3.65" min="0" max="100" step="0.05" oninput="pdCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pd-tv-pis">R$ 0</span></div></div>
+      <div class="tax-row"><span class="tn">Outros encargos</span><div class="tr-right"><div class="iw" style="width:70px"><input class="pd-ti" type="number" id="pd-t-out" value="0" min="0" step="0.5" oninput="pdCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pd-tv-out">R$ 0</span></div></div>
+      <div class="total-strip">
+        <div class="tl">Base de cálculo <span id="pd-tax-base">R$ 0</span></div>
+        <div class="tr" id="pd-tax-total">+ R$ 0 em encargos</div>
+      </div>
+      <div class="nav-row"><button class="btn ghost" onclick="pdGo(1)">← Voltar</button><button class="btn" onclick="pdGo(3)">Próximo →</button></div>
+    </div>
+
+    <!-- PD-P4 DESCONTO -->
+    <div class="panel" id="pd-p3">
+      <div class="slabel">Tipo de desconto</div>
+      <div class="pill-row">
+        <button class="pill on" id="pd-pb-pct" onclick="pdSetD('pct')">Percentual</button>
+        <button class="pill" id="pd-pb-fix" onclick="pdSetD('fix')">Valor fixo</button>
+        <button class="pill" id="pd-pb-no" onclick="pdSetD('no')">Sem desconto</button>
+      </div>
+      <div id="pd-d-pct" class="field" style="max-width:200px"><label>Percentual de desconto</label><div class="iw"><input type="number" id="pd-desc-pct" placeholder="0" min="0" max="100" step="1" oninput="pdCalcD()"><span class="sfx">%</span></div><span class="hint">Ex: 10% para cliente recorrente</span></div>
+      <div id="pd-d-fix" class="field" style="max-width:220px;display:none"><label>Valor de desconto</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pd-desc-fix" placeholder="0" min="0" oninput="pdCalcD()"></div></div>
+      <div class="divider"></div>
+      <div class="slabel">Condições de pagamento</div>
+      <div class="g2">
+        <div class="field"><label>Entrada</label><div class="iw"><input type="number" id="pd-pg-ent" placeholder="50" min="0" max="100" oninput="pdCalcD()"><span class="sfx">%</span></div></div>
+        <div class="field"><label>Parcelas restantes</label><div class="iw"><input type="number" id="pd-pg-parc" placeholder="2" min="1" max="36" oninput="pdCalcD()"><span class="sfx">×</span></div></div>
+      </div>
+      <div style="border:0.5px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin-top:1rem">
+        <div class="rel-row"><span>Honorário bruto</span><span class="rv" id="pd-pg-bruto">R$ 0</span></div>
+        <div class="rel-row"><span>Desconto</span><span class="rv neg" id="pd-pg-desc">— R$ 0</span></div>
+        <div class="rel-row"><span>Valor líquido</span><span class="rv" id="pd-pg-liq">R$ 0</span></div>
+        <div class="rel-row" style="padding-top:8px;margin-top:4px;border-top:0.5px solid var(--border)"><span>Entrada</span><span class="rv" id="pd-pg-ev" style="color:var(--e)">R$ 0</span></div>
+        <div class="rel-row"><span>Parcelas mensais</span><span class="rv" id="pd-pg-pv" style="color:var(--e)">R$ 0</span></div>
+      </div>
+      <div class="nav-row"><button class="btn ghost" onclick="pdGo(2)">← Voltar</button><button class="btn" onclick="pdGo(4)">Ver proposta →</button></div>
+    </div>
+
+    <!-- PD-P5 PROPOSTA FINAL -->
+    <div class="panel" id="pd-p4">
+      <div class="slabel">Dados do projeto</div>
+      <div class="g2">
+        <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pd-rel-nome" placeholder="Ex: Identidade Visual Café Molho" oninput="pdUpRel()"></div></div>
+        <div class="field"><label>Cliente</label><div class="iw"><input type="text" id="pd-rel-cli" placeholder="Ex: Maria Fernanda" oninput="pdUpRel()"></div></div>
+        <div class="field"><label>Designer responsável</label><div class="iw"><input type="text" id="pd-rel-des" placeholder="Ex: Ana Lima — @anadesign" oninput="pdUpRel()"></div></div>
+        <div class="field"><label>Nº de peças / entregas</label><div class="iw"><input type="number" id="pd-rel-pecas" placeholder="0" min="0" oninput="pdUpRel()"><span class="sfx">pç</span></div></div>
+        <div class="field" style="grid-column:1/-1"><label>Categoria do projeto</label><div class="iw"><select id="pd-rel-tipo" onchange="pdUpRel()">
+          <option>Identidade visual completa</option>
+          <option>Rebranding</option>
+          <option>Branding parcial (logo e paleta)</option>
+          <option>Social media kit</option>
+          <option>Embalagem / Packaging</option>
+          <option>Editorial / Catálogo</option>
+          <option>Pitch deck / Apresentação</option>
+          <option>Material impresso</option>
+          <option>Landing page (layout)</option>
+          <option>Motion / Animação</option>
+          <option>Outros serviços de design</option>
+        </select></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="slabel">Entregas previstas</div>
+      <div style="font-size:11px;color:var(--faint);margin-bottom:.6rem">O cliente verá essas entregas na proposta.</div>
+      <div id="pd-servicos-list"></div>
+      <button class="btn ghost" style="font-size:11px;margin-top:.5rem;padding:6px 12px" onclick="pdAddServico()">+ Adicionar entrega</button>
+      <div class="divider"></div>
+      <div class="rel-box"><h3>Honorários</h3>
+        <div class="rel-row"><span>Hora criativa</span><span class="rv" id="pd-rr-hora">R$ 0,00</span></div>
+        <div class="rel-row"><span>Total de horas</span><span class="rv" id="pd-rr-horas">0 h</span></div>
+        <div class="rel-row"><span>Honorário dos serviços</span><span class="rv" id="pd-rr-fases">R$ 0</span></div>
+        <div class="rel-row"><span>Produção gráfica</span><span class="rv" id="pd-rr-vis">R$ 0</span></div>
+      </div>
+      <div class="rel-box"><h3>Encargos e impostos</h3><div class="rel-row"><span>Total de encargos</span><span class="rv warn" id="pd-rr-tax">R$ 0</span></div></div>
+      <div class="rel-box"><h3>Ajuste</h3><div class="rel-row"><span>Desconto concedido</span><span class="rv neg" id="pd-rr-desc">— R$ 0</span></div></div>
+      <div class="grand"><span class="gl">Total da proposta</span><span class="gv" id="pd-rr-total">R$ 0</span></div>
+      <div class="mc2" style="grid-template-columns:1fr 1fr">
+        <div class="m"><div class="l">Entrada</div><div class="v" id="pd-rr-ent">R$ 0</div></div>
+        <div class="m"><div class="l">Parcela mensal</div><div class="v" id="pd-rr-parc">R$ 0</div></div>
+      </div>
+      <div class="save-row">
+        <button class="btn solid" id="pd-save-btn" onclick="pdSaveProposal()">Salvar proposta</button>
+        <button class="btn ghost" onclick="pdOpenCopyModal()">📋 Copiar para WhatsApp</button>
+        <span class="save-status" id="pd-save-status"></span>
+      </div>
+      <div class="nav-row" style="border:none;padding:0;margin-top:.5rem"><button class="btn ghost" onclick="pdGo(3)">← Ajustar</button></div>
+    </div>
+  </div>
 
   <!-- EQUIPE -->
   <div id="equipe-view" style="display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%">
@@ -2708,7 +2868,7 @@ function guardTool(tool){
 function applyRoleUI(){
   const isMetecos = normalizedRole(currentRole)==='minion';
   document.body.classList.toggle('role-minion', isMetecos);
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -2828,7 +2988,7 @@ async function loadCurrentRole(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','prop-design-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -2838,7 +2998,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -2877,6 +3037,218 @@ function showCarta(){
   // Auto-preenche o campo remetente se ainda estiver vazio
   if($('carta-arq') && !$('carta-arq').value && user) $('carta-arq').value = getDisplayName();
 }
+
+function showDesignProposal(){
+  if(guardTool('propdesign')) return;
+  hideViews();
+  $('prop-design-view').style.display='block';
+  setTool('propdesign');
+  if($('pd-calc-title')) $('pd-calc-title').textContent=pdCurrentId?'Editar proposta — Design':'Nova proposta — Design';
+  pdRenderServicos();
+}
+
+// ── PROPOSTA DESIGN — ENGINE ─────────────────────────
+let pdHoraG=0,pdFasesT=0,pdVisitaV=0,pdTaxT=0,pdDescV=0,pdTotalH=0,pdDType='pct';
+let pdCurrentId=null,pdServicosListD=[];
+const PD_STORAGE_KEY='chaos_design_proposals_v1';
+
+function pdFlt(id){ const el=$(id); return el?parseFloat(el.value)||0:0; }
+
+function pdCalc(){
+  const ids=['pd-prolabore','pd-contabilidade','pd-telefone','pd-software','pd-aluguel','pd-tarifa','pd-marketing','pd-outros'];
+  const mensal=ids.reduce((s,id)=>s+pdFlt(id),0);
+  const horas=pdFlt('pd-horas')||160;
+  const margem=pdFlt('pd-margem')||30;
+  const ch=horas>0?mensal/horas:0;
+  pdHoraG=ch*(1+(margem/100));
+  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if($('pd-r-total')) $('pd-r-total').textContent='R$ '+fmtI(mensal);
+  if($('pd-r-ch'))    $('pd-r-ch').textContent='R$ '+fmt(ch);
+  if($('pd-r-hora'))  $('pd-r-hora').textContent='R$ '+fmt(pdHoraG);
+  pdCalcF();
+}
+
+function pdCalcF(){
+  let th=0,tv=0;
+  [...document.querySelectorAll('#pd-fases .pd-fi')].forEach(inp=>{
+    const h=parseFloat(inp.value)||0, v=h*pdHoraG;
+    th+=h; tv+=v;
+    const fv=inp.closest('.fase-row')?.querySelector('.fv');
+    if(fv) fv.textContent='R$ '+fmtI(v);
+  });
+  pdTotalH=th; pdVisitaV=pdFlt('pd-visita'); pdFasesT=tv+pdVisitaV;
+  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if($('pd-th'))     $('pd-th').textContent=th+'h';
+  if($('pd-hr-ref')) $('pd-hr-ref').textContent='R$ '+fmt(pdHoraG);
+  if($('pd-tf'))     $('pd-tf').textContent='R$ '+fmtI(pdFasesT);
+  pdCalcT();
+}
+
+function pdCalcT(){
+  const base=pdFasesT;
+  const pairs=[['pd-t-iss','pd-tv-iss'],['pd-t-ir','pd-tv-ir'],['pd-t-pis','pd-tv-pis'],['pd-t-out','pd-tv-out']];
+  let total=0;
+  pairs.forEach(([ti,tv])=>{ const val=base*(pdFlt(ti)/100); total+=val; if($(tv)) $(tv).textContent='R$ '+fmtI(val); });
+  pdTaxT=total;
+  if($('pd-tax-base'))  $('pd-tax-base').textContent='R$ '+fmtI(base);
+  if($('pd-tax-total')) $('pd-tax-total').textContent='+ R$ '+fmtI(total)+' em encargos';
+  pdCalcD();
+}
+
+function pdCalcD(){
+  const bruto=pdFasesT+pdTaxT;
+  let desc=0;
+  if(pdDType==='pct') desc=bruto*(pdFlt('pd-desc-pct')/100);
+  else if(pdDType==='fix') desc=pdFlt('pd-desc-fix');
+  pdDescV=Math.min(desc,bruto);
+  const liq=Math.max(0,bruto-pdDescV);
+  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,pdFlt('pd-pg-parc')||2);
+  const ent=liq*(entPct/100), parcV=(liq-ent)/parc;
+  if($('pd-pg-bruto')) $('pd-pg-bruto').textContent='R$ '+fmtI(bruto);
+  if($('pd-pg-desc'))  $('pd-pg-desc').textContent='— R$ '+fmtI(pdDescV);
+  if($('pd-pg-liq'))   $('pd-pg-liq').textContent='R$ '+fmtI(liq);
+  if($('pd-pg-ev'))    $('pd-pg-ev').textContent='R$ '+fmtI(ent);
+  if($('pd-pg-pv'))    $('pd-pg-pv').textContent=parc+'× R$ '+fmtI(parcV);
+  pdUpRel();
+}
+
+function pdUpRel(){
+  const final=Math.max(0,pdFasesT+pdTaxT-pdDescV);
+  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,pdFlt('pd-pg-parc')||2);
+  const ent=final*(entPct/100), parcV=(final-ent)/parc;
+  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if($('pd-rr-hora'))  $('pd-rr-hora').textContent='R$ '+fmt(pdHoraG);
+  if($('pd-rr-horas')) $('pd-rr-horas').textContent=pdTotalH+'h';
+  if($('pd-rr-fases')) $('pd-rr-fases').textContent='R$ '+fmtI(pdFasesT-pdVisitaV);
+  if($('pd-rr-vis'))   $('pd-rr-vis').textContent='R$ '+fmtI(pdVisitaV);
+  if($('pd-rr-tax'))   $('pd-rr-tax').textContent='R$ '+fmtI(pdTaxT);
+  if($('pd-rr-desc'))  $('pd-rr-desc').textContent='— R$ '+fmtI(pdDescV);
+  if($('pd-rr-total')) $('pd-rr-total').textContent='R$ '+fmtI(final);
+  if($('pd-rr-ent'))   $('pd-rr-ent').textContent='R$ '+fmtI(ent);
+  if($('pd-rr-parc'))  $('pd-rr-parc').textContent=parc+'× R$ '+fmtI(parcV);
+}
+
+function pdSetD(t){
+  pdDType=t;
+  ['pct','fix','no'].forEach(k=>{ const b=$('pd-pb-'+k); if(b) b.classList.toggle('on',k===t); });
+  if($('pd-d-pct')) $('pd-d-pct').style.display=t==='pct'?'':'none';
+  if($('pd-d-fix')) $('pd-d-fix').style.display=t==='fix'?'':'none';
+  pdCalcD();
+}
+
+function pdGo(i){
+  if(i>=1) pdCalc(); if(i>=2) pdCalcF(); if(i>=3) pdCalcT(); if(i>=4){ pdCalcD(); pdUpRel(); }
+  for(let k=0;k<5;k++){
+    const p=$('pd-p'+k); if(p) p.classList.toggle('active',k===i);
+    const d=$('pd-sd'+k);
+    if(d){ d.classList.toggle('active',k<=i); d.classList.toggle('done',k<i); }
+    const l=$('pd-sl'+k); if(l) l.classList.toggle('active',k<i);
+  }
+}
+
+// ── Entregas ──
+function pdAddServico(txt=''){
+  pdServicosListD.push({id:'pds-'+Date.now(),txt});
+  pdRenderServicos();
+}
+function pdRemoveServico(id){
+  pdServicosListD=pdServicosListD.filter(s=>s.id!==id);
+  pdRenderServicos();
+}
+function pdRenderServicos(){
+  const el=$('pd-servicos-list'); if(!el) return;
+  if(!pdServicosListD.length){ el.innerHTML='<div style="font-size:11px;color:var(--faint);padding:.4rem 0">Nenhuma entrega listada ainda.</div>'; return; }
+  el.innerHTML=pdServicosListD.map(s=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <input type="text" class="iw" style="flex:1;font-size:12px;padding:5px 9px" value="${esc(s.txt)}"
+        oninput="(pdServicosListD.find(x=>x.id==='${s.id}')||{}).txt=this.value" placeholder="Ex: Logo em vetor, manual de marca...">
+      <button class="btn ghost" style="padding:4px 8px;font-size:11px" onclick="pdRemoveServico('${s.id}')">✕</button>
+    </div>`).join('');
+}
+
+// ── Persistência ──
+function pdLoadLocal(){ try{ return JSON.parse(localStorage.getItem(PD_STORAGE_KEY)||'[]'); }catch(e){ return []; } }
+function pdSaveLocal(arr){ try{ localStorage.setItem(PD_STORAGE_KEY,JSON.stringify(arr)); }catch(e){} }
+
+function pdBuildPayload(){
+  return {
+    type:'design', id:pdCurrentId||('pd-'+Date.now()),
+    name:($('pd-rel-nome')||{}).value||'Proposta Design',
+    cliente:($('pd-rel-cli')||{}).value||'',
+    designer:($('pd-rel-des')||{}).value||'',
+    pecas:pdFlt('pd-rel-pecas'),
+    tipologia:($('pd-rel-tipo')||{}).value||'',
+    prolabore:pdFlt('pd-prolabore'),contabilidade:pdFlt('pd-contabilidade'),
+    telefone:pdFlt('pd-telefone'),software:pdFlt('pd-software'),
+    aluguel:pdFlt('pd-aluguel'),tarifa:pdFlt('pd-tarifa'),
+    marketing:pdFlt('pd-marketing'),outros:pdFlt('pd-outros'),
+    horas:pdFlt('pd-horas')||160,margem:pdFlt('pd-margem')||30,
+    fases:[...document.querySelectorAll('#pd-fases .pd-fi')].map(i=>parseFloat(i.value)||0),
+    visita:pdFlt('pd-visita'),
+    taxes:{iss:pdFlt('pd-t-iss'),ir:pdFlt('pd-t-ir'),pis:pdFlt('pd-t-pis'),out:pdFlt('pd-t-out')},
+    descType:pdDType,descPct:pdFlt('pd-desc-pct'),descFix:pdFlt('pd-desc-fix'),
+    pgEnt:pdFlt('pd-pg-ent'),pgParc:pdFlt('pd-pg-parc'),
+    total:Math.max(0,pdFasesT+pdTaxT-pdDescV),
+    servicos:pdServicosListD,
+    createdAt:new Date().toISOString(),
+  };
+}
+
+function pdLoadFromPayload(d){
+  if(!d) return;
+  pdCurrentId=d.id||null;
+  const set=(id,v)=>{ const el=$(id); if(el) el.value=v??''; };
+  set('pd-rel-nome',d.name); set('pd-rel-cli',d.cliente); set('pd-rel-des',d.designer);
+  set('pd-rel-pecas',d.pecas);
+  if($('pd-rel-tipo')&&d.tipologia) $('pd-rel-tipo').value=d.tipologia;
+  ['prolabore','contabilidade','telefone','software','aluguel','tarifa','marketing','outros','horas','margem'].forEach(k=>set('pd-'+k,d[k]));
+  if(d.fases){ const inputs=[...document.querySelectorAll('#pd-fases .pd-fi')];d.fases.forEach((v,i)=>{if(inputs[i])inputs[i].value=v||'';});}
+  set('pd-visita',d.visita);
+  if(d.taxes){['iss','ir','pis','out'].forEach(k=>set('pd-t-'+k,d.taxes[k]));}
+  pdSetD(d.descType||'pct');
+  set('pd-desc-pct',d.descPct); set('pd-desc-fix',d.descFix);
+  set('pd-pg-ent',d.pgEnt); set('pd-pg-parc',d.pgParc);
+  pdServicosListD=Array.isArray(d.servicos)?[...d.servicos]:[];
+  pdRenderServicos(); pdCalc();
+}
+
+function pdSaveProposal(){
+  const btn=$('pd-save-btn'), status=$('pd-save-status');
+  if(btn) btn.disabled=true;
+  if(status){ status.textContent='Salvando…'; status.className='save-status'; }
+  const payload=pdBuildPayload();
+  if(!payload.name||payload.name==='Proposta Design'){
+    if(status){ status.textContent='Informe o nome do projeto antes de salvar.'; status.className='save-status err'; }
+    if(btn) btn.disabled=false; return;
+  }
+  const arr=pdLoadLocal(), idx=arr.findIndex(p=>p.id===payload.id);
+  if(idx>=0) arr[idx]=payload; else arr.push(payload);
+  pdSaveLocal(arr); pdCurrentId=payload.id;
+  if(status){ status.textContent='✓ Proposta de design salva!'; status.className='save-status ok'; }
+  if(btn) btn.disabled=false;
+  setTimeout(()=>{ if(status) status.textContent=''; },3000);
+}
+
+function pdOpenCopyModal(){
+  const nome=($('pd-rel-nome')||{}).value||'o projeto';
+  const cli=($('pd-rel-cli')||{}).value||'';
+  const tipo=($('pd-rel-tipo')||{}).value||'Design';
+  const total=fmtI(Math.max(0,pdFasesT+pdTaxT-pdDescV));
+  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,pdFlt('pd-pg-parc')||2);
+  const finalV=Math.max(0,pdFasesT+pdTaxT-pdDescV);
+  const ent=fmtI(finalV*(entPct/100)), parcV=fmtI((finalV*(1-entPct/100))/parc);
+  const entregas=pdServicosListD.map(s=>s.txt).filter(Boolean).join(', ')||'conforme briefing';
+  const msg=`Olá${cli?' '+cli.split(' ')[0]:''}! Segue o resumo da proposta de *${tipo}* para o projeto *${nome}*:\n\n`+
+    `🎨 *Entregas:* ${entregas}\n`+
+    `💰 *Total:* R$ ${total}\n`+
+    `📥 *Entrada (${entPct}%):* R$ ${ent}\n`+
+    `📆 *Parcelas:* ${parc}× R$ ${parcV}\n\n`+
+    `Qualquer dúvida estou à disposição!`;
+  navigator.clipboard.writeText(msg)
+    .then(()=>{ if(window.notifyStatus) notifyStatus('✓ Copiado para a área de transferência!','ok',3000); })
+    .catch(()=>{ prompt('Copie a mensagem abaixo:',msg); });
+}
+// ── FIM PROPOSTA DESIGN ──────────────────────────────
 
 function showSimgeo(){
   if(guardTool('simgeo')) return;
@@ -5964,146 +6336,7 @@ async function consultarSimgeo(){
   }
 }
 
-const SIMGEO_FIELD_LABELS={
-  /* ── Identificação cadastral ── */
-  inscricao:'Inscrição Cadastral',
-  inscricao_imobiliaria:'Inscrição Imobiliária',
-  inscricao_cadastral:'Inscrição Cadastral',
-  cod_lote:'Código do Lote',
-  numero_lote:'Número do Lote',
-  lote:'Número do Lote',
-  numero_quadra:'Número da Quadra',
-  quadra:'Número da Quadra',
-  setor:'Setor Cadastral',
-  cod_setor:'Código do Setor',
-  cod_bairro:'Código do Bairro',
-  bairro:'Bairro',
-  logradouro:'Logradouro',
-  numero:'Número',
-  complemento:'Complemento',
-  cep:'CEP',
-  municipio:'Município',
-  uf:'UF',
-  nome:'Nome',
-  descricao:'Descrição',
-  tipo:'Tipo',
-
-  /* ── Zoneamento / PDDUA ── */
-  sigla:'Sigla da Zona',
-  zona:'Zona Urbana',
-  cod_zona:'Código de Zona',
-  macrozona:'Macrozona',
-  subzona:'Subzona',
-  zoneamento:'Zoneamento Urbano',
-  uso_predominante:'Uso Predominante',
-  uso_solo:'Uso do Solo',
-  tipo_uso:'Tipo de Uso',
-  classe:'Classe',
-  categoria:'Categoria',
-  classif:'Classificação',
-  industrial:'Atividade Industrial Permitida',
-  especial:'Zona / Área Especial',
-  residencial:'Uso Residencial',
-  comercial:'Uso Comercial',
-  misto:'Uso Misto Permitido',
-
-  /* ── Índices urbanísticos ── */
-  camin:'Coeficiente de Aproveitamento Mínimo (CA mín)',
-  cabas:'Coeficiente de Aproveitamento Básico (CA básico)',
-  camax:'Coeficiente de Aproveitamento Máximo (CA máx)',
-  ca:'Coeficiente de Aproveitamento',
-  ca_min:'Coeficiente de Aproveitamento Mínimo',
-  ca_bas:'Coeficiente de Aproveitamento Básico',
-  ca_max:'Coeficiente de Aproveitamento Máximo',
-  to:'Taxa de Ocupação (%)',
-  to_max:'Taxa de Ocupação Máxima (%)',
-  tp:'Taxa de Permeabilidade (%)',
-  tp_min:'Taxa de Permeabilidade Mínima (%)',
-  gabarito:'Gabarito de Altura (m)',
-  altura_max:'Altura Máxima Permitida (m)',
-  altura_min:'Altura Mínima Permitida (m)',
-  pavimentos:'Número Máximo de Pavimentos',
-  num_pavimentos:'Número de Pavimentos',
-
-  /* ── Recuos e afastamentos ── */
-  recuo_frontal:'Recuo Frontal (m)',
-  recuo_lateral:'Recuo Lateral (m)',
-  recuo_fundos:'Recuo de Fundos (m)',
-  recuo:'Recuo (m)',
-  afastamento:'Afastamento (m)',
-  esquina_m:'Afastamento de Esquina (m)',
-  esquina:'Afastamento de Esquina (m)',
-
-  /* ── OODC / Fator Beta ── */
-  fator_beta:'Fator Beta — Outorga Onerosa',
-  fator:'Fator Beta',
-  oo_t_dc:'Outorga Onerosa do Direito de Construir (OODC)',
-  oodc:'Outorga Onerosa do Direito de Construir (OODC)',
-  outorga:'Outorga Onerosa',
-
-  /* ── Dimensões do lote ── */
-  area_m2:'Área do Lote (m²)',
-  area_lote:'Área do Lote (m²)',
-  area_terreno:'Área do Terreno (m²)',
-  area_construida:'Área Construída (m²)',
-  area_util:'Área Útil (m²)',
-  area_total:'Área Total (m²)',
-  area:'Área (m²)',
-  testada:'Testada do Lote (m)',
-  testada_frontal:'Testada Frontal (m)',
-  perimetro:'Perímetro do Lote (m)',
-  profundidade:'Profundidade do Lote (m)',
-  largura:'Largura do Lote (m)',
-  comprimento:'Comprimento (m)',
-
-  /* ── Topografia / Altimetria ── */
-  elevacao:'Cota Altimétrica (m)',
-  cota:'Cota Altimétrica (m)',
-  cota_terreno:'Cota do Terreno (m)',
-  declividade:'Declividade (%)',
-
-  /* ── Campos geométricos GIS ── */
-  'st_area(shape)':'Área Geométrica da Feição (m²)',
-  'st_length(shape)':'Comprimento Geométrico da Feição (m)',
-  st_area:'Área Geométrica (m²)',
-  st_length:'Comprimento Geométrico (m)',
-  shape_area:'Área da Geometria (m²)',
-  shape_length:'Comprimento da Geometria (m)',
-  area_shape:'Área da Geometria (m²)',
-  length_shape:'Comprimento da Geometria (m)',
-
-  /* ── Dados complementares ── */
-  cod_uso:'Código de Uso',
-  cod_tipo:'Código do Tipo',
-  cod_classif:'Código de Classificação',
-  cod_zona_id:'ID da Zona',
-  id_lote:'ID do Lote',
-  id_quadra:'ID da Quadra',
-  situacao:'Situação',
-  status:'Status',
-  ativo:'Ativo',
-  observacao:'Observação',
-  obs:'Observação',
-  fonte:'Fonte dos Dados',
-  data_atualizacao:'Data de Atualização',
-  data_cadastro:'Data de Cadastro',
-  responsavel:'Responsável',
-  proprietario:'Proprietário',
-  contribuinte:'Contribuinte',
-  valor_venal:'Valor Venal (R$)',
-  valor_venal_imovel:'Valor Venal do Imóvel (R$)',
-  valor_venal_terreno:'Valor Venal do Terreno (R$)',
-  iptu:'IPTU',
-};
-function cleanAttrKey(k){
-  const raw=String(k||'').trim();
-  const lookup=raw.toLowerCase().replace(/\s+/g,'_');
-  if(SIMGEO_FIELD_LABELS[lookup]) return SIMGEO_FIELD_LABELS[lookup];
-  // fallback: tenta a chave original sem transformar (ex: "st_area(shape)")
-  const lookupRaw=raw.toLowerCase();
-  if(SIMGEO_FIELD_LABELS[lookupRaw]) return SIMGEO_FIELD_LABELS[lookupRaw];
-  return raw.replace(/_/g,' ').replace(/\s+/g,' ').trim();
-}
+function cleanAttrKey(k){ return String(k||'').replace(/_/g,' ').replace(/\s+/g,' ').trim(); }
 
 function usefulAttrs(attrs){
   const hidden=/^(objectid|fid|shape|shape_|globalid|created_|creator|edit|st_area|st_length|objectid_1)$/i;
