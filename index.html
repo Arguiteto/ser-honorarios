@@ -477,6 +477,26 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 #prop-design-view .save-status{flex-basis:100%}
 #prop-design-view [style*="display:flex;align-items:center;gap:10px;margin-top:.9rem"]{flex-wrap:wrap}
 
+#prop-design-view .pd-final-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:.8rem;padding:.85rem 1rem;border:0.5px solid var(--border);border-radius:12px;background:var(--surf2)}
+#prop-design-view .pd-final-head b{display:block;font-size:13px;color:var(--text);margin-bottom:3px}
+#prop-design-view .pd-final-head span{font-size:11px;color:var(--faint);line-height:1.5}
+#prop-design-view .pd-chip-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#prop-design-view .pd-chip{font-size:10px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:4px 8px;white-space:nowrap}
+#prop-design-view .pd-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#prop-design-view .pd-detail-grid .span2{grid-column:1/-1}
+#prop-design-view .pd-textarea{width:100%;min-height:82px;border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);line-height:1.55;padding:4px 0;resize:vertical}
+#prop-design-view .pd-textarea.tall{min-height:112px}
+#prop-design-view .pd-service-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:.6rem 0 .75rem}
+#prop-design-view .pd-service-list{display:flex;flex-direction:column;gap:8px}
+#prop-design-view .pd-service-card{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;border:0.5px solid var(--border);border-radius:10px;background:var(--surf2);padding:.75rem}
+#prop-design-view .pd-service-fields{display:grid;grid-template-columns:minmax(170px,.75fr) 1.25fr;gap:8px;align-items:start}
+#prop-design-view .pd-service-title,#prop-design-view .pd-service-desc{width:100%;border:0;border-bottom:1px solid var(--border-em);background:transparent;outline:none;color:var(--text);font-family:inherit;font-size:12px;padding:4px 0}
+#prop-design-view .pd-service-title{font-weight:600}
+#prop-design-view .pd-service-desc{resize:vertical;min-height:36px;color:var(--muted);line-height:1.45}
+#prop-design-view .pd-mini-note{font-size:10.5px;color:var(--faint);line-height:1.55;margin-top:.45rem}
+#prop-design-view .pd-export-hint{font-size:10.5px;color:var(--faint);line-height:1.5;flex-basis:100%}
+
+
 @media(max-width:720px){
   #prop-design-view{padding:1rem;padding-bottom:112px}
   #prop-design-view .calc-top{position:static;align-items:flex-start}
@@ -501,6 +521,11 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
   #prop-design-view .tax-row{align-items:flex-start;gap:8px}
   #prop-design-view .tr-right{width:100%;justify-content:space-between}
   #prop-design-view .save-row .btn{width:100%}
+
+  #prop-design-view .pd-detail-grid{grid-template-columns:1fr}
+  #prop-design-view .pd-service-card{grid-template-columns:1fr}
+  #prop-design-view .pd-service-fields{grid-template-columns:1fr}
+  #prop-design-view .pd-chip-row{justify-content:flex-start}
 }
 
 /* ── SERVICOS ────────────────────────────────────── */
@@ -2199,13 +2224,25 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 
     <!-- PD-P5 PROPOSTA FINAL -->
     <div class="panel" id="pd-p4">
-      <div class="slabel">Dados do projeto</div>
-      <div class="g2">
-        <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pd-rel-nome" placeholder="Ex: Identidade Visual Café Molho" oninput="pdUpRel()"></div></div>
+      <div class="pd-final-head">
+        <div>
+          <b id="pd-final-title">Proposta de design detalhada</b>
+          <span>Modelo completo com escopo, entregas, condições, PDF, Word e mensagens para WhatsApp.</span>
+        </div>
+        <div class="pd-chip-row">
+          <span class="pd-chip">PDF</span>
+          <span class="pd-chip">Word</span>
+          <span class="pd-chip">WhatsApp</span>
+        </div>
+      </div>
+
+      <div class="slabel">Dados e nome do projeto</div>
+      <div class="pd-detail-grid">
+        <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pd-rel-nome" placeholder="Ex: Identidade Visual Café Molho" oninput="pdSyncTitle();pdUpRel()"></div><span class="hint">Este nome aparece no topo, no PDF, no Word e nas mensagens.</span></div>
         <div class="field"><label>Cliente</label><div class="iw"><input type="text" id="pd-rel-cli" placeholder="Ex: Maria Fernanda" oninput="pdUpRel()"></div></div>
         <div class="field"><label>Designer responsável</label><div class="iw"><input type="text" id="pd-rel-des" placeholder="Ex: Ana Lima — @anadesign" oninput="pdUpRel()"></div></div>
         <div class="field"><label>Nº de peças / entregas</label><div class="iw"><input type="number" id="pd-rel-pecas" placeholder="0" min="0" oninput="pdUpRel()"><span class="sfx">pç</span></div></div>
-        <div class="field" style="grid-column:1/-1"><label>Categoria do projeto</label><div class="iw"><select id="pd-rel-tipo" onchange="pdUpRel()">
+        <div class="field"><label>Categoria do projeto</label><div class="iw"><select id="pd-rel-tipo" onchange="pdUpRel()">
           <option>Identidade visual completa</option>
           <option>Rebranding</option>
           <option>Branding parcial (logo e paleta)</option>
@@ -2218,21 +2255,46 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
           <option>Motion / Animação</option>
           <option>Outros serviços de design</option>
         </select></div></div>
+        <div class="field"><label>Prazo de execução</label><div class="iw"><input type="text" id="pd-rel-prazo" placeholder="Ex: 20 dias úteis após aprovação" oninput="pdUpRel()"></div></div>
       </div>
+
       <div class="divider"></div>
-      <div class="slabel">Entregas previstas</div>
-      <div style="font-size:11px;color:var(--faint);margin-bottom:.6rem">O cliente verá essas entregas na proposta.</div>
-      <div id="pd-servicos-list"></div>
-      <button class="btn ghost" style="font-size:11px;margin-top:.5rem;padding:6px 12px" onclick="pdAddServico()">+ Adicionar entrega</button>
+      <div class="slabel">Detalhamento da proposta</div>
+      <div class="pd-detail-grid">
+        <div class="field span2"><label>Objetivo do projeto</label><div class="iw"><textarea class="pd-textarea" id="pd-rel-objetivo" placeholder="Ex: Criar uma identidade visual contemporânea, memorável e aplicável aos pontos de contato da marca." oninput="pdUpRel()"></textarea></div></div>
+        <div class="field span2"><label>Escopo detalhado</label><div class="iw"><textarea class="pd-textarea tall" id="pd-rel-escopo" placeholder="Descreva a estratégia, etapas de criação, desenvolvimento das peças e forma de apresentação ao cliente." oninput="pdUpRel()"></textarea></div></div>
+        <div class="field"><label>Rodadas de revisão inclusas</label><div class="iw"><input type="number" id="pd-rel-revisoes" placeholder="2" min="0" oninput="pdUpRel()"><span class="sfx">rodadas</span></div></div>
+        <div class="field"><label>Validade da proposta</label><div class="iw"><input type="number" id="pd-rel-validade" placeholder="15" min="1" oninput="pdUpRel()"><span class="sfx">dias</span></div></div>
+        <div class="field span2"><label>Não incluso / contratado à parte</label><div class="iw"><textarea class="pd-textarea" id="pd-rel-exclusoes" placeholder="Ex: impressão, impulsionamento, banco de imagens pago, registro de marca, fotografia, redação técnica." oninput="pdUpRel()"></textarea></div></div>
+        <div class="field span2"><label>Observações e condições</label><div class="iw"><textarea class="pd-textarea" id="pd-rel-obs" placeholder="Ex: o início ocorre após aprovação da proposta e pagamento da entrada. Alterações fora do escopo serão orçadas à parte." oninput="pdUpRel()"></textarea></div></div>
+      </div>
+
       <div class="divider"></div>
+      <div class="slabel">Entregas previstas para o cliente</div>
+      <div class="pd-mini-note">Cada entrega pode ter nome e descrição. Você também pode gerar uma lista a partir das etapas que recebeu horas na calculadora.</div>
+      <div class="pd-service-toolbar">
+        <button class="btn ghost" style="font-size:11px;padding:6px 12px" onclick="pdAddServico()">+ Adicionar entrega</button>
+        <button class="btn ghost" style="font-size:11px;padding:6px 12px" onclick="pdUseCalculatedEntregas()">Usar etapas calculadas</button>
+      </div>
+      <div id="pd-servicos-list" class="pd-service-list"></div>
+
+      <div class="divider"></div>
+      <div class="slabel">Resumo financeiro</div>
       <div class="rel-box"><h3>Honorários</h3>
         <div class="rel-row"><span>Hora criativa</span><span class="rv" id="pd-rr-hora">R$ 0,00</span></div>
         <div class="rel-row"><span>Total de horas</span><span class="rv" id="pd-rr-horas">0 h</span></div>
         <div class="rel-row"><span>Honorário dos serviços</span><span class="rv" id="pd-rr-fases">R$ 0</span></div>
         <div class="rel-row"><span>Produção gráfica</span><span class="rv" id="pd-rr-vis">R$ 0</span></div>
       </div>
-      <div class="rel-box"><h3>Encargos e impostos</h3><div class="rel-row"><span>Total de encargos</span><span class="rv warn" id="pd-rr-tax">R$ 0</span></div></div>
-      <div class="rel-box"><h3>Ajuste</h3><div class="rel-row"><span>Desconto concedido</span><span class="rv neg" id="pd-rr-desc">— R$ 0</span></div></div>
+      <div class="rel-box"><h3>Condições comerciais</h3>
+        <div class="rel-row"><span>Prazo</span><span class="rv" id="pd-rr-prazo">—</span></div>
+        <div class="rel-row"><span>Revisões inclusas</span><span class="rv" id="pd-rr-revisoes">—</span></div>
+        <div class="rel-row"><span>Validade</span><span class="rv" id="pd-rr-validade">—</span></div>
+      </div>
+      <div class="rel-box"><h3>Encargos e ajustes</h3>
+        <div class="rel-row"><span>Total de encargos</span><span class="rv warn" id="pd-rr-tax">R$ 0</span></div>
+        <div class="rel-row"><span>Desconto concedido</span><span class="rv neg" id="pd-rr-desc">— R$ 0</span></div>
+      </div>
       <div class="grand"><span class="gl">Total da proposta</span><span class="gv" id="pd-rr-total">R$ 0</span></div>
       <div class="mc2" style="grid-template-columns:1fr 1fr">
         <div class="m"><div class="l">Entrada</div><div class="v" id="pd-rr-ent">R$ 0</div></div>
@@ -2240,8 +2302,11 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       </div>
       <div class="save-row">
         <button class="btn solid" id="pd-save-btn" onclick="pdSaveProposal()">Salvar proposta</button>
+        <button class="btn" id="pd-pdf-btn" onclick="pdExportPDF()">⬇ Baixar PDF</button>
+        <button class="btn ghost" id="pd-docx-btn" onclick="pdExportDocx()">⬇ Word (.docx)</button>
         <button class="btn ghost" onclick="pdOpenCopyModal()">📋 Copiar para WhatsApp</button>
         <span class="save-status" id="pd-save-status"></span>
+        <div class="pd-export-hint">Os arquivos usam o nome atual do projeto. Edite o nome acima antes de exportar.</div>
       </div>
       <div class="nav-row" style="border:none;padding:0;margin-top:.5rem"><button class="btn ghost" onclick="pdGo(3)">← Ajustar</button></div>
     </div>
@@ -3121,16 +3186,32 @@ function showDesignProposal(){
   hideViews();
   $('prop-design-view').style.display='block';
   setTool('propdesign');
-  if($('pd-calc-title')) $('pd-calc-title').textContent=pdCurrentId?'Editar proposta — Design':'Nova proposta — Design';
+  pdEnsureDefaults();
   pdRenderServicos();
+  pdSyncTitle();
+  pdUpRel();
 }
 
 // ── PROPOSTA DESIGN — ENGINE ─────────────────────────
 let pdHoraG=0,pdFasesT=0,pdVisitaV=0,pdTaxT=0,pdDescV=0,pdTotalH=0,pdDType='pct';
-let pdCurrentId=null,pdServicosListD=[];
+let pdCurrentId=null,pdServicosListD=[],pdPdfBusy=false,pdDocxBusy=false;
 const PD_STORAGE_KEY='chaos_design_proposals_v1';
 
 function pdFlt(id){ const el=$(id); return el?parseFloat(el.value)||0:0; }
+function pdVal(id){ const el=$(id); return (el?.value||'').trim(); }
+function pdSetVal(id,v){ const el=$(id); if(el) el.value=v??''; }
+function pdBr(v){ return 'R$ '+fmtI(v||0); }
+function pdProjectName(){ return pdVal('pd-rel-nome') || 'Proposta de Design'; }
+function pdSyncTitle(){
+  const nome=pdProjectName();
+  if($('pd-calc-title')) $('pd-calc-title').textContent=(pdCurrentId?'Editar — ':'Nova — ')+nome;
+  if($('pd-final-title')) $('pd-final-title').textContent=nome;
+}
+function pdEnsureDefaults(){
+  if($('pd-rel-validade') && !$('pd-rel-validade').value) $('pd-rel-validade').value=15;
+  if($('pd-rel-revisoes') && !$('pd-rel-revisoes').value) $('pd-rel-revisoes').value=2;
+  if($('pd-rel-prazo') && !$('pd-rel-prazo').value) $('pd-rel-prazo').value='A combinar após aprovação do briefing';
+}
 
 function pdCalc(){
   const ids=['pd-prolabore','pd-contabilidade','pd-telefone','pd-software','pd-aluguel','pd-tarifa','pd-marketing','pd-outros'];
@@ -3139,8 +3220,7 @@ function pdCalc(){
   const margem=pdFlt('pd-margem')||30;
   const ch=horas>0?mensal/horas:0;
   pdHoraG=ch*(1+(margem/100));
-  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  if($('pd-r-total')) $('pd-r-total').textContent='R$ '+fmtI(mensal);
+  if($('pd-r-total')) $('pd-r-total').textContent=pdBr(mensal);
   if($('pd-r-ch'))    $('pd-r-ch').textContent='R$ '+fmt(ch);
   if($('pd-r-hora'))  $('pd-r-hora').textContent='R$ '+fmt(pdHoraG);
   pdCalcF();
@@ -3152,13 +3232,12 @@ function pdCalcF(){
     const h=parseFloat(inp.value)||0, v=h*pdHoraG;
     th+=h; tv+=v;
     const fv=inp.closest('.fase-row')?.querySelector('.fv');
-    if(fv) fv.textContent='R$ '+fmtI(v);
+    if(fv) fv.textContent=pdBr(v);
   });
   pdTotalH=th; pdVisitaV=pdFlt('pd-visita'); pdFasesT=tv+pdVisitaV;
-  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   if($('pd-th'))     $('pd-th').textContent=th+'h';
   if($('pd-hr-ref')) $('pd-hr-ref').textContent='R$ '+fmt(pdHoraG);
-  if($('pd-tf'))     $('pd-tf').textContent='R$ '+fmtI(pdFasesT);
+  if($('pd-tf'))     $('pd-tf').textContent=pdBr(pdFasesT);
   pdCalcT();
 }
 
@@ -3166,10 +3245,10 @@ function pdCalcT(){
   const base=pdFasesT;
   const pairs=[['pd-t-iss','pd-tv-iss'],['pd-t-ir','pd-tv-ir'],['pd-t-pis','pd-tv-pis'],['pd-t-out','pd-tv-out']];
   let total=0;
-  pairs.forEach(([ti,tv])=>{ const val=base*(pdFlt(ti)/100); total+=val; if($(tv)) $(tv).textContent='R$ '+fmtI(val); });
+  pairs.forEach(([ti,tv])=>{ const val=base*(pdFlt(ti)/100); total+=val; if($(tv)) $(tv).textContent=pdBr(val); });
   pdTaxT=total;
-  if($('pd-tax-base'))  $('pd-tax-base').textContent='R$ '+fmtI(base);
-  if($('pd-tax-total')) $('pd-tax-total').textContent='+ R$ '+fmtI(total)+' em encargos';
+  if($('pd-tax-base'))  $('pd-tax-base').textContent=pdBr(base);
+  if($('pd-tax-total')) $('pd-tax-total').textContent='+ '+pdBr(total)+' em encargos';
   pdCalcD();
 }
 
@@ -3180,30 +3259,40 @@ function pdCalcD(){
   else if(pdDType==='fix') desc=pdFlt('pd-desc-fix');
   pdDescV=Math.min(desc,bruto);
   const liq=Math.max(0,bruto-pdDescV);
-  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,pdFlt('pd-pg-parc')||2);
+  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,Math.round(pdFlt('pd-pg-parc')||2));
   const ent=liq*(entPct/100), parcV=(liq-ent)/parc;
-  if($('pd-pg-bruto')) $('pd-pg-bruto').textContent='R$ '+fmtI(bruto);
-  if($('pd-pg-desc'))  $('pd-pg-desc').textContent='— R$ '+fmtI(pdDescV);
-  if($('pd-pg-liq'))   $('pd-pg-liq').textContent='R$ '+fmtI(liq);
-  if($('pd-pg-ev'))    $('pd-pg-ev').textContent='R$ '+fmtI(ent);
-  if($('pd-pg-pv'))    $('pd-pg-pv').textContent=parc+'× R$ '+fmtI(parcV);
+  if($('pd-pg-bruto')) $('pd-pg-bruto').textContent=pdBr(bruto);
+  if($('pd-pg-desc'))  $('pd-pg-desc').textContent='— '+pdBr(pdDescV);
+  if($('pd-pg-liq'))   $('pd-pg-liq').textContent=pdBr(liq);
+  if($('pd-pg-ev'))    $('pd-pg-ev').textContent=pdBr(ent);
+  if($('pd-pg-pv'))    $('pd-pg-pv').textContent=parc+'× '+pdBr(parcV);
   pdUpRel();
 }
 
+function pdMoney(){
+  const total=Math.max(0,pdFasesT+pdTaxT-pdDescV);
+  const entPct=pdFlt('pd-pg-ent')||50;
+  const parc=Math.max(1,Math.round(pdFlt('pd-pg-parc')||2));
+  const entrada=total*(entPct/100);
+  const parcela=(total-entrada)/parc;
+  return {total,entPct,parc,entrada,parcela,bruto:pdFasesT+pdTaxT,desconto:pdDescV,taxas:pdTaxT,servicos:pdFasesT-pdVisitaV,producao:pdVisitaV};
+}
+
 function pdUpRel(){
-  const final=Math.max(0,pdFasesT+pdTaxT-pdDescV);
-  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,pdFlt('pd-pg-parc')||2);
-  const ent=final*(entPct/100), parcV=(final-ent)/parc;
-  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const m=pdMoney();
   if($('pd-rr-hora'))  $('pd-rr-hora').textContent='R$ '+fmt(pdHoraG);
   if($('pd-rr-horas')) $('pd-rr-horas').textContent=pdTotalH+'h';
-  if($('pd-rr-fases')) $('pd-rr-fases').textContent='R$ '+fmtI(pdFasesT-pdVisitaV);
-  if($('pd-rr-vis'))   $('pd-rr-vis').textContent='R$ '+fmtI(pdVisitaV);
-  if($('pd-rr-tax'))   $('pd-rr-tax').textContent='R$ '+fmtI(pdTaxT);
-  if($('pd-rr-desc'))  $('pd-rr-desc').textContent='— R$ '+fmtI(pdDescV);
-  if($('pd-rr-total')) $('pd-rr-total').textContent='R$ '+fmtI(final);
-  if($('pd-rr-ent'))   $('pd-rr-ent').textContent='R$ '+fmtI(ent);
-  if($('pd-rr-parc'))  $('pd-rr-parc').textContent=parc+'× R$ '+fmtI(parcV);
+  if($('pd-rr-fases')) $('pd-rr-fases').textContent=pdBr(m.servicos);
+  if($('pd-rr-vis'))   $('pd-rr-vis').textContent=pdBr(m.producao);
+  if($('pd-rr-tax'))   $('pd-rr-tax').textContent=pdBr(m.taxas);
+  if($('pd-rr-desc'))  $('pd-rr-desc').textContent='— '+pdBr(m.desconto);
+  if($('pd-rr-total')) $('pd-rr-total').textContent=pdBr(m.total);
+  if($('pd-rr-ent'))   $('pd-rr-ent').textContent=pdBr(m.entrada);
+  if($('pd-rr-parc'))  $('pd-rr-parc').textContent=m.parc+'× '+pdBr(m.parcela);
+  if($('pd-rr-prazo')) $('pd-rr-prazo').textContent=pdVal('pd-rel-prazo')||'—';
+  if($('pd-rr-revisoes')) $('pd-rr-revisoes').textContent=pdFlt('pd-rel-revisoes')?pdFlt('pd-rel-revisoes')+' rodada(s)':'—';
+  if($('pd-rr-validade')) $('pd-rr-validade').textContent=(pdFlt('pd-rel-validade')||15)+' dias';
+  pdSyncTitle();
 }
 
 function pdSetD(t){
@@ -3215,6 +3304,7 @@ function pdSetD(t){
 }
 
 function pdGo(i){
+  pdEnsureDefaults();
   if(i>=1) pdCalc(); if(i>=2) pdCalcF(); if(i>=3) pdCalcT(); if(i>=4){ pdCalcD(); pdUpRel(); }
   for(let k=0;k<5;k++){
     const p=$('pd-p'+k); if(p) p.classList.toggle('active',k===i);
@@ -3224,24 +3314,67 @@ function pdGo(i){
   }
 }
 
-// ── Entregas ──
-function pdAddServico(txt=''){
-  pdServicosListD.push({id:'pds-'+Date.now(),txt});
+// ── Entregas detalhadas ──
+function pdNormServico(s){
+  if(typeof s==='string') return {id:'pds-'+Date.now()+Math.random(),nome:s,desc:''};
+  return {id:s?.id||('pds-'+Date.now()+Math.random()),nome:s?.nome||s?.txt||'',desc:s?.desc||''};
+}
+function pdAddServico(nome='',desc=''){
+  pdServicosListD.push({id:'pds-'+Date.now()+Math.random().toString(16).slice(2),nome,desc});
   pdRenderServicos();
+}
+function pdUpdateServico(id,key,val){
+  const s=pdServicosListD.find(x=>x.id===id);
+  if(s) s[key]=val;
 }
 function pdRemoveServico(id){
   pdServicosListD=pdServicosListD.filter(s=>s.id!==id);
   pdRenderServicos();
 }
+function pdGetPhaseRows(){
+  return [...document.querySelectorAll('#pd-fases .fase-row')].map(row=>{
+    const nome=row.querySelector('.fn')?.textContent.trim()||'';
+    const h=parseFloat(row.querySelector('.pd-fi')?.value)||0;
+    return {nome,horas:h,valor:h*pdHoraG};
+  }).filter(r=>r.horas>0);
+}
+function pdGetServicos(){
+  pdServicosListD=pdServicosListD.map(pdNormServico);
+  return pdServicosListD.filter(s=>(s.nome||s.desc));
+}
+function pdUseCalculatedEntregas(){
+  const rows=pdGetPhaseRows();
+  if(!rows.length){ notifyStatus('Preencha horas nas etapas antes de gerar entregas.','warn',3500); return; }
+  pdServicosListD=rows.map(r=>({id:'pds-'+Date.now()+Math.random().toString(16).slice(2),nome:r.nome,desc:`Etapa estimada em ${r.horas}h, contemplando criação, ajustes e preparação dos arquivos relacionados.`}));
+  pdRenderServicos();
+  notifyStatus('✓ Entregas geradas a partir das etapas calculadas','ok',3000);
+}
 function pdRenderServicos(){
   const el=$('pd-servicos-list'); if(!el) return;
-  if(!pdServicosListD.length){ el.innerHTML='<div style="font-size:11px;color:var(--faint);padding:.4rem 0">Nenhuma entrega listada ainda.</div>'; return; }
+  pdServicosListD=pdServicosListD.map(pdNormServico);
+  if(!pdServicosListD.length){ el.innerHTML='<div style="font-size:11px;color:var(--faint);padding:.6rem 0">Nenhuma entrega listada ainda. Adicione manualmente ou use as etapas calculadas.</div>'; return; }
   el.innerHTML=pdServicosListD.map(s=>`
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <input type="text" class="iw" style="flex:1;font-size:12px;padding:5px 9px" value="${esc(s.txt)}"
-        oninput="(pdServicosListD.find(x=>x.id==='${s.id}')||{}).txt=this.value" placeholder="Ex: Logo em vetor, manual de marca...">
-      <button class="btn ghost" style="padding:4px 8px;font-size:11px" onclick="pdRemoveServico('${s.id}')">✕</button>
+    <div class="pd-service-card">
+      <div class="pd-service-fields">
+        <input type="text" class="pd-service-title" value="${esc(s.nome)}" oninput="pdUpdateServico('${s.id}','nome',this.value)" placeholder="Nome da entrega — ex: Manual de marca">
+        <textarea class="pd-service-desc" oninput="pdUpdateServico('${s.id}','desc',this.value)" placeholder="Descrição para o cliente — ex: arquivo PDF com diretrizes de uso, cores e tipografia.">${esc(s.desc)}</textarea>
+      </div>
+      <button class="btn ghost" style="padding:5px 9px;font-size:11px" onclick="pdRemoveServico('${s.id}')">✕</button>
     </div>`).join('');
+}
+
+function pdGetData(){
+  pdCalcD();
+  const m=pdMoney();
+  const validade=Math.max(1,Math.round(pdFlt('pd-rel-validade')||15));
+  return {
+    nome:pdProjectName(), cliente:pdVal('pd-rel-cli'), designer:pdVal('pd-rel-des'), pecas:pdFlt('pd-rel-pecas'), tipo:pdVal('pd-rel-tipo'),
+    prazo:pdVal('pd-rel-prazo'), revisoes:pdFlt('pd-rel-revisoes')||0, validade,
+    objetivo:pdVal('pd-rel-objetivo'), escopo:pdVal('pd-rel-escopo'), exclusoes:pdVal('pd-rel-exclusoes'), obs:pdVal('pd-rel-obs'),
+    servicos:pdGetServicos(), fases:pdGetPhaseRows(), money:m,
+    data:new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}),
+    validadeData:new Date(Date.now()+validade*24*60*60*1000).toLocaleDateString('pt-BR'),
+  };
 }
 
 // ── Persistência ──
@@ -3249,45 +3382,37 @@ function pdLoadLocal(){ try{ return JSON.parse(localStorage.getItem(PD_STORAGE_K
 function pdSaveLocal(arr){ try{ localStorage.setItem(PD_STORAGE_KEY,JSON.stringify(arr)); }catch(e){} }
 
 function pdBuildPayload(){
+  const data=pdGetData();
   return {
     type:'design', id:pdCurrentId||('pd-'+Date.now()),
-    name:($('pd-rel-nome')||{}).value||'Proposta Design',
-    cliente:($('pd-rel-cli')||{}).value||'',
-    designer:($('pd-rel-des')||{}).value||'',
-    pecas:pdFlt('pd-rel-pecas'),
-    tipologia:($('pd-rel-tipo')||{}).value||'',
-    prolabore:pdFlt('pd-prolabore'),contabilidade:pdFlt('pd-contabilidade'),
-    telefone:pdFlt('pd-telefone'),software:pdFlt('pd-software'),
-    aluguel:pdFlt('pd-aluguel'),tarifa:pdFlt('pd-tarifa'),
-    marketing:pdFlt('pd-marketing'),outros:pdFlt('pd-outros'),
+    name:data.nome, cliente:data.cliente, designer:data.designer, pecas:data.pecas, tipologia:data.tipo,
+    prazo:data.prazo, revisoes:data.revisoes, validade:data.validade, objetivo:data.objetivo, escopo:data.escopo, exclusoes:data.exclusoes, obs:data.obs,
+    prolabore:pdFlt('pd-prolabore'),contabilidade:pdFlt('pd-contabilidade'),telefone:pdFlt('pd-telefone'),software:pdFlt('pd-software'),
+    aluguel:pdFlt('pd-aluguel'),tarifa:pdFlt('pd-tarifa'),marketing:pdFlt('pd-marketing'),outros:pdFlt('pd-outros'),
     horas:pdFlt('pd-horas')||160,margem:pdFlt('pd-margem')||30,
     fases:[...document.querySelectorAll('#pd-fases .pd-fi')].map(i=>parseFloat(i.value)||0),
     visita:pdFlt('pd-visita'),
     taxes:{iss:pdFlt('pd-t-iss'),ir:pdFlt('pd-t-ir'),pis:pdFlt('pd-t-pis'),out:pdFlt('pd-t-out')},
-    descType:pdDType,descPct:pdFlt('pd-desc-pct'),descFix:pdFlt('pd-desc-fix'),
-    pgEnt:pdFlt('pd-pg-ent'),pgParc:pdFlt('pd-pg-parc'),
-    total:Math.max(0,pdFasesT+pdTaxT-pdDescV),
-    servicos:pdServicosListD,
-    createdAt:new Date().toISOString(),
+    descType:pdDType,descPct:pdFlt('pd-desc-pct'),descFix:pdFlt('pd-desc-fix'),pgEnt:pdFlt('pd-pg-ent'),pgParc:pdFlt('pd-pg-parc'),
+    total:data.money.total, servicos:pdGetServicos(), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(),
   };
 }
 
 function pdLoadFromPayload(d){
   if(!d) return;
   pdCurrentId=d.id||null;
-  const set=(id,v)=>{ const el=$(id); if(el) el.value=v??''; };
-  set('pd-rel-nome',d.name); set('pd-rel-cli',d.cliente); set('pd-rel-des',d.designer);
-  set('pd-rel-pecas',d.pecas);
+  pdSetVal('pd-rel-nome',d.name); pdSetVal('pd-rel-cli',d.cliente); pdSetVal('pd-rel-des',d.designer); pdSetVal('pd-rel-pecas',d.pecas);
   if($('pd-rel-tipo')&&d.tipologia) $('pd-rel-tipo').value=d.tipologia;
-  ['prolabore','contabilidade','telefone','software','aluguel','tarifa','marketing','outros','horas','margem'].forEach(k=>set('pd-'+k,d[k]));
+  pdSetVal('pd-rel-prazo',d.prazo); pdSetVal('pd-rel-revisoes',d.revisoes); pdSetVal('pd-rel-validade',d.validade);
+  pdSetVal('pd-rel-objetivo',d.objetivo); pdSetVal('pd-rel-escopo',d.escopo); pdSetVal('pd-rel-exclusoes',d.exclusoes); pdSetVal('pd-rel-obs',d.obs);
+  ['prolabore','contabilidade','telefone','software','aluguel','tarifa','marketing','outros','horas','margem'].forEach(k=>pdSetVal('pd-'+k,d[k]));
   if(d.fases){ const inputs=[...document.querySelectorAll('#pd-fases .pd-fi')];d.fases.forEach((v,i)=>{if(inputs[i])inputs[i].value=v||'';});}
-  set('pd-visita',d.visita);
-  if(d.taxes){['iss','ir','pis','out'].forEach(k=>set('pd-t-'+k,d.taxes[k]));}
+  pdSetVal('pd-visita',d.visita);
+  if(d.taxes){['iss','ir','pis','out'].forEach(k=>pdSetVal('pd-t-'+k,d.taxes[k]));}
   pdSetD(d.descType||'pct');
-  set('pd-desc-pct',d.descPct); set('pd-desc-fix',d.descFix);
-  set('pd-pg-ent',d.pgEnt); set('pd-pg-parc',d.pgParc);
-  pdServicosListD=Array.isArray(d.servicos)?[...d.servicos]:[];
-  pdRenderServicos(); pdCalc();
+  pdSetVal('pd-desc-pct',d.descPct); pdSetVal('pd-desc-fix',d.descFix); pdSetVal('pd-pg-ent',d.pgEnt); pdSetVal('pd-pg-parc',d.pgParc);
+  pdServicosListD=Array.isArray(d.servicos)?d.servicos.map(pdNormServico):[];
+  pdEnsureDefaults(); pdRenderServicos(); pdCalc(); pdSyncTitle();
 }
 
 function pdSaveProposal(){
@@ -3295,37 +3420,156 @@ function pdSaveProposal(){
   if(btn) btn.disabled=true;
   if(status){ status.textContent='Salvando…'; status.className='save-status'; }
   const payload=pdBuildPayload();
-  if(!payload.name||payload.name==='Proposta Design'){
+  if(!payload.name||payload.name==='Proposta de Design'){
     if(status){ status.textContent='Informe o nome do projeto antes de salvar.'; status.className='save-status err'; }
     if(btn) btn.disabled=false; return;
   }
   const arr=pdLoadLocal(), idx=arr.findIndex(p=>p.id===payload.id);
   if(idx>=0) arr[idx]=payload; else arr.push(payload);
-  pdSaveLocal(arr); pdCurrentId=payload.id;
+  pdSaveLocal(arr); pdCurrentId=payload.id; pdSyncTitle();
   if(status){ status.textContent='✓ Proposta de design salva!'; status.className='save-status ok'; }
   if(btn) btn.disabled=false;
   setTimeout(()=>{ if(status) status.textContent=''; },3000);
 }
 
 function pdOpenCopyModal(){
-  const nome=($('pd-rel-nome')||{}).value||'o projeto';
-  const cli=($('pd-rel-cli')||{}).value||'';
-  const tipo=($('pd-rel-tipo')||{}).value||'Design';
-  const total=fmtI(Math.max(0,pdFasesT+pdTaxT-pdDescV));
-  const entPct=pdFlt('pd-pg-ent')||50, parc=Math.max(1,pdFlt('pd-pg-parc')||2);
-  const finalV=Math.max(0,pdFasesT+pdTaxT-pdDescV);
-  const ent=fmtI(finalV*(entPct/100)), parcV=fmtI((finalV*(1-entPct/100))/parc);
-  const entregas=pdServicosListD.map(s=>s.txt).filter(Boolean).join(', ')||'conforme briefing';
-  const msg=`Olá${cli?' '+cli.split(' ')[0]:''}! Segue o resumo da proposta de *${tipo}* para o projeto *${nome}*:\n\n`+
-    `🎨 *Entregas:* ${entregas}\n`+
-    `💰 *Total:* R$ ${total}\n`+
-    `📥 *Entrada (${entPct}%):* R$ ${ent}\n`+
-    `📆 *Parcelas:* ${parc}× R$ ${parcV}\n\n`+
-    `Qualquer dúvida estou à disposição!`;
-  navigator.clipboard.writeText(msg)
-    .then(()=>{ if(window.notifyStatus) notifyStatus('✓ Copiado para a área de transferência!','ok',3000); })
-    .catch(()=>{ prompt('Copie a mensagem abaixo:',msg); });
+  const d=pdGetData();
+  const first=d.cliente?d.cliente.split(' ')[0]:'';
+  const pag=d.money.parc===1 ? `entrada de R$ ${fmtI(d.money.entrada)} + 1 parcela de R$ ${fmt(d.money.parcela)}` : `entrada de R$ ${fmtI(d.money.entrada)} + ${d.money.parc} parcelas de R$ ${fmt(d.money.parcela)}`;
+  const entregas=d.servicos.map(s=>s.nome).filter(Boolean).slice(0,5).join(', ') || d.tipo || 'entregas previstas no briefing';
+  const ass=d.designer||logoGetNomeEmpresa();
+  const variants=[
+    {label:'Profissional — enviar com PDF',text:`Olá${first?', '+first:''}! Tudo bem?\n\nPreparei a proposta de *${d.tipo||'design'}* para o projeto *${d.nome}*.\n\n*Objetivo:* ${d.objetivo||'desenvolver as entregas alinhadas ao briefing.'}\n*Entregas:* ${entregas}\n*Investimento:* R$ ${fmtI(d.money.total)}\n*Pagamento:* ${pag}\n*Prazo:* ${d.prazo||'a combinar'}\n\nO PDF/Word com o escopo completo segue em anexo.\n\n_${ass}_`},
+    {label:'Objetivo — resumo rápido',text:`Olá${first?', '+first:''}!\n\nResumo da proposta para *${d.nome}*:\n\n• Categoria: ${d.tipo||'Design'}\n• Entregas: ${entregas}\n• Total: *R$ ${fmtI(d.money.total)}*\n• Entrada: R$ ${fmtI(d.money.entrada)}\n• Saldo: ${d.money.parc}× R$ ${fmt(d.money.parcela)}\n\nPosso enviar o PDF detalhado para aprovação.\n\n_${ass}_`},
+    {label:'Com validade — comercial',text:`Olá${first?', '+first:''}!\n\nConforme alinhado, segue a proposta para *${d.nome}*.\n\nO investimento é de *R$ ${fmtI(d.money.total)}*, com ${pag}.\n\nA proposta inclui ${d.revisoes||2} rodada(s) de revisão e tem validade até ${d.validadeData}.\n\nSerá um prazer desenvolver esse projeto com você.\n\n_${ass}_`},
+    {label:'Aprovação — próximos passos',text:`Olá${first?', '+first:''}!\n\nPara iniciarmos o projeto *${d.nome}*, os próximos passos são:\n\n1. Aprovação da proposta\n2. Pagamento da entrada de R$ ${fmtI(d.money.entrada)}\n3. Envio/validação do briefing e referências\n4. Início do desenvolvimento dentro do prazo combinado\n\nO restante fica em ${d.money.parc}× R$ ${fmt(d.money.parcela)}.\n\nFico à disposição para ajustar qualquer ponto.\n\n_${ass}_`}
+  ];
+  const wrap=$('copy-variants');
+  wrap.innerHTML=variants.map((v,i)=>`
+    <div class="copy-variant">
+      <div class="cv-label">${esc(v.label)}</div>
+      <div class="cv-text">${renderWhatsAppPreview(v.text)}</div>
+      <button class="btn cv-btn" onclick="copyVariant(${i})" id="cv-btn-${i}">Copiar texto</button>
+    </div>`).join('');
+  window['_copyVariants']=variants;
+  $('copy-modal').style.display='flex';
 }
+
+async function pdExportPDF(){
+  if(pdPdfBusy) return;
+  if(!await pdfReady()){ notifyStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err',5000); return; }
+  const btn=$('pd-pdf-btn');
+  let el=null;
+  pdPdfBusy=true;
+  if(btn){btn.textContent='Gerando...';btn.disabled=true;}
+  try{
+    const d=pdGetData();
+    const logoPng=await logoSvgToPng(logoGetSrcForPDF());
+    const servicosRows=d.servicos.map((s,i)=>`
+      <tr><td style="padding:9px 0;border-bottom:0.5px solid #F2EDE2;width:30px;vertical-align:top"><div style="width:22px;height:22px;border-radius:50%;background:#F5EDE2;border:1px solid #D4B896;display:flex;align-items:center;justify-content:center;font-size:10px;color:#8B5E3C;font-family:monospace">${i+1}</div></td><td style="padding:9px 0 9px 10px;border-bottom:0.5px solid #F2EDE2;vertical-align:top">${s.nome?`<div style="font-size:13px;color:#2C1F12;font-weight:600;margin-bottom:3px">${esc(s.nome)}</div>`:''}${s.desc?`<div style="font-size:11.5px;color:#7A6A56;line-height:1.55">${esc(s.desc).replace(/\n/g,'<br>')}</div>`:''}</td></tr>`).join('');
+    const fasesRows=d.fases.map(r=>`<tr><td style="padding:6px 0;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;font-size:11px">${esc(r.nome)}</td><td style="padding:6px 0;border-bottom:0.5px solid #F2EDE2;text-align:right;color:#2C1F12;font-size:11px;font-family:monospace">${r.horas}h</td><td style="padding:6px 0;border-bottom:0.5px solid #F2EDE2;text-align:right;color:#8B5E3C;font-size:11px;font-family:monospace">R$ ${fmtI(r.valor)}</td></tr>`).join('');
+    const p=(label,val)=>val?`<div style="margin-bottom:14px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:4px">${label}</div><div style="font-size:12px;color:#2C1F12;line-height:1.65">${esc(val).replace(/\n/g,'<br>')}</div></div>`:'';
+    const htmlContent=`
+    <div style="font-family:Georgia,serif;color:#2C1F12;padding:38px 48px;max-width:700px;margin:0 auto;background:#FAF7F1">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0"><img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block"><div style="font-size:10px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.35">Proposta detalhada de design</div></div>
+        <div style="text-align:right"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif">Pro.Design</div><div style="font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;margin-top:4px">${d.data}</div></div>
+      </div>
+      <div style="margin-bottom:20px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:9px">Projeto</div><div style="font-size:23px;color:#2C1F12;margin-bottom:7px">${esc(d.nome)}</div><div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif">${d.cliente?`<span><b style="color:#B0A090">Cliente:</b> ${esc(d.cliente)}</span>`:''}${d.tipo?`<span><b style="color:#B0A090">Categoria:</b> ${esc(d.tipo)}</span>`:''}${d.designer?`<span><b style="color:#B0A090">Responsável:</b> ${esc(d.designer)}</span>`:''}${d.pecas?`<span><b style="color:#B0A090">Peças:</b> ${d.pecas}</span>`:''}</div></div>
+      ${p('Objetivo',d.objetivo)}${p('Escopo detalhado',d.escopo)}
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Entregas previstas</div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:18px">${servicosRows||'<tr><td style="font-size:12px;color:#B0A090;padding:10px 0;font-style:italic">Entregas a detalhar.</td></tr>'}</table>
+      ${fasesRows?`<div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Memória de cálculo</div><table style="width:100%;border-collapse:collapse;margin-bottom:18px"><tr><th style="text-align:left;font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;padding-bottom:5px">Etapa</th><th style="text-align:right;font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;padding-bottom:5px">Horas</th><th style="text-align:right;font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;padding-bottom:5px">Valor</th></tr>${fasesRows}</table>`:''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;break-inside:avoid">
+        <div style="background:#F2EDE2;border-radius:8px;padding:12px"><div style="font-size:9px;color:#B0A090;text-transform:uppercase;letter-spacing:1px;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:5px">Prazo</div><div style="font-size:12px;color:#2C1F12;line-height:1.45">${esc(d.prazo||'A combinar')}</div></div>
+        <div style="background:#F2EDE2;border-radius:8px;padding:12px"><div style="font-size:9px;color:#B0A090;text-transform:uppercase;letter-spacing:1px;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:5px">Revisões e validade</div><div style="font-size:12px;color:#2C1F12;line-height:1.45">${d.revisoes||0} rodada(s) · validade até ${d.validadeData}</div></div>
+      </div>
+      ${p('Não incluso',d.exclusoes)}${p('Observações e condições',d.obs)}
+      <div style="background:#F5EDE2;border-radius:8px;padding:20px 24px;margin:18px 0 14px;break-inside:avoid"><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#8B5E3C;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:14px">Investimento</div><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #D4B896"><div style="font-size:13px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif">Valor total do projeto</div><div style="font-size:28px;color:#8B5E3C">R$ ${fmtI(d.money.total)}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div style="font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Entrada</div><div style="font-size:15px;color:#8B5E3C;font-family:monospace">R$ ${fmtI(d.money.entrada)}</div></div><div><div style="font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Parcelas</div><div style="font-size:15px;color:#8B5E3C;font-family:monospace">${d.money.parc}× R$ ${fmt(d.money.parcela)}</div></div></div></div>
+      <div style="border-top:1px solid #F2EDE2;padding-top:12px;display:flex;justify-content:space-between"><div style="font-size:9px;color:#D4B896;font-family:system-ui,sans-serif;letter-spacing:.5px;text-transform:uppercase">${logoGetNomeEmpresa()}</div>${d.designer?`<div style="font-size:9px;color:#D4B896;font-family:system-ui,sans-serif">${esc(d.designer)}</div>`:''}</div>
+    </div>`;
+    el=createPdfElement(htmlContent);
+    await waitForImages(el);
+    if(document.fonts?.ready) await document.fonts.ready;
+    try{ await document.fonts.load('13px Georgia'); await document.fonts.load('bold 13px Georgia'); }catch(e){}
+    await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,700));
+    await withTimeout(window['html2pdf']().set({margin:0,filename:'pro-design-'+safeFileName(d.nome,'proposta-design')+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}}).from(el).save(),60000,'Tempo esgotado ao gerar o PDF.');
+    notifyStatus('✓ PDF Pro.Design gerado','ok',3000);
+  }catch(e){
+    console.error('Erro ao gerar PDF Pro.Design:',e);
+    notifyStatus('Erro ao gerar PDF Pro.Design: '+(e.message||e),'err',6000);
+  }finally{
+    cleanupPdfElement();
+    if(btn){btn.textContent='⬇ Baixar PDF';btn.disabled=false;}
+    pdPdfBusy=false;
+  }
+}
+
+async function pdExportDocx(){
+  if(pdDocxBusy) return;
+  if(!await docxReady()){ notifyStatus('Biblioteca Word não carregou. Verifique a conexão.','err',5000); return; }
+  const btn=$('pd-docx-btn');
+  pdDocxBusy=true;
+  if(btn){btn.disabled=true;btn.textContent='Gerando...';}
+  try{
+    const { Document, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } = window.docx;
+    const d=pdGetData();
+    const border={ style:BorderStyle.NONE, size:0, color:'FFFFFF' };
+    const borders={ top:border, bottom:border, left:border, right:border };
+    const cell=(txt,opts={})=>new TableCell({borders,margins:{top:90,bottom:90,left:140,right:140},shading:opts.shading?{fill:opts.shading,type:ShadingType.CLEAR}:undefined,children:[docxParagraph(txt,opts)]});
+    const serviceBlocks=d.servicos.length?d.servicos.flatMap((s,i)=>[
+      new Paragraph({ spacing:{ before:80, after:20 }, children:[new TextRun({ text:`${i+1}. `, bold:true, size:22, color:'8B5E3C', font:'Arial' }),new TextRun({ text:s.nome||'Entrega', bold:true, size:22, color:'2C1F12', font:'Arial' })] }),
+      ...(s.desc?[docxParagraph(s.desc,{size:20,color:'7A6A56',spaceAfter:40})]:[])
+    ]):[docxParagraph('Entregas a detalhar.',{size:20,color:'7A6A56',italic:true})];
+    const faseRows=d.fases.length?[
+      docxParagraph('MEMÓRIA DE CÁLCULO',{bold:true,size:22,color:'7A6A56',spaceBefore:140,spaceAfter:80}),
+      new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[5200,1600,2226],rows:[
+        new TableRow({children:[cell('Etapa',{bold:true,color:'8B5E3C',shading:'F5EDE2'}),cell('Horas',{bold:true,color:'8B5E3C',shading:'F5EDE2',alignment:'right'}),cell('Valor',{bold:true,color:'8B5E3C',shading:'F5EDE2',alignment:'right'})]}),
+        ...d.fases.map(r=>new TableRow({children:[cell(r.nome,{size:19,color:'7A6A56'}),cell(`${r.horas}h`,{size:19,color:'2C1F12',alignment:'right'}),cell(`R$ ${fmtI(r.valor)}`,{size:19,color:'8B5E3C',alignment:'right'})]}))
+      ]})
+    ]:[];
+    const info=[
+      ['Cliente',d.cliente],['Categoria',d.tipo],['Responsável',d.designer],['Peças / entregas',d.pecas?String(d.pecas):''],['Prazo',d.prazo],['Revisões inclusas',d.revisoes?`${d.revisoes} rodada(s)`:'' ],['Validade',`${d.validade} dias, até ${d.validadeData}`]
+    ].filter(x=>x[1]);
+    const children=[
+      docxParagraph(logoGetNomeEmpresa(),{bold:true,size:28,color:'8B5E3C',alignment:'center',spaceAfter:40}),
+      docxParagraph('PROPOSTA DETALHADA DE DESIGN',{bold:true,size:32,color:'2C1F12',alignment:'center',spaceBefore:120,spaceAfter:60}),
+      docxParagraph(d.nome,{bold:true,size:26,color:'8B5E3C',alignment:'center',spaceAfter:40}),
+      docxParagraph(d.data,{size:18,color:'B0A090',alignment:'center',spaceAfter:120}),
+      docxSeparator(),
+      ...info.map(([k,v])=>new Paragraph({spacing:{before:0,after:45},children:[new TextRun({text:k+': ',bold:true,size:21,color:'2C1F12',font:'Arial'}),new TextRun({text:v,size:21,color:'2C1F12',font:'Arial'})]})),
+      ...(d.objetivo?[docxSeparator(),docxParagraph('OBJETIVO',{bold:true,size:22,color:'7A6A56',spaceBefore:120,spaceAfter:80}),docxParagraph(d.objetivo,{size:21,color:'2C1F12'})]:[]),
+      ...(d.escopo?[docxParagraph('ESCOPO DETALHADO',{bold:true,size:22,color:'7A6A56',spaceBefore:120,spaceAfter:80}),docxParagraph(d.escopo,{size:21,color:'2C1F12'})]:[]),
+      docxSeparator(),
+      docxParagraph('ENTREGAS PREVISTAS',{bold:true,size:22,color:'7A6A56',spaceBefore:120,spaceAfter:80}),
+      ...serviceBlocks,
+      ...faseRows,
+      ...(d.exclusoes?[docxSeparator(),docxParagraph('NÃO INCLUSO',{bold:true,size:22,color:'7A6A56',spaceBefore:120,spaceAfter:80}),docxParagraph(d.exclusoes,{size:20,color:'7A6A56'})]:[]),
+      ...(d.obs?[docxParagraph('OBSERVAÇÕES E CONDIÇÕES',{bold:true,size:22,color:'7A6A56',spaceBefore:120,spaceAfter:80}),docxParagraph(d.obs,{size:20,color:'7A6A56'})]:[]),
+      docxSeparator(),
+      docxParagraph('INVESTIMENTO',{bold:true,size:22,color:'7A6A56',spaceBefore:140,spaceAfter:80}),
+      new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[5000,4026],rows:[
+        new TableRow({children:[cell('Valor total do projeto',{size:22,color:'7A6A56',shading:'F5EDE2'}),cell(`R$ ${fmtI(d.money.total)}`,{bold:true,size:24,color:'8B5E3C',alignment:'right',shading:'F5EDE2'})]}),
+        new TableRow({children:[cell('Entrada',{size:20,color:'7A6A56'}),cell(`R$ ${fmtI(d.money.entrada)}`,{size:22,color:'8B5E3C',alignment:'right'})]}),
+        new TableRow({children:[cell(`${d.money.parc}x parcelas`,{size:20,color:'7A6A56'}),cell(`R$ ${fmt(d.money.parcela)} cada`,{size:22,color:'8B5E3C',alignment:'right'})]})
+      ]}),
+      docxParagraph(`Validade desta proposta: ${d.validade} dias.`,{size:18,color:'B0A090',italic:true,alignment:'center',spaceBefore:160,spaceAfter:40}),
+      docxParagraph(logoGetNomeEmpresa(),{size:18,color:'D4B896',alignment:'center',spaceAfter:20}),
+      ...(d.designer?[docxParagraph(d.designer,{size:18,color:'D4B896',alignment:'center',spaceAfter:0})]:[]),
+    ].filter(Boolean);
+    const doc=new Document({styles:{default:{document:{run:{font:'Arial',size:22}}}},sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},children}]});
+    const blob=await packDocxBlob(doc);
+    downloadBlob(blob, `pro-design-${safeFileName(d.nome,'proposta-design')}.docx`);
+    notifyStatus('✓ Word Pro.Design gerado','ok',3000);
+  }catch(e){
+    console.error('Erro ao gerar Word Pro.Design:',e);
+    notifyStatus('Erro ao gerar Word Pro.Design: '+(e.message||e),'err',6000);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='⬇ Word (.docx)';}
+    pdDocxBusy=false;
+  }
+}
+
 // ── FIM PROPOSTA DESIGN ──────────────────────────────
 
 function showSimgeo(){
