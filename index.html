@@ -865,9 +865,8 @@ body.nbr-open #online-bar{display:none}
 body.role-minion #metecos-help-btn{display:inline-flex!important}
 body.role-minion #logo-admin-btn,
 body.role-minion #planner-toggle,
-body.role-minion #planner-alert,
-body.role-minion #planner-panel,
 body.role-minion #planner-hall-card{display:none!important}
+/* Metecos veem o alerta flutuante e o painel de avisos em que foram marcados */
 
 body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #planner-panel,body.auth-mode #planner-hall-card{display:none!important}
 #planner-toggle{position:fixed;right:24px;bottom:86px;width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--e),var(--eb));border:1px solid var(--border-em);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s,border-color .2s;z-index:9998;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.15rem}
@@ -2821,7 +2820,7 @@ async function loadCurrentRole(){
     console.warn('Não foi possível carregar perfil da empresa:', e);
   }
   applyRoleUI();
-  if(normalizedRole(currentRole)!=='minion') plannerInit();
+  plannerInit(); // Metecos também precisam inicializar para receber alertas dos avisos em que foram marcados
 }
 
 // ── PRESENCE (online users) ───────────────────────
@@ -3551,7 +3550,7 @@ function plannerCanManage(){
   return ['dono','arquiteto','financeiro'].includes(r);
 }
 async function plannerInit(){
-  if(normalizedRole(currentRole)==='minion') return;
+  // Metecos (minion) não podem criar avisos, mas devem receber alertas quando marcados
   if(plannerLoaded || !user || !sb) return;
   plannerLoaded=true;
   plannerSelectedDate=new Date();
@@ -3766,7 +3765,7 @@ function plannerTodayEvents(){
   return plannerEvents.filter(ev=>plannerDateKey(ev.inicio)===today).sort((a,b)=>new Date(a.inicio).getTime()-new Date(b.inicio).getTime());
 }
 function plannerRenderFloatingAlert(){
-  if(normalizedRole(currentRole)==='minion') return;
+  // Metecos sem eventos não chegam aqui — a lógica de filtragem já garante isso
   const alert=$('planner-alert'); if(!alert) return;
   const evs=plannerTodayEvents();
   if(!evs.length){ alert.style.display='none'; plannerClosePanel(); return; }
