@@ -263,7 +263,7 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 #materiais-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
 
 @media(min-width:721px){
-  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#prop-design-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#calc-tecnico-view,#materiais-view,#equipe-view{padding-left:180px}
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#prop-design-view,#prop-interiores-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#calc-tecnico-view,#materiais-view,#equipe-view{padding-left:180px}
 }
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
@@ -1159,6 +1159,571 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 /* ── MOCKUPS HUMANIZADOS DE PRANCHAS PDF ───────────────────── */
 
 
+/* ════════════════════════════════════════════════════════════
+   APPLE DESIGN SYSTEM OVERRIDE  ·  chaos.app
+   Tokens mapeados do Apple.com — homepage, store, iPhone buy
+   Aplica-se ao tema 0 (padrão). Temas 1-9 preservados.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── TOKENS APPLE ─────────────────────────────────────────── */
+:root,[data-theme="0"]{
+  /* Surfaces */
+  --bg:#f5f5f7;
+  --surface:#ffffff;
+  --surf2:#f5f5f7;
+  --surf-dark:#1d1d1f;
+  --surf-black:#000000;
+
+  /* Borders */
+  --border:rgba(0,0,0,0.06);
+  --border-em:#e0e0e0;
+
+  /* Text */
+  --text:#1d1d1f;
+  --muted:#6e6e73;
+  --faint:#aeaeb2;
+
+  /* Accent — single Apple Action Blue. Nenhuma outra cor de ação. */
+  --e:#0066cc;
+  --el:#e8f1fb;
+  --eb:#0066cc;
+  --icon-accent:#0066cc;
+
+  /* Semantic */
+  --err:#ff3b30;
+  --errl:#fff2f1;
+  --errb:#ffb3af;
+  --warn:#ff9500;
+  --warnl:#fff8ec;
+  --warnb:#ffd080;
+  --green:#1a8a2e;
+  --greenl:#edfaf1;
+  --bg-rgb:245,245,247;
+}
+
+/* ── BASE ─────────────────────────────────────────────────── */
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display',
+    'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:17px;
+  line-height:1.47;
+  letter-spacing:-0.022em;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ── GLOBAL NAV (Apple 44px black bar) ───────────────────── */
+.hdr{
+  background:#000;
+  border-bottom:none;
+  height:44px;
+  min-height:44px;
+  padding:0 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  flex-wrap:nowrap;
+}
+.hdr-logo{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
+  font-size:12px;
+  font-weight:400;
+  letter-spacing:-0.12px;
+  color:#fff;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-shrink:0;
+}
+.hdr-logo img{
+  width:18px;
+  height:18px;
+  object-fit:contain;
+  border-radius:2px;
+  display:block;
+  filter:brightness(0) invert(1);
+}
+.hdr-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.hdr-user{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:-0.12px}
+
+/* Botões de utilidade do nav (Sign In, ícones) */
+.hdr-right .btn,
+.hdr-right button{
+  background:#1d1d1f;
+  border:none;
+  border-radius:8px;
+  color:#fff;
+  font-size:12px;
+  font-weight:400;
+  letter-spacing:-0.22px;
+  padding:6px 14px;
+  transition:transform .15s;
+}
+.hdr-right .btn:hover,
+.hdr-right button:hover{background:#2d2d2f}
+.hdr-right .btn:active,
+.hdr-right button:active{transform:scale(0.95)}
+
+/* ── FROSTED SUB-NAV (Apple 52px parchment blur) ─────────── */
+.tool-dock{
+  position:fixed;
+  left:0; top:44px;
+  bottom:0;
+  width:200px;
+  z-index:15;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  align-items:stretch;
+  pointer-events:none;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:none;
+  background:rgba(245,245,247,0.88);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-right:0.5px solid rgba(0,0,0,0.1);
+  padding:12px 8px 16px;
+}
+.tool-dock::-webkit-scrollbar{display:none}
+.tool-dock .dock-btn,.tool-dock .dock-sep{pointer-events:auto}
+.dock-btn{
+  pointer-events:auto;
+  border:none;
+  border-radius:8px;
+  background:transparent;
+  color:var(--muted);
+  font-family:inherit;
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:-0.08px;
+  padding:9px 12px;
+  box-shadow:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:auto;
+  width:100%;
+  transition:background .12s,color .12s;
+}
+.dock-btn:hover{
+  background:rgba(0,0,0,0.06);
+  color:var(--text);
+  transform:none;
+}
+.dock-btn.active{
+  background:var(--e);
+  color:#fff;
+  box-shadow:none;
+  font-weight:500;
+}
+.dock-btn.active .ico{color:#fff}
+.dock-btn.primary{
+  background:var(--e);
+  color:#fff;
+  border-radius:999px;
+  font-weight:500;
+  margin-bottom:4px;
+}
+.dock-btn.primary:hover{background:#0055b3;color:#fff}
+.dock-btn.primary.active{background:var(--e)}
+.dock-btn .ico{
+  font-size:13px;
+  line-height:1;
+  width:16px;
+  text-align:center;
+  color:var(--muted);
+  transition:color .12s;
+}
+.dock-btn:hover .ico{color:var(--text)}
+.dock-btn.active .ico,.dock-btn.primary .ico{color:#fff}
+.dock-sep{
+  width:100%;
+  height:0.5px;
+  background:rgba(0,0,0,0.1);
+  margin:6px 0;
+}
+
+/* ── PADDING COMPENSATION para sidebar 200px ─────────────── */
+@media(min-width:721px){
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,
+  #prop-design-view,#prop-interiores-view,#simgeo-view,
+  #labeee-view,#mapoteca-view,#threejs-view,#calc-tecnico-view,
+  #materiais-view,#equipe-view{padding-left:216px}
+}
+
+/* ── TEMA PICKER — adapta ao nav preto ───────────────────── */
+.tp-trigger{
+  background:rgba(255,255,255,0.12);
+  border:0.5px solid rgba(255,255,255,0.2);
+  border-radius:20px;
+  padding:4px 10px 4px 7px;
+  color:rgba(255,255,255,0.75);
+  font-size:11px;
+}
+.tp-trigger:hover{border-color:rgba(255,255,255,0.4);color:#fff}
+.tp-dropdown{
+  border-radius:18px;
+  border:0.5px solid rgba(0,0,0,0.1);
+  box-shadow:0 8px 40px rgba(0,0,0,0.18);
+}
+
+/* ── BOTÕES GLOBAIS (Apple pill grammar) ──────────────────── */
+.btn{
+  font-family:inherit;
+  font-size:14px;
+  font-weight:400;
+  letter-spacing:-0.224px;
+  padding:9px 20px;
+  border:none;
+  border-radius:999px;        /* Apple pill */
+  background:var(--e);
+  color:#fff;
+  cursor:pointer;
+  transition:opacity .15s, transform .15s;
+  white-space:nowrap;
+}
+.btn:hover{opacity:.88}
+.btn:active{transform:scale(0.95)}
+
+.btn.ghost{
+  background:transparent;
+  color:var(--e);
+  border:1px solid var(--e);
+}
+.btn.ghost:hover{background:var(--el)}
+
+.btn.solid{
+  background:var(--e);
+  border:none;
+  color:#fff;
+}
+.btn.solid:hover{opacity:.85}
+.btn.solid:disabled{opacity:.35;cursor:not-allowed}
+
+.btn.danger{
+  background:transparent;
+  border:1px solid var(--err);
+  color:var(--err);
+  border-radius:999px;
+}
+.btn.danger:hover{background:var(--errl)}
+
+.btn-full{width:100%;padding:12px;font-size:15px;border-radius:999px}
+
+/* ── AUTH CARD ───────────────────────────────────────────── */
+.auth-card{
+  background:#fff;
+  border:0.5px solid rgba(0,0,0,0.1);
+  border-radius:18px;
+  padding:2.5rem;
+  width:min(92vw,380px);
+  box-shadow:0 4px 24px rgba(0,0,0,0.08);
+}
+.auth-brand{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:22px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:-0.28px;
+}
+.auth-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;letter-spacing:-0.08px}
+.auth-tab{font-size:13px;padding:8px 16px;color:var(--muted);letter-spacing:-0.08px}
+.auth-tab.on{color:var(--e);border-bottom-color:var(--e);font-weight:600}
+
+/* ── INPUTS ──────────────────────────────────────────────── */
+.iw{
+  display:flex;
+  align-items:center;
+  border:1px solid var(--border-em);
+  border-radius:10px;
+  padding:8px 12px;
+  background:#fff;
+  transition:border-color .15s, box-shadow .15s;
+}
+.iw:focus-within{
+  border-color:var(--e);
+  box-shadow:0 0 0 3px rgba(0,102,204,0.15);
+}
+.iw .pfx{font-size:13px;color:var(--muted);margin-right:6px;white-space:nowrap}
+.iw .sfx{font-size:13px;color:var(--muted);margin-left:6px;white-space:nowrap}
+.iw input,.iw select,.iw textarea{
+  border:none;
+  background:none;
+  outline:none;
+  font-family:inherit;
+  font-size:15px;
+  color:var(--text);
+  width:100%;
+  letter-spacing:-0.22px;
+}
+.iw select{font-size:14px}
+
+.field label{
+  font-size:13px;
+  font-weight:500;
+  color:var(--text);
+  letter-spacing:-0.08px;
+}
+.field .hint{font-size:12px;color:var(--muted);letter-spacing:-0.08px}
+.slabel{
+  font-size:11px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:1.4rem 0 .8rem;
+  padding-bottom:4px;
+  border-bottom:0.5px solid var(--border-em);
+}
+
+/* ── HALL / INÍCIO ───────────────────────────────────────── */
+.hall-title{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:40px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:-0.374px;
+  line-height:1.1;
+  margin:0 auto .5rem;
+}
+.hall-kicker{
+  font-size:14px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:1rem;
+}
+.hall-sub{font-size:17px;color:var(--muted);line-height:1.47;letter-spacing:-0.022em}
+.hall-clean-note{
+  border-radius:999px;
+  background:rgba(0,0,0,0.04);
+  border:0.5px solid rgba(0,0,0,0.08);
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* ── DASHBOARD & CARDS ───────────────────────────────────── */
+.dash-title{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:28px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:-0.374px;
+}
+.dash-tab{font-size:14px;color:var(--muted);letter-spacing:-0.08px}
+.dash-tab.on{color:var(--e);border-bottom-color:var(--e);font-weight:600}
+
+.prop-card{
+  background:#fff;
+  border:0.5px solid var(--border-em);
+  border-radius:18px;    /* Apple utility card radius */
+  padding:1.25rem;
+  cursor:pointer;
+  transition:box-shadow .2s, transform .15s;
+}
+.prop-card:hover{
+  border-color:rgba(0,0,0,0.14);
+  box-shadow:0 4px 24px rgba(0,0,0,0.08);
+  transform:translateY(-2px);
+}
+.pc-tipo{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.pc-nome{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.22px}
+.pc-total{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:24px;
+  font-weight:600;
+  color:var(--e);
+  letter-spacing:-0.374px;
+}
+
+/* ── PANELS (prop.design, prop.interiores, calc) ─────────── */
+#prop-design-view .panel,
+#prop-interiores-view .panel,
+.chart-box,
+.carta-editor{
+  background:#fff;
+  border:0.5px solid rgba(0,0,0,0.1);
+  border-radius:18px;
+  box-shadow:none;
+}
+
+/* ── CALC TOP BAR ────────────────────────────────────────── */
+.calc-top{
+  background:#fff;
+  border:0.5px solid rgba(0,0,0,0.1);
+  border-radius:14px;
+  padding:.9rem 1.2rem;
+  box-shadow:none;
+}
+.calc-title{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:19px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:-0.28px;
+}
+
+/* ── STEPPER DOTS (shared calc stepper) ──────────────────── */
+.sdot{
+  background:#fff;
+  border:1.5px solid var(--border-em);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:600;
+}
+.sdot.active{background:var(--e);border-color:var(--e);color:#fff}
+.sdot.done{background:var(--el);border-color:var(--e);color:var(--e)}
+.sline{background:var(--border-em)}
+.sline.done{background:var(--e)}
+
+/* ── MINI CARDS MÉTRICAS ─────────────────────────────────── */
+.mc{background:var(--bg);border-radius:10px}
+.mc.accent{background:var(--el)}
+.mc .l{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.mc.accent .l{color:var(--e)}
+.mc .v{font-size:15px;font-family:inherit;font-weight:600;color:var(--text)}
+.mc.accent .v{color:var(--e)}
+
+/* ── STAT CARDS ──────────────────────────────────────────── */
+.stat-card{background:#fff;border:0.5px solid var(--border-em);border-radius:14px;padding:1rem}
+.stat-card .sv{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:22px;
+  font-weight:600;
+  color:var(--e);
+  letter-spacing:-0.374px;
+}
+
+/* ── MODAL ───────────────────────────────────────────────── */
+.modal{
+  background:#fff;
+  border-radius:18px;
+  padding:1.75rem;
+  max-width:540px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.18);
+}
+.modal h2{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:19px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:-0.28px;
+}
+
+/* ── COPY MODAL WHATSAPP PREVIEW ────────────────────────── */
+.copy-variant{
+  border:0.5px solid rgba(0,0,0,0.1);
+  border-radius:14px;
+  background:#fff;
+}
+.copy-variant:hover{border-color:rgba(0,102,204,0.3);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+
+/* ── SAVE-STATUS & HINTS ─────────────────────────────────── */
+.save-status.ok{color:var(--green);font-size:13px}
+.save-status.err{color:var(--err);font-size:13px}
+
+/* ── EQUIPE ──────────────────────────────────────────────── */
+.eq-member-card{
+  background:#fff;
+  border:0.5px solid rgba(0,0,0,0.1);
+  border-radius:14px;
+}
+
+/* ── NOTA / CALLOUT ──────────────────────────────────────── */
+.note{font-size:13px;color:var(--muted);letter-spacing:-0.08px}
+
+/* ── REL-BOX (resumo financeiro) ─────────────────────────── */
+.rel-box{
+  border:0.5px solid rgba(0,0,0,0.1) !important;
+  border-radius:14px !important;
+  background:#fff !important;
+}
+.rel-box h3{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  margin-bottom:.6rem;
+  font-weight:500;
+}
+.rel-row{font-size:14px;color:var(--muted);letter-spacing:-0.08px}
+
+/* ── GRAND TOTAL ──────────────────────────────────────────── */
+.grand .gv{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  font-size:34px;
+  font-weight:600;
+  color:var(--e);
+  letter-spacing:-0.374px;
+}
+.grand .gl{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+
+/* ── PORTAL CARDS ────────────────────────────────────────── */
+.portal-card{
+  background:#fff;
+  border:0.5px solid rgba(0,0,0,0.08);
+  border-radius:14px;
+}
+.portal-btn-link{
+  border-radius:999px;
+  border:1px solid var(--e);
+  background:transparent;
+  color:var(--e);
+  font-size:12px;
+}
+.portal-btn-link:hover{background:var(--el)}
+
+/* ── FASE-ROW (prop.design fases) ─────────────────────────── */
+#prop-design-view .fase-row,
+#prop-interiores-view .fase-row{
+  border-bottom-color:rgba(0,0,0,0.06);
+}
+
+/* ── TAXA-ROW ─────────────────────────────────────────────── */
+.tax-row{border-bottom-color:rgba(0,0,0,0.06) !important}
+
+/* ── TOTAL STRIP ─────────────────────────────────────────── */
+.total-strip{border-top-color:rgba(0,102,204,0.2) !important}
+
+/* ── HALL HERO BG ────────────────────────────────────────── */
+#hall-view{background:transparent}
+.hall-hero{padding:5rem 1rem 3rem;text-align:center}
+
+/* ── SCROLLBAR GLOBAL ─────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px}
+
+/* ── FOCUS RING (Apple) ──────────────────────────────────── */
+:focus-visible{
+  outline:2px solid #0071e3;
+  outline-offset:2px;
+}
+
+/* ── MATERIAL/CHIP CHIPS ─────────────────────────────────── */
+.portal-chip{
+  background:rgba(0,0,0,0.04);
+  border:0.5px solid rgba(0,0,0,0.08);
+  border-radius:6px;
+  color:var(--muted);
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.empty-state p{font-size:15px;color:var(--muted);letter-spacing:-0.08px}
+
+/* ── NBRS / PANEL DE NORMAS ──────────────────────────────── */
+#nbr-panel{border-radius:0 0 18px 18px;border-color:rgba(0,0,0,0.1)}
+
+/* ── TOAST NOTIFICAÇÕES ──────────────────────────────────── */
+#notif-toast{border-radius:14px;font-size:14px;letter-spacing:-0.08px}
 
 </style>
 </head>
@@ -1278,6 +1843,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <button class="dock-btn" id="tool-chart" onclick="showDash('chart')"><span class="ico">◔</span>Gráficos</button>
     <button class="dock-btn" id="tool-carta" onclick="showCarta()"><span class="ico">✉</span>Carta</button>
     <button class="dock-btn" id="tool-propdesign" onclick="showDesignProposal()"><span class="ico">✦</span>Prop. Design</button>
+    <button class="dock-btn" id="tool-propinteriores" onclick="showInteriorProposal()"><span class="ico">◈</span>Prop. Interiores</button>
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-threejs" onclick="showThreejs()"><span class="ico">▥</span>Volumetria 3D</button>
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
@@ -2318,6 +2884,211 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
   </div>
 
+      <div class="nav-row" style="border:none;padding:0;margin-top:.5rem"><button class="btn ghost" onclick="pdGo(3)">← Ajustar</button></div>
+    </div>
+  </div>
+
+  <!-- PROP.INTERIORES -->
+  <div id="prop-interiores-view" style="display:none;padding:1.5rem;max-width:860px;margin:0 auto;flex:1;width:100%">
+
+    <!-- TOPO STICKY -->
+    <div class="calc-top" style="background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:.9rem 1rem;box-shadow:0 2px 12px rgba(0,0,0,.035);position:sticky;top:64px;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:1rem">
+      <div style="min-width:0">
+        <div class="calc-title" id="pi-calc-title" style="font-size:19px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nova proposta de interiores</div>
+        <div style="font-size:10px;color:var(--faint);margin-top:2px">Cálculo por m² · fases com valor fixo</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost" style="font-size:11px" onclick="showHall()">← Início</button>
+        <button class="btn ghost" style="font-size:11px" onclick="piNewProposal()">+ Nova</button>
+        <button class="btn ghost" style="font-size:11px" onclick="piOpenList()">Salvas</button>
+      </div>
+    </div>
+
+    <!-- STEPPER -->
+    <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:.8rem 1rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,.025)">
+      <div class="stepper" style="display:flex;gap:0;align-items:stretch">
+        <div class="sitem" id="pi-sd0" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:.4rem .2rem" onclick="piGo(0)">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--el);border:1.5px solid var(--eb);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--e);font-weight:700">1</div>
+          <span style="font-size:9px;color:var(--faint);text-align:center;line-height:1.2">Base m²</span>
+        </div>
+        <div style="flex:0 0 1px;background:var(--border);align-self:stretch;margin:4px 0" id="pi-sl0"></div>
+        <div class="sitem" id="pi-sd1" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:.4rem .2rem" onclick="piGo(1)">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--surf2);border:1.5px solid var(--border-em);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-weight:700">2</div>
+          <span style="font-size:9px;color:var(--faint);text-align:center;line-height:1.2">Fases</span>
+        </div>
+        <div style="flex:0 0 1px;background:var(--border);align-self:stretch;margin:4px 0" id="pi-sl1"></div>
+        <div class="sitem" id="pi-sd2" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:.4rem .2rem" onclick="piGo(2)">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--surf2);border:1.5px solid var(--border-em);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-weight:700">3</div>
+          <span style="font-size:9px;color:var(--faint);text-align:center;line-height:1.2">Impostos</span>
+        </div>
+        <div style="flex:0 0 1px;background:var(--border);align-self:stretch;margin:4px 0" id="pi-sl2"></div>
+        <div class="sitem" id="pi-sd3" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:.4rem .2rem" onclick="piGo(3)">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--surf2);border:1.5px solid var(--border-em);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-weight:700">4</div>
+          <span style="font-size:9px;color:var(--faint);text-align:center;line-height:1.2">Desconto</span>
+        </div>
+        <div style="flex:0 0 1px;background:var(--border);align-self:stretch;margin:4px 0" id="pi-sl3"></div>
+        <div class="sitem" id="pi-sd4" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:.4rem .2rem" onclick="piGo(4)">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--surf2);border:1.5px solid var(--border-em);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-weight:700">5</div>
+          <span style="font-size:9px;color:var(--faint);text-align:center;line-height:1.2">Proposta</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P1: BASE M² -->
+    <div class="panel" id="pi-p0" style="background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+      <div class="slabel">Parâmetros de honorário — base m²</div>
+      <div class="g2">
+        <div class="field"><label>Área do projeto</label><div class="iw"><input type="number" id="pi-area" placeholder="0" min="0" step="0.5" oninput="piCalc()"><span class="sfx">m²</span></div><span class="hint">Área total considerada no contrato.</span></div>
+        <div class="field"><label>Valor por m²</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pi-valor-m2" placeholder="150" min="0" step="5" oninput="piCalc()"></div><span class="hint">Referência CAU/BR: R$ 80–300/m² conforme complexidade.</span></div>
+      </div>
+      <div class="mc2" style="grid-template-columns:1fr 1fr 1fr;margin-top:1.2rem">
+        <div class="mc accent" style="padding:.75rem 1rem;background:var(--el);border-radius:8px"><div class="l" style="font-size:9px;color:var(--e);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Área</div><div class="v" id="pi-r-area" style="font-size:14px;color:var(--e);font-family:monospace">0 m²</div></div>
+        <div class="mc" style="padding:.75rem 1rem;background:var(--surf2);border-radius:8px"><div class="l" style="font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">R$/m²</div><div class="v" id="pi-r-vm2" style="font-size:14px;color:var(--text);font-family:monospace">R$ 0,00</div></div>
+        <div class="mc accent" style="padding:.75rem 1rem;background:var(--el);border-radius:8px;border:1px solid var(--eb)"><div class="l" style="font-size:9px;color:var(--e);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Base total</div><div class="v" id="pi-r-base" style="font-size:14px;color:var(--e);font-family:monospace">R$ 0</div></div>
+      </div>
+      <p class="note" style="margin-top:.8rem">O valor base é distribuído entre as fases no próximo passo. Visitas técnicas são cobradas à parte.</p>
+      <div class="nav-row" style="display:flex;justify-content:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)"><button class="btn solid" onclick="piGo(1)">Próximo →</button></div>
+    </div>
+
+    <!-- P2: FASES -->
+    <div class="panel" id="pi-p1" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+      <div class="slabel">Distribuição por fase — porcentagem do total base</div>
+      <p class="note" style="margin-bottom:.9rem">Edite o % de cada fase. O valor fixo é calculado automaticamente a partir do total base. A soma dos percentuais não precisa ser exatamente 100% — use como guia.</p>
+      <div id="pi-fases">
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Levantamento e diagnóstico</span><input class="pi-fi" type="number" placeholder="8" min="0" step="0.5" value="8" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Programa de necessidades</span><input class="pi-fi" type="number" placeholder="7" min="0" step="0.5" value="7" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Estudo preliminar / conceito</span><input class="pi-fi" type="number" placeholder="15" min="0" step="0.5" value="15" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Anteprojeto</span><input class="pi-fi" type="number" placeholder="20" min="0" step="0.5" value="20" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Projeto executivo</span><input class="pi-fi" type="number" placeholder="30" min="0" step="0.5" value="30" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Detalhamento técnico</span><input class="pi-fi" type="number" placeholder="15" min="0" step="0.5" value="15" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+        <div class="fase-row" style="display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 94px;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)"><span class="fn" style="font-size:12px;color:var(--muted)">Acompanhamento de obra</span><input class="pi-fi" type="number" placeholder="5" min="0" step="0.5" value="5" oninput="piCalcF()"><span class="fu" style="font-size:10px;color:var(--faint)">%</span><span class="pi-fv fv" style="font-size:12px;color:var(--faint);text-align:right;font-family:monospace">R$ 0</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:.9rem;padding-top:.9rem;border-top:0.5px dashed var(--border-em);flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--faint);flex:1">Visitas técnicas — valor fixo por visita × nº de visitas</span>
+        <div class="iw" style="width:100px"><span class="pfx">R$</span><input type="number" id="pi-visita-val" placeholder="0" min="0" step="50" oninput="piCalcF()"></div>
+        <span style="font-size:11px;color:var(--faint)">×</span>
+        <div class="iw" style="width:60px"><input type="number" id="pi-visita-n" placeholder="0" min="0" oninput="piCalcF()"></div>
+        <span style="font-size:11px;color:var(--faint)">visitas</span>
+      </div>
+      <div class="total-strip" style="display:flex;align-items:baseline;justify-content:space-between;padding:1rem 0 0;margin-top:1rem;border-top:1px solid var(--eb)">
+        <div class="tl" style="font-size:11px;color:var(--faint);line-height:1.8"><span id="pi-pct-total">0</span>% distribuído · base <span id="pi-base-ref">R$ 0</span></div>
+        <div class="tr" style="font-family:Georgia,serif;font-size:26px;color:var(--e)" id="pi-tf">R$ 0</div>
+      </div>
+      <div class="nav-row" style="display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)"><button class="btn ghost" onclick="piGo(0)">← Voltar</button><button class="btn" onclick="piGo(2)">Próximo →</button></div>
+    </div>
+
+    <!-- P3: IMPOSTOS -->
+    <div class="panel" id="pi-p2" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+      <div class="slabel">Incidência sobre o honorário bruto</div>
+      <div class="tax-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)"><span class="tn" style="font-size:12px;color:var(--muted)">ISS (serviços municipais)</span><div class="tr-right" style="display:flex;align-items:center;gap:8px"><div class="iw" style="width:70px"><input class="pi-ti" type="number" id="pi-t-iss" value="5" min="0" max="100" step="0.5" oninput="piCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pi-tv-iss" style="font-size:12px;color:var(--faint);width:88px;text-align:right;font-family:monospace">R$ 0</span></div></div>
+      <div class="tax-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)"><span class="tn" style="font-size:12px;color:var(--muted)">IRPJ + CSLL (Simples est.)</span><div class="tr-right" style="display:flex;align-items:center;gap:8px"><div class="iw" style="width:70px"><input class="pi-ti" type="number" id="pi-t-ir" value="6" min="0" max="100" step="0.5" oninput="piCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pi-tv-ir" style="font-size:12px;color:var(--faint);width:88px;text-align:right;font-family:monospace">R$ 0</span></div></div>
+      <div class="tax-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)"><span class="tn" style="font-size:12px;color:var(--muted)">PIS + COFINS</span><div class="tr-right" style="display:flex;align-items:center;gap:8px"><div class="iw" style="width:70px"><input class="pi-ti" type="number" id="pi-t-pis" value="3.65" min="0" max="100" step="0.05" oninput="piCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pi-tv-pis" style="font-size:12px;color:var(--faint);width:88px;text-align:right;font-family:monospace">R$ 0</span></div></div>
+      <div class="tax-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0"><span class="tn" style="font-size:12px;color:var(--muted)">Outros encargos</span><div class="tr-right" style="display:flex;align-items:center;gap:8px"><div class="iw" style="width:70px"><input class="pi-ti" type="number" id="pi-t-out" value="0" min="0" step="0.5" oninput="piCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pi-tv-out" style="font-size:12px;color:var(--faint);width:88px;text-align:right;font-family:monospace">R$ 0</span></div></div>
+      <div class="total-strip" style="display:flex;align-items:baseline;justify-content:space-between;padding:1rem 0 0;margin-top:1rem;border-top:1px solid var(--eb)">
+        <div class="tl" style="font-size:11px;color:var(--faint)">Base <span id="pi-tax-base">R$ 0</span></div>
+        <div class="tr" style="font-family:Georgia,serif;font-size:22px;color:var(--e)" id="pi-tax-total">+ R$ 0 em encargos</div>
+      </div>
+      <div class="nav-row" style="display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)"><button class="btn ghost" onclick="piGo(1)">← Voltar</button><button class="btn" onclick="piGo(3)">Próximo →</button></div>
+    </div>
+
+    <!-- P4: DESCONTO + PAGAMENTO -->
+    <div class="panel" id="pi-p3" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+      <div class="slabel">Tipo de desconto</div>
+      <div class="pill-row" style="display:flex;border:0.5px solid var(--border-em);border-radius:6px;overflow:hidden;width:fit-content;margin-bottom:1rem">
+        <button class="pill on" id="pi-pb-pct" onclick="piSetD('pct')" style="font-family:inherit;font-size:11px;padding:6px 14px;background:var(--el);color:var(--e);border:none;cursor:pointer;font-weight:500;border-right:0.5px solid var(--border)">Percentual</button>
+        <button class="pill" id="pi-pb-fix" onclick="piSetD('fix')" style="font-family:inherit;font-size:11px;padding:6px 14px;background:none;color:var(--muted);border:none;cursor:pointer;border-right:0.5px solid var(--border)">Valor fixo</button>
+        <button class="pill" id="pi-pb-no" onclick="piSetD('no')" style="font-family:inherit;font-size:11px;padding:6px 14px;background:none;color:var(--muted);border:none;cursor:pointer">Sem desconto</button>
+      </div>
+      <div id="pi-d-pct" class="field" style="max-width:200px"><label>Percentual de desconto</label><div class="iw"><input type="number" id="pi-desc-pct" placeholder="0" min="0" max="100" step="1" oninput="piCalcD()"><span class="sfx">%</span></div></div>
+      <div id="pi-d-fix" class="field" style="max-width:220px;display:none"><label>Valor de desconto</label><div class="iw"><span class="pfx">R$</span><input type="number" id="pi-desc-fix" placeholder="0" min="0" oninput="piCalcD()"></div></div>
+      <div class="divider" style="border:none;border-top:0.5px solid var(--border);margin:1.2rem 0"></div>
+      <div class="slabel">Condições de pagamento</div>
+      <div class="g2">
+        <div class="field"><label>Entrada</label><div class="iw"><input type="number" id="pi-pg-ent" placeholder="30" min="0" max="100" oninput="piCalcD()"><span class="sfx">%</span></div></div>
+        <div class="field"><label>Parcelas restantes</label><div class="iw"><input type="number" id="pi-pg-parc" placeholder="3" min="1" max="36" oninput="piCalcD()"><span class="sfx">×</span></div></div>
+        <div class="field"><label>Desconto PIX / dinheiro</label><div class="iw"><input type="number" id="pi-desc-pix" placeholder="5" min="0" max="30" step="0.5" value="5" oninput="piCalcD()"><span class="sfx">%</span></div><span class="hint">Aparece automaticamente nas mensagens do WhatsApp.</span></div>
+        <div class="field"><label>Prazo de execução</label><div class="iw"><input type="text" id="pi-fabricacao" placeholder="Ex: conforme cronograma" oninput="piUpRel()"></div></div>
+      </div>
+      <div style="border:0.5px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin-top:1rem">
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Honorário bruto</span><span class="rv" id="pi-pg-bruto" style="color:var(--text);font-family:monospace">R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Desconto</span><span class="rv neg" id="pi-pg-desc" style="color:var(--err);font-family:monospace">— R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Valor líquido</span><span class="rv" id="pi-pg-liq" style="color:var(--text);font-family:monospace">R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border);padding-top:8px;margin-top:4px"><span>Entrada</span><span class="rv" id="pi-pg-ev" style="color:var(--e);font-family:monospace">R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted)"><span>Parcelas</span><span class="rv" id="pi-pg-pv" style="color:var(--e);font-family:monospace">R$ 0</span></div>
+      </div>
+      <div class="nav-row" style="display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)"><button class="btn ghost" onclick="piGo(2)">← Voltar</button><button class="btn" onclick="piGo(4)">Ver proposta →</button></div>
+    </div>
+
+    <!-- P5: PROPOSTA FINAL -->
+    <div class="panel" id="pi-p4" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:.8rem;padding:.85rem 1rem;border:0.5px solid var(--border);border-radius:12px;background:var(--surf2)">
+        <div><b id="pi-final-title" style="display:block;font-size:13px;color:var(--text);margin-bottom:3px">Proposta de design de interiores</b><span style="font-size:11px;color:var(--faint);line-height:1.5">Modelo completo com escopo, fases, condições, PDF e mensagens para WhatsApp.</span></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-size:10px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:4px 8px">PDF</span>
+          <span style="font-size:10px;color:var(--e);background:var(--el);border:0.5px solid var(--eb);border-radius:999px;padding:4px 8px">WhatsApp</span>
+        </div>
+      </div>
+
+      <div class="slabel">Dados do projeto</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Nome do projeto</label><div class="iw"><input type="text" id="pi-rel-nome" placeholder="Ex: Residência Costa — Sala e quartos" oninput="piSyncTitle();piUpRel()"></div></div>
+        <div class="field"><label>Cliente</label><div class="iw"><input type="text" id="pi-rel-cli" placeholder="Ex: Fernanda Costa" oninput="piUpRel()"></div></div>
+        <div class="field"><label>Arquiteto / Designer responsável</label><div class="iw"><input type="text" id="pi-rel-arq" placeholder="Ex: Ana Lima — CAU A123456-0" oninput="piUpRel()"></div></div>
+        <div class="field"><label>Área contratada</label><div class="iw"><input type="number" id="pi-rel-area-disp" min="0" step="0.5" readonly style="opacity:.7;cursor:not-allowed" title="Calculado no Passo 1 — Volte para alterar"><span class="sfx">m²</span></div><span class="hint">Definida no Passo 1.</span></div>
+        <div class="field"><label>Tipologia</label><div class="iw"><select id="pi-rel-tipo" onchange="piUpRel()"><option>Residencial — apartamento</option><option>Residencial — casa</option><option>Comercial — loja / showroom</option><option>Corporativo — escritório</option><option>Hotelaria / hospitality</option><option>Reforma parcial</option><option>Consultoria de interiores</option></select></div></div>
+        <div class="field"><label>Prazo de execução</label><div class="iw"><input type="text" id="pi-rel-prazo" placeholder="Ex: 90 dias após aprovação" oninput="piUpRel()"></div></div>
+      </div>
+
+      <div class="divider" style="border:none;border-top:0.5px solid var(--border);margin:1.2rem 0"></div>
+      <div class="slabel">Detalhamento</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field" style="grid-column:1/-1"><label>Objetivo do projeto</label><div class="iw"><textarea style="width:100%;min-height:70px;border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);line-height:1.55;padding:4px 0;resize:vertical" id="pi-rel-objetivo" placeholder="Ex: Projetar ambientes funcionais e esteticamente alinhados ao estilo de vida do cliente, com curadoria de mobiliário e paleta de acabamentos." oninput="piUpRel()"></textarea></div></div>
+        <div class="field" style="grid-column:1/-1"><label>Escopo detalhado</label><div class="iw"><textarea style="width:100%;min-height:90px;border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);line-height:1.55;padding:4px 0;resize:vertical" id="pi-rel-escopo" placeholder="Descreva os ambientes contemplados, tipo de projeto (layout, iluminação, marcenaria, revestimentos), pranchas e memórial." oninput="piUpRel()"></textarea></div></div>
+        <div class="field"><label>Rodadas de revisão inclusas</label><div class="iw"><input type="number" id="pi-rel-revisoes" placeholder="2" min="0" oninput="piUpRel()"><span class="sfx">rodadas</span></div></div>
+        <div class="field"><label>Validade da proposta</label><div class="iw"><input type="number" id="pi-rel-validade" placeholder="15" min="1" oninput="piUpRel()"><span class="sfx">dias</span></div></div>
+        <div class="field" style="grid-column:1/-1"><label>Não incluso / contratado à parte</label><div class="iw"><textarea style="width:100%;min-height:60px;border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);line-height:1.55;padding:4px 0;resize:vertical" id="pi-rel-exclusoes" placeholder="Ex: execução / obra, compra de mobiliário, fornecimento de materiais, projetos complementares (hidráulico, elétrico)." oninput="piUpRel()"></textarea></div></div>
+        <div class="field" style="grid-column:1/-1"><label>Observações e condições</label><div class="iw"><textarea style="width:100%;min-height:60px;border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);line-height:1.55;padding:4px 0;resize:vertical" id="pi-rel-obs" placeholder="Ex: início após aprovação e pagamento da entrada; alterações fora do escopo serão orçadas à parte." oninput="piUpRel()"></textarea></div></div>
+      </div>
+
+      <div class="divider" style="border:none;border-top:0.5px solid var(--border);margin:1.2rem 0"></div>
+      <div class="slabel">Resumo financeiro</div>
+      <div class="rel-box" style="border:0.5px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:.8rem">
+        <h3 style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--faint);margin-bottom:.6rem">Honorários</h3>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Área</span><span class="rv" id="pi-rr-area" style="color:var(--text);font-family:monospace">0 m²</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>R$/m²</span><span class="rv" id="pi-rr-vm2" style="color:var(--text);font-family:monospace">R$ 0,00</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Honorário das fases</span><span class="rv" id="pi-rr-fases" style="color:var(--text);font-family:monospace">R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted)"><span>Visitas técnicas</span><span class="rv" id="pi-rr-vis" style="color:var(--text);font-family:monospace">R$ 0</span></div>
+      </div>
+      <div class="rel-box" style="border:0.5px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:.8rem">
+        <h3 style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--faint);margin-bottom:.6rem">Condições comerciais</h3>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Prazo</span><span class="rv" id="pi-rr-prazo" style="color:var(--text);font-family:monospace">—</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted)"><span>Validade</span><span class="rv" id="pi-rr-validade" style="color:var(--text);font-family:monospace">—</span></div>
+      </div>
+      <div class="rel-box" style="border:0.5px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:.8rem">
+        <h3 style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--faint);margin-bottom:.6rem">Encargos e ajustes</h3>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Total de encargos</span><span class="rv" id="pi-rr-tax" style="color:var(--warn);font-family:monospace">R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--muted);border-bottom:0.5px solid var(--border)"><span>Desconto</span><span class="rv" id="pi-rr-desc" style="color:var(--err);font-family:monospace">— R$ 0</span></div>
+        <div class="rel-row" style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--green)"><span>Desconto PIX/dinheiro (oferta)</span><span class="rv" id="pi-rr-pix" style="color:var(--green);font-family:monospace">5%</span></div>
+      </div>
+      <div class="grand" style="display:flex;align-items:baseline;justify-content:space-between;padding:1.2rem 0 .5rem;border-top:1px solid var(--eb)">
+        <span class="gl" style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--e)">Total da proposta</span>
+        <span class="gv" id="pi-rr-total" style="font-family:Georgia,serif;font-size:30px;color:var(--e)">R$ 0</span>
+      </div>
+      <div class="mc2" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem">
+        <div class="m" style="padding:.8rem 1rem;background:var(--el);border-radius:6px"><div class="l" style="font-size:10px;color:var(--e);margin-bottom:4px">Entrada</div><div class="v" id="pi-rr-ent" style="font-family:monospace;font-size:13px;color:var(--e)">R$ 0</div></div>
+        <div class="m" style="padding:.8rem 1rem;background:var(--el);border-radius:6px"><div class="l" style="font-size:10px;color:var(--e);margin-bottom:4px">Parcela</div><div class="v" id="pi-rr-parc" style="font-family:monospace;font-size:13px;color:var(--e)">R$ 0</div></div>
+      </div>
+      <div class="save-row" style="display:flex;align-items:center;gap:10px;margin-top:1.2rem;flex-wrap:wrap">
+        <button class="btn solid" id="pi-save-btn" onclick="piSaveProposal()">Salvar proposta</button>
+        <button class="btn" id="pi-pdf-btn" onclick="piExportPDF()">⬇ Baixar PDF</button>
+        <button class="btn" onclick="piOpenCopyModal()" style="background:var(--greenl);border-color:var(--green);color:var(--green)">📲 Copiar para WhatsApp</button>
+        <span class="save-status" id="pi-save-status"></span>
+        <div style="font-size:10.5px;color:var(--faint);line-height:1.5;flex-basis:100%">Os arquivos usam o nome atual do projeto. Edite o nome acima antes de exportar.</div>
+      </div>
+      <div class="nav-row" style="border:none;padding:0;margin-top:.5rem"><button class="btn ghost" onclick="piGo(3)">← Ajustar</button></div>
+    </div>
+  </div>
+
   <!-- EQUIPE -->
   <div id="equipe-view" style="display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%">
     <div class="dash-top">
@@ -2998,8 +3769,9 @@ function roleLabel(role){
 
 function canUseTool(tool){
   const r=normalizedRole(currentRole);
-  if(!r) return true; // evita bloquear enquanto o perfil carrega
-  if(r==='dono' || r==='arquiteto') return true;
+  if(!r) return true;
+  if(r==='dono') return true;
+  if(r==='arquiteto') return tool !== 'propdesign'; // arquiteto tem propinteriores, não propdesign
   const minionTools=['threejs','labeee','mapoteca','calctec','sheetgen','simgeo','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
   const designerTools=['home','propdesign'];
@@ -3022,7 +3794,7 @@ function applyRoleUI(){
   const isDesigner = normalizedRole(currentRole)==='designer';
   document.body.classList.toggle('role-minion', isMetecos);
   document.body.classList.toggle('role-designer', isDesigner);
-  ['home','props','chart','new','carta','propdesign','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','propinteriores','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -3142,7 +3914,7 @@ async function loadCurrentRole(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','prop-design-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','prop-design-view','prop-interiores-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -3152,7 +3924,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','propdesign','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','propinteriores','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -3201,6 +3973,387 @@ function showDesignProposal(){
   pdRenderServicos();
   pdSyncTitle();
   pdUpRel();
+}
+
+function showInteriorProposal(){
+  if(guardTool('propinteriores')) return;
+  hideViews();
+  $('prop-interiores-view').style.display='block';
+  setTool('propinteriores');
+  piEnsureDefaults();
+  piSyncTitle();
+  piUpRel();
+  piGo(piCurrentPanel||0);
+}
+
+// ══════════════════════════════════════════════
+// PROP.INTERIORES — ENGINE
+// Base: área m² × R$/m² → fases por % → impostos → desconto → proposta
+// ══════════════════════════════════════════════
+let piBase=0, piFasesT=0, piVisitaV=0, piTaxT=0, piDescV=0, piDType='pct', piCurrentPanel=0;
+let piCurrentId=null, piPdfBusy=false;
+const PI_STORAGE_KEY='chaos_interiores_proposals_v1';
+
+function piFlt(id){ const el=$(id); return el?parseFloat(el.value)||0:0; }
+function piVal(id){ const el=$(id); return (el?.value||'').trim(); }
+function piSetVal(id,v){ const el=$(id); if(el) el.value=v??''; }
+function piBr(v){ return 'R$ '+fmtI(v||0); }
+function piProjectName(){ return piVal('pi-rel-nome')||'Proposta de Interiores'; }
+
+function piSyncTitle(){
+  const nome=piProjectName();
+  if($('pi-calc-title')) $('pi-calc-title').textContent=(piCurrentId?'Editar — ':'Nova — ')+nome;
+  if($('pi-final-title')) $('pi-final-title').textContent=nome;
+}
+
+function piEnsureDefaults(){
+  if($('pi-rel-validade') && !$('pi-rel-validade').value) $('pi-rel-validade').value=15;
+  if($('pi-rel-revisoes') && !$('pi-rel-revisoes').value) $('pi-rel-revisoes').value=2;
+  if($('pi-desc-pix') && !$('pi-desc-pix').value) $('pi-desc-pix').value=5;
+  if($('pi-pg-ent') && !$('pi-pg-ent').value) $('pi-pg-ent').value=30;
+  if($('pi-pg-parc') && !$('pi-pg-parc').value) $('pi-pg-parc').value=3;
+}
+
+// P0 — calcula base total (área × R$/m²)
+function piCalc(){
+  const area=piFlt('pi-area');
+  const vm2=piFlt('pi-valor-m2');
+  piBase=area*vm2;
+  if($('pi-r-area')) $('pi-r-area').textContent=area.toLocaleString('pt-BR',{maximumFractionDigits:1})+' m²';
+  if($('pi-r-vm2'))  $('pi-r-vm2').textContent='R$ '+fmt(vm2);
+  if($('pi-r-base')) $('pi-r-base').textContent=piBr(piBase);
+  piCalcF();
+}
+
+// P1 — distribui fases (% do base) + visitas
+function piCalcF(){
+  let tv=0, tp=0;
+  document.querySelectorAll('#pi-fases .pi-fi').forEach(inp=>{
+    const pct=parseFloat(inp.value)||0;
+    const val=piBase*(pct/100);
+    tv+=val; tp+=pct;
+    const fv=inp.closest('.fase-row')?.querySelector('.pi-fv');
+    if(fv) fv.textContent=piBr(val);
+  });
+  const visitaVal=piFlt('pi-visita-val'), visitaN=piFlt('pi-visita-n');
+  piVisitaV=visitaVal*visitaN;
+  piFasesT=tv+piVisitaV;
+  if($('pi-pct-total')) $('pi-pct-total').textContent=tp.toLocaleString('pt-BR',{maximumFractionDigits:1});
+  if($('pi-base-ref'))  $('pi-base-ref').textContent=piBr(piBase);
+  if($('pi-tf'))        $('pi-tf').textContent=piBr(piFasesT);
+  piCalcT();
+}
+
+// P2 — impostos
+function piCalcT(){
+  const base=piFasesT;
+  const pairs=[['pi-t-iss','pi-tv-iss'],['pi-t-ir','pi-tv-ir'],['pi-t-pis','pi-tv-pis'],['pi-t-out','pi-tv-out']];
+  let total=0;
+  pairs.forEach(([ti,tv])=>{ const val=base*(piFlt(ti)/100); total+=val; if($(tv)) $(tv).textContent=piBr(val); });
+  piTaxT=total;
+  if($('pi-tax-base'))  $('pi-tax-base').textContent=piBr(base);
+  if($('pi-tax-total')) $('pi-tax-total').textContent='+ '+piBr(total)+' em encargos';
+  piCalcD();
+}
+
+// P3 — desconto + pagamento
+function piCalcD(){
+  const bruto=piFasesT+piTaxT;
+  let desc=0;
+  if(piDType==='pct') desc=bruto*(piFlt('pi-desc-pct')/100);
+  else if(piDType==='fix') desc=piFlt('pi-desc-fix');
+  piDescV=Math.min(desc,bruto);
+  const liq=Math.max(0,bruto-piDescV);
+  const entPct=piFlt('pi-pg-ent')||30, parc=Math.max(1,Math.round(piFlt('pi-pg-parc')||3));
+  const ent=liq*(entPct/100), parcV=(liq-ent)/parc;
+  if($('pi-pg-bruto')) $('pi-pg-bruto').textContent=piBr(bruto);
+  if($('pi-pg-desc'))  $('pi-pg-desc').textContent='— '+piBr(piDescV);
+  if($('pi-pg-liq'))   $('pi-pg-liq').textContent=piBr(liq);
+  if($('pi-pg-ev'))    $('pi-pg-ev').textContent=piBr(ent);
+  if($('pi-pg-pv'))    $('pi-pg-pv').textContent=parc+'× '+piBr(parcV);
+  piUpRel();
+}
+
+function piSetD(t){
+  piDType=t;
+  ['pct','fix','no'].forEach(k=>{ const b=$('pi-pb-'+k); if(b){ b.classList.toggle('on',k===t); b.style.background=k===t?'var(--el)':'none'; b.style.color=k===t?'var(--e)':'var(--muted)'; b.style.fontWeight=k===t?'500':'400'; } });
+  if($('pi-d-pct')) $('pi-d-pct').style.display=t==='pct'?'':'none';
+  if($('pi-d-fix')) $('pi-d-fix').style.display=t==='fix'?'':'none';
+  piCalcD();
+}
+
+function piMoney(){
+  const total=Math.max(0,piFasesT+piTaxT-piDescV);
+  const entPct=piFlt('pi-pg-ent')||30;
+  const parc=Math.max(1,Math.round(piFlt('pi-pg-parc')||3));
+  const entrada=total*(entPct/100);
+  const parcela=(total-entrada)/parc;
+  return {total,entPct,parc,entrada,parcela,bruto:piFasesT+piTaxT,desconto:piDescV,taxas:piTaxT,fases:piFasesT-piVisitaV,visitas:piVisitaV};
+}
+
+function piUpRel(){
+  const m=piMoney();
+  const area=piFlt('pi-area'), vm2=piFlt('pi-valor-m2');
+  // Sincroniza campo de área da proposta final com o valor do passo 0
+  if($('pi-rel-area-disp') && !$('pi-rel-area-disp').matches(':focus'))
+    $('pi-rel-area-disp').value = area || '';
+  if($('pi-rr-area'))   $('pi-rr-area').textContent=area.toLocaleString('pt-BR',{maximumFractionDigits:1})+' m²';
+  if($('pi-rr-vm2'))    $('pi-rr-vm2').textContent='R$ '+fmt(vm2);
+  if($('pi-rr-fases'))  $('pi-rr-fases').textContent=piBr(m.fases);
+  if($('pi-rr-vis'))    $('pi-rr-vis').textContent=piBr(m.visitas);
+  if($('pi-rr-tax'))    $('pi-rr-tax').textContent=piBr(m.taxas);
+  if($('pi-rr-desc'))   $('pi-rr-desc').textContent='— '+piBr(m.desconto);
+  if($('pi-rr-pix'))    $('pi-rr-pix').textContent=(piFlt('pi-desc-pix')||5)+'%';
+  if($('pi-rr-total'))  $('pi-rr-total').textContent=piBr(m.total);
+  if($('pi-rr-ent'))    $('pi-rr-ent').textContent=piBr(m.entrada);
+  if($('pi-rr-parc'))   $('pi-rr-parc').textContent=m.parc+'× '+piBr(m.parcela);
+  if($('pi-rr-prazo'))  $('pi-rr-prazo').textContent=piVal('pi-rel-prazo')||'—';
+  if($('pi-rr-validade')) $('pi-rr-validade').textContent=(piFlt('pi-rel-validade')||15)+' dias';
+  piSyncTitle();
+}
+
+// Stepper
+function piGo(i){
+  piCurrentPanel=i;
+  piEnsureDefaults();
+  piCalc(); // sempre recalcula a cadeia completa ao navegar
+  for(let k=0;k<5;k++){
+    const panel=$('pi-p'+k);
+    if(panel) panel.style.display=k===i?'':'none';
+    const dot=$('pi-sd'+k);
+    if(dot){
+      const circle=dot.querySelector('div');
+      if(circle){
+        if(k<i){ circle.style.background='var(--e)'; circle.style.borderColor='var(--e)'; circle.style.color='#fff'; }
+        else if(k===i){ circle.style.background='var(--el)'; circle.style.borderColor='var(--e)'; circle.style.color='var(--e)'; }
+        else { circle.style.background='var(--surf2)'; circle.style.borderColor='var(--border-em)'; circle.style.color='var(--muted)'; }
+      }
+    }
+  }
+}
+
+// Persistência
+function piLoadLocal(){ try{ return JSON.parse(localStorage.getItem(PI_STORAGE_KEY)||'[]'); }catch(e){ return []; } }
+function piSaveLocal(arr){ try{ localStorage.setItem(PI_STORAGE_KEY,JSON.stringify(arr)); }catch(e){} }
+
+function piGetData(){
+  piCalcD();
+  const m=piMoney();
+  const validade=Math.max(1,Math.round(piFlt('pi-rel-validade')||15));
+  return {
+    nome:piProjectName(), cliente:piVal('pi-rel-cli'), arq:piVal('pi-rel-arq'),
+    area:piFlt('pi-area'), valorM2:piFlt('pi-valor-m2'), tipo:piVal('pi-rel-tipo'),
+    prazo:piVal('pi-rel-prazo')||piVal('pi-fabricacao'), revisoes:piFlt('pi-rel-revisoes')||0,
+    validade, objetivo:piVal('pi-rel-objetivo'), escopo:piVal('pi-rel-escopo'),
+    exclusoes:piVal('pi-rel-exclusoes'), obs:piVal('pi-rel-obs'),
+    fases:piFaseRows(), money:m, descPix:piFlt('pi-desc-pix')||5,
+    fabricacao:piVal('pi-fabricacao'),
+    data:new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}),
+    validadeData:new Date(Date.now()+validade*24*60*60*1000).toLocaleDateString('pt-BR'),
+  };
+}
+
+function piFaseRows(){
+  return [...document.querySelectorAll('#pi-fases .fase-row')].map(row=>{
+    const nome=row.querySelector('.fn')?.textContent.trim()||'';
+    const pct=parseFloat(row.querySelector('.pi-fi')?.value)||0;
+    const val=piBase*(pct/100);
+    return {nome,pct,valor:val};
+  }).filter(r=>r.pct>0);
+}
+
+function piBuildPayload(){
+  const data=piGetData();
+  return {
+    type:'interiores', id:piCurrentId||('pi-'+Date.now()),
+    name:data.nome, cliente:data.cliente, arq:data.arq, tipologia:data.tipo,
+    area:data.area, valorM2:data.valorM2, prazo:data.prazo,
+    revisoes:data.revisoes, validade:data.validade,
+    objetivo:data.objetivo, escopo:data.escopo,
+    exclusoes:data.exclusoes, obs:data.obs,
+    fasesPct:[...document.querySelectorAll('#pi-fases .pi-fi')].map(i=>parseFloat(i.value)||0),
+    visitaVal:piFlt('pi-visita-val'), visitaN:piFlt('pi-visita-n'),
+    taxes:{iss:piFlt('pi-t-iss'),ir:piFlt('pi-t-ir'),pis:piFlt('pi-t-pis'),out:piFlt('pi-t-out')},
+    descType:piDType, descPct:piFlt('pi-desc-pct'), descFix:piFlt('pi-desc-fix'),
+    pgEnt:piFlt('pi-pg-ent'), pgParc:piFlt('pi-pg-parc'),
+    descPix:piFlt('pi-desc-pix')||5, fabricacao:piVal('pi-fabricacao'),
+    total:data.money.total, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(),
+  };
+}
+
+function piLoadFromPayload(d){
+  if(!d) return;
+  piCurrentId=d.id||null;
+  piSetVal('pi-rel-nome',d.name); piSetVal('pi-rel-cli',d.cliente);
+  piSetVal('pi-rel-arq',d.arq); piSetVal('pi-area',d.area);
+  piSetVal('pi-valor-m2',d.valorM2);
+  if($('pi-rel-tipo')&&d.tipologia) $('pi-rel-tipo').value=d.tipologia;
+  piSetVal('pi-rel-prazo',d.prazo); piSetVal('pi-rel-revisoes',d.revisoes);
+  piSetVal('pi-rel-validade',d.validade);
+  piSetVal('pi-rel-objetivo',d.objetivo); piSetVal('pi-rel-escopo',d.escopo);
+  piSetVal('pi-rel-exclusoes',d.exclusoes); piSetVal('pi-rel-obs',d.obs);
+  if(d.fasesPct){ const inputs=[...document.querySelectorAll('#pi-fases .pi-fi')]; d.fasesPct.forEach((v,i)=>{ if(inputs[i]) inputs[i].value=v||''; }); }
+  piSetVal('pi-visita-val',d.visitaVal); piSetVal('pi-visita-n',d.visitaN);
+  if(d.taxes){['iss','ir','pis','out'].forEach(k=>piSetVal('pi-t-'+k,d.taxes[k]));}
+  piSetD(d.descType||'pct');
+  piSetVal('pi-desc-pct',d.descPct); piSetVal('pi-desc-fix',d.descFix);
+  piSetVal('pi-pg-ent',d.pgEnt); piSetVal('pi-pg-parc',d.pgParc);
+  if(d.descPix!==undefined) piSetVal('pi-desc-pix',d.descPix);
+  if(d.fabricacao) piSetVal('pi-fabricacao',d.fabricacao);
+  piEnsureDefaults(); piCalc(); piSyncTitle();
+}
+
+function piSaveProposal(){
+  const btn=$('pi-save-btn'), status=$('pi-save-status');
+  if(btn) btn.disabled=true;
+  if(status){ status.textContent='Salvando…'; status.className='save-status'; }
+  const payload=piBuildPayload();
+  if(!payload.name||payload.name==='Proposta de Interiores'){
+    if(status){ status.textContent='Informe o nome do projeto antes de salvar.'; status.className='save-status err'; }
+    if(btn) btn.disabled=false; return;
+  }
+  const arr=piLoadLocal(), idx=arr.findIndex(p=>p.id===payload.id);
+  if(idx>=0) arr[idx]=payload; else arr.push(payload);
+  piSaveLocal(arr); piCurrentId=payload.id; piSyncTitle();
+  if(status){ status.textContent='✓ Proposta de interiores salva!'; status.className='save-status ok'; }
+  if(btn) btn.disabled=false;
+  setTimeout(()=>{ if(status) status.textContent=''; },3000);
+}
+
+function piNewProposal(){
+  piCurrentId=null; piCurrentPanel=0;
+  [...document.querySelectorAll('#prop-interiores-view input[type=text],#prop-interiores-view input[type=number],#prop-interiores-view textarea')].forEach(el=>{
+    if(!['pi-t-iss','pi-t-ir','pi-t-pis','pi-pg-ent','pi-pg-parc','pi-desc-pix'].includes(el.id)) el.value='';
+  });
+  [...document.querySelectorAll('#pi-fases .pi-fi')].forEach((el,i)=>{
+    el.value=[8,7,15,20,30,15,5][i]||0;
+  });
+  piEnsureDefaults(); piCalc(); piSyncTitle();
+  piGo(0);
+}
+
+function piOpenList(){
+  const arr=piLoadLocal();
+  if(!arr.length){ notifyStatus('Nenhuma proposta de interiores salva ainda.','warn',3000); return; }
+  const old=$('pi-list-modal'); if(old) old.remove();
+  const wrap=document.createElement('div');
+  wrap.id='pi-list-modal'; wrap.className='modal-overlay';
+  wrap.onclick=e=>{ if(e.target===wrap) wrap.remove(); };
+  wrap.innerHTML=`<div class="modal" style="max-width:540px"><button class="modal-close" onclick="document.getElementById('pi-list-modal')?.remove()">✕</button><h2>Propostas de interiores salvas</h2><div style="display:flex;flex-direction:column;gap:8px;margin-top:1rem">${arr.map(p=>`<div style="border:0.5px solid var(--border);border-radius:10px;padding:.75rem 1rem;background:var(--surf2);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><div style="min-width:0"><div style="font-size:13px;font-weight:500;color:var(--text)">${esc(p.name||'—')}</div><div style="font-size:11px;color:var(--faint);margin-top:2px">${esc(p.tipologia||'—')} · ${esc(p.cliente||'—')} · ${piBr(p.total||0)}</div></div><div style="display:flex;gap:6px"><button class="btn" style="font-size:11px;padding:5px 10px" onclick="piLoadId('${p.id}');document.getElementById('pi-list-modal')?.remove()">Editar</button><button class="btn danger" style="font-size:11px;padding:5px 10px" onclick="piDeleteLocal('${p.id}')">Excluir</button></div></div>`).join('')}</div></div>`;
+  document.body.appendChild(wrap);
+}
+
+function piLoadId(id){
+  const arr=piLoadLocal(), p=arr.find(x=>x.id===id); if(!p) return;
+  piLoadFromPayload(p); showInteriorProposal(); piGo(0);
+}
+
+function piDeleteLocal(id){
+  if(!confirm('Excluir esta proposta?')) return;
+  const arr=piLoadLocal().filter(p=>p.id!==id); piSaveLocal(arr);
+  const modal=$('pi-list-modal'); if(modal) modal.remove();
+  notifyStatus('Proposta excluída.','ok',2000);
+}
+
+// ── WhatsApp copy — Prop.Interiores ──
+function piOpenCopyModal(){
+  const d=piGetData();
+  const first=d.cliente?d.cliente.split(' ')[0]:'';
+  const ass=d.arq||logoGetNomeEmpresa();
+  const totalFmt='R$ '+fmtI(d.money.total);
+  const entFmt='R$ '+fmtI(d.money.entrada);
+  const parcFmt=d.money.parc+'× R$ '+fmt(d.money.parcela);
+  const entPct=d.money.entPct||30;
+  const pixDesc=d.descPix||5;
+  const prazo=d.prazo||d.fabricacao||'conforme cronograma';
+  const areaStr=d.area?d.area.toLocaleString('pt-BR',{maximumFractionDigits:1})+' m²':'—';
+  const vm2Str=d.valorM2?'R$ '+fmt(d.valorM2)+'/m²':'—';
+
+  const fasesList=d.fases.map(f=>`${f.nome} (${f.pct}% — ${piBr(f.valor)})`).join('\n');
+  const fasesResumido=d.fases.map(f=>f.nome).join(' · ');
+
+  const txtResumo=`Segue o resumo da proposta de\n*${d.nome||'Design de Interiores'}*:\n\n🏠 *Área:* ${areaStr} · ${vm2Str}\n📐 *Fases:* ${fasesResumido||'conforme contrato'}\n💰 *Total:* ${totalFmt}\n📥 *Formas de pagamento* (Cartão/Dinheiro/Pix)\n📥 *Dinheiro ou PIX* (${pixDesc}% de desconto)\n📆 *Prazo:* ${prazo}\n\n       *(Detalhamento completo segue em anexo ⬇️)*\n\nQualquer dúvida estou à disposição!\n\n_${ass}_`;
+
+  const txtDetalhado=`Olá${first?', '+first:''}! Segue o resumo da proposta:\n\n*${d.nome||'Design de Interiores'}*\n🏠 ${areaStr} · ${vm2Str}\n\n*Fases e valores fixos:*\n${fasesList||'Conforme proposta em anexo.'}\n${d.money.visitas?`\n🏗 Visitas técnicas: ${piBr(d.money.visitas)}`:''}\n\n💰 *Total:* ${totalFmt}\n📌 Entrada (${entPct}%): ${entFmt}\n📌 Saldo: ${parcFmt}\n📥 PIX/dinheiro: ${pixDesc}% de desconto\n📆 Prazo: ${prazo}\n\n_${ass}_`;
+
+  const txtCompleto=`Olá${first?', '+first:''}! Tudo bem?\n\nPreparei a proposta para *${d.nome||'o projeto de interiores'}*.\n\n🏠 *Área contratada:* ${areaStr}\n📐 *Base:* ${vm2Str}\n💰 *Investimento:* ${totalFmt}\n📥 Entrada: ${entFmt} · Saldo: ${parcFmt}\n📥 Aceito: Cartão / Dinheiro / PIX (${pixDesc}% desc.)\n📆 *Prazo:* ${prazo}\n♻️ *Revisões inclusas:* ${d.revisoes||2}\n\nO documento completo com fases e condições segue em anexo.\n\n_${ass}_`;
+
+  const txtPassos=`Olá${first?', '+first:''}!\n\nPara iniciarmos o projeto *${d.nome||''}*, os próximos passos são:\n\n1️⃣ Aprovação da proposta\n2️⃣ Pagamento da entrada: *${entFmt}*\n3️⃣ Envio do briefing / visita técnica\n4️⃣ Início do desenvolvimento\n\nSaldo: ${parcFmt} · PIX/dinheiro com ${pixDesc}% desconto.\n\nFico à disposição para qualquer ajuste!\n\n_${ass}_`;
+
+  const variants=[
+    {label:'📋 Resumo direto — WhatsApp',desc:'Compacto com área, fases e condições',text:txtResumo},
+    {label:'📐 Com fases detalhadas',desc:'Lista cada fase e seu valor fixo',text:txtDetalhado},
+    {label:'📄 Completo — enviar com PDF',desc:'Versão formal para acompanhar o documento',text:txtCompleto},
+    {label:'✅ Próximos passos',desc:'Pós-aprovação: orienta o cliente no fluxo',text:txtPassos}
+  ];
+  const wrap=$('copy-variants'); if(!wrap) return;
+  wrap.innerHTML=variants.map((v,i)=>`
+    <div class="copy-variant">
+      <div class="cv-label">${esc(v.label)}</div>
+      <div style="font-size:10px;color:var(--faint);margin-bottom:.5rem;line-height:1.4">${esc(v.desc)}</div>
+      <div class="cv-text wz-preview">${renderWhatsAppPreview(v.text)}</div>
+      <button class="btn cv-btn solid" onclick="copyVariant(${i})" id="cv-btn-${i}" style="margin-top:.7rem;width:100%">📋 Copiar texto</button>
+    </div>`).join('');
+  window['_copyVariants']=variants;
+  $('copy-modal').style.display='flex';
+}
+
+// PDF — Prop.Interiores
+async function piExportPDF(){
+  if(piPdfBusy) return;
+  if(!await pdfReady()){ notifyStatus('Biblioteca PDF não carregou. Verifique a conexão e recarregue.','err',5000); return; }
+  const btn=$('pi-pdf-btn'); let el=null; piPdfBusy=true;
+  if(btn){ btn.textContent='Gerando...'; btn.disabled=true; }
+  try{
+    const d=piGetData();
+    const logoPng=await logoSvgToPng(logoGetSrcForPDF());
+    const fasesRows=d.fases.map(r=>`<tr><td style="padding:6px 0;border-bottom:0.5px solid #F2EDE2;color:#7A6A56;font-size:11px">${esc(r.nome)}</td><td style="padding:6px 0;border-bottom:0.5px solid #F2EDE2;text-align:right;color:#2C1F12;font-size:11px;font-family:monospace">${r.pct}%</td><td style="padding:6px 0;border-bottom:0.5px solid #F2EDE2;text-align:right;color:#8B5E3C;font-size:11px;font-family:monospace">${piBr(r.valor)}</td></tr>`).join('');
+    const p=(label,val)=>val?`<div style="margin-bottom:14px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:4px">${label}</div><div style="font-size:12px;color:#2C1F12;line-height:1.65">${esc(val).replace(/\n/g,'<br>')}</div></div>`:'';
+    const htmlContent=`
+    <div style="font-family:Georgia,serif;color:#2C1F12;padding:38px 48px;max-width:700px;margin:0 auto;background:#FAF7F1">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #D4B896">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0"><img src="${logoPng}" alt="${logoGetNomeEmpresa()}" style="width:178px;height:auto;max-height:42px;object-fit:contain;object-position:left center;display:block"><div style="font-size:10px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.35">Proposta de Design de Interiores</div></div>
+        <div style="text-align:right"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif">Prop.Interiores</div><div style="font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;margin-top:4px">${d.data}</div></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:9px">Projeto</div>
+        <div style="font-size:23px;color:#2C1F12;margin-bottom:7px">${esc(d.nome)}</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif">
+          ${d.cliente?`<span><b style="color:#B0A090">Cliente:</b> ${esc(d.cliente)}</span>`:''}
+          ${d.tipo?`<span><b style="color:#B0A090">Tipologia:</b> ${esc(d.tipo)}</span>`:''}
+          ${d.arq?`<span><b style="color:#B0A090">Responsável:</b> ${esc(d.arq)}</span>`:''}
+          ${d.area?`<span><b style="color:#B0A090">Área:</b> ${d.area.toLocaleString('pt-BR',{maximumFractionDigits:1})} m²</span>`:''}
+          ${d.valorM2?`<span><b style="color:#B0A090">R$/m²:</b> R$ ${fmt(d.valorM2)}</span>`:''}
+        </div>
+      </div>
+      ${p('Objetivo',d.objetivo)}${p('Escopo detalhado',d.escopo)}
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid #F2EDE2">Fases e honorários</div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:18px">
+        <tr><th style="text-align:left;font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;padding-bottom:5px">Fase</th><th style="text-align:right;font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;padding-bottom:5px">%</th><th style="text-align:right;font-size:9px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;padding-bottom:5px">Valor fixo</th></tr>
+        ${fasesRows||'<tr><td style="font-size:12px;color:#B0A090;padding:10px 0;font-style:italic" colspan="3">Fases a detalhar.</td></tr>'}
+        ${d.money.visitas?`<tr><td style="padding:6px 0;color:#7A6A56;font-size:11px;border-top:0.5px dashed #F2EDE2">Visitas técnicas</td><td></td><td style="padding:6px 0;text-align:right;color:#8B5E3C;font-size:11px;font-family:monospace;border-top:0.5px dashed #F2EDE2">${piBr(d.money.visitas)}</td></tr>`:''}
+      </table>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;break-inside:avoid">
+        <div style="background:#F2EDE2;border-radius:8px;padding:12px"><div style="font-size:9px;color:#B0A090;text-transform:uppercase;letter-spacing:1px;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:5px">Prazo</div><div style="font-size:12px;color:#2C1F12;line-height:1.45">${esc(d.prazo||'A combinar')}</div></div>
+        <div style="background:#F2EDE2;border-radius:8px;padding:12px"><div style="font-size:9px;color:#B0A090;text-transform:uppercase;letter-spacing:1px;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:5px">Revisões e validade</div><div style="font-size:12px;color:#2C1F12;line-height:1.45">${d.revisoes||0} rodada(s) · validade até ${d.validadeData}</div></div>
+      </div>
+      ${p('Não incluso',d.exclusoes)}${p('Observações e condições',d.obs)}
+      <div style="background:#F2EDE2;border-radius:8px;padding:16px;margin-top:18px;break-inside:avoid">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#8B5E3C;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:8px">Investimento</div>
+        <div style="font-size:32px;color:#2C1F12;font-family:Georgia,serif">${piBr(d.money.total)}</div>
+        <div style="font-size:11px;color:#7A6A56;font-family:'Helvetica Neue',Arial,sans-serif;margin-top:6px">Entrada (${d.money.entPct||30}%): ${piBr(d.money.entrada)} · Saldo: ${d.money.parc}× ${piBr(d.money.parcela)}</div>
+        <div style="font-size:10px;color:#B0A090;font-family:'Helvetica Neue',Arial,sans-serif;margin-top:4px">PIX ou dinheiro: ${d.descPix||5}% de desconto · Formas: Cartão / Dinheiro / PIX</div>
+      </div>
+    </div>`;
+    el=createPdfElement(htmlContent); await waitForImages(el);
+    if(document.fonts?.ready) await document.fonts.ready;
+    await nextFrame(); await nextFrame(); await new Promise(r=>setTimeout(r,800));
+    const fn=safeFileName('interiores-'+(d.cliente||d.nome||'proposta')+'-'+new Date().toISOString().slice(0,10),'interiores');
+    const opts={margin:0,filename:'chaos-'+fn+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:pdfH2cOpts(el),jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    await withTimeout(window['html2pdf']().set(opts).from(el).save(),60000,'Tempo esgotado ao gerar PDF.');
+    notifyStatus('PDF de interiores gerado.','ok',3000);
+  }catch(e){ console.error('PDF Interiores:',e); notifyStatus('Não foi possível gerar o PDF.','err',4000); }
+  finally{ cleanupPdfElement(); piPdfBusy=false; if(btn){ btn.textContent='⬇ Baixar PDF'; btn.disabled=false; } }
 }
 
 // ── PROPOSTA DESIGN — ENGINE ─────────────────────────
