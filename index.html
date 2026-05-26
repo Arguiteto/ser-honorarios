@@ -2318,10 +2318,6 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
   </div>
 
-      <div class="nav-row" style="border:none;padding:0;margin-top:.5rem"><button class="btn ghost" onclick="pdGo(3)">← Ajustar</button></div>
-    </div>
-  </div>
-
   <!-- PROP.INTERIORES -->
   <div id="prop-interiores-view" style="display:none;padding:1.5rem;max-width:860px;margin:0 auto;flex:1;width:100%">
 
@@ -2369,7 +2365,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
 
     <!-- P1: BASE M² -->
-    <div class="panel" id="pi-p0" style="background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+    <div id="pi-p0" style="background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
       <div class="slabel">Parâmetros de honorário — base m²</div>
       <div class="g2">
         <div class="field"><label>Área do projeto</label><div class="iw"><input type="number" id="pi-area" placeholder="0" min="0" step="0.5" oninput="piCalc()"><span class="sfx">m²</span></div><span class="hint">Área total considerada no contrato.</span></div>
@@ -2385,7 +2381,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
 
     <!-- P2: FASES -->
-    <div class="panel" id="pi-p1" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+    <div id="pi-p1" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
       <div class="slabel">Distribuição por fase — porcentagem do total base</div>
       <p class="note" style="margin-bottom:.9rem">Edite o % de cada fase. O valor fixo é calculado automaticamente a partir do total base. A soma dos percentuais não precisa ser exatamente 100% — use como guia.</p>
       <div id="pi-fases">
@@ -2412,7 +2408,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
 
     <!-- P3: IMPOSTOS -->
-    <div class="panel" id="pi-p2" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+    <div id="pi-p2" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
       <div class="slabel">Incidência sobre o honorário bruto</div>
       <div class="tax-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)"><span class="tn" style="font-size:12px;color:var(--muted)">ISS (serviços municipais)</span><div class="tr-right" style="display:flex;align-items:center;gap:8px"><div class="iw" style="width:70px"><input class="pi-ti" type="number" id="pi-t-iss" value="5" min="0" max="100" step="0.5" oninput="piCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pi-tv-iss" style="font-size:12px;color:var(--faint);width:88px;text-align:right;font-family:monospace">R$ 0</span></div></div>
       <div class="tax-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)"><span class="tn" style="font-size:12px;color:var(--muted)">IRPJ + CSLL (Simples est.)</span><div class="tr-right" style="display:flex;align-items:center;gap:8px"><div class="iw" style="width:70px"><input class="pi-ti" type="number" id="pi-t-ir" value="6" min="0" max="100" step="0.5" oninput="piCalcT()"><span class="sfx" style="font-size:10px">%</span></div><span class="tv" id="pi-tv-ir" style="font-size:12px;color:var(--faint);width:88px;text-align:right;font-family:monospace">R$ 0</span></div></div>
@@ -2426,7 +2422,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
 
     <!-- P4: DESCONTO + PAGAMENTO -->
-    <div class="panel" id="pi-p3" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+    <div id="pi-p3" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
       <div class="slabel">Tipo de desconto</div>
       <div class="pill-row" style="display:flex;border:0.5px solid var(--border-em);border-radius:6px;overflow:hidden;width:fit-content;margin-bottom:1rem">
         <button class="pill on" id="pi-pb-pct" onclick="piSetD('pct')" style="font-family:inherit;font-size:11px;padding:6px 14px;background:var(--el);color:var(--e);border:none;cursor:pointer;font-weight:500;border-right:0.5px solid var(--border)">Percentual</button>
@@ -2454,7 +2450,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     </div>
 
     <!-- P5: PROPOSTA FINAL -->
-    <div class="panel" id="pi-p4" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
+    <div id="pi-p4" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.035)">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:.8rem;padding:.85rem 1rem;border:0.5px solid var(--border);border-radius:12px;background:var(--surf2)">
         <div><b id="pi-final-title" style="display:block;font-size:13px;color:var(--text);margin-bottom:3px">Proposta de design de interiores</b><span style="font-size:11px;color:var(--faint);line-height:1.5">Modelo completo com escopo, fases, condições, PDF e mensagens para WhatsApp.</span></div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -3553,7 +3549,7 @@ function piGo(i){
   piCalc(); // sempre recalcula a cadeia completa ao navegar
   for(let k=0;k<5;k++){
     const panel=$('pi-p'+k);
-    if(panel) panel.style.display=k===i?'':'none';
+    if(panel) panel.style.display=k===i?'block':'none';
     const dot=$('pi-sd'+k);
     if(dot){
       const circle=dot.querySelector('div');
@@ -6586,8 +6582,8 @@ _${arq}_`
   wrap.innerHTML=variants.map((v,i)=>`
     <div class="copy-variant">
       <div class="cv-label">${esc(v.label)}</div>
-      <div class="cv-text">${renderWhatsAppPreview(v.text)}</div>
-      <button class="btn cv-btn" onclick="copyVariant(${i})" id="cv-btn-${i}">Copiar texto</button>
+      <div class="cv-text wz-preview">${renderWhatsAppPreview(v.text)}</div>
+      <button class="btn cv-btn solid" onclick="copyVariant(${i})" id="cv-btn-${i}" style="margin-top:.7rem;width:100%">📋 Copiar texto</button>
     </div>`).join('');
   window['_copyVariants']=variants;
   $('copy-modal').style.display='flex';
