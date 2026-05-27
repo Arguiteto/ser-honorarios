@@ -6,21 +6,82 @@
 <title>Chaos Arquitetura e Urbanismo</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>
-  // Carrega Supabase com fallback CDN
-  (function(){
-    function tryLoad(urls, idx){
-      if(idx >= urls.length) return;
-      var s = document.createElement('script');
-      s.src = urls[idx];
-      s.onerror = function(){ tryLoad(urls, idx+1); };
-      document.head.appendChild(s);
-    }
-    tryLoad([
+  // Carrega Supabase com fallback real entre CDNs.
+  // A Promise abaixo evita a tela "Serviço indisponível" quando o primeiro CDN demora
+  // e permite que o login continue automaticamente assim que o SDK carregar.
+  window.__loadSupabaseSDK = (function(){
+    var urls = [
       'https://unpkg.com/@supabase/supabase-js@2.46.1/dist/umd/supabase.js',
       'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.46.1/dist/umd/supabase.js',
       'https://esm.sh/@supabase/supabase-js@2.46.1/dist/umd/supabase.js'
-    ], 0);
+    ];
+    var promise = null;
+
+    function loadOne(url){
+      return new Promise(function(resolve, reject){
+        if(window.supabase && window.supabase.createClient){
+          resolve(window.supabase);
+          return;
+        }
+
+        var s = document.createElement('script');
+        var done = false;
+        var timer = setTimeout(function(){
+          if(done) return;
+          done = true;
+          s.onload = s.onerror = null;
+          try{ s.remove(); }catch(_e){}
+          reject(new Error('Timeout carregando Supabase: ' + url));
+        }, 12000);
+
+        s.src = url;
+        s.async = true;
+        s.crossOrigin = 'anonymous';
+
+        s.onload = function(){
+          if(done) return;
+          done = true;
+          clearTimeout(timer);
+          if(window.supabase && window.supabase.createClient){
+            resolve(window.supabase);
+          }else{
+            reject(new Error('SDK Supabase carregou sem createClient: ' + url));
+          }
+        };
+
+        s.onerror = function(){
+          if(done) return;
+          done = true;
+          clearTimeout(timer);
+          try{ s.remove(); }catch(_e){}
+          reject(new Error('Falha ao carregar Supabase: ' + url));
+        };
+
+        document.head.appendChild(s);
+      });
+    }
+
+    return function(){
+      if(window.supabase && window.supabase.createClient) return Promise.resolve(window.supabase);
+      if(promise) return promise;
+      promise = (async function(){
+        var lastError = null;
+        for(var i=0; i<urls.length; i++){
+          try{
+            return await loadOne(urls[i]);
+          }catch(e){
+            lastError = e;
+            console.warn(e.message || e);
+          }
+        }
+        throw lastError || new Error('Supabase SDK indisponível');
+      })();
+      return promise;
+    };
   })();
+
+  // Começa a carregar imediatamente, mas initSupabaseClient() também aguarda esta Promise.
+  window.__loadSupabaseSDK();
 </script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -2896,25 +2957,45 @@ document.addEventListener('click',e=>{
 
 // ── INIT ──────────────────────────────────────────
 async function initSupabaseClient(){
-  // Aguarda até 12s pelo SDK carregar via CDN (inclui fallbacks)
-  for(let i=0; i<120; i++){
-    if(window.supabase?.createClient) break;
-    await new Promise(r=>setTimeout(r,100));
-  }
-  if(!window.supabase?.createClient){
-    console.error('Supabase SDK não carregou após 12s — verifique CDN.');
+  if(sb && sb.auth) return sb;
+
+  try{
+    if(window.__loadSupabaseSDK){
+      await window.__loadSupabaseSDK();
+    }else{
+      for(let i=0; i<180; i++){
+        if(window.supabase?.createClient) break;
+        await new Promise(r=>setTimeout(r,100));
+      }
+    }
+  }catch(e){
+    console.error('Supabase SDK não carregou:', e);
     return null;
   }
+
+  if(!window.supabase?.createClient){
+    console.error('Supabase SDK indisponível após tentar todos os CDNs.');
+    return null;
+  }
+
   // Valida formato da chave antes de criar o cliente
   const keyOk = SUPABASE_KEY.startsWith('eyJ') || SUPABASE_KEY.startsWith('sb_publishable_') || SUPABASE_KEY.startsWith('sb_secret_');
   if(!SUPABASE_URL || !SUPABASE_KEY || !keyOk){
     console.error('SUPABASE_KEY com formato inválido. Verifique Settings > API no painel do Supabase.');
     return null;
   }
+
   try{
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth:{ autoRefreshToken:true, persistSession:true, detectSessionInUrl:true }
+      auth:{
+        autoRefreshToken:true,
+        persistSession:true,
+        detectSessionInUrl:true,
+        flowType:'pkce',
+        storage: window.localStorage
+      }
     });
+
     if(!window._chaosAuthListener){
       window._chaosAuthListener=true;
       client.auth.onAuthStateChange((_event, session)=>{
@@ -2923,13 +3004,18 @@ async function initSupabaseClient(){
           showPasswordReset();
           return;
         }
+
         if(session?.user){
           user=session.user;
-          if(isPasswordRecoveryUrl()) showPasswordReset();
-          else if($('auth-screen')?.style.display !== 'none') showApp();
+          if(isPasswordRecoveryUrl()){
+            showPasswordReset();
+          }else if($('auth-screen')?.style.display !== 'none'){
+            showApp();
+          }
         }
       });
     }
+
     return client;
   }catch(e){
     console.error('Falha ao criar cliente Supabase:', e);
@@ -3056,6 +3142,26 @@ async function authRecover(){
   }
 }
 
+
+async function waitForAuthSession(maxMs=6000){
+  const started = Date.now();
+  let lastError = null;
+
+  while(Date.now() - started < maxMs){
+    try{
+      const { data, error } = await sb.auth.getSession();
+      if(error) lastError = error;
+      if(data?.session?.user) return data.session;
+    }catch(e){
+      lastError = e;
+    }
+    await new Promise(r=>setTimeout(r,200));
+  }
+
+  if(lastError) console.warn('Sessão auth ainda não disponível:', lastError);
+  return null;
+}
+
 async function authSubmit(){
   const email = $('auth-email').value.trim();
   const pass  = $('auth-pass').value;
@@ -3104,15 +3210,19 @@ async function authSubmit(){
     } else if(authMode === 'login'){
       const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
       if(error) throw error;
-      user = data?.session?.user || data?.user;
-      if(!user){
-        try{
-          const sess = await sb.auth.getSession();
-          user = sess?.data?.session?.user || null;
-        }catch(_e){}
+
+      // Em alguns navegadores a sessão demora alguns milissegundos para ir ao localStorage.
+      // Aguardar aqui evita precisar recarregar a página após o login.
+      const session = data?.session || await waitForAuthSession(6000);
+      user = session?.user || data?.user || null;
+
+      if(user){
+        authSetMessage('✓ Login confirmado. Abrindo...', true);
+        await new Promise(r=>setTimeout(r,30));
+        showApp();
+      }else{
+        authSetMessage('Login confirmado, mas a sessão ainda não sincronizou. Aguarde alguns segundos e clique em Entrar novamente.');
       }
-      if(user){ showApp(); }
-      else { $('auth-err').textContent='Login confirmado, mas a sessão ainda está sincronizando. Recarregue a página se não abrir automaticamente.'; }
 
     } else {
       const c = $('auth-confirm').value;
@@ -8389,7 +8499,21 @@ function clearCarta(){
   $('carta-data').valueAsDate=new Date();
 }
 
-init();
+function startChaosApp(){
+  init().catch(e=>{
+    console.error('Falha inesperada ao iniciar:', e);
+    showAuth();
+    authSetMessage('Erro ao iniciar. Recarregue a página.');
+  });
+}
+
+// Aguarda o DOM terminar de montar. Antes o init() rodava enquanto o HTML ainda
+// estava sendo interpretado, o que podia deixar a autenticação dependente de reload.
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', startChaosApp, { once:true });
+}else{
+  startChaosApp();
+}
 
 
 </script>
