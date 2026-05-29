@@ -263,7 +263,7 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 #materiais-view{display:none;padding:1.5rem;max-width:1180px;margin:0 auto;flex:1;width:100%}
 
 @media(min-width:721px){
-  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#prop-design-view,#prop-interiores-view,#simgeo-view,#labeee-view,#mapoteca-view,#threejs-view,#calc-tecnico-view,#materiais-view,#equipe-view{padding-left:180px}
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#prop-design-view,#prop-interiores-view,#simgeo-view,#labeee-view,#cartasolar-view,#mapoteca-view,#threejs-view,#calc-tecnico-view,#materiais-view,#equipe-view{padding-left:180px}
 }
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
@@ -648,6 +648,12 @@ body.nbr-open #online-bar{display:none}
 .labeee-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:.8rem}
 .labeee-link-grid a{font-size:11px;color:var(--e);text-decoration:none;border:0.5px solid var(--border);border-radius:8px;padding:8px;background:var(--surf2)}
 .labeee-note{font-size:10px;color:var(--faint);line-height:1.55;margin-top:.8rem}
+.labeee-carta-wrap{margin-bottom:14px}
+.carta-solar-box{display:flex;justify-content:center;background:var(--surface);border-radius:8px;padding:6px}
+.carta-solar-svg{width:100%;max-width:360px;height:auto}
+.carta-legend{font-size:10px;color:var(--faint);line-height:1.6;margin-top:.6rem;display:flex;gap:10px 16px;flex-wrap:wrap}
+.carta-legend b{color:var(--text);font-weight:500}
+.carta-legend .sw{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
 @media(max-width:760px){.labeee-wrap{grid-template-columns:1fr}.labeee-kpis{grid-template-columns:1fr 1fr}.labeee-row{grid-template-columns:1fr}}
 
 
@@ -1281,6 +1287,7 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-threejs" onclick="showThreejs()"><span class="ico">▥</span>Volumetria 3D</button>
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico">☀</span>LabEEE</button>
+    <button class="dock-btn" id="tool-cartasolar" onclick="showCartaSolar()"><span class="ico">☉</span>Carta Solar</button>
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico">▣</span>Mapoteca</button>
     <button class="dock-btn" id="tool-calctec" onclick="showCalcTec()"><span class="ico">⌁</span>Cálculos técnicos</button>
     <button class="dock-btn" id="tool-sheetgen" onclick="showSheetGen()"><span class="ico">▤</span>Pranchas CAD</button>
@@ -1493,6 +1500,14 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
           <p>Organiza estudo solar, brises, ventilação e zoneamento com links oficiais do LabEEE/UFSC.</p>
         </div>
         <span class="hall-go">Analisar desempenho →</span>
+      </button>
+      <button class="hall-card" onclick="showCartaSolar()" style="border-color:var(--eb)">
+        <div>
+          <div class="hall-icon">☉</div>
+          <h2>Carta Solar</h2>
+          <p>Posição do Sol e trajetória do dia por CEP, data e hora — altitude, azimute e incidência na fachada.</p>
+        </div>
+        <span class="hall-go">Estudar insolação →</span>
       </button>
       <button class="hall-card" onclick="showThreejs()" style="border-color:var(--eb);box-shadow:0 4px 16px rgba(0,0,0,.05)">
         <div>
@@ -1881,9 +1896,11 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
         </div>
         <div class="labeee-actions">
           <button class="btn solid" onclick="gerarLabeee()">Gerar ficha pelo CEP</button>
+          <button class="btn ghost" onclick="verCartaSolar()">☀ Ver carta solar</button>
+          <button class="btn ghost" onclick="exportSolArCsv()">⬇ CSV p/ SOL-AR</button>
           <button class="btn ghost" onclick="fillLabeeeFromSimgeo()">Usar local do SIMGEO</button>
           <button class="btn ghost" onclick="abrirLabeeeZoneamento()">Abrir zoneamento</button>
-          <button class="btn ghost" onclick="abrirLabeeeSolAr()">Abrir SOL-AR</button>
+          <button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR (oficial)</button>
           <button class="btn ghost" onclick="abrirLabeee()">Abrir LabEEE</button>
         </div>
         <div class="labeee-status" id="le-status"></div>
@@ -1891,7 +1908,47 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
       <section class="labeee-result">
         <h2>Ficha LabEEE</h2>
         <p class="labeee-muted">A ficha aparece aqui. Ela não substitui SOL-AR, Analysis BIO ou ZBBR; serve para organizar o raciocínio técnico e levar dados ao estudo preliminar.</p>
+        <div id="le-carta" class="labeee-carta-wrap" style="display:none"></div>
         <div id="le-result"><div class="labeee-empty">Nenhuma ficha gerada ainda.<br>Digite o CEP, escolha a fachada e clique em “Gerar ficha”.</div></div>
+      </section>
+    </div>
+  </div>
+
+
+  <!-- CARTA SOLAR (ferramenta) -->
+  <div id="cartasolar-view" style="display:none">
+    <div class="dash-top">
+      <div class="dash-title">Carta Solar — estudo por CEP, data e hora</div>
+      <button class="btn ghost" onclick="showHall()">← Início</button>
+    </div>
+    <div class="labeee-wrap">
+      <section class="labeee-card">
+        <h2>Local e instante</h2>
+        <p class="labeee-muted">Informe o CEP, a data e a hora. O sistema localiza o ponto, calcula a posição do Sol (altitude e azimute) naquele instante e desenha a carta solar do dia. Horas em horário legal de Brasília (UTC−3); a hora solar verdadeira corrigida aparece no resultado.</p>
+        <div class="g2">
+          <div class="field"><label>CEP do local</label><div class="iw"><input type="text" id="cs-cep" placeholder="Ex: 79034-410" inputmode="numeric" onkeydown="if(event.key==='Enter')gerarCartaSolar()"></div><span class="hint">Só o CEP. O endereço e a latitude/longitude são calculados automaticamente.</span></div>
+          <div class="field"><label>Número (opcional)</label><div class="iw"><input type="text" id="cs-num" placeholder="Ex: 58" onkeydown="if(event.key==='Enter')gerarCartaSolar()"></div></div>
+          <div class="field"><label>Cidade</label><div class="iw"><input type="text" id="cs-cidade" placeholder="Preenchido pelo CEP"></div></div>
+          <div class="field"><label>UF</label><div class="iw"><input type="text" id="cs-uf" placeholder="UF" maxlength="2"></div></div>
+          <input type="hidden" id="cs-lat"><input type="hidden" id="cs-lng">
+          <div class="field"><label>Data</label><div class="iw"><input type="date" id="cs-data"></div></div>
+          <div class="field"><label>Hora</label><div class="iw"><input type="time" id="cs-hora"></div></div>
+          <div class="field"><label>Fachada analisada (opcional)</label><div class="iw"><select id="cs-fachada">
+            <option value="">Sem fachada</option><option value="0">Norte — 0°</option><option value="45">Nordeste — 45°</option><option value="90">Leste — 90°</option><option value="135">Sudeste — 135°</option><option value="180">Sul — 180°</option><option value="225">Sudoeste — 225°</option><option value="270">Oeste — 270°</option><option value="315">Noroeste — 315°</option>
+          </select></div><span class="hint">Destaca o céu visto pela fachada e indica se o Sol incide nela no horário.</span></div>
+        </div>
+        <div class="labeee-actions">
+          <button class="btn solid" onclick="gerarCartaSolar()">☉ Gerar carta solar</button>
+          <button class="btn ghost" onclick="cartaSolarNow()">Agora</button>
+          <button class="btn ghost" onclick="fillCartaFromSimgeo()">Usar local do SIMGEO</button>
+          <button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR (oficial)</button>
+        </div>
+        <div class="labeee-status" id="cs-status"></div>
+      </section>
+      <section class="labeee-result">
+        <h2>Resultado</h2>
+        <p class="labeee-muted">A trajetória do dia e a posição do Sol no horário aparecem aqui. Prévia de pré-estudo — não substitui o Analysis SOL-AR oficial.</p>
+        <div id="cs-result"><div class="labeee-empty">Nenhuma carta gerada ainda.<br>Informe o CEP, a data e a hora e clique em “Gerar carta solar”.</div></div>
       </section>
     </div>
   </div>
@@ -2679,7 +2736,7 @@ let plannerMonth=new Date(), plannerSelectedDate=new Date();
 
 const $  = id => document.getElementById(id);
 const flt = id => parseFloat($(id)?.value)||0;
-const fmt  = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt  = n => (typeof n==='number'&&isFinite(n)?n:0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtI = n => Math.round(n).toLocaleString('pt-BR');
 
 // ── SALVAMENTO LOCAL DE EMERGÊNCIA ─────────────────
@@ -3202,7 +3259,7 @@ function canUseTool(tool){
   if(!r) return true;
   if(r==='dono') return true;
   if(r==='arquiteto') return tool !== 'propdesign'; // arquiteto tem propinteriores, não propdesign
-  const minionTools=['threejs','labeee','mapoteca','calctec','sheetgen','simgeo','materiais','nbr'];
+  const minionTools=['threejs','labeee','cartasolar','mapoteca','calctec','sheetgen','simgeo','materiais','nbr'];
   const financeiroTools=['home','new','props','chart'];
   const designerTools=['home','propdesign'];
   if(r==='minion') return minionTools.includes(tool);
@@ -3224,7 +3281,7 @@ function applyRoleUI(){
   const isDesigner = normalizedRole(currentRole)==='designer';
   document.body.classList.toggle('role-minion', isMetecos);
   document.body.classList.toggle('role-designer', isDesigner);
-  ['home','props','chart','new','carta','propdesign','propinteriores','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','propinteriores','simgeo','labeee','cartasolar','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -3344,7 +3401,7 @@ async function loadCurrentRole(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','prop-design-view','prop-interiores-view','carta-view','simgeo-view','labeee-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','prop-design-view','prop-interiores-view','carta-view','simgeo-view','labeee-view','cartasolar-view','mapoteca-view','audioamp-view','sheetgen-view','calc-tecnico-view','threejs-view','materiais-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
@@ -3354,7 +3411,7 @@ function hideViews(){
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','propdesign','propinteriores','simgeo','labeee','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','propinteriores','simgeo','labeee','cartasolar','mapoteca','calctec','sheetgen','threejs','materiais','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -4215,6 +4272,13 @@ function showLabeee(){
   hideViews();
   $('labeee-view').style.display='block';
   setTool('labeee');
+}
+function showCartaSolar(){
+  if(guardTool('cartasolar')) return;
+  hideViews();
+  $('cartasolar-view').style.display='block';
+  setTool('cartasolar');
+  if(!window._cartaSolarInit){ cartaSolarNow(); window._cartaSolarInit=true; }
 }
 
 function showThreejs(){
@@ -7816,6 +7880,344 @@ function solarNoonAltitude(lat,decl){
   if(!Number.isFinite(lat)) return null;
   return Math.max(0, Math.min(90, 90 - Math.abs(lat - decl)));
 }
+
+// ── CARTA SOLAR NATIVA (integração tipo Analysis SOL-AR/LabEEE) ──────────
+// Curvas de dia representativas: solstícios (HS), equinócios e meses intermediários.
+const CARTA_DIAS_REF=[
+  {n:356,lbl:'22 Dez',key:'sol'},      // solstício de verão (Hemisfério Sul)
+  {n:325,lbl:'Nov · Jan',key:''},
+  {n:294,lbl:'Out · Fev',key:''},
+  {n:80, lbl:'21 Mar · 23 Set',key:'eq'}, // equinócios (decl ≈ 0)
+  {n:233,lbl:'Ago · Abr',key:''},
+  {n:202,lbl:'Jul · Mai',key:''},
+  {n:172,lbl:'22 Jun',key:'sol'}       // solstício de inverno (Hemisfério Sul)
+];
+// Declinação solar (Cooper) em graus, a partir do dia do ano n (1..365).
+function solarDeclDeg(n){ return 23.45*Math.sin(2*Math.PI*(284+n)/365); }
+// Posição solar: altitude e azimute (graus, azimute medido do Norte no sentido horário).
+function solarAltAz(latDeg,declDeg,Hdeg){
+  const fi=degToRad(latDeg), de=degToRad(declDeg), H=degToRad(Hdeg);
+  let sinAlt=Math.sin(fi)*Math.sin(de)+Math.cos(fi)*Math.cos(de)*Math.cos(H);
+  sinAlt=Math.max(-1,Math.min(1,sinAlt));
+  const alt=Math.asin(sinAlt), cosAlt=Math.cos(alt);
+  let az=0;
+  if(Math.abs(cosAlt)>1e-6 && Math.abs(Math.cos(fi))>1e-6){
+    let cosAz=(Math.sin(de)-sinAlt*Math.sin(fi))/(cosAlt*Math.cos(fi));
+    cosAz=Math.max(-1,Math.min(1,cosAz));
+    az=radToDeg(Math.acos(cosAz));     // 0..180 a partir do Norte
+    if(Hdeg>0) az=360-az;              // tarde → Oeste
+  }
+  return {alt:radToDeg(alt), az};
+}
+// Projeção equidistante (Norte no topo, centro = zênite): r ∝ (90 - altitude).
+function cartaXY(altDeg,azDeg,cx,cy,R){
+  const r=R*(90-Math.max(0,Math.min(90,altDeg)))/90;
+  const a=degToRad(azDeg);
+  return [cx+r*Math.sin(a), cy-r*Math.cos(a)];
+}
+function cartaSolarSVG(latDeg,fachadaDeg,opts){
+  opts=opts||{};
+  if(!Number.isFinite(latDeg)) return '<div class="labeee-empty">Latitude indisponível.<br>Gere a ficha pelo CEP ou importe o local do SIMGEO.</div>';
+  const W=400,H=420,cx=200,cy=202,R=150;
+  const hemis = latDeg<0 ? 'Sul' : 'Norte';
+  const fachadaOk=Number.isFinite(fachadaDeg);
+  const refs=CARTA_DIAS_REF.map(m=>Object.assign({},m,{decl:solarDeclDeg(m.n)}));
+  const P=[];
+  P.push(`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="carta-solar-svg" role="img" aria-label="Carta solar para latitude ${latDeg.toFixed(2)} graus">`);
+  P.push(`<circle cx="${cx}" cy="${cy}" r="${R}" fill="var(--surf2)" stroke="var(--border-em)" stroke-width="1"/>`);
+  // anéis de altitude (10°..80°) e centro (90°)
+  for(let alt=10; alt<90; alt+=10){
+    const rr=R*(90-alt)/90;
+    P.push(`<circle cx="${cx}" cy="${cy}" r="${rr.toFixed(1)}" fill="none" stroke="var(--border)" stroke-width="0.5"/>`);
+    P.push(`<text x="${(cx+2).toFixed(1)}" y="${(cy-rr+8).toFixed(1)}" font-size="7" fill="var(--faint)" font-family="monospace">${alt}°</text>`);
+  }
+  // raios de azimute a cada 30°
+  for(let az=0; az<360; az+=30){
+    const [x,y]=cartaXY(0,az,cx,cy,R);
+    P.push(`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="0.4"/>`);
+  }
+  // setor de céu visto pela fachada analisada (±90° em torno da normal)
+  if(fachadaOk){
+    let d=`M ${cx} ${cy} `;
+    for(let a=fachadaDeg-90; a<=fachadaDeg+90; a+=4){ const [x,y]=cartaXY(0,((a%360)+360)%360,cx,cy,R); d+=`L ${x.toFixed(1)} ${y.toFixed(1)} `; }
+    d+='Z';
+    P.push(`<path d="${d}" fill="var(--e)" fill-opacity="0.12" stroke="var(--e)" stroke-opacity="0.40" stroke-width="0.8"/>`);
+    const [fx,fy]=cartaXY(0,((fachadaDeg%360)+360)%360,cx,cy,R);
+    P.push(`<line x1="${cx}" y1="${cy}" x2="${fx.toFixed(1)}" y2="${fy.toFixed(1)}" stroke="var(--e)" stroke-width="1.4"/>`);
+  }
+  // máscara de obstrução: horizonte elevado ao ângulo α (arctan H/D)
+  const alpha=opts.alpha||0;
+  if(alpha>0){
+    const rr=R*(90-Math.min(alpha,89))/90;
+    P.push(`<circle cx="${cx}" cy="${cy}" r="${rr.toFixed(1)}" fill="none" stroke="var(--warn)" stroke-width="1" stroke-dasharray="3 2"/>`);
+  }
+  // linhas de hora solar (analemas simplificados)
+  for(let hr=5; hr<=19; hr++){
+    const Hd=15*(hr-12); const pts=[];
+    refs.forEach(m=>{ const p=solarAltAz(latDeg,m.decl,Hd); if(p.alt>=-0.5){ const [x,y]=cartaXY(p.alt,p.az,cx,cy,R); pts.push(x.toFixed(1)+','+y.toFixed(1)); } });
+    if(pts.length>=2) P.push(`<polyline points="${pts.join(' ')}" fill="none" stroke="var(--border-em)" stroke-width="0.5" opacity="0.65"/>`);
+  }
+  // curvas de dia (trajetórias solares)
+  refs.forEach(m=>{
+    const pts=[];
+    for(let Hd=-180; Hd<=180; Hd+=2){ const p=solarAltAz(latDeg,m.decl,Hd); if(p.alt>=0){ const [x,y]=cartaXY(p.alt,p.az,cx,cy,R); pts.push(x.toFixed(1)+','+y.toFixed(1)); } }
+    if(pts.length<2) return;
+    const col = m.key==='sol' ? 'var(--e)' : m.key==='eq' ? 'var(--text)' : 'var(--muted)';
+    const emph = m.key==='sol'||m.key==='eq';
+    P.push(`<polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="${emph?1.7:0.8}" opacity="${emph?1:0.7}"/>`);
+  });
+  // rótulos de hora ao longo da curva de equinócio
+  const eq=refs.find(m=>m.key==='eq')||refs[3];
+  for(let hr=6; hr<=18; hr++){
+    const p=solarAltAz(latDeg,eq.decl,15*(hr-12));
+    if(p.alt<2) continue;
+    const r=R*(90-p.alt)/90 - 9, a=degToRad(p.az);
+    P.push(`<text x="${(cx+r*Math.sin(a)).toFixed(1)}" y="${(cy-r*Math.cos(a)).toFixed(1)}" font-size="6.5" fill="var(--faint)" font-family="monospace" text-anchor="middle">${hr}</text>`);
+  }
+  // marcadores no meio-dia + rótulos de data na lateral leste (estilo SOL-AR)
+  refs.filter(m=>m.key==='sol'||m.key==='eq').forEach(m=>{
+    const noon=solarAltAz(latDeg,m.decl,0);
+    if(noon.alt>=0){ const [nx,ny]=cartaXY(noon.alt,noon.az,cx,cy,R); P.push(`<circle cx="${nx.toFixed(1)}" cy="${ny.toFixed(1)}" r="2.2" fill="var(--e)"/>`); }
+    let lbl=solarAltAz(latDeg,m.decl,-75);           // ~7h solar (lado leste)
+    if(lbl.alt<4) lbl=solarAltAz(latDeg,m.decl,-52); // sol muito baixo: aproxima do meio-dia
+    if(lbl.alt<0) return;
+    const [lx,ly]=cartaXY(lbl.alt,lbl.az,cx,cy,R);
+    P.push(`<text x="${(lx+4).toFixed(1)}" y="${(ly+3).toFixed(1)}" font-size="7.5" fill="var(--text)" font-family="monospace">${m.lbl}</text>`);
+  });
+  // pontos cardeais (N topo, L direita, S base, O esquerda — como no SOL-AR)
+  [['N',0],['L',90],['S',180],['O',270]].forEach(c=>{
+    const a=degToRad(c[1]), rr=R+12;
+    P.push(`<text x="${(cx+rr*Math.sin(a)).toFixed(1)}" y="${(cy-rr*Math.cos(a)+4).toFixed(1)}" font-size="11" font-weight="600" fill="var(--text)" text-anchor="middle" font-family="monospace">${c[0]}</text>`);
+  });
+  P.push('</svg>');
+  return P.join('');
+}
+function renderCartaSolarInto(containerId,latDeg,fachadaDeg,opts){
+  const el=$(containerId); if(!el) return;
+  opts=opts||{};
+  const svg=cartaSolarSVG(latDeg,fachadaDeg,opts);
+  const fachStr=Number.isFinite(fachadaDeg)?fachadaNome(fachadaDeg):'—';
+  const hemis = (Number.isFinite(latDeg)&&latDeg<0) ? 'Sul' : 'Norte';
+  const latTxt = Number.isFinite(latDeg)? latDeg.toFixed(2)+'°' : '—';
+  const obsLeg = (opts.alpha>0)? `<span><span class="sw" style="background:var(--warn)"></span>Horizonte obstruído ${fmt(opts.alpha)}°</span>` : '';
+  el.innerHTML=`<div class="labeee-block"><h3>Carta solar — prévia nativa (tipo Analysis SOL-AR)</h3><div class="body">
+    <div class="carta-solar-box">${svg}</div>
+    <div class="carta-legend">
+      <span><span class="sw" style="background:var(--e)"></span><b>Solstícios</b> — 22 Dez (verão) · 22 Jun (inverno)</span>
+      <span><span class="sw" style="background:var(--text)"></span><b>Equinócios</b> — 21 Mar · 23 Set</span>
+      <span><span class="sw" style="background:var(--muted);opacity:.6"></span>Demais meses</span>
+      <span><span class="sw" style="background:var(--border-em)"></span>Linhas de hora solar</span>
+      <span><span class="sw" style="background:var(--e);opacity:.4"></span>Céu visto pela fachada ${esc(fachStr)}</span>
+      ${obsLeg}
+    </div>
+    <div class="labeee-note">Latitude ${latTxt} · Hemisfério ${hemis}. Projeção equidistante com Norte ao topo; horários em tempo solar local. Prévia de pré-estudo — para máscara detalhada, transferidor de ângulos e rosa dos ventos use o Analysis SOL-AR oficial.</div>
+    <div class="labeee-actions">
+      <button class="btn ghost" onclick="exportSolArCsv()">⬇ CSV p/ SOL-AR (Incluir Nova Cidade)</button>
+      <button class="btn ghost" onclick="baixarCartaSolarSVG()">⬇ Baixar carta (SVG)</button>
+      <button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR oficial</button>
+    </div>
+  </div></div>`;
+  el.style.display='block';
+}
+async function verCartaSolar(){
+  let lat=parseFloat($('le-lat')?.value);
+  if(!Number.isFinite(lat)){
+    try{ const g=await geocodeLabeeeCep(false); lat=g.lat; }
+    catch(e){ labeeeStatus(e.message||'Informe o CEP ou importe o local do SIMGEO para desenhar a carta solar.','err'); return; }
+  }
+  const fach=parseInt($('le-fachada')?.value||'0',10);
+  const obsH=flt('le-obs-h'), obsD=flt('le-obs-d');
+  const alpha=(obsH>0&&obsD>0)?radToDeg(Math.atan(obsH/obsD)):0;
+  renderCartaSolarInto('le-carta', lat, fach, {alpha});
+  $('le-carta')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  labeeeStatus('Carta solar gerada a partir da latitude. Confira a fachada destacada e, para análise final, use o SOL-AR oficial.','ok');
+}
+function _cartaResolveVars(svgStr){
+  const cs=getComputedStyle(document.documentElement);
+  return svgStr.replace(/var\((--[\w-]+)\)/g,(m,v)=>{ const c=cs.getPropertyValue(v).trim(); return c||'#888'; });
+}
+function baixarCartaSolarSVG(){
+  const svg=$('le-carta')?.querySelector('svg');
+  if(!svg){ labeeeStatus('Gere a carta solar primeiro (botão “Ver carta solar”).','err'); return; }
+  let s=new XMLSerializer().serializeToString(svg);
+  s=_cartaResolveVars(s);
+  const blob=new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+s],{type:'image/svg+xml;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  const cidade=($('le-cidade')?.value||'local').trim().replace(/[^\w\-]+/g,'_')||'local';
+  a.download='carta-solar-'+cidade+'.svg'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  labeeeStatus('Carta solar baixada em SVG.','ok');
+}
+// Exporta o local do LabEEE no formato CSV do SOL-AR (Arquivo > Incluir Nova Cidade).
+function exportSolArCsv(){
+  const lat=parseFloat($('le-lat')?.value), lng=parseFloat($('le-lng')?.value);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)){ labeeeStatus('Gere a ficha pelo CEP (ou use o local do SIMGEO) antes de exportar o CSV para o SOL-AR.','err'); return; }
+  const cidade=(($('le-cidade')?.value||'Cidade').trim())||'Cidade';
+  const uf=($('le-uf')?.value||'').trim().toUpperCase();
+  const gmt=-3, elev=0; // Brasil (Brasília). Ajuste a Zona Horária/Elevação se necessário.
+  const h1='Localização,Latitude {N+/S-},Longitude {E+/W-},Zona Horaria {+/- GMT},Elevação {m},,,,,,,,,,,,,,';
+  const loc=`${cidade},${lat.toFixed(2)},${lng.toFixed(2)},${gmt},${elev},,,,,,,,,,,,,,`;
+  const h2='Mês,Dia,Hora,TBS {C},TBU {C},T. Pto Orvalho {C},Pressao Atmosferica {kPa},Umidade {kg/kg},U. R. {%},Densidade do ar {kg/m3},Entalpia {BTU/LB},Velocidade do Vento {m/s},Direção do Vento {graus},Cobertura Total de Nuvens {decimas},Rad Horizontal Extraterreste {Wh/m2},Rad Global Horizontal {Wh/m2},Rad Direta {Wh/m2},Rad Direta Normal {Wh/m2},Rad Difusa Horizontal {Wh/m2}';
+  const csv=[h1,loc,'',h2].join('\r\n')+'\r\n';
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(cidade+(uf?'_'+uf:'')).replace(/[^\w\-]+/g,'_')+'_SOLAr.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  labeeeStatus('CSV no formato SOL-AR baixado (cabeçalho + localização). Complete com os dados climáticos horários e importe em Arquivo → Incluir Nova Cidade.','ok');
+}
+
+// ── CARTA SOLAR — FERRAMENTA (estudo por CEP, data e hora) ───────────────
+let cartaSolarLastGeoKey='';
+function cartaStatus(msg,type){ const el=$('cs-status'); if(!el) return; el.textContent=msg||''; el.className='labeee-status'+(type?' '+type:''); }
+function cartaSolarNow(){
+  const d=new Date();
+  if($('cs-data')) $('cs-data').value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  if($('cs-hora')) $('cs-hora').value=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  cartaStatus('Data e hora ajustadas para agora.','');
+}
+async function geocodeCartaCep(force){
+  const cep=String($('cs-cep')?.value||'').replace(/\D/g,'');
+  const numero=String($('cs-num')?.value||'').trim();
+  if(cep.length!==8) throw new Error('Digite um CEP com 8 números.');
+  const key=cep+'|'+numero;
+  const latNow=parseFloat($('cs-lat')?.value), lngNow=parseFloat($('cs-lng')?.value);
+  if(!force && cartaSolarLastGeoKey===key && Number.isFinite(latNow) && Number.isFinite(lngNow)) return {lat:latNow,lng:lngNow,fromCache:true};
+  cartaStatus('Buscando endereço pelo CEP e localizando o ponto...');
+  const viacep=await fetchJson(`https://viacep.com.br/ws/${cep}/json/`,{timeout:10000});
+  if(viacep?.erro) throw new Error('CEP não encontrado no ViaCEP. Confira os números.');
+  const cidade=viacep.localidade||'', uf=(viacep.uf||'').toUpperCase();
+  if($('cs-cidade')) $('cs-cidade').value=cidade;
+  if($('cs-uf')) $('cs-uf').value=uf;
+  const line=[viacep.logradouro,numero,viacep.bairro,cidade,uf,'Brasil'].filter(Boolean).join(', ');
+  const params={f:'json',SingleLine:line,outFields:'Match_addr,Addr_type,Score',maxLocations:1,countryCode:'BRA'};
+  const geo=await fetchJson(paramsUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates',params),{timeout:15000});
+  const c=geo?.candidates?.[0];
+  if(!c?.location) throw new Error('Localizei o CEP, mas não consegui converter em coordenadas. Tente informar o número ou usar o local do SIMGEO.');
+  const lat=Number(c.location.y), lng=Number(c.location.x);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)) throw new Error('O geocodificador retornou coordenadas inválidas para este CEP.');
+  if($('cs-lat')) $('cs-lat').value=lat.toFixed(7);
+  if($('cs-lng')) $('cs-lng').value=lng.toFixed(7);
+  if($('cs-cep')) $('cs-cep').value=cep.replace(/^(\d{5})(\d{3})$/,'$1-$2');
+  cartaSolarLastGeoKey=key;
+  return {lat,lng,cidade,uf,endereco:c.address||line,fromCache:false};
+}
+function fillCartaFromSimgeo(){
+  if(!(typeof simgeoLastResult!=='undefined' && simgeoLastResult?.point)){ cartaStatus('Faça uma consulta SIMGEO antes, ou digite o CEP do local.','err'); return; }
+  const p=simgeoLastResult.point;
+  if($('cs-lat')) $('cs-lat').value=Number(p.lat).toFixed(7);
+  if($('cs-lng')) $('cs-lng').value=Number(p.lng).toFixed(7);
+  const a=p.address||{};
+  if($('cs-cidade')&&a.localidade) $('cs-cidade').value=a.localidade;
+  if($('cs-uf')&&a.uf) $('cs-uf').value=a.uf;
+  if($('cs-cep')&&a.cep) $('cs-cep').value=String(a.cep).replace(/^(\d{5})(\d{3})$/,'$1-$2');
+  if($('cs-num')&&a.numero) $('cs-num').value=a.numero;
+  cartaSolarLastGeoKey=String($('cs-cep')?.value||'').replace(/\D/g,'')+'|'+String($('cs-num')?.value||'').trim();
+  cartaStatus('Local importado do SIMGEO. Defina data e hora e gere a carta.','ok');
+}
+// Dia do ano (1..365/366)
+function dayOfYear(d){ return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000); }
+// Equação do tempo (minutos)
+function equationOfTimeMin(n){ const B=2*Math.PI*(n-81)/364; return 9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B); }
+// Hora solar verdadeira (horas decimais) a partir da hora legal local
+function solarTimeHours(clockH, lng, tzOffsetH, n){
+  const Lstd=15*tzOffsetH;                         // meridiano padrão do fuso (° leste +)
+  const tc=4*(lng-Lstd)+equationOfTimeMin(n);      // correção em minutos
+  return clockH + tc/60;
+}
+function cardinalFromAz(az){ return ['N','NE','L','SE','S','SO','O','NO'][Math.round((((az%360)+360)%360)/45)%8]; }
+function _hhmm(h){ const m=Math.round(((h%24)+24)%24*60); return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+function _downloadCarta(filename,text,mime){ const blob=new Blob([text],{type:mime}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+// SVG da carta para um DIA + posição do Sol num instante
+function cartaSolarDataSVG(lat, fachadaDeg, dayDecl, sun, ex){
+  if(!Number.isFinite(lat)) return '<div class="labeee-empty">Latitude indisponível.</div>';
+  const W=400,H=420,cx=200,cy=202,R=150, fachadaOk=Number.isFinite(fachadaDeg), P=[];
+  P.push(`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="carta-solar-svg" role="img" aria-label="Carta solar do dia">`);
+  P.push(`<circle cx="${cx}" cy="${cy}" r="${R}" fill="var(--surf2)" stroke="var(--border-em)" stroke-width="1"/>`);
+  for(let a=10;a<90;a+=10){ const rr=R*(90-a)/90; P.push(`<circle cx="${cx}" cy="${cy}" r="${rr.toFixed(1)}" fill="none" stroke="var(--border)" stroke-width="0.5"/>`); P.push(`<text x="${(cx+2).toFixed(1)}" y="${(cy-rr+8).toFixed(1)}" font-size="7" fill="var(--faint)" font-family="monospace">${a}°</text>`); }
+  for(let az=0;az<360;az+=30){ const [x,y]=cartaXY(0,az,cx,cy,R); P.push(`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="0.4"/>`); }
+  if(fachadaOk){ let d=`M ${cx} ${cy} `; for(let a=fachadaDeg-90;a<=fachadaDeg+90;a+=4){ const [x,y]=cartaXY(0,((a%360)+360)%360,cx,cy,R); d+=`L ${x.toFixed(1)} ${y.toFixed(1)} `; } d+='Z'; P.push(`<path d="${d}" fill="var(--e)" fill-opacity="0.10" stroke="var(--e)" stroke-opacity="0.35" stroke-width="0.7"/>`); const [fx,fy]=cartaXY(0,((fachadaDeg%360)+360)%360,cx,cy,R); P.push(`<line x1="${cx}" y1="${cy}" x2="${fx.toFixed(1)}" y2="${fy.toFixed(1)}" stroke="var(--e)" stroke-width="1.2" stroke-dasharray="4 2"/>`); }
+  // envelope anual leve (verão · equinócio · inverno)
+  [solarDeclDeg(356),0,solarDeclDeg(172)].forEach(dc=>{ const pts=[]; for(let Hd=-180;Hd<=180;Hd+=3){ const p=solarAltAz(lat,dc,Hd); if(p.alt>=0){ const [x,y]=cartaXY(p.alt,p.az,cx,cy,R); pts.push(x.toFixed(1)+','+y.toFixed(1)); } } if(pts.length>=2) P.push(`<polyline points="${pts.join(' ')}" fill="none" stroke="var(--muted)" stroke-width="0.6" opacity="0.35"/>`); });
+  // trajetória do dia selecionado
+  const dayPts=[]; for(let Hd=-180;Hd<=180;Hd+=1.5){ const p=solarAltAz(lat,dayDecl,Hd); if(p.alt>=0){ const [x,y]=cartaXY(p.alt,p.az,cx,cy,R); dayPts.push(x.toFixed(1)+','+y.toFixed(1)); } }
+  if(dayPts.length>=2) P.push(`<polyline points="${dayPts.join(' ')}" fill="none" stroke="var(--e)" stroke-width="1.8"/>`);
+  // marcadores de nascer/pôr
+  if(ex){ [ex.sunriseAz,ex.sunsetAz].forEach(az=>{ if(!Number.isFinite(az))return; const [x,y]=cartaXY(0,az,cx,cy,R); P.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="var(--e)"/>`); }); }
+  // pontos cardeais
+  [['N',0],['L',90],['S',180],['O',270]].forEach(c=>{ const a=degToRad(c[1]),rr=R+12; P.push(`<text x="${(cx+rr*Math.sin(a)).toFixed(1)}" y="${(cy-rr*Math.cos(a)+4).toFixed(1)}" font-size="11" font-weight="600" fill="var(--text)" text-anchor="middle" font-family="monospace">${c[0]}</text>`); });
+  // marcador do Sol no horário
+  if(sun&&sun.up){ const [sx,sy]=cartaXY(sun.alt,sun.az,cx,cy,R); P.push(`<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="6.5" fill="var(--warn)" fill-opacity="0.25"/>`); P.push(`<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="4" fill="var(--warn)" stroke="var(--text)" stroke-width="0.6"/>`); if(ex&&ex.timeLbl) P.push(`<text x="${(sx+8).toFixed(1)}" y="${(sy+3).toFixed(1)}" font-size="8" fill="var(--text)" font-family="monospace">${ex.timeLbl}</text>`); }
+  P.push('</svg>'); return P.join('');
+}
+function renderCartaDataInto(containerId, data){
+  const el=$(containerId); if(!el) return;
+  const {lat,lng,cidade,uf,dateObj,clockH,fachadaDeg}=data;
+  const n=dayOfYear(dateObj), decl=solarDeclDeg(n);
+  const lst=solarTimeHours(clockH,lng,-3,n), H=15*(lst-12);
+  const sp=solarAltAz(lat,decl,H), up=sp.alt>0;
+  let arg=-Math.tan(degToRad(lat))*Math.tan(degToRad(decl)); arg=Math.max(-1,Math.min(1,arg));
+  const H0=radToDeg(Math.acos(arg)), sunriseSolar=12-H0/15, sunsetSolar=12+H0/15;
+  const srAz=solarAltAz(lat,decl,-H0).az, ssAz=solarAltAz(lat,decl,H0).az;
+  const timeLbl=_hhmm(clockH), azCard=cardinalFromAz(sp.az);
+  const incide=(up&&Number.isFinite(fachadaDeg))?(Math.abs(((sp.az-fachadaDeg+540)%360)-180)<=90?'Sim':'Não'):'—';
+  const loc=[cidade,uf].filter(Boolean).join(' / ')||'Local informado';
+  const dataLbl=`${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()}`;
+  const svg=cartaSolarDataSVG(lat,fachadaDeg,decl,{alt:sp.alt,az:sp.az,up},{sunriseAz:srAz,sunsetAz:ssAz,timeLbl});
+  const kpis=`<div class="labeee-kpis"><div class="labeee-kpi"><div class="k">Altitude solar</div><div class="v">${up?fmt(sp.alt)+'°':'—'}</div></div><div class="labeee-kpi"><div class="k">Azimute</div><div class="v">${up?fmt(sp.az)+'° '+azCard:'—'}</div></div><div class="labeee-kpi"><div class="k">Hora solar</div><div class="v">${_hhmm(lst)}</div></div><div class="labeee-kpi"><div class="k">Sol acima?</div><div class="v">${up?'Sim':'Não'}</div></div></div>`;
+  const rows=`<div class="labeee-block"><h3>Posição do Sol — ${esc(dataLbl)} às ${esc(timeLbl)}</h3><div class="body">
+    <div class="labeee-row"><div class="a">Local</div><div class="b">${esc(loc)}</div></div>
+    <div class="labeee-row"><div class="a">Coordenadas</div><div class="b">${fmt(lat)}°, ${fmt(lng)}°</div></div>
+    <div class="labeee-row"><div class="a">Hora legal (UTC−3)</div><div class="b">${esc(timeLbl)}</div></div>
+    <div class="labeee-row"><div class="a">Hora solar verdadeira</div><div class="b">${_hhmm(lst)}</div></div>
+    <div class="labeee-row"><div class="a">Altitude · Azimute</div><div class="b">${up?fmt(sp.alt)+'° · '+fmt(sp.az)+'° ('+azCard+')':'Sol abaixo do horizonte'}</div></div>
+    <div class="labeee-row"><div class="a">Nascer do sol (solar)</div><div class="b">${_hhmm(sunriseSolar)}</div></div>
+    <div class="labeee-row"><div class="a">Pôr do sol (solar)</div><div class="b">${_hhmm(sunsetSolar)}</div></div>
+    <div class="labeee-row"><div class="a">Incide na fachada</div><div class="b">${incide}${Number.isFinite(fachadaDeg)?' ('+esc(fachadaNome(fachadaDeg))+')':''}</div></div>
+  </div></div>`;
+  el.innerHTML=`<div class="carta-solar-box">${svg}</div>
+    <div class="carta-legend"><span><span class="sw" style="background:var(--warn)"></span><b>Sol</b> no horário</span><span><span class="sw" style="background:var(--e)"></span>Trajetória do dia</span><span><span class="sw" style="background:var(--muted);opacity:.5"></span>Envelope anual</span>${Number.isFinite(fachadaDeg)?'<span><span class="sw" style="background:var(--e);opacity:.4"></span>Céu da fachada '+esc(fachadaNome(fachadaDeg))+'</span>':''}</div>
+    ${kpis}${rows}
+    <div class="labeee-note">Hora solar verdadeira corrigida por longitude e equação do tempo (fuso UTC−3). Projeção equidistante, Norte ao topo. Prévia de pré-estudo — para máscara, transferidor de ângulos e rosa dos ventos use o Analysis SOL-AR oficial.</div>
+    <div class="labeee-actions"><button class="btn ghost" onclick="baixarCartaDataSVG()">⬇ Baixar carta (SVG)</button><button class="btn ghost" onclick="exportCartaCsv()">⬇ CSV p/ SOL-AR</button><button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR oficial</button></div>`;
+}
+async function gerarCartaSolar(){
+  let lat=parseFloat($('cs-lat')?.value), lng=parseFloat($('cs-lng')?.value);
+  let cidade=($('cs-cidade')?.value||'').trim(), uf=($('cs-uf')?.value||'').trim().toUpperCase();
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)){
+    try{ const g=await geocodeCartaCep(false); lat=g.lat; lng=g.lng; cidade=g.cidade||cidade; uf=g.uf||uf; }
+    catch(e){ cartaStatus(e.message||'Não consegui localizar este CEP.','err'); return; }
+  }
+  const dataStr=$('cs-data')?.value, horaStr=$('cs-hora')?.value;
+  if(!dataStr){ cartaStatus('Escolha a data.','err'); return; }
+  if(!horaStr){ cartaStatus('Escolha a hora.','err'); return; }
+  const [Y,M,D]=dataStr.split('-').map(Number);
+  const [hh,mm]=horaStr.split(':').map(Number);
+  const dateObj=new Date(Y,(M-1),D,hh||0,mm||0);
+  const clockH=(hh||0)+(mm||0)/60;
+  const fStr=$('cs-fachada')?.value;
+  const fachadaDeg=(fStr!==''&&fStr!=null)?parseInt(fStr,10):NaN;
+  try{ renderCartaDataInto('cs-result',{lat,lng,cidade,uf,dateObj,clockH,fachadaDeg}); }
+  catch(e){ console.error('Carta solar:',e); cartaStatus('Não consegui desenhar a carta. Confira os dados.','err'); return; }
+  $('cs-result')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  cartaStatus('Carta gerada para a data e hora informadas.','ok');
+}
+function baixarCartaDataSVG(){
+  const svg=$('cs-result')?.querySelector('svg'); if(!svg){ cartaStatus('Gere a carta primeiro.','err'); return; }
+  const s=_cartaResolveVars(new XMLSerializer().serializeToString(svg));
+  const cidade=($('cs-cidade')?.value||'local').trim().replace(/[^\w\-]+/g,'_')||'local';
+  _downloadCarta('carta-solar-'+cidade+'.svg','<?xml version="1.0" encoding="UTF-8"?>\n'+s,'image/svg+xml;charset=utf-8');
+  cartaStatus('Carta baixada em SVG.','ok');
+}
+function exportCartaCsv(){
+  const lat=parseFloat($('cs-lat')?.value), lng=parseFloat($('cs-lng')?.value);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)){ cartaStatus('Localize o CEP (ou use o SIMGEO) antes de exportar o CSV.','err'); return; }
+  const cidade=(($('cs-cidade')?.value||'Cidade').trim())||'Cidade', uf=($('cs-uf')?.value||'').trim().toUpperCase();
+  const h1='Localização,Latitude {N+/S-},Longitude {E+/W-},Zona Horaria {+/- GMT},Elevação {m},,,,,,,,,,,,,,';
+  const loc=`${cidade},${lat.toFixed(2)},${lng.toFixed(2)},-3,0,,,,,,,,,,,,,,`;
+  const h2='Mês,Dia,Hora,TBS {C},TBU {C},T. Pto Orvalho {C},Pressao Atmosferica {kPa},Umidade {kg/kg},U. R. {%},Densidade do ar {kg/m3},Entalpia {BTU/LB},Velocidade do Vento {m/s},Direção do Vento {graus},Cobertura Total de Nuvens {decimas},Rad Horizontal Extraterreste {Wh/m2},Rad Global Horizontal {Wh/m2},Rad Direta {Wh/m2},Rad Direta Normal {Wh/m2},Rad Difusa Horizontal {Wh/m2}';
+  _downloadCarta((cidade+(uf?'_'+uf:'')).replace(/[^\w\-]+/g,'_')+'_SOLAr.csv','\ufeff'+[h1,loc,'',h2].join('\r\n')+'\r\n','text/csv;charset=utf-8');
+  cartaStatus('CSV no formato SOL-AR baixado. Complete com os dados climáticos horários e importe em Arquivo → Incluir Nova Cidade.','ok');
+}
 function labeeeStatus(msg,type=''){
   const el=$('le-status'); if(!el) return;
   el.textContent=msg||''; el.className='labeee-status'+(type?' '+type:'');
@@ -7888,7 +8290,7 @@ async function gerarLabeee(){
   const altV=d.alt.verao==null?'—':`${fmt(d.alt.verao)}°`;
   const altI=d.alt.inverno==null?'—':`${fmt(d.alt.inverno)}°`;
   const cards=`<div class="labeee-kpis"><div class="labeee-kpi"><div class="k">Local</div><div class="v">${esc(loc)}</div></div><div class="labeee-kpi"><div class="k">CEP</div><div class="v">${d.cep?esc(d.cep.replace(/^(\d{5})(\d{3})$/,'$1-$2')):'—'}</div></div><div class="labeee-kpi"><div class="k">Fachada</div><div class="v">${esc(d.fachadaNome)}</div></div><div class="labeee-kpi"><div class="k">ZB</div><div class="v">${d.zb?`ZB ${d.zb}`:'ZBBR'}</div></div></div>`;
-  const actions=`<div class="labeee-actions"><button class="btn solid" onclick="exportLabeeePDF()">⬇ Baixar ficha PDF</button><button class="btn ghost" onclick="copyLabeeeResult()">Copiar resumo</button><button class="btn ghost" onclick="abrirLabeeeZoneamento()">Abrir zoneamento</button><button class="btn ghost" onclick="abrirLabeeeSolAr()">Abrir SOL-AR</button><button class="btn ghost" onclick="abrirLabeee()">Abrir LabEEE</button></div>`;
+  const actions=`<div class="labeee-actions"><button class="btn solid" onclick="exportLabeeePDF()">⬇ Baixar ficha PDF</button><button class="btn ghost" onclick="verCartaSolar()">☀ Carta solar</button><button class="btn ghost" onclick="exportSolArCsv()">⬇ CSV p/ SOL-AR</button><button class="btn ghost" onclick="copyLabeeeResult()">Copiar resumo</button><button class="btn ghost" onclick="abrirLabeeeZoneamento()">Abrir zoneamento</button><button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR (oficial)</button><button class="btn ghost" onclick="abrirLabeee()">Abrir LabEEE</button></div>`;
   const zbHtml=d.zbi?`<div class="labeee-row"><div class="a">Cidade de referência</div><div class="b">${esc(d.zbi.ref)}</div></div><div class="labeee-row"><div class="a">Estratégia solar</div><div class="b">${esc(d.zbi.solar)}</div></div><div class="labeee-row"><div class="a">Proteção indicada</div><div class="b">${esc(d.zbi.prot)}</div></div><div class="labeee-row"><div class="a">Abertura ventilável mínima</div><div class="b">${d.area>0?`${fmt(d.ventMin)} m² (${d.zbi.vent}% de ${fmt(d.area)} m²)`:d.zbi.vent+'% da área do piso'}</div></div>`:`<div class="labeee-muted">Zona bioclimática não selecionada. Confirme o município no ZBBR antes de fechar estratégia de ventilação e sombreamento.</div>`;
   const zb2024Html=d.zb2024?`<div class="labeee-row"><div class="a">Zona LabEEE 2024</div><div class="b">${esc(d.zb2024)} — ${esc(d.zbi2024||'')}</div></div><div class="labeee-note">A classificação atual do aplicativo LabEEE usa códigos como 1R, 3A, 5B e 6A. Use este campo como registro da consulta oficial no app de zoneamento.</div>`:`<div class="labeee-muted">Zona LabEEE 2024 não informada. Abra o aplicativo de zoneamento para consultar o município e, se quiser, registre o código aqui.</div>`;
   const briseRows=`<div class="labeee-row"><div class="a">Tipo por fachada</div><div class="b">${esc(d.estr.tipo)}</div></div><div class="labeee-row"><div class="a">Leitura</div><div class="b">${esc(d.estr.texto)}</div></div><div class="labeee-row"><div class="a">Brise horizontal</div><div class="b">${d.pH>0?`P = ${fmt(d.pH)} m  · fórmula: P = H / tan(γ)`:'Preencha H e γ para calcular.'}</div></div><div class="labeee-row"><div class="a">Brise vertical</div><div class="b">${d.pV>0?`P = ${fmt(d.pV)} m  · fórmula: P = L / tan(β)`:'Preencha largura e β para calcular.'}</div></div>`;
@@ -7902,6 +8304,7 @@ async function gerarLabeee(){
     <div class="labeee-block"><h3>Ferramentas LabEEE recomendadas</h3><div class="body"><ul><li><b>ZBBR</b>: confirmar a zona bioclimática do município.</li><li><b>Analysis SOL-AR</b>: gerar carta solar, transferidor de ângulos e rosa dos ventos.</li><li><b>Analysis BIO</b>: cruzar clima local com estratégias passivas.</li><li><b>Arquivos climáticos</b>: simulação termoenergética em EnergyPlus/OpenStudio/DesignBuilder.</li><li><b>Netuno</b>: estimar aproveitamento de água pluvial.</li></ul><div class="labeee-link-grid"><a href="${LABEEE_LINKS.zoneamento}" target="_blank" rel="noopener">Zoneamento 2024</a><a href="${LABEEE_LINKS.zbbr}" target="_blank" rel="noopener">ZBBR 2005</a><a href="${LABEEE_LINKS.solAr}" target="_blank" rel="noopener">Analysis SOL-AR</a><a href="${LABEEE_LINKS.bio}" target="_blank" rel="noopener">Analysis BIO</a><a href="${LABEEE_LINKS.climaticos}" target="_blank" rel="noopener">Arquivos climáticos</a><a href="${LABEEE_LINKS.netuno}" target="_blank" rel="noopener">Netuno</a><a href="${LABEEE_LINKS.softwares}" target="_blank" rel="noopener">Softwares</a></div></div></div>
     ${actions}<div class="labeee-note">Ficha auxiliar para estudo preliminar. Não substitui laudo, simulação, conferência normativa ou uso dos softwares oficiais do LabEEE/UFSC.</div>`;
   $('le-result').innerHTML=body;
+  try{ renderCartaSolarInto('le-carta', d.lat, d.fachada, {alpha:d.alpha}); }catch(e){ console.warn('Carta solar:',e); }
   labeeeStatus('Ficha gerada pelo CEP informado. Confira a precisão do endereço antes de usar em projeto executivo.','ok');
 }
 function labeeePlainText(){
