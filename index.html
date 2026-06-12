@@ -1511,6 +1511,16 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
 .t3d-saved{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
 .t3d-sel{padding:5px 9px;border:1px solid var(--border-em);border-radius:7px;background:var(--surface);
   color:var(--text);font-size:11.5px;font-family:inherit;max-width:170px}
+.t3d-crop{background:var(--surface);border:1px solid var(--border-em);border-radius:var(--radius-l);padding:1.1rem 1.2rem 1.2rem;box-shadow:var(--shadow-1)}
+.t3d-crop-head{display:flex;flex-direction:column;gap:3px;margin-bottom:.85rem}
+.t3d-crop-head b{font-size:14px}
+.t3d-crop-head span{font-size:11.5px;color:var(--muted);max-width:72ch}
+.t3d-crop-stage{border:1px solid var(--border-em);border-radius:10px;overflow:auto;max-height:58vh;background:#fff}
+#t3d-crop-canvas{display:block;width:100%;height:auto;cursor:crosshair;touch-action:none}
+.t3d-crop-acts{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.9rem;flex-wrap:wrap}
+.t3d-del-chip{position:absolute;z-index:6;display:inline-flex;align-items:center;border:1px solid var(--errb);background:var(--errl);color:var(--err);font-size:11px;font-weight:600;padding:6px 12px;border-radius:999px;cursor:pointer;font-family:inherit;box-shadow:var(--shadow-2);white-space:pre}
+.t3d-del-chip:hover{transform:translateY(-1px)}
+@media(min-width:721px){.t3d-foot{padding-right:96px}}
 @media(max-width:720px){
   .t3d-wrap{padding:1.2rem .95rem 2rem}
   .t3d-stage{height:56vh;min-height:330px}
@@ -2999,6 +3009,19 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
         <div class="t3d-proc-msg" id="t3d-proc-msg"></div>
       </div>
 
+      <div id="t3d-crop" class="t3d-crop" style="display:none">
+        <div class="t3d-crop-head">
+          <b>Selecione o desenho que vai virar o tour</b>
+          <span>Pranchas costumam ter mais de uma planta na mesma folha — arraste um retângulo em volta de UMA delas (quanto mais fechado o recorte, melhor a leitura).</span>
+        </div>
+        <div class="t3d-crop-stage"><canvas id="t3d-crop-canvas"></canvas></div>
+        <div class="t3d-crop-acts">
+          <button class="btn ghost" onclick="t3dNovo()">Cancelar</button>
+          <button class="btn ghost" onclick="t3dConfirmCrop(true)">Usar a página inteira</button>
+          <button class="btn solid" id="t3d-crop-ok" onclick="t3dConfirmCrop(false)" disabled>Usar seleção</button>
+        </div>
+      </div>
+
       <div id="t3d-studio" style="display:none">
         <div class="t3d-bar">
           <div class="t3d-modes" role="tablist">
@@ -3021,12 +3044,12 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
         <div class="t3d-stage" id="t3d-stage">
           <canvas id="t3d-canvas"></canvas>
           <canvas id="t3d-edit-canvas" style="display:none"></canvas>
+          <button class="t3d-del-chip" id="t3d-del-chip" style="display:none" onclick="t3dApagarSelecao()">Apagar ✕</button>
           <div class="t3d-edit-tools" id="t3d-edit-tools" style="display:none">
             <button class="t3d-tool on" data-t="mover" onclick="t3dTool('mover',this)">Mover</button>
             <button class="t3d-tool" data-t="parede" onclick="t3dTool('parede',this)">+ Parede</button>
             <button class="t3d-tool" data-t="porta" onclick="t3dTool('porta',this)">+ Porta</button>
             <button class="t3d-tool" data-t="janela" onclick="t3dTool('janela',this)">+ Janela</button>
-            <button class="t3d-tool" data-t="apagar" onclick="t3dTool('apagar',this)">Apagar</button>
             <button class="t3d-tool" onclick="t3dAplicarEdicao()" style="margin-left:auto">Aplicar no 3D</button>
           </div>
           <div class="t3d-joy" id="t3d-joy" style="display:none" aria-hidden="true"><div class="t3d-joy-k" id="t3d-joy-k"></div></div>
@@ -3037,9 +3060,9 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
           <span class="t3d-saved">
             <select id="t3d-saved-sel" class="t3d-sel" aria-label="Tours salvos"><option value="">Tours salvos…</option></select>
             <button class="btn ghost" onclick="t3dCarregar()">Abrir</button>
-            <button class="btn ghost" onclick="t3dExcluir()">Excluir</button>
             <input type="file" id="t3d-import" accept="application/json" style="display:none" onchange="t3dImportar(event)">
             <button class="btn ghost" onclick="document.getElementById('t3d-import').click()">Importar</button>
+            <button class="btn ghost" onclick="t3dExcluir()">Excluir</button>
           </span>
         </div>
       </div>
@@ -9533,17 +9556,24 @@ function t3dSetup(){
   ;['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hover');}));
   drop.addEventListener('drop',e=>{ const f=e.dataTransfer?.files?.[0]; if(f) t3dProcessFile(f); });
   window.addEventListener('resize',()=>{ if($('tour3d-view').style.display!=='none') t3dResize(); });
-  document.addEventListener('keydown',e=>{ if(t3dAtivoWalk()) { t3dWalk.keys[e.code]=true; if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault(); } });
+  document.addEventListener('keydown',e=>{
+    if(t3dAtivoWalk()){ t3dWalk.keys[e.code]=true; if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault(); }
+    else if(t3dMode==='edit' && $('tour3d-view').style.display!=='none' && (e.key==='Delete'||e.key==='Backspace')){
+      const tg=e.target&&e.target.tagName;
+      if(tg!=='INPUT'&&tg!=='TEXTAREA'&&tg!=='SELECT'){ e.preventDefault(); t3dApagarSelecao(); }
+    }
+  });
   document.addEventListener('keyup',e=>{ t3dWalk.keys[e.code]=false; });
   document.addEventListener('pointerlockchange',()=>{ t3dHint(); });
   document.addEventListener('pointerlockerror',()=>{ t3dWalk.dragLook=true; t3dHint(); });
   t3dRefreshSaved();
   t3dEditInit();
+  t3dCropInit();
 }
 function t3dAtivoWalk(){ return t3dMode==='walk' && $('tour3d-view').style.display!=='none' && $('t3d-studio').style.display!=='none'; }
 function t3dNovo(){
   t3dState={img:null,imgW:0,imgH:0,escala:50,pe:parseFloat($('t3d-pe').value)||2.7,plan:null,fonte:'',temTextura:false};
-  $('t3d-studio').style.display='none'; $('t3d-proc').style.display='none';
+  $('t3d-studio').style.display='none'; $('t3d-proc').style.display='none'; $('t3d-crop').style.display='none'; t3dPending=null;
   $('t3d-drop').style.display='flex'; $('t3d-btn-novo').style.display='none';
   $('t3d-file').value='';
 }
@@ -9593,82 +9623,202 @@ function t3dStep(n,estado){ // estado: 'on' | 'ok' | 'err'
   const el=$('t3d-st-'+n); if(!el) return;
   el.classList.remove('on','ok','err'); if(estado) el.classList.add(estado);
 }
+let t3dPending=null, t3dCropRect=null, t3dCropDrag=null;
 async function t3dProcessFile(file){
-  $('t3d-drop').style.display='none'; $('t3d-studio').style.display='none';
+  $('t3d-drop').style.display='none'; $('t3d-studio').style.display='none'; $('t3d-crop').style.display='none';
   $('t3d-proc').style.display='block'; $('t3d-proc-msg').textContent='';
+  $('t3d-proc-img').removeAttribute('src');
   [1,2,3].forEach(n=>t3dStep(n,null)); t3dStep(1,'on');
   try{
-    let canvas;
     if(/pdf$/i.test(file.type)||/\.pdf$/i.test(file.name)){
       await withTimeout(t3dEnsurePdfjs(),22000,'O leitor de PDF demorou demais. Tente de novo ou envie a planta como PNG/JPG.');
       const buf=await file.arrayBuffer();
       const doc=await withTimeout(window.pdfjsLib.getDocument({data:buf}).promise,30000,'Não consegui abrir este PDF.');
-      if(doc.numPages>1) notifyStatus('PDF com '+doc.numPages+' páginas — usei a 1ª (um pavimento por arquivo).','warn',4200);
+      if(doc.numPages>1) notifyStatus('PDF com '+doc.numPages+' páginas — usei a 1ª.','warn',4200);
       const page=await doc.getPage(1);
       const v0=page.getViewport({scale:1});
-      const sc=Math.min(1600/Math.max(v0.width,v0.height),4);
+      const sc=Math.min(1500/Math.max(v0.width,v0.height),4);
       const vp=page.getViewport({scale:sc});
-      canvas=document.createElement('canvas');
-      canvas.width=Math.round(vp.width); canvas.height=Math.round(vp.height);
-      const ctx=canvas.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      const disp=document.createElement('canvas');
+      disp.width=Math.round(vp.width); disp.height=Math.round(vp.height);
+      const ctx=disp.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,disp.width,disp.height);
       await page.render({canvasContext:ctx,viewport:vp}).promise;
+      t3dPending={tipo:'pdf',page,baseScale:sc,disp,nome:file.name};
     } else {
       const img=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>{URL.revokeObjectURL(i.src);res(i);}; i.onerror=()=>rej(new Error('imagem inválida')); i.src=URL.createObjectURL(file); });
-      const sc=Math.min(1600/Math.max(img.width,img.height),1);
-      canvas=document.createElement('canvas');
-      canvas.width=Math.round(img.width*sc); canvas.height=Math.round(img.height*sc);
-      const ctx=canvas.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const capFull=Math.min(4000/Math.max(img.width,img.height),1);
+      const full=document.createElement('canvas');
+      full.width=Math.round(img.width*capFull); full.height=Math.round(img.height*capFull);
+      full.getContext('2d').drawImage(img,0,0,full.width,full.height);
+      const capDisp=Math.min(1500/Math.max(full.width,full.height),1);
+      const disp=document.createElement('canvas');
+      disp.width=Math.round(full.width*capDisp); disp.height=Math.round(full.height*capDisp);
+      const dctx=disp.getContext('2d');
+      dctx.fillStyle='#fff'; dctx.fillRect(0,0,disp.width,disp.height);
+      dctx.drawImage(full,0,0,disp.width,disp.height);
+      t3dPending={tipo:'img',full,disp,nome:file.name};
     }
-    t3dState.img=canvas; t3dState.imgW=canvas.width; t3dState.imgH=canvas.height;
-    t3dState.temTextura=true; t3dState.fonte=file.name;
-    $('t3d-proc-img').src=canvas.toDataURL('image/jpeg',0.85);
-    t3dStep(1,'ok'); t3dStep(2,'on');
-    // IA
-    let aviso='';
-    try{
-      t3dState.plan=await t3dAnalisar(canvas);
-      const np=(t3dState.plan.paredes||[]).length;
-      if(!np) throw new Error('sem paredes');
-      aviso='A IA leu '+np+' paredes — confira e ajuste na aba Planta se precisar.';
-      t3dStep(2,'ok');
-    }catch(err){
-      console.warn('t3d IA:',err);
-      t3dState.plan={escala_px_por_m:0,ambientes:[],paredes:[],portas:[],janelas:[]};
-      aviso='A IA não conseguiu ler esta planta. Use a aba Planta para traçar as paredes por cima dela.';
-      t3dStep(2,'err');
-      notifyStatus('Leitura automática falhou — modo de traçado manual ativado.','warn',5000);
-    }
-    t3dCalibrarEscala();
-    t3dStep(3,'on');
-    $('t3d-ia-note').textContent=aviso;
-    t3dBuild3D();
-    t3dStep(3,'ok');
+    t3dStep(1,'ok');
+    // etapa de recorte: pranchas costumam ter vários desenhos na mesma folha
+    t3dCropRect=null; $('t3d-crop-ok').disabled=true;
     $('t3d-proc').style.display='none';
-    $('t3d-studio').style.display='block';
-    $('t3d-btn-novo').style.display='inline-flex';
-    t3dResize();
-    t3dSetMode((t3dState.plan.paredes||[]).length? 'orbit':'edit');
+    $('t3d-crop').style.display='block';
+    t3dCropDraw();
   }catch(err){
-    console.error('t3d:',err);
+    console.error('t3d leitura:',err);
     t3dStep(1,'err');
     $('t3d-proc-msg').textContent=(err&&err.message)?err.message:'Não consegui processar este arquivo.';
     notifyStatus('Falha ao processar o arquivo.','err',4500);
-    setTimeout(()=>{ $('t3d-proc').style.display='none'; $('t3d-drop').style.display='flex'; },1600);
+    setTimeout(()=>{ $('t3d-proc').style.display='none'; $('t3d-drop').style.display='flex'; },2200);
   }
+}
+function t3dCropCanvasXY(e){
+  const c=$('t3d-crop-canvas'), r=c.getBoundingClientRect();
+  return {x:(e.clientX-r.left)*(c.width/r.width), y:(e.clientY-r.top)*(c.height/r.height)};
+}
+function t3dCropInit(){
+  const c=$('t3d-crop-canvas');
+  c.addEventListener('pointerdown',e=>{ e.preventDefault(); const p=t3dCropCanvasXY(e); t3dCropDrag={x0:p.x,y0:p.y}; t3dCropRect={x:p.x,y:p.y,w:0,h:0}; c.setPointerCapture(e.pointerId); t3dCropDraw(); });
+  c.addEventListener('pointermove',e=>{ if(!t3dCropDrag) return; const p=t3dCropCanvasXY(e);
+    t3dCropRect={x:Math.min(t3dCropDrag.x0,p.x),y:Math.min(t3dCropDrag.y0,p.y),w:Math.abs(p.x-t3dCropDrag.x0),h:Math.abs(p.y-t3dCropDrag.y0)};
+    t3dCropDraw(); });
+  ;['pointerup','pointercancel'].forEach(ev=>c.addEventListener(ev,()=>{ t3dCropDrag=null;
+    $('t3d-crop-ok').disabled=!(t3dCropRect&&t3dCropRect.w>40&&t3dCropRect.h>40); }));
+}
+function t3dCropDraw(){
+  if(!t3dPending) return;
+  const c=$('t3d-crop-canvas'), src=t3dPending.disp;
+  c.width=src.width; c.height=src.height;
+  const x=c.getContext('2d');
+  x.drawImage(src,0,0);
+  if(t3dCropRect&&t3dCropRect.w>2){
+    const R=t3dCropRect, acc=getComputedStyle(document.documentElement).getPropertyValue('--e').trim()||'#875231';
+    x.fillStyle='rgba(20,14,8,.45)';
+    x.fillRect(0,0,c.width,R.y); x.fillRect(0,R.y+R.h,c.width,c.height-R.y-R.h);
+    x.fillRect(0,R.y,R.x,R.h); x.fillRect(R.x+R.w,R.y,c.width-R.x-R.w,R.h);
+    x.strokeStyle=acc; x.lineWidth=Math.max(2,c.width/500); x.setLineDash([8,5]);
+    x.strokeRect(R.x,R.y,R.w,R.h); x.setLineDash([]);
+  }
+}
+async function t3dConfirmCrop(paginaInteira){
+  if(!t3dPending) return;
+  const P=t3dPending, disp=P.disp;
+  const R=paginaInteira? {x:0,y:0,w:disp.width,h:disp.height} : t3dCropRect;
+  if(!R||R.w<40||R.h<40) return;
+  $('t3d-crop').style.display='none';
+  $('t3d-proc').style.display='block';
+  t3dStep(1,'ok'); t3dStep(2,'on');
+  let canvas;
+  try{
+    const ALVO=1900;
+    if(P.tipo==='pdf'){
+      // recorta direto do PDF em alta resolução (sem rasterizar a folha inteira)
+      const fator=Math.min(ALVO/R.w, 6/P.baseScale);
+      const scHi=P.baseScale*fator;
+      const vp=P.page.getViewport({scale:scHi});
+      canvas=document.createElement('canvas');
+      canvas.width=Math.round(R.w*fator); canvas.height=Math.round(R.h*fator);
+      const ctx=canvas.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      await P.page.render({canvasContext:ctx,viewport:vp,transform:[1,0,0,1,-R.x*fator,-R.y*fator]}).promise;
+    } else {
+      const k=P.full.width/disp.width;
+      const sx=R.x*k, sy=R.y*k, sw=R.w*k, sh=R.h*k;
+      const fator=Math.min(ALVO/sw,1.6);
+      canvas=document.createElement('canvas');
+      canvas.width=Math.round(sw*fator); canvas.height=Math.round(sh*fator);
+      const ctx=canvas.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(P.full,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+    }
+  }catch(err){
+    console.error('t3d recorte:',err);
+    t3dStep(2,'err'); $('t3d-proc-msg').textContent='Falha ao recortar — tente de novo.';
+    setTimeout(()=>{ $('t3d-proc').style.display='none'; $('t3d-crop').style.display='block'; },1800);
+    return;
+  }
+  t3dState.img=canvas; t3dState.imgW=canvas.width; t3dState.imgH=canvas.height;
+  t3dState.temTextura=true; t3dState.fonte=P.nome;
+  $('t3d-proc-img').src=canvas.toDataURL('image/jpeg',0.85);
+  let aviso='';
+  try{
+    t3dState.plan=await t3dAnalisar(canvas);
+    const np=(t3dState.plan.paredes||[]).length;
+    if(!np) throw new Error('sem paredes');
+    aviso='A IA leu '+np+' paredes — toque numa parede na aba Planta para corrigir ou apagar.';
+    t3dStep(2,'ok');
+  }catch(err){
+    console.warn('t3d IA:',err);
+    t3dState.plan={escala_px_por_m:0,ambientes:[],paredes:[],portas:[],janelas:[]};
+    aviso='A IA não conseguiu ler este recorte ('+((err&&err.message)||'erro')+'). Trace as paredes na aba Planta — ou tente um recorte mais fechado num desenho só.';
+    t3dStep(2,'err');
+    notifyStatus('Leitura automática falhou — traçado manual ativado.','warn',5000);
+  }
+  t3dCalibrarEscala();
+  t3dStep(3,'on');
+  $('t3d-ia-note').textContent=aviso;
+  t3dBuild3D();
+  t3dStep(3,'ok');
+  $('t3d-proc').style.display='none';
+  $('t3d-studio').style.display='block';
+  $('t3d-btn-novo').style.display='inline-flex';
+  t3dResize();
+  t3dSetMode((t3dState.plan.paredes||[]).length? 'orbit':'edit');
 }
 
 /* ───────── IA: imagem → JSON da planta ───────── */
+function t3dJsonRecover(txt){
+  const i0=txt.indexOf('{'); if(i0<0) throw new Error('resposta sem JSON');
+  let s=txt.slice(i0, (txt.lastIndexOf('}')>i0? txt.lastIndexOf('}')+1 : txt.length));
+  for(let k=0;k<300;k++){
+    try{ return JSON.parse(s); }catch(e){}
+    const corte=Math.max(s.lastIndexOf(','),s.lastIndexOf('['),s.lastIndexOf('{'));
+    if(corte<=8) break;
+    s=s.slice(0,corte);
+    let abre=0,col=0,emStr=false;
+    for(let i=0;i<s.length;i++){ const ch=s[i];
+      if(ch==='"'&&s[i-1]!=='\\') emStr=!emStr;
+      if(emStr) continue;
+      if(ch==='{')abre++; else if(ch==='}')abre--;
+      else if(ch==='[')col++; else if(ch===']')col--;
+    }
+    if(emStr) s+='"';
+    s+=']'.repeat(Math.max(0,col))+'}'.repeat(Math.max(0,abre));
+  }
+  throw new Error('JSON irreparável');
+}
+function t3dParsePlan(txt,W,H){
+  const plan=t3dJsonRecover(txt);
+  const num=v=>{ v=parseFloat(v); return isFinite(v)?v:0; };
+  const cl=(v,m)=>Math.max(0,Math.min(m,num(v)));
+  const A=Array.isArray;
+  plan.paredes=(plan.paredes||[]).slice(0,160)
+    .map(w=>A(w)?{x1:w[0],y1:w[1],x2:w[2],y2:w[3],esp:w[4]}:w)
+    .map(w=>({x1:cl(w.x1,W),y1:cl(w.y1,H),x2:cl(w.x2,W),y2:cl(w.y2,H),esp:Math.max(4,Math.min(80,num(w.esp)||12))}))
+    .filter(w=>Math.hypot(w.x2-w.x1,w.y2-w.y1)>6);
+  const mapO=o=>A(o)?{x:o[0],y:o[1],larg:o[2]}:o;
+  plan.portas=(plan.portas||[]).slice(0,90).map(mapO).map(o=>({x:cl(o.x,W),y:cl(o.y,H),larg:Math.max(10,num(o.larg)||40)}));
+  plan.janelas=(plan.janelas||[]).slice(0,140).map(mapO).map(o=>({x:cl(o.x,W),y:cl(o.y,H),larg:Math.max(10,num(o.larg)||50)}));
+  plan.ambientes=(plan.ambientes||[]).slice(0,50)
+    .map(a=>A(a)?{nome:a[0],cx:a[1],cy:a[2]}:a)
+    .map(a=>({nome:String(a.nome||'').slice(0,30),cx:cl(a.cx,W),cy:cl(a.cy,H)})).filter(a=>a.nome);
+  plan.escala_px_por_m=num(plan.escala_px_por_m);
+  return plan;
+}
 async function t3dAnalisar(canvas){
   const data=canvas.toDataURL('image/jpeg',0.92).split(',')[1];
-  const prompt='Você é um leitor de plantas baixas de arquitetura. Analise a imagem e devolva SOMENTE um JSON válido, sem markdown e sem comentários, exatamente neste formato:\n'
-   +'{"escala_px_por_m":n,"ambientes":[{"nome":"...","cx":n,"cy":n}],"paredes":[{"x1":n,"y1":n,"x2":n,"y2":n,"esp":n}],"portas":[{"x":n,"y":n,"larg":n}],"janelas":[{"x":n,"y":n,"larg":n}]}\n'
-   +'Regras: todas as coordenadas em PIXELS desta imagem (origem no canto superior esquerdo). Cada parede é um segmento reto pelo seu eixo central; esp é a espessura em pixels. Inclua TODAS as paredes, externas e internas; paredes em L viram dois segmentos. Portas: centro do vão (arco de abertura) e largura em pixels. Janelas: centro do traço duplo na parede e largura. escala_px_por_m: deduza das cotas escritas (ex.: cota "3,50" medindo 175 px na imagem dá escala 50); sem cotas, estime pela largura típica de porta (0,80 m). Ambientes: nome escrito na planta e centro aproximado. No máximo 120 paredes.';
+  const prompt='Você é um leitor de plantas baixas de arquitetura. A imagem é UM desenho de planta (já recortado de uma prancha). Devolva SOMENTE um JSON válido, sem markdown e sem comentários, neste formato compacto:\n'
+   +'{"escala_px_por_m":n,"ambientes":[["NOME",cx,cy]],"paredes":[[x1,y1,x2,y2,esp]],"portas":[[x,y,larg]],"janelas":[[x,y,larg]]}\n'
+   +'Regras: coordenadas em PIXELS desta imagem, origem no canto superior esquerdo, números inteiros. '
+   +'PAREDES: apenas paredes construídas — linhas duplas espessas, preenchidas ou hachuradas; cada parede é um segmento reto pelo eixo central com esp = espessura em pixels; paredes em L viram dois segmentos. NÃO inclua: linhas de cota, eixos estruturais, mobiliário, equipamentos, textos, degraus de escada numerados, setas, símbolos de corte (A-A, B-B) ou calçadas. '
+   +'PORTAS: centro do vão e largura em pixels — vãos com arco de abertura, e também portões largos (basculante, de enrolar). '
+   +'JANELAS: traço duplo fino dentro da parede. '
+   +'ESCALA: priorize as cotas escritas — se houver uma sequência de eixos com cotas iguais (ex.: 5.00 entre pilares), escala = pixels entre eixos ÷ valor da cota; senão use uma cota qualquer; em último caso, porta comum = 0,80 m. '
+   +'AMBIENTES: nomes escritos no desenho e o centro aproximado de cada um. Máximo 150 paredes.';
   const resp=await withTimeout(fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:6000,
       messages:[{role:'user',content:[
         {type:'image',source:{type:'base64',media_type:'image/jpeg',data}},
         {type:'text',text:prompt}]}]})
@@ -9676,18 +9826,7 @@ async function t3dAnalisar(canvas){
   if(!resp.ok) throw new Error('API '+resp.status);
   const j=await resp.json();
   const txt=(j.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
-  const i0=txt.indexOf('{'), i1=txt.lastIndexOf('}');
-  if(i0<0||i1<=i0) throw new Error('resposta sem JSON');
-  const plan=JSON.parse(txt.slice(i0,i1+1));
-  const num=v=>{ v=parseFloat(v); return isFinite(v)?v:0; };
-  const W=t3dState.imgW,H=t3dState.imgH, cl=(v,m)=>Math.max(0,Math.min(m,num(v)));
-  plan.paredes=(plan.paredes||[]).slice(0,140).map(w=>({x1:cl(w.x1,W),y1:cl(w.y1,H),x2:cl(w.x2,W),y2:cl(w.y2,H),esp:Math.max(4,Math.min(80,num(w.esp)||12))}))
-    .filter(w=>Math.hypot(w.x2-w.x1,w.y2-w.y1)>6);
-  plan.portas=(plan.portas||[]).slice(0,80).map(o=>({x:cl(o.x,W),y:cl(o.y,H),larg:Math.max(10,num(o.larg)||40)}));
-  plan.janelas=(plan.janelas||[]).slice(0,120).map(o=>({x:cl(o.x,W),y:cl(o.y,H),larg:Math.max(10,num(o.larg)||50)}));
-  plan.ambientes=(plan.ambientes||[]).slice(0,40).map(a=>({nome:String(a.nome||'').slice(0,30),cx:cl(a.cx,W),cy:cl(a.cy,H)})).filter(a=>a.nome);
-  plan.escala_px_por_m=num(plan.escala_px_por_m);
-  return plan;
+  return t3dParsePlan(txt, t3dState.imgW, t3dState.imgH);
 }
 function t3dCalibrarEscala(){
   let esc=t3dState.plan?.escala_px_por_m||0;
@@ -9819,10 +9958,10 @@ function t3dBindCanvas(canvas){
   ;['pointerup','pointercancel'].forEach(ev=>canvas.addEventListener(ev,()=>{drag=false;}));
   canvas.addEventListener('wheel',e=>{
     if(t3dMode!=='orbit') return; e.preventDefault();
-    t3dOrb.dist=Math.max(2,Math.min(120,t3dOrb.dist*(1+Math.sign(e.deltaY)*0.09)));
+    t3dOrb.dist=Math.max(2,Math.min(260,t3dOrb.dist*(1+Math.sign(e.deltaY)*0.09)));
   },{passive:false});
   canvas.addEventListener('touchstart',e=>{ if(e.touches.length===2){ pinch0=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); dist0=t3dOrb.dist; } },{passive:true});
-  canvas.addEventListener('touchmove',e=>{ if(e.touches.length===2&&t3dMode==='orbit'){ const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); t3dOrb.dist=Math.max(2,Math.min(120,dist0*pinch0/Math.max(20,d))); } },{passive:true});
+  canvas.addEventListener('touchmove',e=>{ if(e.touches.length===2&&t3dMode==='orbit'){ const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); t3dOrb.dist=Math.max(2,Math.min(260,dist0*pinch0/Math.max(20,d))); } },{passive:true});
   // joystick
   const joy=$('t3d-joy'),knob=$('t3d-joy-k');
   let jid=null,jc={x:0,y:0};
@@ -9874,6 +10013,7 @@ function t3dSetMode(m){
   $('t3d-edit-tools').style.display=edit?'flex':'none';
   $('t3d-joy').style.display=(m==='walk' && ('ontouchstart' in window))?'block':'none';
   if(m!=='walk' && document.pointerLockElement) document.exitPointerLock?.();
+  t3dChipHide();
   if(edit) t3dEditDraw(); else t3dResize();
   t3dHint();
 }
@@ -9883,12 +10023,32 @@ function t3dHint(){
   if(t3dMode==='orbit') h.textContent='Arraste para orbitar · roda do mouse / pinça aproxima';
   else if(t3dMode==='walk') h.textContent= ('ontouchstart' in window)? 'Joystick move · arraste a tela para olhar'
     : (lock? 'WASD anda · Shift corre · mouse olha · ESC solta o mouse' : (t3dWalk.dragLook? 'WASD anda · arraste para olhar' : 'Clique na cena para travar o mouse · WASD anda'));
-  else h.textContent='Mover: arraste os pontos · ferramentas acima · Aplicar leva ao 3D';
+  else h.textContent='Toque numa parede para apagar · arraste os pontos · Aplicar leva ao 3D';
 }
 
 /* ───────── editor 2D da planta ───────── */
+function t3dChip(texto,cx,cy){
+  const chip=$('t3d-del-chip'), c=$('t3d-edit-canvas');
+  if(!chip||!c) return;
+  const r=c.getBoundingClientRect(), st=$('t3d-stage').getBoundingClientRect();
+  const x=r.left-st.left + cx*(r.width/c.width);
+  const y=r.top -st.top  + cy*(r.height/c.height);
+  chip.style.left=Math.max(6,Math.min(st.width-130,x+12))+'px';
+  chip.style.top =Math.max(6,Math.min(st.height-42,y-36))+'px';
+  chip.textContent=texto+'  ✕';
+  chip.style.display='inline-flex';
+}
+function t3dChipHide(){ const c=$('t3d-del-chip'); if(c) c.style.display='none'; }
+function t3dApagarSelecao(){
+  const P=t3dState.plan; if(!P) return;
+  if(t3dSel.arr&&t3dSel.idx>=0) t3dSel.arr.splice(t3dSel.idx,1);
+  else if(t3dSel.parede>=0) P.paredes.splice(t3dSel.parede,1);
+  else return;
+  t3dSel={parede:-1,ponto:-1,arr:null,idx:-1};
+  t3dChipHide(); t3dEditDraw();
+}
 function t3dTool(t,btn){
-  t3dEditTool=t; t3dSel={parede:-1,ponto:-1,arr:null,idx:-1};
+  t3dEditTool=t; t3dSel={parede:-1,ponto:-1,arr:null,idx:-1}; t3dChipHide();
   document.querySelectorAll('#t3d-edit-tools .t3d-tool[data-t]').forEach(b=>b.classList.toggle('on',b===btn));
   t3dEditDraw();
 }
@@ -9933,10 +10093,10 @@ function t3dEditDraw(){
     });
   });
   // aberturas
-  const mark=(o,cor)=>{ x.fillStyle=cor; x.strokeStyle='#fff'; x.lineWidth=2;
-    x.beginPath(); x.arc(ox+o.x*s,oy+o.y*s,7,0,7); x.fill(); x.stroke(); };
-  P.portas.forEach(o=>mark(o,'#2e7d32'));
-  P.janelas.forEach(o=>mark(o,'#1565c0'));
+  const mark=(o,cor,sel)=>{ x.fillStyle=cor; x.strokeStyle=sel?'#d4380d':'#fff'; x.lineWidth=sel?3:2;
+    x.beginPath(); x.arc(ox+o.x*s,oy+o.y*s,sel?8:7,0,7); x.fill(); x.stroke(); };
+  P.portas.forEach((o,i)=>mark(o,'#2e7d32',t3dSel.arr===P.portas&&t3dSel.idx===i));
+  P.janelas.forEach((o,i)=>mark(o,'#1565c0',t3dSel.arr===P.janelas&&t3dSel.idx===i));
   // primeiro clique de nova parede
   if(t3dEditTool==='parede'&&t3dSel.px!=null){
     x.fillStyle=acc; x.beginPath(); x.arc(ox+t3dSel.px*s,oy+t3dSel.py*s,5,0,7); x.fill();
@@ -9949,11 +10109,24 @@ function t3dEditInit(){
     if(!t3dState.plan) return;
     const p=t3dEditToPx(e), P=t3dState.plan, tolPt=10/p.s, tolLn=9/p.s;
     if(t3dEditTool==='mover'){
+      t3dSel={parede:-1,ponto:-1,arr:null,idx:-1}; t3dChipHide();
       for(let i=P.paredes.length-1;i>=0;i--){ const w=P.paredes[i];
         if(Math.hypot(p.x-w.x1,p.y-w.y1)<tolPt){ dragP={w,a:'x1',b:'y1'}; t3dSel.parede=i; break; }
         if(Math.hypot(p.x-w.x2,p.y-w.y2)<tolPt){ dragP={w,a:'x2',b:'y2'}; t3dSel.parede=i; break; }
       }
-      if(dragP) c.setPointerCapture(e.pointerId);
+      if(dragP){ c.setPointerCapture(e.pointerId); }
+      else {
+        // toque num vão (porta/janela) seleciona e oferece apagar
+        const achaVao=(arr,rot)=>{ for(let i=arr.length-1;i>=0;i--) if(Math.hypot(p.x-arr[i].x,p.y-arr[i].y)<tolPt){ t3dSel.arr=arr; t3dSel.idx=i; t3dChip('Apagar '+rot,arr[i].x,arr[i].y); return true; } return false; };
+        if(!achaVao(P.portas,'porta') && !achaVao(P.janelas,'janela')){
+          // toque na linha da parede seleciona e oferece apagar
+          for(let i=P.paredes.length-1;i>=0;i--){ const w=P.paredes[i];
+            const tol=Math.max(tolLn,(w.esp||12)*0.7);
+            const r=t3dDistSeg(p.x,p.y,w.x1,w.y1,w.x2,w.y2);
+            if(r.d<tol){ t3dSel.parede=i; t3dChip('Apagar parede',r.cx,r.cz); break; }
+          }
+        }
+      }
     } else if(t3dEditTool==='parede'){
       if(t3dSel.px==null){ t3dSel.px=p.x; t3dSel.py=p.y; }
       else { P.paredes.push({x1:t3dSel.px,y1:t3dSel.py,x2:p.x,y2:p.y,esp:12}); t3dSel.px=null; }
@@ -9963,12 +10136,6 @@ function t3dEditInit(){
         const arr=t3dEditTool==='porta'?P.portas:P.janelas;
         arr.push({x:best.cx,y:best.cz!==undefined?best.cz:best.cy,larg:(t3dEditTool==='porta'?0.85:1.2)*t3dState.escala});
       } else notifyStatus('Clique em cima de uma parede para posicionar o vão.','warn',2600);
-    } else if(t3dEditTool==='apagar'){
-      const hitO=(arr)=>{ for(let i=arr.length-1;i>=0;i--) if(Math.hypot(p.x-arr[i].x,p.y-arr[i].y)<tolPt){ arr.splice(i,1); return true; } return false; };
-      if(!hitO(P.portas)&&!hitO(P.janelas)){
-        for(let i=P.paredes.length-1;i>=0;i--){ const w=P.paredes[i];
-          if(t3dDistSeg(p.x,p.y,w.x1,w.y1,w.x2,w.y2).d<tolLn){ P.paredes.splice(i,1); break; } }
-      }
     }
     t3dEditDraw();
   });
