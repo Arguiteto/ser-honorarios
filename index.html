@@ -1460,6 +1460,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
 /* processamento */
 .t3d-proc{background:var(--surface);border:1px solid var(--border-em);border-radius:var(--radius-l);
   padding:1.4rem;box-shadow:var(--shadow-1);text-align:center}
+#t3d-proc-img[src=""],#t3d-proc-img:not([src]){display:none}
 #t3d-proc-img{max-width:100%;max-height:250px;object-fit:contain;border:1px solid var(--border-em);
   border-radius:10px;background:#fff;box-shadow:var(--shadow-1)}
 .t3d-steps{display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem 1.6rem;margin-top:1.1rem}
@@ -2989,7 +2990,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
       </div>
 
       <div id="t3d-proc" class="t3d-proc" style="display:none">
-        <img id="t3d-proc-img" alt="Prévia da planta enviada">
+        <img id="t3d-proc-img" alt="">
         <div class="t3d-steps">
           <div class="t3d-step" id="t3d-st-1"><i></i>Lendo o arquivo</div>
           <div class="t3d-step" id="t3d-st-2"><i></i>Interpretando a planta com IA</div>
@@ -9549,17 +9550,43 @@ function t3dNovo(){
 
 /* ───────── leitura do arquivo ───────── */
 function t3dFileChange(e){ const f=e.target.files?.[0]; if(f) t3dProcessFile(f); }
-function t3dEnsurePdfjs(){
-  if(window.pdfjsLib) return Promise.resolve();
-  if(t3dPdfjsP) return t3dPdfjsP;
-  t3dPdfjsP=new Promise((res,rej)=>{
+function t3dCarregarScriptUMD(src){
+  // Neutraliza o AMD do ArcGIS durante o load — senão o pdf.js se registra no define()
+  // e window.pdfjsLib nunca é criado (causa do erro 'GlobalWorkerOptions of undefined').
+  return new Promise((res,rej)=>{
+    const d=window.define, amd=d&&d.amd;
+    if(d){ try{ d.amd=undefined; }catch(e){} }
+    let fim=false;
+    const sela=ok=>{ if(fim) return; fim=true; if(d){ try{ d.amd=amd; }catch(e){} } ok?res():rej(new Error('script '+src)); };
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-    s.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(); }catch(err){ rej(err); } };
-    s.onerror=()=>rej(new Error('pdfjs'));
-    document.head.appendChild(s);
-    setTimeout(()=>rej(new Error('timeout pdfjs')),12000);
+    s.onload=()=>sela(true);
+    s.onerror=()=>sela(false);
+    s.src=src; document.head.appendChild(s);
+    setTimeout(()=>sela(false),15000);
   });
+}
+async function t3dEnsurePdfjs(){
+  if(window.pdfjsLib) return;
+  if(t3dPdfjsP) return t3dPdfjsP;
+  t3dPdfjsP=(async()=>{
+    let base=null;
+    for(const v of ['3.11.174','2.16.105']){
+      try{ await t3dCarregarScriptUMD('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/'+v+'/pdf.min.js'); }catch(e){}
+      if(window.pdfjsLib){ base='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/'+v; break; }
+    }
+    if(!window.pdfjsLib){
+      t3dPdfjsP=null;
+      throw new Error('O leitor de PDF não carregou neste ambiente. Exporte a planta como PNG ou JPG e envie a imagem.');
+    }
+    // Worker via blob (mesma origem) — workers de outra origem são bloqueados pelo navegador
+    try{
+      const r=await fetch(base+'/pdf.worker.min.js');
+      const code=await r.text();
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+    }catch(e){
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc=base+'/pdf.worker.min.js';
+    }
+  })();
   return t3dPdfjsP;
 }
 function t3dStep(n,estado){ // estado: 'on' | 'ok' | 'err'
@@ -9573,7 +9600,7 @@ async function t3dProcessFile(file){
   try{
     let canvas;
     if(/pdf$/i.test(file.type)||/\.pdf$/i.test(file.name)){
-      await withTimeout(t3dEnsurePdfjs(),13000,'A biblioteca de PDF não carregou. Verifique a conexão.');
+      await withTimeout(t3dEnsurePdfjs(),22000,'O leitor de PDF demorou demais. Tente de novo ou envie a planta como PNG/JPG.');
       const buf=await file.arrayBuffer();
       const doc=await withTimeout(window.pdfjsLib.getDocument({data:buf}).promise,30000,'Não consegui abrir este PDF.');
       if(doc.numPages>1) notifyStatus('PDF com '+doc.numPages+' páginas — usei a 1ª (um pavimento por arquivo).','warn',4200);
