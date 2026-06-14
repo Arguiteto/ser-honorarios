@@ -1127,6 +1127,11 @@ body.auth-mode #planner-toggle,body.auth-mode #planner-alert,body.auth-mode #pla
 .sg-paper.portrait{width:min(68%,560px);aspect-ratio:.707/1}
 .sg-paper::before{content:'';position:absolute;inset:12px;border:1px solid rgba(0,0,0,.48);pointer-events:none}
 .sg-paper::after{content:'';position:absolute;inset:24px;border:1px dashed rgba(0,0,0,.13);pointer-events:none}
+.sg-paper.nbr{padding:0;background:#fff;border-color:rgba(0,0,0,.6)}
+.sg-paper.nbr::before,.sg-paper.nbr::after{display:none}
+.sg-thumb.nbr{position:relative;background:#fff}
+.sg-thumb.nbr::before{content:'';position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--e) 60%,#222)}
+.sg-thumb.nbr::after{content:'';position:absolute;right:7px;bottom:7px;width:46%;height:34%;border:1px solid color-mix(in srgb,var(--e) 60%,#222);background:repeating-linear-gradient(0deg,transparent 0 5px,color-mix(in srgb,var(--e) 22%,transparent) 5px 5.6px)}
 .sg-paper.compact .sg-viewport{position:absolute;left:8%;top:12%;width:50%;height:50%;border:1px dashed rgba(0,0,0,.14);display:grid;place-items:center;color:rgba(0,0,0,.44);font-size:13px;text-align:center}
 .sg-paper.compact .sg-cad-mark{position:absolute;left:8%;top:14%;width:34px;height:34px;border-left:1px solid rgba(0,0,0,.25);border-top:1px solid rgba(0,0,0,.25)}
 .sg-titleblock{position:absolute;right:20px;bottom:22px;width:30%;min-width:220px;height:28%;border:1px solid #111;background:rgba(255,255,255,.92);display:grid;grid-template-rows:minmax(0,1fr) auto;font-family:Arial,sans-serif;font-size:4.6px;z-index:2;overflow:hidden}
@@ -1628,6 +1633,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
       <div class="sg-tool-right">
         <button type="button" class="sg-action" onclick="sgReset()">Limpar</button>
         <button type="button" class="sg-action primary" onclick="sgExportDxf()">Exportar DXF AutoCAD</button>
+        <button type="button" class="sg-action" onclick="sgExportRevit()">Exportar p/ Revit</button>
       </div>
     </div>
 
@@ -1668,7 +1674,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
         <div class="sg-card-body">
           <div class="sg-toolbar">
             <div class="sg-tool-left">
-              <span class="sg-chip">Modelo <strong id="sg-chip-model">Acadêmica</strong></span>
+              <span class="sg-chip">Modelo <strong id="sg-chip-model">ABNT NBR 16752:2020</strong></span>
               <span class="sg-chip">Formato <strong id="sg-chip-format">A1</strong></span>
               <span class="sg-chip">Tema <strong>sincronizado</strong></span>
             </div>
@@ -1677,13 +1683,13 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
             </div>
           </div>
           <div class="sg-stage">
-            <div class="sg-paper academic" id="sg-paper"></div>
+            <div class="sg-paper nbr" id="sg-paper"></div>
           </div>
         </div>
       </section>
 
       <aside class="sg-card sg-right">
-        <div class="sg-card-head"><h2>Modelos de prancha</h2><small>3 opções</small></div>
+        <div class="sg-card-head"><h2>Modelos de prancha</h2><small>4 opções</small></div>
         <div class="sg-card-body">
           <div class="sg-models" id="sg-models"></div>
         </div>
@@ -1691,6 +1697,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
         <div class="sg-card-body">
           <div class="sg-layer-list">
             <div class="sg-layer"><span>00-MARGENS</span><span class="sg-dot"></span></div>
+            <div class="sg-layer"><span>00-QUADRO</span><span class="sg-dot"></span></div>
             <div class="sg-layer"><span>01-CARIMBO</span><span class="sg-dot"></span></div>
             <div class="sg-layer"><span>02-TEXTO</span><span class="sg-dot"></span></div>
             <div class="sg-layer"><span>03-LINHAS</span><span class="sg-dot"></span></div>
@@ -4667,11 +4674,38 @@ function showSheetGen(){
 // ── GERADOR DE PRANCHAS CAD ─────────────────────
 const sgSizes={A0:{w:1189,h:841},A1:{w:841,h:594},A2:{w:594,h:420},A3:{w:420,h:297},A4:{w:297,h:210},A5:{w:210,h:148}};
 const sgModelInfo={
+  nbr:{name:'ABNT NBR 16752:2020',sub:'Margens e carimbo conforme a norma vigente',thumb:'nbr'},
   compact:{name:'Prancha acadêmica de referência',sub:'Layout inspirado na prancha da imagem enviada',thumb:'compact'},
   bottom:{name:'Faixa inferior minimalista',sub:'Informações essenciais na base',thumb:'bottom'},
   academic:{name:'Prancha acadêmica',sub:'Apresentação com imagens e diagramas',thumb:'academic'}
 };
-let sgState={size:'A1',model:'academic'};
+let sgState={size:'A1',model:'nbr'};
+/* Margens e carimbo da ABNT NBR 16752:2020 (cancelou/substituiu a NBR 10068:1987).
+   Margem esquerda 20 mm, demais 10 mm; carimbo 180 mm no canto inferior direito. */
+const SG_NBR={ML:20,MO:10,CW:180,CH:48};
+function sgNbrFrameWidth(size){ return (size==='A0'||size==='A1')?1.0:0.7; }
+// Células do carimbo em coordenadas do bloco 180 x 48 (origem no canto superior esquerdo).
+function sgNbrCells(d){
+  const v=s=>sgDxfTextSafe(s).replace(/^—$/,'');
+  return [
+    // coluna esquerda (0..130)
+    {x:0,  y:0,  w:130,h:11,label:'PROPRIETÁRIO LEGAL / EMPRESA',value:v(d.company)},
+    {x:0,  y:11, w:130,h:12,label:'TÍTULO DO DESENHO',value:v(d.content)},
+    {x:0,  y:23, w:70, h:8, label:'PROJETO',value:v(d.project)},
+    {x:70, y:23, w:60, h:8, label:'CLIENTE',value:v(d.client)},
+    {x:0,  y:31, w:130,h:9, label:'RESPONSÁVEL TÉCNICO · título e registro (CREA/CAU)',value:v(d.responsible)},
+    {x:0,  y:40, w:43.33,h:8,label:'AUTOR / PROJETISTA',value:''},
+    {x:43.33,y:40,w:43.33,h:8,label:'DESENHISTA',value:''},
+    {x:86.66,y:40,w:43.34,h:8,label:'VERIFICADOR / APROVADOR',value:''},
+    // coluna direita (130..180)
+    {x:130,y:0, w:50,h:12,label:'TIPO DE DOCUMENTO',value:''},
+    {x:130,y:12,w:50,h:12,label:'Nº DE IDENTIFICAÇÃO',value:''},
+    {x:130,y:24,w:25,h:12,label:'ESCALA',value:v(d.scale)},
+    {x:155,y:24,w:25,h:12,label:'DATA DA EMISSÃO',value:v(d.date)},
+    {x:130,y:36,w:25,h:12,label:'FOLHA Nº',value:v(d.sheet)},
+    {x:155,y:36,w:25,h:12,label:'REVISÃO',value:v(d.revision)}
+  ];
+}
 function sgVal(id,fallback='—'){ const el=$(id); const v=(el?.value||'').trim(); return v||fallback; }
 function sgData(){
   return {
@@ -4713,9 +4747,42 @@ function sgRender(){
   if($('sg-subtitle')) $('sg-subtitle').textContent=`${d.size} · ${w} × ${h} mm`;
   if($('sg-chip-format')) $('sg-chip-format').textContent=d.size;
   if($('sg-chip-model')) $('sg-chip-model').textContent=sgModelInfo[d.model]?.name||d.model;
-  if(d.model==='compact') paper.innerHTML=sgRenderCompact(d);
+  if(d.model==='nbr') paper.innerHTML=sgRenderNbr(d,w,h);
+  else if(d.model==='compact') paper.innerHTML=sgRenderCompact(d);
   else if(d.model==='bottom') paper.innerHTML=sgRenderBottom(d);
   else paper.innerHTML=sgRenderAcademic(d);
+}
+// Prévia exata (SVG em mm) da prancha conforme ABNT NBR 16752:2020
+function sgRenderNbr(d,W,H){
+  const {ML,MO,CW,CH}=SG_NBR;
+  const qx0=ML, qy0=MO, qx1=W-MO, qy1=H-MO;
+  const qw=qx1-qx0, qh=qy1-qy0;
+  const Wc=Math.min(CW,qw), f=Wc/CW;
+  const cLeft=qx1-Wc, cTop=qy1-CH;      // canto superior esquerdo do carimbo (coord. SVG)
+  const fw=sgNbrFrameWidth(d.size);
+  const s=5, cxm=(qx0+qx1)/2, cym=(qy0+qy1)/2;
+  let p='';
+  // contorno do papel
+  p+=`<rect x="0" y="0" width="${W}" height="${H}" fill="#fff" stroke="#bbb" stroke-width="0.3"/>`;
+  // quadro
+  p+=`<rect x="${qx0}" y="${qy0}" width="${qw}" height="${qh}" fill="none" stroke="#111" stroke-width="${fw}"/>`;
+  // marcas de centro
+  p+=`<g stroke="#111" stroke-width="0.5">`+
+     `<line x1="${cxm}" y1="${qy0-s}" x2="${cxm}" y2="${qy0+s}"/>`+
+     `<line x1="${cxm}" y1="${qy1-s}" x2="${cxm}" y2="${qy1+s}"/>`+
+     `<line x1="${qx0-s}" y1="${cym}" x2="${qx0+s}" y2="${cym}"/>`+
+     `<line x1="${qx1-s}" y1="${cym}" x2="${qx1+s}" y2="${cym}"/></g>`;
+  // carimbo
+  p+=`<rect x="${cLeft}" y="${cTop}" width="${Wc}" height="${CH}" fill="#fff" stroke="#111" stroke-width="0.7"/>`;
+  sgNbrCells(d).forEach(c=>{
+    const x=cLeft+c.x*f, y=cTop+c.y, w=c.w*f, h=c.h;
+    p+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#444" stroke-width="0.25"/>`;
+    p+=`<text x="${x+1.4}" y="${y+2.7}" font-family="Arial" font-size="1.7" fill="#666">${sgEsc(c.label)}</text>`;
+    if(c.value) p+=`<text x="${x+1.4}" y="${y+h-1.6}" font-family="Arial" font-size="2.6" fill="#111">${sgEsc(c.value)}</text>`;
+  });
+  // identificação do formato
+  p+=`<text x="${ML+1}" y="${H-3}" font-family="Arial" font-size="2.4" fill="#333">FORMATO ${sgEsc(d.size)} · ${Math.round(W)} × ${Math.round(H)} mm · ABNT NBR 16752:2020</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;display:block">${p}</svg>`;
 }
 function sgRenderCompact(d){
   const labels=(String(d.areas||'').split('\n').map(v=>v.trim()).filter(Boolean).map(v=>sgEsc(v.split(':')[0]||v)).slice(0,6));
@@ -4744,7 +4811,7 @@ function sgRenderAcademic(d){
     <div class="sg-acad-band"><div class="sg-acad-cell"><small>Empresa</small><span>${sgEsc(d.company)}</span></div><div class="sg-acad-cell"><small>Projeto</small><span>${sgEsc(d.project)}</span></div><div class="sg-acad-cell"><small>Cliente</small><span>${sgEsc(d.client)}</span></div><div class="sg-acad-cell"><small>Conteúdo</small><span>${sgEsc(d.content)}</span></div><div class="sg-acad-cell"><small>Escala</small><span>${sgEsc(d.scale)}</span></div><div class="sg-acad-cell"><small>Data</small><span>${sgEsc(d.date)}</span></div><div class="sg-acad-cell sg-acad-page"><small>Folha</small><span>${sgEsc(d.sheet)}</span></div></div>`;
 }
 function sgReset(){
-  sgState={size:'A1',model:'academic'};
+  sgState={size:'A1',model:'nbr'};
   const emptyFields=['sg-project','sg-client','sg-address','sg-content','sg-date','sg-revision','sg-sheet','sg-responsible','sg-company','sg-areas'];
   emptyFields.forEach(id=>{ const el=$(id); if(el) el.value=''; });
   const orientation=$('sg-orientation'); if(orientation) orientation.value='landscape';
@@ -4770,7 +4837,8 @@ function sgDxfDownload(name, content){
   a.remove();
   URL.revokeObjectURL(url);
 }
-function sgBuildDxf(d){
+function sgBuildDxf(d,opts){
+  opts=opts||{};
   const size=sgSizes[d.size]||sgSizes.A1;
   const portrait=d.orientation==='portrait';
   const W=portrait?size.h:size.w;
@@ -4784,7 +4852,7 @@ function sgBuildDxf(d){
     return String(Math.round(v*1000)/1000);
   };
   const layerColors={
-    '00-MARGENS':8,'01-CARIMBO':7,'02-TEXTO':7,'03-LINHAS':1,'04-COTAS':3,'99-NAO-PLOTAR':9
+    '00-MARGENS':8,'00-QUADRO':7,'01-CARIMBO':7,'02-TEXTO':7,'03-LINHAS':1,'04-COTAS':3,'99-NAO-PLOTAR':9
   };
   const innerX=m, innerY=m, innerW=Math.max(10,W-2*m), innerH=Math.max(10,H-2*m);
   const X=p=>innerX+innerW*p;
@@ -4835,6 +4903,46 @@ function sgBuildDxf(d){
   Object.entries(layerColors).forEach(([name,color])=>push('0','LAYER','2',name,'70','0','62',color,'6','CONTINUOUS'));
   push('0','ENDTAB'); endsec();
   section('ENTITIES');
+
+  if(d.model==='nbr'){
+    // ── Prancha conforme ABNT NBR 16752:2020 (cotas absolutas em mm) ──
+    const REVIT=!!opts.revit;                 // modo base p/ família de carimbo do Revit
+    const GUIDE='99-NAO-PLOTAR';              // rótulos-guia (camada que não plota)
+    const {ML,MO,CW,CH}=SG_NBR;
+    const qx0=ML, qy0=MO, qx1=W-MO, qy1=H-MO;       // margem esq. 20 mm / demais 10 mm
+    const Wc=Math.min(CW,qx1-qx0), f=Wc/CW;
+    const cx0=qx1-Wc, cyb=qy0;                      // canto inf. esquerdo do carimbo
+    const sgAscii=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/º/g,'o').replace(/ª/g,'a').replace(/[^\x00-\x7F]/g,'');
+    const ntext=(x,y,h,t,align,width,layer)=>{
+      layer=layer||'02-TEXTO';
+      t=clipText(sgAscii(t),width,h);
+      push('0','TEXT','8',layer,'62',layerColors[layer]||7,'10',fmt(x),'20',fmt(y),'30','0','40',fmt(h),'1',t,'50','0');
+      if(align==='CENTER'){ push('72','1','11',fmt(x),'21',fmt(y),'31','0'); }
+    };
+    rect('00-MARGENS',0,0,W,H,8);                       // contorno do papel
+    rect('00-QUADRO',qx0,qy0,qx1-qx0,qy1-qy0,7);        // quadro
+    const sc=5, cxm=(qx0+qx1)/2, cym=(qy0+qy1)/2;       // marcas de centro (cruzam o quadro)
+    line('00-QUADRO',cxm,qy0-sc,cxm,qy0+sc,7);
+    line('00-QUADRO',cxm,qy1-sc,cxm,qy1+sc,7);
+    line('00-QUADRO',qx0-sc,cym,qx0+sc,cym,7);
+    line('00-QUADRO',qx1-sc,cym,qx1+sc,cym,7);
+    rect('01-CARIMBO',cx0,cyb,Wc,CH,7);                 // contorno do carimbo (180 mm)
+    sgNbrCells(d).forEach(c=>{
+      const ax=cx0+c.x*f, aw=c.w*f, ah=c.h;
+      const ay=cyb+(CH-(c.y+c.h));                      // converte topo->base
+      rect('01-CARIMBO',ax,ay,aw,ah,8);                 // grade do carimbo
+      if(REVIT){
+        ntext(ax+1.5, ay+ah-3.0, 1.6, c.label, 'LEFT', aw-2, GUIDE); // só guia, sem valores
+      }else{
+        ntext(ax+1.5, ay+ah-3.0, 1.8, c.label, 'LEFT', aw-2, '02-TEXTO');
+        if(c.value) ntext(ax+1.5, ay+1.8, 2.6, c.value, 'LEFT', aw-2, '02-TEXTO');
+      }
+    });
+    ntext(ML+1, 3.0, 2.4, `FORMATO ${d.size} - ${Math.round(W)} x ${Math.round(H)} mm - ABNT NBR 16752:2020`, 'LEFT', W*0.6, REVIT?GUIDE:'02-TEXTO');
+    endsec(); push('0','EOF');
+    return out.join('\n');
+  }
+
   drawSheetBase();
 
   if(d.model==='bottom'){
@@ -4917,6 +5025,15 @@ function sgExportDxf(){
   const name=`prancha_${sgDxfFileName(d.size)}_${sgDxfFileName(d.model)}${sheetPart}.dxf`;
   sgDxfDownload(name,dxf);
   sgToast('DXF exportado. Abra o arquivo no AutoCAD.');
+}
+function sgExportRevit(){
+  // Base p/ família de carimbo do Revit: só geometria (quadro + carimbo, em camadas),
+  // marcas de centro e rótulos-guia na camada 99-NAO-PLOTAR. Sem valores de exemplo.
+  const d=Object.assign({}, sgData(), {model:'nbr'});
+  const dxf=sgBuildDxf(d,{revit:true});
+  const name=`prancha_${sgDxfFileName(d.size)}_revit_base_nbr16752.dxf`;
+  sgDxfDownload(name,dxf);
+  sgToast('DXF base p/ Revit exportado. Importe na família de carimbo e posicione os rótulos.');
 }
 
 
