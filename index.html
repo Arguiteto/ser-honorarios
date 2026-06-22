@@ -307,6 +307,24 @@ body.auth-mode #auth-screen{position:fixed;inset:0;display:flex!important;z-inde
 .simgeo-filter-count{font-size:10.5px;color:var(--faint);line-height:1.45;margin:-.45rem 0 .85rem}
 .simgeo-layer.sg-hidden{display:none!important}
 @media(max-width:760px){.simgeo-wrap{grid-template-columns:1fr}.simgeo-kpis{grid-template-columns:1fr 1fr}.simgeo-attr{grid-template-columns:1fr}.simgeo-filterbar{align-items:stretch}.simgeo-filterbar .btn{flex:1}}
+/* ── SIMGEO LOCAIS PROXIMOS ── */
+.simgeo-nearby-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:.2rem 0 .9rem;padding:.75rem;border:0.5px solid var(--border);border-radius:10px;background:var(--surf2)}
+.simgeo-nearby-bar .nb-label{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;margin-right:2px}
+.simgeo-nearby-bar select{font-family:inherit;font-size:12px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:7px;background:var(--surface);color:var(--text);cursor:pointer}
+.simgeo-nearby-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:.2rem 0 .7rem}
+.simgeo-nearby-head .t{font-size:12px;color:var(--text);font-weight:500}
+.simgeo-nearby-head .s{font-size:10.5px;color:var(--faint)}
+.simgeo-poi-list{display:flex;flex-direction:column;gap:7px;margin-bottom:1rem}
+.simgeo-poi{display:flex;align-items:center;gap:11px;border:0.5px solid var(--border);border-radius:9px;padding:.6rem .8rem;background:var(--surface);transition:border-color .15s}
+.simgeo-poi:hover{border-color:var(--eb)}
+.simgeo-poi .ico{width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;border-radius:8px;background:var(--surf2);border:0.5px solid var(--border)}
+.simgeo-poi .info{flex:1;min-width:0}
+.simgeo-poi .nm{font-size:12.5px;color:var(--text);font-weight:500;line-height:1.3;word-break:break-word}
+.simgeo-poi .cat{font-size:10.5px;color:var(--faint);line-height:1.4;margin-top:1px}
+.simgeo-poi .dist{font-size:11px;color:var(--e);font-family:var(--font-mono);white-space:nowrap;text-align:right;flex-shrink:0;line-height:1.35}
+.simgeo-poi .dist a.map{display:block;font-size:9px;color:var(--e);text-decoration:none;border-bottom:0.5px solid var(--eb);white-space:nowrap;margin-top:2px}
+.simgeo-nearby-more{margin:-.3rem 0 1rem;text-align:center}
+@media(max-width:760px){.simgeo-nearby-bar{align-items:stretch}.simgeo-nearby-bar select,.simgeo-nearby-bar .btn{flex:1}}
 
 /* ── PORTAIS NACIONAIS ──────────────────────────── */
 .portal-section-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin:1.2rem 0 .6rem;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
@@ -656,6 +674,17 @@ body.nbr-open #online-bar{display:none}
 .labeee-carta-wrap{margin-bottom:14px}
 .carta-solar-box{display:flex;justify-content:center;background:var(--surface);border-radius:8px;padding:6px}
 .carta-solar-svg{width:100%;max-width:360px;height:auto}
+/* ── CARTA SOLAR · MATERIAIS ── */
+.cs-mat-zonebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.7rem;font-size:11px;color:var(--faint)}
+.cs-mat-zonebar select{font-family:inherit;font-size:12px;padding:5px 8px;border:0.5px solid var(--border-em);border-radius:7px;background:var(--surface);color:var(--text);cursor:pointer}
+.cs-mat-est{font-size:9.5px;background:var(--el);color:var(--e);border:0.5px solid var(--eb);border-radius:10px;padding:2px 8px}
+.cs-mat-sub{font-size:11px;color:var(--e);margin-bottom:.6rem;font-family:var(--font-mono)}
+.cs-mat-grp{border-top:0.5px solid var(--border);padding:.55rem 0}
+.cs-mat-grp:first-of-type{border-top:none}
+.cs-mat-h{font-size:12px;color:var(--text);font-weight:500;margin-bottom:2px}
+.cs-mat-meta{font-size:10px;color:var(--faint);font-family:var(--font-mono);margin-bottom:4px}
+.cs-mat-txt{font-size:11px;color:var(--muted);margin-bottom:4px}
+.cs-mat-grp ul{margin:.2rem 0 .2rem 1rem;font-size:11.5px;color:var(--muted);line-height:1.6}
 .carta-legend{font-size:10px;color:var(--faint);line-height:1.6;margin-top:.6rem;display:flex;gap:10px 16px;flex-wrap:wrap}
 .carta-legend b{color:var(--text);font-weight:500}
 .carta-legend .sw{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
@@ -7881,6 +7910,28 @@ function renderSimgeoResult(data){
     <button class="btn ghost" onclick="copySimgeoResult()">Copiar resumo</button>
     <button class="btn ghost" onclick="abrirSimgeoMapa()">Abrir mapa oficial</button>
   </div>`;
+  const nearbyBar=`<div class="simgeo-nearby-bar">
+    <span class="nb-label">Locais próximos</span>
+    <select id="sg-nearby-radius" title="Raio de busca">
+      <option value="500">Raio 500 m</option>
+      <option value="1000" selected>Raio 1 km</option>
+      <option value="2000">Raio 2 km</option>
+      <option value="3000">Raio 3 km</option>
+      <option value="5000">Raio 5 km</option>
+    </select>
+    <select id="sg-nearby-cat" title="Tipo de local" onchange="sgNearbyRender()">
+      <option value="all" selected>Todos os tipos</option>
+      <option value="alimentacao">Alimentação</option>
+      <option value="mercado">Mercado / conveniência</option>
+      <option value="comercio">Comércio / lojas</option>
+      <option value="saude">Saúde</option>
+      <option value="educacao">Educação</option>
+      <option value="servicos">Serviços</option>
+      <option value="lazer">Lazer / cultura</option>
+    </select>
+    <button class="btn solid" onclick="simgeoNearby()">📍 Levantar locais</button>
+  </div>
+  <div id="sg-nearby"></div>`;
   const filterBar=found.length?`<div class="simgeo-filterbar" id="simgeo-filterbar">
     <div class="iw"><input type="search" id="sg-layer-filter" placeholder="Filtrar nas camadas encontradas: zoneamento, lote, bairro, APP..." onkeydown="if(event.key==='Enter')simgeoApplyLayerFilter()"></div>
     <button class="btn solid" onclick="simgeoApplyLayerFilter()">Filtrar camadas</button>
@@ -7894,7 +7945,94 @@ function renderSimgeoResult(data){
   }).join('') : `<div class="simgeo-empty">A varredura rodou, mas nenhuma camada pública retornou atributos para este ponto.<br><br>Isso costuma acontecer quando o WebMap permite visualizar a camada, mas o serviço bloqueia identificação/consulta externa, ou quando o endereço geocodificado caiu fora do lote correto. Tente clicar no mapa oficial, copiar a coordenada exata do lote e consultar novamente.</div>`;
   const err=data.errors.length?`<details class="simgeo-layer" style="margin-top:1rem"><summary>Diagnóstico técnico <span>${data.errors.length} aviso(s)</span></summary><div class="simgeo-attrs"><div class="simgeo-muted">A consulta agora usa ArcGIS JS API, identify em MapServer e query em FeatureLayer. Estes avisos indicam camadas que o serviço não deixou consultar.</div>${data.errors.slice(0,25).map(e=>`<div class="simgeo-attr"><div class="a">${esc(e.layer?.title||'Camada')}</div><div class="b">${esc(e.error)}</div></div>`).join('')}</div></details>`:'';
   const meta=`<div class="simgeo-muted" style="margin-top:1rem">WebMap: ${esc(data.webMapId)} · Camadas descobertas: ${data.totalDiscovered} · Serviços MapServer: ${data.mapServices?.length||0}</div>`;
-  $('sg-result').innerHTML=cards+actions+filterBar+body+err+meta;
+  $('sg-result').innerHTML=cards+actions+nearbyBar+filterBar+body+err+meta;
+}
+
+// ── SIMGEO LOCAIS PROXIMOS (OpenStreetMap / Overpass) ──
+const SG_OVERPASS_ENDPOINTS=[
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+];
+function sgHaversine(lat1,lon1,lat2,lon2){
+  const R=6371000, toRad=x=>x*Math.PI/180;
+  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+function sgFmtDist(m){ return m<1000 ? {n:Math.round(m),u:'m'} : {n:(m/1000).toFixed(m<10000?2:1).replace('.',','),u:'km'}; }
+function sgRadiusLabel(r){ return r<1000 ? r+' m' : (r/1000).toString().replace('.',',')+' km'; }
+function sgPoiCategory(tags){
+  const a=tags.amenity, s=tags.shop, l=tags.leisure, t=tags.tourism, o=tags.office;
+  if(a){
+    if(['restaurant','cafe','fast_food','bar','pub','ice_cream','food_court','biergarten'].includes(a)) return {key:'alimentacao',label:'Alimentação',icon:'🍽️'};
+    if(['pharmacy','hospital','clinic','doctors','dentist','veterinary','nursing_home'].includes(a)) return {key:'saude',label:'Saúde',icon:'➕'};
+    if(['school','kindergarten','college','university','library','language_school'].includes(a)) return {key:'educacao',label:'Educação',icon:'🎓'};
+    if(['cinema','theatre','place_of_worship','community_centre','arts_centre','nightclub'].includes(a)) return {key:'lazer',label:'Lazer / cultura',icon:'🎭'};
+    if(['bank','atm','post_office','police','fire_station','townhall','courthouse','fuel','car_wash','car_repair','marketplace','bureau_de_change','public_building'].includes(a)) return {key:'servicos',label:'Serviços',icon:'🏢'};
+    return {key:'servicos',label:'Serviços',icon:'🏢'};
+  }
+  if(s){
+    if(['supermarket','convenience','general','grocery','wholesale','variety_store'].includes(s)) return {key:'mercado',label:'Mercado / conveniência',icon:'🛒'};
+    if(['bakery','butcher','confectionery','greengrocer','deli','pastry','seafood','beverages'].includes(s)) return {key:'alimentacao',label:'Alimentação',icon:'🍞'};
+    if(['chemist','optician','medical_supply','hearing_aids'].includes(s)) return {key:'saude',label:'Saúde',icon:'➕'};
+    return {key:'comercio',label:'Comércio / lojas',icon:'🛍️'};
+  }
+  if(l) return {key:'lazer',label:'Lazer / esporte',icon:'🌳'};
+  if(t) return {key:'lazer',label:'Turismo / hospedagem',icon:'📍'};
+  if(o) return {key:'servicos',label:'Escritório / serviços',icon:'🏢'};
+  return {key:'outro',label:'Outro',icon:'📌'};
+}
+async function simgeoNearby(){
+  const d=simgeoLastResult;
+  if(!d||!d.point){ simgeoStatus('Faça uma consulta antes de buscar locais próximos.','err'); return; }
+  const cont=$('sg-nearby'); if(!cont) return;
+  const radius=Number(($('sg-nearby-radius') && $('sg-nearby-radius').value) || 1000);
+  const lat=d.point.lat, lng=d.point.lng;
+  cont.innerHTML='<div class="simgeo-muted" style="padding:.4rem 0">Buscando comércios e serviços num raio de '+sgRadiusLabel(radius)+' (OpenStreetMap)...</div>';
+  simgeoStatus('Levantando locais próximos no OpenStreetMap...');
+  const ar=`(around:${radius},${lat},${lng})`;
+  const q=`[out:json][timeout:25];(nwr${ar}["name"]["amenity"];nwr${ar}["name"]["shop"];nwr${ar}["name"]["leisure"];nwr${ar}["name"]["tourism"];nwr${ar}["name"]["office"];);out center tags 200;`;
+  let data=null, lastErr=null;
+  for(const ep of SG_OVERPASS_ENDPOINTS){
+    try{ data=await fetchJson(ep+'?data='+encodeURIComponent(q),{timeout:25000}); if(data) break; }
+    catch(e){ lastErr=e; }
+  }
+  if(!data){ cont.innerHTML='<div class="simgeo-empty">Não consegui consultar o OpenStreetMap agora.<br><br><span style="color:var(--err)">'+esc((lastErr&&lastErr.message)||'falha de rede')+'</span><br><br>Tente novamente em alguns segundos.</div>'; simgeoStatus('Falha ao buscar locais próximos.','err'); return; }
+  const seen=new Set();
+  const items=(data.elements||[]).map(el=>{
+    const plat=(el.lat!=null?el.lat:(el.center&&el.center.lat)), plon=(el.lon!=null?el.lon:(el.center&&el.center.lon));
+    if(plat==null||plon==null) return null;
+    const tags=el.tags||{}; const name=tags.name; if(!name) return null;
+    const dist=sgHaversine(lat,lng,plat,plon);
+    if(dist>radius) return null;
+    const cat=sgPoiCategory(tags);
+    const sig=normTxt(name)+'|'+cat.key;
+    if(seen.has(sig)) return null; seen.add(sig);
+    const addr=[tags['addr:street'],tags['addr:housenumber']].filter(Boolean).join(', ');
+    const sub=tags.shop||tags.amenity||tags.leisure||tags.tourism||tags.office||'';
+    return {name,cat,dist,lat:plat,lon:plon,addr,sub};
+  }).filter(Boolean).sort((a,b)=>a.dist-b.dist);
+  window._sgNearby={items,radius,lat,lng,when:new Date()};
+  sgNearbyRender();
+  simgeoStatus(items.length?`Encontrei ${items.length} local(is) num raio de ${sgRadiusLabel(radius)}.`:'Nenhum local cadastrado nesse raio.', items.length?'ok':'');
+}
+function sgNearbyRender(showAll){
+  const cont=$('sg-nearby'); const st=window._sgNearby; if(!cont||!st) return;
+  const catSel=(($('sg-nearby-cat') && $('sg-nearby-cat').value)) || 'all';
+  let list=st.items;
+  if(catSel!=='all') list=list.filter(x=>x.cat.key===catSel);
+  if(!list.length){ cont.innerHTML='<div class="simgeo-empty">Nenhum local desse tipo dentro do raio de '+sgRadiusLabel(st.radius)+'.</div>'; return; }
+  const shown=showAll?list:list.slice(0,10);
+  const rows=shown.map((x,i)=>{
+    const dd=sgFmtDist(x.dist);
+    const sub=x.addr?esc(x.addr):(x.sub?esc(cleanAttrKey(x.sub)):'');
+    const mp='https://www.openstreetmap.org/?mlat='+x.lat+'&mlon='+x.lon+'#map=19/'+x.lat+'/'+x.lon;
+    return `<div class="simgeo-poi"><div class="ico">${x.cat.icon}</div><div class="info"><div class="nm">${i+1}. ${esc(x.name)}</div><div class="cat">${esc(x.cat.label)}${sub?' · '+sub:''}</div></div><div class="dist">${dd.n} ${dd.u}<a class="map" href="${mp}" target="_blank" rel="noopener">ver no mapa</a></div></div>`;
+  }).join('');
+  const head=`<div class="simgeo-nearby-head"><div class="t">Locais próximos — ${list.length} encontrado(s)</div><div class="s">Raio de ${sgRadiusLabel(st.radius)} · fonte OpenStreetMap</div></div>`;
+  const more=(!showAll && list.length>10)?`<div class="simgeo-nearby-more"><button class="btn ghost" onclick="sgNearbyRender(true)">Ver todos os ${list.length}</button></div>`:((showAll && list.length>10)?`<div class="simgeo-nearby-more"><button class="btn ghost" onclick="sgNearbyRender()">Mostrar só os 10 mais próximos</button></div>`:'');
+  cont.innerHTML=head+'<div class="simgeo-poi-list">'+rows+'</div>'+more;
 }
 
 function simgeoPlainText(){
@@ -7907,6 +8045,12 @@ function simgeoPlainText(){
     usefulAttrs(r.features[0]?.attributes).slice(0,14).forEach(([k,v])=>lines.push(`  - ${cleanAttrKey(k)}: ${formatAttrValue(v)}`));
     lines.push('');
   });
+  const nb=window._sgNearby;
+  if(nb&&nb.items&&nb.items.length){
+    lines.push(`Locais próximos (raio ${sgRadiusLabel(nb.radius)}, OpenStreetMap):`);
+    nb.items.slice(0,10).forEach((x,i)=>{ const dd=sgFmtDist(x.dist); lines.push(`  ${i+1}. ${x.name} — ${x.cat.label} (${dd.n} ${dd.u})`); });
+    lines.push('');
+  }
   return lines.join('\n').trim();
 }
 
@@ -8616,8 +8760,84 @@ function renderCartaDataInto(containerId, data){
     <div class="carta-legend"><span><span class="sw" style="background:var(--warn)"></span><b>Sol</b> no horário</span><span><span class="sw" style="background:var(--e)"></span>Trajetória do dia</span><span><span class="sw" style="background:var(--muted);opacity:.5"></span>Envelope anual</span>${Number.isFinite(fachadaDeg)?'<span><span class="sw" style="background:var(--e);opacity:.4"></span>Céu da fachada '+esc(fachadaNome(fachadaDeg))+'</span>':''}</div>
     ${kpis}${rows}
     <div class="labeee-note">Hora solar verdadeira corrigida por longitude e equação do tempo (fuso UTC−3). Projeção equidistante, Norte ao topo. Prévia de pré-estudo — para máscara, transferidor de ângulos e rosa dos ventos use o Analysis SOL-AR oficial.</div>
-    <div class="labeee-actions"><button class="btn ghost" onclick="baixarCartaDataSVG()">⬇ Baixar carta (SVG)</button><button class="btn ghost" onclick="exportCartaCsv()">⬇ CSV p/ SOL-AR</button><button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR oficial</button></div>`;
+    <div class="labeee-actions"><button class="btn ghost" onclick="baixarCartaDataSVG()">⬇ Baixar carta (SVG)</button><button class="btn ghost" onclick="exportCartaCsv()">⬇ CSV p/ SOL-AR</button><button class="btn ghost" onclick="abrirLabeeeSolAr()">Baixar SOL-AR oficial</button></div><div id="cs-materiais"></div>`;
+  try{ cartaMateriais({cidade,uf,fachadaDeg,lat}); }catch(e){ console.warn('materiais',e); }
 }
+// ── CARTA SOLAR · MATERIAIS RECOMENDADOS (NBR 15220-3) ──
+const NBR_PAREDE={
+  'Leve':{U:'≤ 3,00 W/m²·K',phi:'≤ 4,3 h',fso:'≤ 5,0 %',mat:['Blocos cerâmicos vazados (parede leve)','Sistemas leves bem vedados','Drywall/steel frame com isolante (divisórias internas)']},
+  'Leve refletora':{U:'≤ 3,60 W/m²·K',phi:'≤ 4,3 h',fso:'≤ 4,0 %',mat:['Paredes claras de alta refletância','Blocos vazados com pintura clara refletiva','Revestimento/textura clara, baixa absortância']},
+  'Pesada':{U:'≤ 2,20 W/m²·K',phi:'≥ 6,5 h',fso:'≤ 3,5 %',mat:['Tijolo cerâmico maciço','Bloco cerâmico de 6+ furos (maior espessura)','Parede dupla com câmara de ar','Bloco de concreto preenchido ou tijolo solo-cimento','Reboco e pintura em cor clara']}
+};
+const NBR_COB={
+  'Leve isolada':{U:'≤ 2,00 W/m²·K',phi:'≤ 3,3 h',fso:'≤ 6,5 %',mat:['Telha cerâmica + forro','Manta/lã isolante (lã de vidro, PET ou EPS) sobre o forro','Câmara de ar ventilada sob a telha','Subcobertura aluminizada (barreira radiante)']},
+  'Pesada':{U:'≤ 2,00 W/m²·K',phi:'≥ 6,5 h',fso:'≤ 6,5 %',mat:['Laje de concreto com isolamento térmico','Cobertura com massa térmica (telha + laje)','Telhado verde / jardim','Forro robusto com isolante']},
+  'Leve refletora':{U:'≤ 2,30 W/m²·K',phi:'≤ 3,3 h',fso:'≤ 6,5 %',mat:['Telha e forro claros de alta refletância','Telha termoacústica clara','Barreira radiante aluminizada','Ático bem ventilado']}
+};
+const NBR15220_ZONAS={
+  1:{nome:'ZB1',parede:'Leve',cobertura:'Leve isolada',aberturas:'Médias (15%–25% da área de piso)',sombra:'Permitir sol durante o inverno',verao:['Ventilação cruzada'],inverno:['Aquecimento solar passivo','Vedações internas pesadas (inércia térmica)'],exemplos:'Curitiba',clima:'Frio, invernos rigorosos'},
+  2:{nome:'ZB2',parede:'Leve',cobertura:'Leve isolada',aberturas:'Médias (15%–25%)',sombra:'Permitir sol durante o inverno',verao:['Ventilação cruzada','Resfriamento evaporativo eventual'],inverno:['Aquecimento solar passivo','Inércia térmica'],exemplos:'Santa Maria, Caxias do Sul',clima:'Temperado'},
+  3:{nome:'ZB3',parede:'Leve refletora',cobertura:'Leve isolada',aberturas:'Médias (15%–25%)',sombra:'Permitir sol durante o inverno',verao:['Ventilação cruzada'],inverno:['Aquecimento solar passivo','Inércia térmica'],exemplos:'São Paulo, Porto Alegre, Florianópolis, Belo Horizonte',clima:'Subtropical ameno'},
+  4:{nome:'ZB4',parede:'Pesada',cobertura:'Leve isolada',aberturas:'Médias (15%–25%)',sombra:'Sombrear as aberturas',verao:['Resfriamento evaporativo','Massa térmica para resfriamento','Ventilação seletiva'],inverno:['Aquecimento solar passivo','Inércia térmica'],exemplos:'Brasília',clima:'Quente seco no verão, inverno seco'},
+  5:{nome:'ZB5',parede:'Pesada',cobertura:'Leve isolada',aberturas:'Médias (15%–25%)',sombra:'Sombrear as aberturas',verao:['Ventilação cruzada'],inverno:['Inércia térmica / aquecimento solar eventual'],exemplos:'Niterói, Santos (litoral)',clima:'Quente com inverno ameno'},
+  6:{nome:'ZB6',parede:'Pesada',cobertura:'Leve isolada',aberturas:'Médias (15%–25%)',sombra:'Sombrear as aberturas',verao:['Ventilação cruzada e seletiva (quando a temperatura interna for maior que a externa)','Massa térmica para resfriamento','Resfriamento evaporativo (vegetação, espelho d’água)'],inverno:['Aquecimento solar passivo (aproveitar a fachada Norte)','Inércia térmica para reter calor à noite'],exemplos:'Campo Grande, Goiânia',clima:'Quente, grande amplitude térmica (Cerrado)'},
+  7:{nome:'ZB7',parede:'Pesada',cobertura:'Pesada',aberturas:'Pequenas (10%–15%)',sombra:'Sombrear as aberturas',verao:['Restringir ganhos solares (sombrear e isolar bem)','Massa térmica para resfriamento','Resfriamento evaporativo','Ventilação seletiva'],inverno:['Não requer estratégias específicas'],exemplos:'Cuiabá, Teresina, Petrolina',clima:'Quente e seco'},
+  8:{nome:'ZB8',parede:'Leve refletora',cobertura:'Leve refletora',aberturas:'Grandes (> 40%)',sombra:'Sombrear as aberturas',verao:['Ventilação cruzada permanente e ventilação noturna','Sombreamento total das aberturas'],inverno:['Não requer estratégias específicas'],exemplos:'Manaus, Belém, Recife, Salvador, Rio de Janeiro',clima:'Quente e úmido'}
+};
+const CARTA_ZB_CIDADES={
+  'campo grande|ms':6,'dourados|ms':6,'ponta pora|ms':6,'tres lagoas|ms':7,'corumba|ms':7,'aquidauana|ms':7,'navirai|ms':6,
+  'cuiaba|mt':7,'varzea grande|mt':7,'rondonopolis|mt':7,'goiania|go':6,'anapolis|go':6,'brasilia|df':4,'palmas|to':7,
+  'sao paulo|sp':3,'campinas|sp':4,'ribeirao preto|sp':6,'rio de janeiro|rj':8,'niteroi|rj':8,'belo horizonte|mg':3,'uberlandia|mg':4,'vitoria|es':8,
+  'curitiba|pr':1,'londrina|pr':3,'maringa|pr':3,'florianopolis|sc':3,'joinville|sc':3,'porto alegre|rs':3,'caxias do sul|rs':2,'santa maria|rs':2,
+  'salvador|ba':8,'recife|pe':8,'fortaleza|ce':8,'natal|rn':8,'joao pessoa|pb':8,'maceio|al':8,'aracaju|se':8,'sao luis|ma':8,'teresina|pi':7,
+  'manaus|am':8,'belem|pa':8,'porto velho|ro':8,'rio branco|ac':8,'macapa|ap':8,'boa vista|rr':8
+};
+function cartaZonaLookup(cidade,uf,lat){
+  const key=normTxt(cidade)+'|'+normTxt(uf);
+  if(CARTA_ZB_CIDADES[key]) return {zone:CARTA_ZB_CIDADES[key],estimado:false};
+  const ufMap={ms:6,mt:7,go:6,df:4,sp:3,rj:8,es:8,mg:3,pr:2,sc:3,rs:2,ba:8,pe:8,ce:8,rn:8,pb:8,al:8,se:8,ma:8,pi:7,to:7,am:8,pa:8,ro:8,ac:8,ap:8,rr:8};
+  const ufKey=normTxt(uf);
+  if(ufMap[ufKey]) return {zone:ufMap[ufKey],estimado:true};
+  let z=6;
+  if(Number.isFinite(lat)){ if(lat<=-27)z=2; else if(lat<=-23)z=3; else if(lat<=-18)z=6; else if(lat<=-12)z=7; else z=8; }
+  return {zone:z,estimado:true};
+}
+function cartaMateriais(ctx){
+  const cont=$('cs-materiais'); if(!cont) return;
+  const {cidade,uf,fachadaDeg,lat}=ctx||{};
+  const look=cartaZonaLookup(cidade,uf,lat);
+  window._csMat={cidade,uf,fachadaDeg,lat,auto:look};
+  const opts=[1,2,3,4,5,6,7,8].map(z=>`<option value="${z}" ${z===look.zone?'selected':''}>${NBR15220_ZONAS[z].nome} — ${esc(NBR15220_ZONAS[z].clima)}</option>`).join('');
+  cont.innerHTML=`<div class="labeee-block"><h3>Materiais recomendados — pré-estudo bioclimático (NBR 15220-3)</h3><div class="body">
+    <div class="cs-mat-zonebar"><span>Zona bioclimática:</span><select id="cs-zb" onchange="cartaMateriaisRender()">${opts}</select>${look.estimado?'<span class="cs-mat-est">estimada — confirme</span>':''}</div>
+    <div id="cs-mat-content"></div></div></div>`;
+  cartaMateriaisRender();
+}
+function cartaMateriaisRender(){
+  const ctx=window._csMat; if(!ctx) return;
+  const cont=$('cs-mat-content'); if(!cont) return;
+  const sel=$('cs-zb'); const zone=sel?parseInt(sel.value,10):ctx.auto.zone;
+  const z=NBR15220_ZONAS[zone]; if(!z) return;
+  const P=NBR_PAREDE[z.parede], C=NBR_COB[z.cobertura];
+  const li=a=>`<li>${esc(a)}</li>`;
+  let facBlock='';
+  if(Number.isFinite(ctx.fachadaDeg)){
+    const ef=estrategiaFachada(ctx.fachadaDeg);
+    const oeste=(ctx.fachadaDeg===270||ctx.fachadaDeg===225||ctx.fachadaDeg===315);
+    const vidro=oeste?'vidro de controle solar / película de baixa transmissão':'vidro com bom fator solar e proteção solar externa';
+    facBlock=`<div class="cs-mat-grp"><div class="cs-mat-h">Para a fachada ${esc(fachadaNome(ctx.fachadaDeg))}</div><div class="cs-mat-txt">${esc(ef.texto)}</div><ul><li>Proteção solar: ${esc(ef.tipo)}</li><li>Esquadrias: ${esc(vidro)}</li></ul></div>`;
+  }
+  cont.innerHTML=`
+    <div class="cs-mat-sub">${esc(z.nome)} · ${esc(z.clima)} · ex.: ${esc(z.exemplos)}</div>
+    <div class="cs-mat-grp"><div class="cs-mat-h">Paredes — vedação ${esc(z.parede)}</div><div class="cs-mat-meta">U ${esc(P.U)} · atraso ${esc(P.phi)} · FSo ${esc(P.fso)}</div><ul>${P.mat.map(li).join('')}</ul></div>
+    <div class="cs-mat-grp"><div class="cs-mat-h">Cobertura — ${esc(z.cobertura)}</div><div class="cs-mat-meta">U ${esc(C.U)} · atraso ${esc(C.phi)} · FSo ${esc(C.fso)}</div><ul>${C.mat.map(li).join('')}</ul></div>
+    <div class="cs-mat-grp"><div class="cs-mat-h">Aberturas e sombreamento</div><ul><li>Tamanho das aberturas: ${esc(z.aberturas)}</li><li>${esc(z.sombra)}</li><li>Dispositivos: brises, beirais, varandas, pergolados, cobogós e vegetação</li></ul></div>
+    <div class="cs-mat-grp"><div class="cs-mat-h">Acabamentos e cores</div><ul><li>Cores claras e foscas, de alta refletância, em paredes e telhado expostos ao sol</li><li>Baixa absortância (α &lt; 0,4) nas superfícies muito insoladas</li></ul></div>
+    <div class="cs-mat-grp"><div class="cs-mat-h">Estratégias passivas</div><ul><li><b>Verão:</b> ${z.verao.map(esc).join('; ')}</li><li><b>Inverno:</b> ${z.inverno.map(esc).join('; ')}</li></ul></div>
+    ${facBlock}
+    <div class="labeee-note">Pré-estudo conforme ABNT NBR 15220-3 (zoneamento de 2005, 8 zonas). A revisão de 2024 atualizou o zoneamento brasileiro — confirme a zona e os parâmetros no LabEEE/ProjetEEE antes de especificar. Não substitui projeto térmico nem o Analysis SOL-AR oficial.</div>`;
+}
+
 async function gerarCartaSolar(){
   let lat=parseFloat($('cs-lat')?.value), lng=parseFloat($('cs-lng')?.value);
   let cidade=($('cs-cidade')?.value||'').trim(), uf=($('cs-uf')?.value||'').trim().toUpperCase();
