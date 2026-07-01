@@ -16,6 +16,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,380..640;1,9..144,380..640&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>
+/* Escrita segura no localStorage (modo privado / cota cheia nao derruba o app) */
+window.lsSet=function(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ console.warn('localStorage bloqueado:',e); return false; } };
+
   // Carrega Supabase com fallback CDN
   (function(){
     function tryLoad(urls, idx){
@@ -3242,13 +3245,13 @@ function updateHeaderUser(){
   if(el) el.textContent = user?.email ? getDisplayName() : '';
 }
 async function changeDisplayName(){
-  if(!user){ alert('Entre no sistema primeiro.'); return; }
+  if(!user){ chaosToast('Entre no sistema primeiro.','err'); return; }
   const atual = getDisplayName();
   const nome = prompt('Nome para aparecer nos usuários online:', atual);
   if(nome===null) return;
   const limpo = cleanDisplayName(nome);
-  if(!limpo){ alert('Digite um nome válido.'); return; }
-  localStorage.setItem(displayNameKey(), limpo);
+  if(!limpo){ chaosToast('Digite um nome válido.','err'); return; }
+  lsSet(displayNameKey(), limpo);
   user.user_metadata = Object.assign({}, user.user_metadata||{}, {display_name:limpo,nome:limpo,full_name:limpo,name:limpo});
   updateHeaderUser();
   try{
@@ -3280,8 +3283,8 @@ function themeKey(){
 function setTheme(n){
   n = Math.max(0,Math.min(THEME_PREVIEWS.length-1,parseInt(n,10)||0));
   document.documentElement.setAttribute('data-theme',n);
-  localStorage.setItem(themeKey(),n);
-  if(!user) localStorage.setItem('chaos-theme',n);
+  lsSet(themeKey(),n);
+  if(!user) lsSet('chaos-theme',n);
   // Atualiza dots
   document.querySelectorAll('.tp-dot').forEach(d=>{
     d.classList.toggle('active', Number(d.dataset.t)===n);
@@ -3629,7 +3632,7 @@ function canUseTool(tool){
 
 function guardTool(tool){
   if(canUseTool(tool)) return false;
-  alert('Seu perfil '+roleLabel(currentRole)+' não tem acesso a esta ferramenta.');
+  chaosToast('Seu perfil '+roleLabel(currentRole)+' não tem acesso a esta ferramenta.','err');
   showHall();
   return true;
 }
@@ -5696,7 +5699,7 @@ async function plannerDeleteEvent(id){
     await plannerLoad(true);
   }catch(e){
     plannerSetStatus(e?.message || String(e),'err');
-    alert('Não foi possível apagar o aviso: '+(e?.message || String(e)));
+    chaosToast('Não foi possível apagar o aviso: '+(e?.message || String(e)),'err');
   }
 }
 async function plannerMarkRead(id){
@@ -6041,7 +6044,7 @@ function matDoSearch(v){ _matQ=v.toLowerCase(); matRender(); }
 // COMPARE
 function matToggleCmp(id,nome){
   if(_matCmp.includes(id)){ _matCmp=_matCmp.filter(x=>x!==id); }
-  else{ if(_matCmp.length>=4){ alert('Máximo 4 materiais.'); return; } _matCmp.push(id); }
+  else{ if(_matCmp.length>=4){ chaosToast('Máximo 4 materiais.','err'); return; } _matCmp.push(id); }
   matRenderTray(); matRender();
 }
 function matRenderTray(){
@@ -6054,9 +6057,9 @@ function matRenderTray(){
 function matClearCompare(){ _matCmp=[]; matRenderTray(); matRender(); }
 function matCloseCmp(){ const m=$('mat-cmp-modal'); if(m){ m.style.opacity='0'; m.style.pointerEvents='none'; } }
 function matOpenCompare(){
-  if(_matCmp.length<2){ alert('Selecione ao menos 2 materiais.'); return; }
+  if(_matCmp.length<2){ chaosToast('Selecione ao menos 2 materiais.','err'); return; }
   const mats=_matCmp.map(id=>MAT_DB.find(m=>m.id===id)).filter(Boolean);
-  if(mats.length<2){ alert('Selecione ao menos 2 materiais válidos.'); return; }
+  if(mats.length<2){ chaosToast('Selecione ao menos 2 materiais válidos.','err'); return; }
   const rows=[
     {lbl:'Categoria',fn:m=>m.cat,cmp:false},
     {lbl:'Inércia',fn:m=>m.inVal>=70?'Alta':m.inVal>=30?'Média':'Baixa',cmp:false},
@@ -6543,7 +6546,7 @@ function editProposal(id){
 async function deleteProposal(id){
   const p=proposals.find(x=>String(x.id)===String(id));
   if(!p) return;
-  if(!canDeleteProposal(p)){ alert('Seu perfil não pode excluir esta proposta.'); return; }
+  if(!canDeleteProposal(p)){ chaosToast('Seu perfil não pode excluir esta proposta.','err'); return; }
   if(!id || !confirm('Excluir esta proposta?')) return;
   if(isLocalProposal(p)){
     deleteLocalProposal(id);
@@ -6552,10 +6555,10 @@ async function deleteProposal(id){
     notifyStatus?.('Proposta local excluída.','ok',2500);
     return;
   }
-  if(!sb){ alert('Sem conexão com o servidor.'); return; }
+  if(!sb){ chaosToast('Sem conexão com o servidor.','err'); return; }
   const {error,count}=await sb.from('proposals').delete({count:'exact'}).eq('id',id);
-  if(error){ alert('Não foi possível excluir: '+(error.message||error)); return; }
-  if(count===0){ alert('Nenhuma proposta foi excluída no servidor. Ela pode já ter sido removida ou seu perfil/RLS pode ter bloqueado a operação.'); }
+  if(error){ chaosToast('Não foi possível excluir: '+(error.message||error),'err'); return; }
+  if(count===0){ chaosToast('Nenhuma proposta foi excluída no servidor. Ela pode já ter sido removida ou seu perfil/RLS pode ter bloqueado a operação.','err'); }
   loadProposals();
 }
 
@@ -9254,7 +9257,7 @@ async function exportCarta(){
     notifyStatus('✓ PDF da carta gerado','ok',3000);
   }catch(e){
     console.error('Erro ao gerar carta:',e);
-    alert('Não foi possível gerar o PDF da carta. Recarregue a página e tente novamente.');
+    chaosToast('Não foi possível gerar o PDF da carta. Recarregue a página e tente novamente.','err');
   }finally{
     cleanupPdfElement();
     if(btn){btn.textContent='⬇ Baixar PDF';btn.disabled=false;}
@@ -9694,6 +9697,44 @@ init();
   if(document.readyState!=='loading') sync(); else document.addEventListener('DOMContentLoaded',sync);
 })();
 </script>
+
+<script>
+/* ============================================================
+   Melhorias globais de UX e robustez (aditivo, nao altera logica)
+   - chaosToast(msg,type): notificacao unificada, nao bloqueante
+   - Esc fecha o modal aberto mais recente
+   - Erros JS silenciosos viram aviso visivel (antes: botao "morto")
+   ============================================================ */
+(function(){
+  const st=document.createElement('style');
+  st.textContent='#chaos-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);z-index:99999;background:var(--surf,#222);color:var(--text,#eee);border:1px solid var(--border,#444);border-left:3px solid var(--eb,#7aa2ff);border-radius:10px;padding:10px 16px;font-size:12.5px;line-height:1.5;max-width:min(480px,90vw);box-shadow:0 8px 28px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}#chaos-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}#chaos-toast.err{border-left-color:#e5636c}#chaos-toast.ok{border-left-color:#57b884}';
+  document.head.appendChild(st);
+  let el=null,timer=null;
+  window.chaosToast=function(msg,type){
+    if(!el){ el=document.createElement('div'); el.id='chaos-toast'; el.setAttribute('role','status'); el.setAttribute('aria-live','polite'); document.body.appendChild(el); }
+    el.textContent=String(msg||''); el.className=type==='err'?'err':(type==='ok'?'ok':'');
+    requestAnimationFrame(()=>el.classList.add('show'));
+    clearTimeout(timer); timer=setTimeout(()=>el.classList.remove('show'), type==='err'?5200:3000);
+  };
+
+  document.addEventListener('keydown',ev=>{
+    if(ev.key!=='Escape') return;
+    const abertos=[...document.querySelectorAll('.modal-overlay')].filter(o=>getComputedStyle(o).display!=='none');
+    const top=abertos[abertos.length-1];
+    if(!top) return;
+    const btn=top.querySelector('.modal-close');
+    if(btn){ btn.click(); ev.stopPropagation(); }
+  });
+
+  let lastErr=0;
+  function surface(m){
+    const now=Date.now(); if(now-lastErr<4000) return; lastErr=now;
+    try{ chaosToast('Algo falhou: '+m+' — detalhes no console (F12).','err'); }catch(_e){}
+  }
+  window.addEventListener('error',e=>{ if(e&&e.message&&!/ResizeObserver|Script error/i.test(e.message)) surface(String(e.message).slice(0,120)); });
+  window.addEventListener('unhandledrejection',e=>{ const m=(e&&e.reason&&e.reason.message)||''; if(m) surface(String(m).slice(0,120)); });
+})();
+</script>
 </body>
 <script>
 (function(){
@@ -9942,9 +9983,9 @@ function getCurrentUser(){
 }
 function sKey(t){ return `nbr_${getCurrentUser()}_${t}`; }
 function getFavs()   { try{ return JSON.parse(localStorage.getItem(sKey('favs'))||'[]'); }catch{ return []; } }
-function saveFavs(f) { localStorage.setItem(sKey('favs'), JSON.stringify(f)); }
+function saveFavs(f) { lsSet(sKey('favs'), JSON.stringify(f)); }
 function getAlerts() { try{ return JSON.parse(localStorage.getItem(sKey('alerts'))||'[]'); }catch{ return []; } }
-function saveAlerts(a){ localStorage.setItem(sKey('alerts'), JSON.stringify(a)); }
+function saveAlerts(a){ lsSet(sKey('alerts'), JSON.stringify(a)); }
 
 // ─── DOM ─────────────────────────────────────────────
 const toggle      = document.getElementById('nbr-toggle');
@@ -10392,7 +10433,7 @@ nbrSearch('');
   function redirectUri(){ return location.origin + location.pathname; }
   window.audioAmpSpotifyConnect=async function(){
     if(!SPOTIFY_CLIENT_ID){ setStatus('Spotify: preencha SPOTIFY_CLIENT_ID no código e cadastre esta URL como Redirect URI no painel do Spotify.'); return; }
-    const verifier=randomString(); localStorage.setItem('chaos_spotify_verifier',verifier);
+    const verifier=randomString(); lsSet('chaos_spotify_verifier',verifier);
     const challenge=await sha256(verifier);
     const url=new URL('https://accounts.spotify.com/authorize');
     url.searchParams.set('client_id',SPOTIFY_CLIENT_ID); url.searchParams.set('response_type','code'); url.searchParams.set('redirect_uri',redirectUri()); url.searchParams.set('scope',SPOTIFY_SCOPES); url.searchParams.set('code_challenge_method','S256'); url.searchParams.set('code_challenge',challenge);
@@ -10406,7 +10447,7 @@ nbrSearch('');
     if(!r.ok) throw new Error('Falha no token Spotify');
     const d=await r.json();
     state.spotifyToken=d.access_token||''; state.spotifyRefreshToken=d.refresh_token||state.spotifyRefreshToken||''; state.spotifyExpires=Date.now()+((d.expires_in||3600)-60)*1000;
-    localStorage.setItem('chaos_spotify_token',state.spotifyToken); localStorage.setItem('chaos_spotify_refresh',state.spotifyRefreshToken); localStorage.setItem('chaos_spotify_expires',String(state.spotifyExpires));
+    lsSet('chaos_spotify_token',state.spotifyToken); lsSet('chaos_spotify_refresh',state.spotifyRefreshToken); lsSet('chaos_spotify_expires',String(state.spotifyExpires));
   }
   async function refreshSpotifyToken(){
     if(!SPOTIFY_CLIENT_ID || !state.spotifyRefreshToken) return false;
@@ -10414,7 +10455,7 @@ nbrSearch('');
     const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});
     if(!r.ok) return false;
     const d=await r.json(); state.spotifyToken=d.access_token||state.spotifyToken; state.spotifyExpires=Date.now()+((d.expires_in||3600)-60)*1000;
-    localStorage.setItem('chaos_spotify_token',state.spotifyToken); localStorage.setItem('chaos_spotify_expires',String(state.spotifyExpires)); return true;
+    lsSet('chaos_spotify_token',state.spotifyToken); lsSet('chaos_spotify_expires',String(state.spotifyExpires)); return true;
   }
   function spotifyPulse(title,sub,isPlaying){
     const chip=$('spotify-chip'); if(chip) chip.classList.toggle('on',!!isPlaying);
@@ -10533,7 +10574,7 @@ nbrSearch('');
     applyLevels(idleLevels());
     const c=chip(); if(c) c.classList.remove('live');
   }
-  function rememberSource(type){ state.preferred=type; localStorage.setItem(STORAGE_KEY,type); }
+  function rememberSource(type){ state.preferred=type; lsSet(STORAGE_KEY,type); }
   function attachEndedHandlers(stream){ stream.getTracks().forEach(track=>track.addEventListener('ended',()=>{ stop(); setText('Encerrado','Fonte de áudio encerrada','Clique em Sistema ou Microfone para permitir novamente','A fonte foi parada pelo navegador ou pelo usuário.'); })); }
   async function useStream(stream,label,activeId,type){
     stop({silent:true});
