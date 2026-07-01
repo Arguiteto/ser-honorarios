@@ -2307,6 +2307,25 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
         <p class="labeee-muted">A trajetória do dia e a posição do Sol no horário aparecem aqui. Prévia de pré-estudo — não substitui o Analysis SOL-AR oficial.</p>
         <div id="cs-result"><div class="labeee-empty">Nenhuma carta gerada ainda.<br>Informe o CEP, a data e a hora e clique em “Gerar carta solar”.</div></div>
       </section>
+      <section class="labeee-card" id="nl-card" style="grid-column:1/-1">
+        <h2>Norte do lote na prancha</h2>
+        <p class="labeee-muted">Mostra para onde aponta o Norte verdadeiro no seu desenho, a partir da orientação da frente (testada) do lote. Escolha se a prancha está <b>deitada</b> (paisagem) ou <b>em pé</b> (retrato) — o Norte gira junto.</p>
+        <div class="g2">
+          <div class="field"><label>A frente (testada) do lote aponta para (azimute °)</label><div class="iw"><input type="number" id="nl-az" value="308" min="0" max="359" step="1" oninput="setNorteAz(this.value)"></div><span class="hint">0=N, 90=L, 180=S, 270=O. R. Barigui 58 ≈ 308° (NW). Use “Sincronizar” para puxar da fachada acima.</span></div>
+          <div class="field"><label>Orientação da prancha</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button type="button" class="btn solid" id="nl-btn-deit" onclick="setNorteOrient(true)">▭ Deitada (paisagem)</button>
+              <button type="button" class="btn ghost" id="nl-btn-pe" onclick="setNorteOrient(false)">▯ Em pé (retrato)</button>
+            </div>
+            <span class="hint">Deitada: frente do lote na borda esquerda. Em pé: frente na base.</span>
+          </div>
+        </div>
+        <div class="labeee-actions">
+          <button class="btn ghost" onclick="norteSyncFachada()">⇥ Sincronizar com a fachada</button>
+          <button class="btn ghost" onclick="norteCasoBarigui()">Caso R. Barigui 58</button>
+          <button class="btn ghost" onclick="baixarNorteLoteSVG()">⬇ Baixar Norte (SVG)</button>
+        </div>
+        <div id="nl-out" style="max-width:360px;margin-top:6px"></div>
     </div>
   </div>
 
@@ -4636,6 +4655,7 @@ function showCartaSolar(){
   $('cartasolar-view').style.display='block';
   setTool('cartasolar');
   if(!window._cartaSolarInit){ cartaSolarNow(); window._cartaSolarInit=true; }
+  try{ desenharNorteLote(); }catch(e){ console.warn('norte lote', e); }
 }
 
 function showThreejs(){
@@ -8694,7 +8714,8 @@ function fillCartaFromSimgeo(){
   if($('cs-cep')&&a.cep) $('cs-cep').value=String(a.cep).replace(/^(\d{5})(\d{3})$/,'$1-$2');
   if($('cs-num')&&a.numero) $('cs-num').value=a.numero;
   cartaSolarLastGeoKey=String($('cs-cep')?.value||'').replace(/\D/g,'')+'|'+String($('cs-num')?.value||'').trim();
-  cartaStatus('Local importado do SIMGEO. Defina data e hora e gere a carta.','ok');
+  try{ desenharNorteLote(); }catch(e){ console.warn('norte lote', e); }
+  cartaStatus('Local importado do SIMGEO. A posição do lote veio automática; o azimute da frente (Norte) você ainda define no painel abaixo.','ok');
 }
 // Dia do ano (1..365/366)
 function dayOfYear(d){ return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000); }
@@ -8838,6 +8859,83 @@ function cartaMateriaisRender(){
     <div class="labeee-note">Pré-estudo conforme ABNT NBR 15220-3 (zoneamento de 2005, 8 zonas). A revisão de 2024 atualizou o zoneamento brasileiro — confirme a zona e os parâmetros no LabEEE/ProjetEEE antes de especificar. Não substitui projeto térmico nem o Analysis SOL-AR oficial.</div>`;
 }
 
+// == NORTE DO LOTE - orientacao da prancha (deitada / em pe) ==============
+window._norteLote = { az: 308, deitada: true };
+function _nlCardinalPT(az){
+  const d=['N','NNE','NE','ENE','L','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+  return d[Math.round((((az%360)+360)%360)/22.5)%16];
+}
+function _nlNorthScreen(azFacade, deitada){
+  const faceScreen = deitada ? 270 : 180; // frente do lote: borda esquerda (deitada) ou base (em pe)
+  return (((faceScreen - azFacade)%360)+360)%360; // angulo horario a partir do topo
+}
+function _nlAzOfScreen(s, azFacade, deitada){
+  const faceScreen = deitada ? 270 : 180;
+  return (((azFacade + (s - faceScreen))%360)+360)%360;
+}
+function norteLoteSVG(azFacade, deitada){
+  const W=320,H=300,cx=160,cy=150,R=96;
+  const Pt=(s,r)=>[ (cx + r*Math.sin(s*Math.PI/180)).toFixed(1), (cy - r*Math.cos(s*Math.PI/180)).toFixed(1) ];
+  const northS=_nlNorthScreen(azFacade,deitada);
+  const o=[];
+  o.push(`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="nl-svg" role="img" aria-label="Norte do lote na prancha">`);
+  // folha (prancha): deitada = paisagem, em pe = retrato
+  let rw,rh; if(deitada){ rw=200; rh=132; } else { rw=132; rh=200; }
+  const rx=cx-rw/2, ry=cy-rh/2;
+  o.push(`<rect x="${rx}" y="${ry}" width="${rw}" height="${rh}" rx="6" fill="var(--surf2)" stroke="var(--border-em)" stroke-width="1.2"/>`);
+  // borda da frente (testada) destacada
+  if(deitada){ o.push(`<line x1="${rx}" y1="${ry}" x2="${rx}" y2="${ry+rh}" stroke="var(--e)" stroke-width="4"/>`); }
+  else { o.push(`<line x1="${rx}" y1="${ry+rh}" x2="${rx+rw}" y2="${ry+rh}" stroke="var(--e)" stroke-width="4"/>`); }
+  // rotulos cardeais das bordas
+  const topAz=_nlAzOfScreen(0,azFacade,deitada), rightAz=_nlAzOfScreen(90,azFacade,deitada), botAz=_nlAzOfScreen(180,azFacade,deitada), leftAz=_nlAzOfScreen(270,azFacade,deitada);
+  o.push(`<text x="${cx}" y="${ry-6}" font-size="10" text-anchor="middle" fill="var(--faint)" font-family="monospace">${_nlCardinalPT(topAz)}</text>`);
+  o.push(`<text x="${cx}" y="${ry+rh+14}" font-size="10" text-anchor="middle" fill="var(--faint)" font-family="monospace">${_nlCardinalPT(botAz)}</text>`);
+  o.push(`<text x="${rx-6}" y="${cy+3}" font-size="10" text-anchor="end" fill="var(--faint)" font-family="monospace">${_nlCardinalPT(leftAz)}</text>`);
+  o.push(`<text x="${rx+rw+6}" y="${cy+3}" font-size="10" text-anchor="start" fill="var(--faint)" font-family="monospace">${_nlCardinalPT(rightAz)}</text>`);
+  // rosa
+  o.push(`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--border)" stroke-width="0.8"/>`);
+  [90,180,270].forEach(off=>{ const s=(northS+off)%360; const a=Pt(s,R-4), b=Pt(s,R+2); o.push(`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="var(--muted)" stroke-width="1"/>`); });
+  // agulha do Norte (grupo rotacionado; N verdadeiro = northS graus horarios a partir do topo)
+  o.push(`<g transform="translate(${cx},${cy}) rotate(${northS.toFixed(2)})">`);
+  o.push(`<line x1="0" y1="60" x2="0" y2="-70" stroke="var(--e)" stroke-width="2.4"/>`);
+  o.push(`<polygon points="0,-92 -12,-64 0,-74" fill="var(--e)"/>`);
+  o.push(`<polygon points="0,-92 12,-64 0,-74" fill="var(--surf2)" stroke="var(--e)" stroke-width="1.2"/>`);
+  o.push(`<polygon points="0,60 -7,48 7,48" fill="var(--e)"/>`);
+  o.push(`</g>`);
+  // letra N (sempre na horizontal, na ponta do Norte)
+  const nlab=Pt(northS,R+16);
+  o.push(`<text x="${nlab[0]}" y="${nlab[1]}" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="var(--text)" font-family="monospace">N</text>`);
+  o.push('</svg>');
+  return o.join('');
+}
+function _nlCaption(azFacade, deitada){
+  const northS=_nlNorthScreen(azFacade,deitada);
+  let dd=northS; if(dd>180) dd-=360; // + = direita (horario)
+  const mag=Math.abs(dd).toFixed(0);
+  const side=dd>0?'direita':'esquerda';
+  const topAz=_nlAzOfScreen(0,azFacade,deitada), botAz=_nlAzOfScreen(180,azFacade,deitada), leftAz=_nlAzOfScreen(270,azFacade,deitada), rightAz=_nlAzOfScreen(90,azFacade,deitada);
+  const giro = (mag==='0') ? 'alinhado com o topo da prancha' : `girado ${mag}° para a ${side} em relação ao topo`;
+  return `Frente do lote ${_nlCardinalPT(azFacade)} (${Math.round(((azFacade%360)+360)%360)}°). Norte ${giro}. Bordas → topo ≈ ${_nlCardinalPT(topAz)}, base ≈ ${_nlCardinalPT(botAz)}, esquerda ≈ ${_nlCardinalPT(leftAz)}, direita ≈ ${_nlCardinalPT(rightAz)}.`;
+}
+function desenharNorteLote(){
+  const out=$('nl-out'); if(!out) return;
+  const az=window._norteLote.az, deitada=window._norteLote.deitada;
+  out.innerHTML=`<div class="carta-solar-box">${norteLoteSVG(az,deitada)}</div><div class="labeee-note">${_nlCaption(az,deitada)}</div>`;
+}
+function setNorteAz(v){ const n=parseFloat(v); if(Number.isFinite(n)){ window._norteLote.az=(((n%360)+360)%360); desenharNorteLote(); } }
+function setNorteOrient(deitada){ window._norteLote.deitada=!!deitada; const bd=$('nl-btn-deit'), bp=$('nl-btn-pe'); if(bd) bd.className='btn '+(deitada?'solid':'ghost'); if(bp) bp.className='btn '+(deitada?'ghost':'solid'); desenharNorteLote(); }
+function norteSyncFachada(){ const f=parseFloat($('cs-fachada')?.value); if(Number.isFinite(f)){ if($('nl-az')) $('nl-az').value=f; window._norteLote.az=(((f%360)+360)%360); desenharNorteLote(); cartaStatus('Norte sincronizado com a fachada selecionada ('+_nlCardinalPT(f)+').','ok'); } else { cartaStatus('Selecione uma fachada no campo acima antes de sincronizar.','err'); } }
+function norteCasoBarigui(){ if($('nl-az')) $('nl-az').value=308; window._norteLote.az=308; setNorteOrient(true); cartaStatus('Caso R. Barigui 58: testada a N38°E, frente NW ≈ 308°, prancha deitada.','ok'); }
+function baixarNorteLoteSVG(){
+  const svg=$('nl-out')?.querySelector('svg');
+  if(!svg){ cartaStatus('Gere o gráfico de Norte primeiro.','err'); return; }
+  let s=new XMLSerializer().serializeToString(svg); s=_cartaResolveVars(s);
+  const blob=new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+s],{type:'image/svg+xml;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='norte-lote-'+Math.round(window._norteLote.az)+'-'+(window._norteLote.deitada?'deitada':'empe')+'.svg';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  cartaStatus('Gráfico de Norte baixado em SVG.','ok');
+}
 async function gerarCartaSolar(){
   let lat=parseFloat($('cs-lat')?.value), lng=parseFloat($('cs-lng')?.value);
   let cidade=($('cs-cidade')?.value||'').trim(), uf=($('cs-uf')?.value||'').trim().toUpperCase();
