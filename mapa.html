@@ -880,6 +880,21 @@ function areaTerreno(){
   if (ehNum(i0.arealote) && Number(i0.arealote) > 0) return Number(i0.arealote);
   return atual.med.area;
 }
+/* resumo do lote selecionado, para o botão "Pegar dados do mapa" das outras ferramentas do sistema */
+function loteResumo(){
+  var p = atual.f.properties, i0 = atual.imoveis[0] || {};
+  var ed = ehNum(p.area_edificada) ? Number(p.area_edificada) : (ehNum(i0.area_ed_lt) ? Number(i0.area_ed_lt) : null);
+  return { cod:atual.cod, lat:atual.pi[1], lng:atual.pi[0], endereco:atual.imoveis.length ? endereco(i0) : '',
+    rua:[i0.tipoloc, i0.ruaimo].filter(Boolean).join(' '), numero:String(i0.nrporta || ''), bairro:String(i0.nomebairro || ''),
+    regiao:String(i0.nomeregiao || ''), parcelamento:String(i0.parcelamen || ''), quadra:semZeros(i0.quadra), lote:semZeros(i0.lote),
+    areaTerreno:areaTerreno(), areaEdificada:ed, unidades:atual.imoveis.length, quando:Date.now() };
+}
+function avisaSistema(){
+  if (!atual) return;
+  var r = loteResumo();
+  guarda('chaos-lote-mapa', r);
+  if (window.parent !== window){ try { window.parent.postMessage({ tipo:'chaos-lote', lote:r }, '*'); } catch (e) {} }
+}
 function pontoWkt(){ return 'SRID=4326;POINT(' + atual.pi[0] + ' ' + atual.pi[1] + ')'; }
 function loteWkt(){ /* encolhido 4% em direção ao interior, para não acusar zona vizinha só por encostar na divisa */
   var o = atual.pi;
@@ -926,6 +941,7 @@ function secBase(){
     + linha('Limite', semCodigo(p.caracteristica_limite))
     + '</table>';
   $('fbase').innerHTML = s;
+  avisaSistema();
 }
 
 function carregaZona(meu){
