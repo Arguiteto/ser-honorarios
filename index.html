@@ -4827,27 +4827,273 @@ function relImagem(src,maxLado=900){ // qualquer logo (SVG, PNG, JPG) vira PNG, 
   });
 }
 
+// ── SISGRAN 2026 (PLANURB/PMCG) — complemento do relatório ─────────────────────
+// Portal territorial oficial da Prefeitura (sisgranmaps.campogrande.ms.gov.br). Traz o que o GeoCG e o SIMGEO não dão:
+// inscrição imobiliária, uso e área de cada unidade do lote, CEP pela faixa de numeração do logradouro, instrumentos do
+// PDDUA (OODC, OOAUS, TDC, PEUC, IPTU progressivo, OUC, vazios), zonas especiais (ZEIS, ZEIA, ZEIE, ZEIU, ZEPA, ZEIC),
+// coleta Solurb, hidrografia (AGRAER), rede de gás (MSGÁS), hidrantes, equipamentos públicos e vulnerabilidade do bairro.
+// O portal não libera leitura vinda de outros sites (sem CORS). A consulta tenta direto e, se o navegador bloquear, passa
+// pela ponte do escritório (Google Apps Script — arquivo ponte-sisgran.gs). Sem ponte, o relatório sai só com GeoCG/SIMGEO.
+const SISGRAN_HOST='https://sisgranmaps.campogrande.ms.gov.br';
+const SISGRAN_PONTE=''; // URL do App da Web da ponte (termina em /exec)
+const SISGRAN_PONTO=['pd_macrozonas_urbanas','pd_regioes_urbanas','pd_bairros','pd_parcelamentos','pd_zonas_urbanas','pd_zonas_ambientais',
+  'pd_oodc','pd_ooaus','pd_tdc_receber','pd_tdc_transferir','pd_peuc','pd_iptu_progressivo','pd_operacao_urbana_consorciada','pd_vazios_urbanos',
+  'pd_zeis','pd_zeia','pd_zeie','pd_zeiu','pd_zepa','pd_centralidades','pd_agricultura_urbana','pd_zona_expansao_urbana',
+  'infra_solurb_coleta_residuos','infra_solurb_coleta_seletiva','infra_esgoto_sub_bacias','bacias_hidrograficas_zee_2016',
+  'vulnerabilidade_iv_geral_2022','ibge_favelas_comunidades_urbanas','ibge_territorios_quilombolas'];
+const SISGRAN_ZEIC=['pha_zeic_1_imoveis','pha_zeic_1_poligonos','pha_zeic_1_entorno_nob','pha_zeic_2_imoveis','pha_zeic_3_conjuntos','pha_zeic_4_locais','pha_zeic_4_rocio'];
+const SISGRAN_EQUIP=[
+  ['saude_ubs','Unidade Básica de Saúde'],['saude_usf','Unidade de Saúde da Família'],['saude_upa','UPA 24h'],['saude_policlinicas','Policlínica'],
+  ['saude_caps','CAPS'],['saude_ceo','Centro de Especialidades Odontológicas'],
+  ['educacao_escolas_municipais_infantil_2025','Escola municipal — educação infantil'],['educacao_escolas_municipais_fundamental_2025','Escola municipal — ensino fundamental'],
+  ['educacao_escolas_estaduais_fundamental_2025','Escola estadual — ensino fundamental'],['educacao_escolas_estaduais_medio_2025','Escola estadual — ensino médio'],
+  ['educacao_escolas_federais_inep_2025','Escola federal'],
+  ['assistencia_cras','CRAS'],['assistencia_creas','CREAS'],['assistencia_cc','Centro de Convivência'],['assistencia_cci','Centro de Convivência do Idoso'],
+  ['assistencia_centro_dia','Centro-Dia'],['assistencia_centro_pop','Centro POP'],['assistencia_cmrci','CMRCI']
+];
+let sisgranDireto=null; // null: ainda não testado; false: o navegador bloqueou (segue pela ponte nesta sessão)
+
+function sisgranPonteUrl(){
+  let v=''; try{ v=String(localStorage.getItem('chaos-sisgran-ponte')||'').trim(); }catch(e){}
+  return /^https:\/\//.test(v) ? v : SISGRAN_PONTE;
+}
+// texto limpo; corrige acentuação que vem quebrada em algumas camadas ("DiÃ¡ria" → "Diária")
+function sisgranTxt(v){
+  if(v===null || v===undefined) return '';
+  let s=String(v).trim();
+  if(/Ã[\u0080-\u00BF]|Â[\u0080-\u00BF]|Ã¡|Ã©|Ã§|Ã£|Ãº|Ã³|Ã­/.test(s)){ try{ s=decodeURIComponent(escape(s)); }catch(e){} }
+  return /^(null|undefined|-)$/i.test(s) ? '' : s;
+}
+// atributo pelo nome, sem ligar para maiúsculas/minúsculas (há camadas com NOME e outras com nome)
+function sisgranAt(p,...nomes){
+  if(!p) return '';
+  const ks=Object.keys(p);
+  for(const n of nomes){ const k=ks.find(x=>x.toLowerCase()===n.toLowerCase()); if(k!==undefined){ const v=sisgranTxt(p[k]); if(v) return v; } }
+  return '';
+}
+function sisgranNome(s){ // "ZONA ESPECIAL DE INTERESSE SOCIAL 2 - ZEIS 2" → "Zona Especial de Interesse Social 2 - ZEIS 2"
+  return relCap(sisgranTxt(s)).replace(/\((\p{Ll})/gu,(m,c)=>'('+c.toUpperCase())
+    .replace(/\b(Mz|Mzu|Mzs|Mzra|Za|Zeis|Zeia|Zeie|Zeiu|Zepa|Zeic|Ouc|Ea|Zc|Oodc|Ooaus|Tdc|Peuc|Iptu|Nob|Ibge|Emei|Ee|Em|Ubs|Usf|Upa|Cras|Creas|Caps|Ceo)\b/g,m=>m.toUpperCase());
+}
+// ZEIE com índices próprios (Anexo 13) no formato da zona do GeoCG, para entrar no lugar da zona base
+function sisgranZonaEspecial(e){
+  const m=String(e.zona||'').match(/^(.*?)\s*-\s*(ZEIE\s*\d*)\s*$/i);
+  // textos da tabela vêm em caixa alta: "TÉRREO E 1º PAVIMENTO - LIVRE | IE ENTRE 2 E 6 - H/6" → "Térreo e 1º pavimento - livre | IE entre 2 e 6 - h/6"
+  const caixa=t=>String(t||'').split('|').map(x=>{ x=x.trim().toLowerCase().replace(/\bie\b/g,'IE'); return x.charAt(0).toUpperCase()+x.slice(1); }).join(' | ');
+  const o={...e, zona:sisgranNome(m?m[1]:e.zona), sigla:m?m[2].toUpperCase().replace(/\s+/,' '):'ZEIE', _zeie:true};
+  ['frente','lat_fundos','oo_t_dc_lf','elevacao'].forEach(k=>{ if(o[k]) o[k]=caixa(o[k]); });
+  if(/^\d+\.\d+$/.test(String(o.oo_t_dc||''))) o.oo_t_dc=String(o.oo_t_dc).replace('.',',');
+  return o;
+}
+function sisgranAnexo(p){ const m=sisgranAt(p,'legislacao').match(/ANEXO\s+[\d.]+/i); return m ? 'Anexo '+m[0].replace(/^ANEXO\s+/i,'') : ''; }
+function sisgranCamada(f){ return String(f && f.id || '').split('.')[0].replace(/^vw_/,''); }
+
+// WMS GetFeatureInfo: feições num raio (m) em torno do ponto [lng,lat]
+function sisgranGfi(pt,camadas,raio,max){
+  const px=101, lng=pt[0], lat=pt[1];
+  const meio=Math.max(raio*1.4,8)/111320, dl=meio/Math.cos(lat*Math.PI/180);
+  const buf=Math.max(1,Math.ceil(raio/(2*meio*111320/px)));
+  const L=camadas.map(c=>'sisgran:vw_'+c).join(',');
+  return '/sisgran/api/v1/maps/wms?'+new URLSearchParams({service:'WMS',version:'1.1.1',request:'GetFeatureInfo',layers:L,query_layers:L,styles:'',srs:'EPSG:4326',
+    bbox:[lng-dl,lat-meio,lng+dl,lat+meio].map(v=>v.toFixed(7)).join(','),width:px,height:px,x:50,y:50,info_format:'application/json',feature_count:max||50,buffer:buf}).toString();
+}
+
+// faz as consultas (direto ou pela ponte, todas numa chamada só) e devolve os JSON na mesma ordem
+async function sisgranBuscar(pedidos){
+  if(sisgranDireto!==false){
+    try{
+      const r=await Promise.all(pedidos.map(p=>fetchJson(SISGRAN_HOST+p.u,{timeout:15000})));
+      sisgranDireto=true;
+      return r;
+    }catch(e){ sisgranDireto=false; }
+  }
+  const ponte=sisgranPonteUrl();
+  if(!ponte) throw new Error('a ponte do SISGRAN ainda não foi configurada');
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),45000);
+  try{
+    const res=await fetch(ponte,{method:'POST',body:JSON.stringify({p:pedidos.map(p=>({u:p.u,g:!!p.g}))}),signal:ctl.signal,redirect:'follow',cache:'no-store'});
+    if(!res.ok) throw new Error('a ponte do SISGRAN respondeu HTTP '+res.status);
+    const j=await res.json();
+    if(!j || !Array.isArray(j.r)) throw new Error((j && j.erro) || 'resposta inesperada da ponte do SISGRAN');
+    return pedidos.map((p,i)=>{ const x=j.r[i]; return x && x.s===200 ? x.j : null; });
+  }catch(e){
+    if(e && e.name==='AbortError') throw new Error('o SISGRAN demorou demais para responder');
+    throw e;
+  }finally{ clearTimeout(timer); }
+}
+
+// coleta tudo o que o relatório usa do SISGRAN para o lote já localizado no GeoCG
+async function sisgranColetar(g){
+  const L=g.lote, pt=L.pi, an=L.an, i0=(g.imoveis||[])[0]||{};
+  const raioLote=Math.max(Number(L.raio)||10,5);
+  const pedidos=[
+    {k:'ponto',   u:sisgranGfi(pt,SISGRAN_PONTO,2,80), g:false},
+    {k:'imoveis', u:sisgranGfi(pt,['infra_imoveis'],2,400), g:false},
+    {k:'logr',    u:sisgranGfi(pt,['infra_logradouros'],Math.round(raioLote+35),40), g:false},
+    {k:'equip',   u:sisgranGfi(pt,SISGRAN_EQUIP.map(e=>e[0]),1500,150), g:true},
+    {k:'hidrante',u:sisgranGfi(pt,['infra_agua_hidrantes'],400,30), g:true},
+    {k:'gas',     u:sisgranGfi(pt,['infra_msgas_rede_gas'],200,15), g:true},
+    {k:'agua',    u:sisgranGfi(pt,['hidrografia_curso_agua','hidrografia_massa_dagua','hidrografia_areas_alagadas'],1000,25), g:true},
+    {k:'zeic',    u:sisgranGfi(pt,SISGRAN_ZEIC,300,40), g:true},
+    {k:'eixo',    u:sisgranGfi(pt,['pd_eixos_adensamento','pd_centralidades'],200,10), g:true}
+  ];
+  const resp=await sisgranBuscar(pedidos);
+  const R={}; let algum=false;
+  pedidos.forEach((p,i)=>{ const j=resp[i]; R[p.k]=j && Array.isArray(j.features) ? j.features : null; if(R[p.k]) algum=true; });
+  if(!algum) throw new Error('o SISGRAN não respondeu às consultas');
+
+  // distância (m) entre o lote e uma geometria do SISGRAN (as coordenadas vêm com 4 casas: precisão de uns 10 m)
+  const dist=geo=>{
+    if(!geo) return Infinity;
+    if(geo.type==='Point') return geocgDistPontoAneis(geo.coordinates,an);
+    if(geo.type==='MultiPoint') return Math.min(...geo.coordinates.map(c=>geocgDistPontoAneis(c,an)));
+    const ls=geocgLinhas(geo); if(ls.length) return geocgDistAneisLinhas(an,ls);
+    const rs=geocgAneis(geo);
+    if(rs.length){ if(rs.some(r=>geocgDentro(pt,r))) return 0; return geocgDistAneisLinhas(an,rs); }
+    return Infinity;
+  };
+  const porCamada=lista=>{ const o={}; (lista||[]).forEach(f=>{ const c=sisgranCamada(f); (o[c]=o[c]||[]).push(f); }); return o; };
+  const P=porCamada(R.ponto), um=c=>(P[c]&&P[c][0]&&P[c][0].properties)||null;
+  const out={quando:new Date(),consultas:Object.keys(R).filter(k=>R[k]).length};
+
+  // território
+  const mz=um('pd_macrozonas_urbanas'); out.macro=mz ? sisgranNome(sisgranAt(mz,'nome')).replace(/\s*-\s*(MZ\s*\d+)$/,' ($1)') : '';
+  const ru=um('pd_regioes_urbanas'); out.regiao=ru ? relCap(sisgranAt(ru,'nome_ru','nome','regiao_urb')) : '';
+  const br=um('pd_bairros'); out.bairro=br ? relCap(sisgranAt(br,'bairro','nome')) : '';
+  const pc=um('pd_parcelamentos'); out.parcelamento=pc ? relCap(sisgranAt(pc,'nome_exibicao','nome_parcelamento')) : '';
+  const zu=um('pd_zonas_urbanas'); out.zonaNome=zu ? sisgranNome(sisgranAt(zu,'nome')) : '';
+  const za=um('pd_zonas_ambientais');
+  if(za){
+    const n=sisgranAt(za,'nome'), m=n.match(/ZA\s*(\d)/i), perm=relNumTxt(za.tx_permeab);
+    out.za=m ? {sigla:'ZA'+m[1],tra:relNumTxt(za.tra_min),alfa:relNumTxt(za.fator_alfa),beta:relNumTxt(za.fator_beta),perm:perm===null?null:(perm>1?perm/100:perm),fonte:'sisgran'} : null;
+  }
+
+  // instrumentos do PDDUA
+  const INST=[['pd_oodc','Outorga onerosa do direito de construir (OODC)'],['pd_ooaus','Outorga onerosa de alteração de uso (OOAUS)'],
+    ['pd_tdc_receber','Transferência do direito de construir — área receptora'],['pd_tdc_transferir','Transferência do direito de construir — área cedente'],
+    ['pd_peuc','Parcelamento, edificação ou utilização compulsórios (PEUC)'],['pd_iptu_progressivo','IPTU progressivo no tempo'],
+    ['pd_operacao_urbana_consorciada','Operação urbana consorciada'],['pd_vazios_urbanos','Vazio urbano mapeado']];
+  out.inst=INST.filter(x=>um(x[0])).map(x=>{ const p=um(x[0]), nm=sisgranAt(p,'nome');
+    const det=x[0]==='pd_tdc_transferir' && nm ? sisgranNome(nm) : (x[0]==='pd_ooaus' || x[0]==='pd_tdc_receber') && /MZ\s*\d/i.test(nm) ? sisgranNome(nm) : '';
+    return {k:x[0].replace('pd_',''),t:x[1],det,anexo:sisgranAnexo(p)}; });
+
+  // zonas especiais no ponto
+  out.especiais=['pd_zeis','pd_zeia','pd_zeie','pd_zeiu','pd_zepa','pd_centralidades','pd_agricultura_urbana','pd_zona_expansao_urbana']
+    .filter(c=>um(c)).map(c=>{ const p=um(c); return {k:c.replace('pd_',''),nome:sisgranNome(sisgranAt(p,'nome')||c.replace('pd_','').toUpperCase()),anexo:sisgranAnexo(p)}; });
+  const ze=um('pd_zeie');
+  if(ze && sisgranAt(ze,'ocupacao')){
+    out.zeie={zona:sisgranAt(ze,'nome'),sigla:'ZEIE',legislacao:sisgranAt(ze,'legislacao')};
+    [['residencia'],['varejista'],['atacadista'],['servicos'],['industrial'],['loteamento'],['especial'],['ocupacao'],['camin'],['cabas'],['camax'],['oo_t_dc'],['elevacao'],
+     ['area_m2','area_m²','area_m'],['esquina_m'],['quadra_m'],['frente'],['lat_fundos'],['oo_t_dc_lf']].forEach(([k,...alt])=>{ out.zeie[k]=sisgranAt(ze,k,...alt); });
+  }
+
+  // serviços e meio físico no ponto
+  const cr=um('infra_solurb_coleta_residuos'), cs=um('infra_solurb_coleta_seletiva');
+  out.coleta={dom:cr?{freq:sisgranAt(cr,'frequencia'),periodo:sisgranAt(cr,'periodo'),setor:sisgranAt(cr,'setor').replace(/^Setro\b/i,'Setor')}:null,
+              sel:cs?{freq:sisgranAt(cs,'frequencia'),setor:sisgranAt(cs,'setor')}:null};
+  const sb=um('infra_esgoto_sub_bacias'); out.subBacia=sb ? sisgranAt(sb,'nome') : '';
+  const bh=um('bacias_hidrograficas_zee_2016'); out.bacia=bh ? sisgranAt(bh,'bacia_nome','bacia_nome_original') : '';
+  const iv=um('vulnerabilidade_iv_geral_2022'); out.ivs=iv ? {valor:relNumTxt(iv.valor_iv),classe:sisgranAt(iv,'classe_iv'),bairro:relCap(sisgranAt(iv,'bairro'))} : null;
+  const fv=um('ibge_favelas_comunidades_urbanas'); out.favela=fv ? sisgranAt(fv,'nome_favela','nome') : '';
+  const qb=um('ibge_territorios_quilombolas'); out.quilombo=qb ? sisgranAt(qb,'nome_territorio','nome') : '';
+
+  // imóveis (unidades) do lote: o código do GeoCG tem 12 dígitos e o do cadastro imobiliário 11 (sem o 9º dígito)
+  const cod=String(L.cod||''), cod11=cod.length===12 ? cod.slice(0,8)+cod.slice(9) : cod;
+  let imo=(R.imoveis||[]).map(f=>f.properties||{});
+  let doLote=imo.filter(p=>String(p.codlote||'')===cod11 || String(p.codlote_busca||'')===cod11);
+  if(!doLote.length && i0.ruaimo) doLote=imo.filter(p=>normTxt(p.ruaimo)===normTxt(i0.ruaimo) && String(p.nrporta||'').trim()===String(i0.nrporta||'').trim());
+  if(!doLote.length && new Set(imo.map(p=>p.codlote)).size===1) doLote=imo;
+  const vistos=new Set();
+  out.imoveis=doLote.filter(p=>{ const k=String(p.inscant||p.codimo); if(vistos.has(k)) return false; vistos.add(k); return true; })
+    .map(p=>({insc:String(p.inscant||'').trim(),codimo:Number(p.codimo),uso:relCap(sisgranAt(p,'usoimovel')),area:relNumTxt(p.areaedific),compl:sisgranAt(p,'complement'),
+      rua:sisgranAt(p,'ruaimo'),num:sisgranAt(p,'nrporta'),areaLote:relNumTxt(p.arealote),ref:sisgranAt(p,'data_referencia').slice(0,10)}))
+    .sort((a,b)=>(a.codimo||0)-(b.codimo||0));
+  out.areaUnid=out.imoveis.reduce((s,x)=>s+(x.area>0?x.area:0),0);
+
+  // logradouro da testada: CEP pela faixa de numeração e pavimentação
+  // o trecho do logradouro é achado pelo código da rua no cadastro imobiliário ("TREZE DE MAIO" no cadastro é "13 DE MAIO" no logradouro); sem ele, pelo nome
+  const rua=normTxt(i0.ruaimo||'').trim(), nro=parseInt(i0.nrporta || (doLote[0] && doLote[0].nrporta),10);
+  const codsRua=new Set(doLote.map(p=>Number(p.codlogrado)).filter(n=>n>0));
+  const todos=(R.logr||[]).map(f=>f.properties||{});
+  const peloCodigo=todos.filter(p=>codsRua.has(Number(p.cd_logr)));
+  const segs=peloCodigo.length ? peloCodigo : todos.filter(p=>rua && (normTxt(p.tx_n_parci||'').trim()===rua || normTxt(p.n_logra||'').trim().endsWith(' '+rua)));
+  const faixa=(a,b)=>{ a=parseInt(a,10); b=parseInt(b,10); if(![a,b,nro].every(Number.isFinite) || (a===0 && b===0)) return false; const lo=Math.min(a,b), hi=Math.max(a,b); return nro>=lo && nro<=hi && (nro%2===lo%2 || nro%2===hi%2); };
+  const cepOk=c=>/^\d{8}$/.test(c) && !/^(00000000|79000000)$/.test(c);
+  let seg=segs.find(p=>faixa(p.nr_from_le,p.nr_to_left) || faixa(p.nr_from_ri,p.nr_to_righ));
+  const cepsRua=[...new Set(segs.map(p=>String(p.cep||'').replace(/\D/g,'')).filter(cepOk))];
+  let cep=seg && cepOk(String(seg.cep||'').replace(/\D/g,'')) ? String(seg.cep).replace(/\D/g,'') : (cepsRua.length===1 ? cepsRua[0] : '');
+  if(!seg && segs.length) seg=segs[0];
+  out.logr=seg ? {cep:cep?cep.slice(0,5)+'-'+cep.slice(5):'',pav:String(seg.pavimentac||'').toUpperCase()==='S'?true:(String(seg.pavimentac||'').toUpperCase()==='N'?false:null),nome:sisgranAt(seg,'n_logra')} : null;
+
+  // equipamentos públicos: o mais próximo de cada tipo, até 1,5 km
+  const rot=Object.fromEntries(SISGRAN_EQUIP);
+  const maisPerto={};
+  (R.equip||[]).forEach(f=>{
+    const c=sisgranCamada(f); if(!rot[c]) return;
+    const d=dist(f.geometry); if(!(d<=1500)) return;
+    const p=f.properties||{}, nome=sisgranAt(p,'nome_publicacao','nome_exibicao','nome_popular','nome_oficial','nome_inep','nome');
+    if(!maisPerto[c] || d<maisPerto[c].d) maisPerto[c]={t:rot[c],n:/[a-z]/.test(nome)?nome:sisgranNome(nome),d};
+  });
+  out.equip=Object.values(maisPerto).sort((a,b)=>a.d-b.d);
+
+  // hidrante, gás, água, eixos, patrimônio
+  const perto=(lista,filtro)=>{ let m=null; (lista||[]).forEach(f=>{ if(filtro && !filtro(f)) return; const d=dist(f.geometry); if(Number.isFinite(d) && (!m || d<m.d)) m={f,p:f.properties||{},d}; }); return m; };
+  const hd=perto(R.hidrante); out.hidrante=hd ? {n:sisgranAt(hd.p,'nome'),d:hd.d} : null;
+  const gs=perto(R.gas); out.gas=gs ? {d:gs.d} : null;
+  const ag=porCamada(R.agua);
+  const ca=perto(ag.hidrografia_curso_agua); out.curso=ca ? {n:sisgranAt(ca.p,'nome'),regime:sisgranAt(ca.p,'regime'),d:ca.d} : null;
+  const ma=perto(ag.hidrografia_massa_dagua); out.massa=ma ? {t:sisgranAt(ma.p,'tipo')||'Massa d’água',d:ma.d} : null;
+  const al=perto(ag.hidrografia_areas_alagadas); out.alagavel=al ? {d:al.d} : null;
+  const ex=porCamada(R.eixo);
+  const ea=perto(ex.pd_eixos_adensamento); out.eixo=ea ? {n:sisgranNome(sisgranAt(ea.p,'nome')),d:ea.d,anexo:sisgranAnexo(ea.p)} : null;
+  const ct=perto(ex.pd_centralidades); out.centralidade=ct ? {n:sisgranNome(sisgranAt(ct.p,'nome')),d:ct.d,anexo:sisgranAnexo(ct.p)} : null;
+  const zc={};
+  (R.zeic||[]).forEach(f=>{
+    const p=f.properties||{}, ficha=sisgranAt(p,'codigo_ficha')||sisgranAt(p,'nome_referencia'); if(!ficha) return;
+    const d=dist(f.geometry);
+    if(!zc[ficha] || d<zc[ficha].d) zc[ficha]={cat:sisgranAt(p,'categoria_zeic'),ficha,nome:sisgranNome(sisgranAt(p,'nome_referencia')),end:relCap(sisgranAt(p,'endereco')),
+      tipo:sisgranAt(p,'tipo_registro'),gdu:p.exige_gdu_restauro===true || /^true$/i.test(String(p.exige_gdu_restauro)),efeito:sisgranAt(p,'efeito_operacional'),
+      link:sisgranAt(p,'link_ficha'),linkGeral:sisgranAt(p,'link_geral'),d};
+  });
+  out.zeic=Object.values(zc).filter(x=>Number.isFinite(x.d)).sort((a,b)=>a.d-b.d);
+  out.zeicNoLote=out.zeic.filter(x=>x.d<=0.5);
+  return out;
+}
+// distância para o texto: arredondada a 10 m, já que a geometria do portal vem com precisão de uns 10 m
+function sisgranM(d){ if(!Number.isFinite(d)) return '—'; if(d<=0.5) return 'no lote'; if(d<15) return 'a menos de 15 m'; return 'a ≈ '+(Math.round(d/10)*10).toLocaleString('pt-BR')+' m'; }
+function sisgranFrase(lista){ return lista.length>1 ? lista.slice(0,-1).join(', ')+' e '+lista[lista.length-1] : (lista[0]||''); }
+
 // reúne tudo o que entra no relatório
 async function relColetar(point,gPronto){
   const g=(gPronto && gPronto.lote && !gPronto.leve && !gPronto.erro) ? gPronto : await geocgColetar(point);
   if(!g.lote) throw new Error('Não há lote cadastrado neste ponto. Escolha um ponto dentro do lote.');
-  const L=g.lote, i0=(g.imoveis||[])[0]||{}, z=g.zona && g.zona.z[0] || null;
+  const L=g.lote, i0=(g.imoveis||[])[0]||{};
+  let z=g.zona && g.zona.z[0] || null;
   const bairroCad=i0.nomebairro||g.bairro||'';
-  const [fr,pd,cepV]=await Promise.all([
+  const [fr,pd,cepV,sgR]=await Promise.all([
     relFrente(g).catch(e=>{ console.warn('Relatório, testada:',e); return null; }),
     relPddua(L.pi).catch(e=>{ console.warn('Relatório, PDDUA:',e); return null; }),
     (point.address && point.address.cep) ? Promise.resolve({cep:String(point.address.cep).replace(/^(\d{5})-?(\d{3})$/,'$1-$2'),logradouro:point.address.logradouro||'',bairro:point.address.bairro||''})
-      : relCep(i0.tipoloc,i0.ruaimo,i0.nrporta,bairroCad).catch(e=>{ console.warn('Relatório, CEP:',e); return null; })
+      : relCep(i0.tipoloc,i0.ruaimo,i0.nrporta,bairroCad).catch(e=>{ console.warn('Relatório, CEP:',e); return null; }),
+    sisgranColetar(g).catch(e=>{ console.warn('Relatório, SISGRAN:',e); return {erro:(e && e.message)||'falha na consulta'}; })
   ]);
+  const sg=sgR && !sgR.erro ? sgR : null;
   let za=pd && pd.za && pd.za.sigla ? pd.za : null;
+  if(!za && sg && sg.za) za=sg.za; // SIMGEO fora do ar: zona ambiental pelo SISGRAN
   if(za && REL_ZA[za.sigla]){ if(za.tra===null) za.tra=REL_ZA[za.sigla][0]; if(za.perm===null) za.perm=REL_ZA[za.sigla][1]; }
   if(!za) za=relZaPorBairro(bairroCad);
-  return {g,L,i0,z,fr,pd,za,cep:cepV,hoje:new Date(),bairroCad};
+  // ZEIE: a zona especial tem índices próprios (Anexo 13), que prevalecem sobre os da zona base
+  let zBase=null;
+  if(sg && sg.zeie){ zBase=z; z=sisgranZonaEspecial(sg.zeie); }
+  // CEP: o do cadastro de logradouros (faixa de numeração da quadra) é mais seguro que a busca por nome no ViaCEP
+  let cep=cepV;
+  if(!(point.address && point.address.cep) && sg && sg.logr && sg.logr.cep) cep={...(cepV||{}),cep:sg.logr.cep};
+  return {g,L,i0,z,zBase,fr,pd,za,cep,sg,sgErro:sgR && sgR.erro || '',hoje:new Date(),bairroCad:bairroCad||(sg && sg.bairro)||''};
 }
 
 // monta o documento Word
 async function relMontar(d){
-  const X=window.docx, {g,L,i0,z,fr,pd,za,hoje}=d;
+  const X=window.docx, {g,L,i0,z,zBase,fr,pd,za,hoje,sg}=d;
   const {Document,Paragraph,TextRun,Table,TableRow,TableCell,WidthType,BorderStyle,ShadingType,AlignmentType,VerticalAlign,ImageRun,Header,Footer,PageNumber,TabStopType,HeightRule,TableLayoutType,VerticalMergeType}=X;
   const custom=(typeof logoGetCustom==='function') ? logoGetCustom() : null;
   const empresa=((custom && custom.nome) || 'Chaos Arq & Art').toUpperCase();
@@ -4857,16 +5103,20 @@ async function relMontar(d){
   // ---- textos básicos ----
   const area=geocgAreaTerreno(g), areaLote=area.v;
   const areaEdif=relNumTxt(geocgNum(L.props.area_edificada)?L.props.area_edificada:i0.area_ed_lt);
+  const unid=sg ? sg.imoveis : [];
+  const areaCad=(sg && sg.areaUnid>0) ? sg.areaUnid : areaEdif; // soma das unidades do cadastro imobiliário (SISGRAN) ou área do lote no GeoCG
+  const areaCadTxt=unid.length>1 ? 'pela soma das '+unid.length+' unidades do cadastro imobiliário' : 'pelo cadastro';
   const temEnd=!!(i0.ruaimo);
   const viaRua=d.cep && d.cep.logradouro ? d.cep.logradouro : '';
   const rua=temEnd ? (viaRua || relCap([i0.tipoloc,i0.ruaimo].filter(Boolean).join(' '))) : '';
   const num=temEnd ? String(i0.nrporta||'').trim() : '';
   const bairro=relCap(d.bairroCad), bairroCep=(d.cep && d.cep.bairro) || bairro;
-  const regiao=relCap(String(i0.nomeregiao||'').replace(/^RU\s*-\s*/i,'') || (pd && pd.regiao) || '');
-  const parc=relCap(i0.parcelamen||g.parcelamento||'');
+  const regiao=relCap(String(i0.nomeregiao||'').replace(/^RU\s*-\s*/i,'') || (pd && pd.regiao) || (sg && sg.regiao) || '');
+  const parc=relCap(i0.parcelamen||g.parcelamento||(sg && sg.parcelamento)||'');
   const cep=d.cep && d.cep.cep ? d.cep.cep : '';
   const quadra=String(i0.quadra||'').trim(), lote=String(i0.lote||'').trim();
-  const zNome=z ? relCap(z.zona||'') : '', zSig=z ? String(z.sigla||'') : '';
+  const zNome=z ? (z._zeie ? z.zona : relCap(z.zona||'')) : '', zSig=z ? String(z.sigla||'') : '';
+  const zBaseTxt=zBase ? relCap(zBase.zona||'')+(zBase.sigla?' ('+zBase.sigla+')':'') : '';
   const zTxt=z ? (zNome+(zSig?' ('+zSig+')':'')) : '';
   const to=z ? relNumTxt(/^\s*\d+([.,]\d+)?\s*$/.test(String(z.ocupacao))?z.ocupacao:null) : null;
   const nTest=fr ? fr.ruasFrente.length : 0;
@@ -4918,7 +5168,13 @@ async function relMontar(d){
   const notasUsadas=z ? [...new Set([z.ocupacao,z.oo_t_dc,z.elevacao,z.frente].map(v=>(String(v ?? '').match(/\((\d)\)/g)||[]).map(m=>+m.replace(/\D/g,''))).reduce((a,b)=>a.concat(b),[]))].filter(n=>REL_NOTAS_82[n]).sort() : [];
   const inst=pd ? pd.inst : [];
   const temOO=inst.some(n=>/outorga onerosa do direito/i.test(n)), temTDC=inst.some(n=>/transfer/i.test(n));
-  const zaTxt=za ? [za.sigla+' — TRA mínima '+relN(za.tra)+' · fator alfa '+relN(za.alfa)+' · fator beta '+relN(za.beta)+' (Anexo 7.1)'+(za.fonte==='bairro'?' — pela tabela de bairros do Anexo 7.1; ':''), za.fonte==='bairro'?ph('[conferir a zona ambiental no SIMGEO]'):''] : [ph('[ZA_ — conferir no SIMGEO, camada Zonas ambientais]')];
+  const zaTxt=za ? [za.sigla+' — TRA mínima '+relN(za.tra)+' · fator alfa '+relN(za.alfa)+' · fator beta '+relN(za.beta)+' (Anexo 7.1)'+(za.fonte==='bairro'?' — pela tabela de bairros do Anexo 7.1; ':(za.fonte==='sisgran'?' — SISGRAN/PLANURB':'')), za.fonte==='bairro'?ph('[conferir a zona ambiental no SIMGEO]'):''] : [ph('[ZA_ — conferir no SIMGEO, camada Zonas ambientais]')];
+  const siglaEsp=t=>{ const n=normTxt(t).toUpperCase(), m=n.match(/\b(ZEIS|ZEIA|ZEIE|ZEIU|ZEPA|ZEIC)\b/); return m ? m[1] : (/CENTRALIDADE/.test(n)?'ZC':(/EIXO/.test(n)?'EA':(/AGRICULTURA/.test(n)?'AGR':''))); };
+  const espPd=pd ? pd.sobre : [];
+  const espSg=sg ? sg.especiais.map(x=>x.nome+(x.anexo?' ('+x.anexo+')':'')).concat(sg.zeicNoLote.map(x=>x.cat+' (ficha '+x.ficha+')'+(x.gdu?' — exige GDU de restauro':''))) : [];
+  const espJa=new Set(espSg.map(siglaEsp).filter(Boolean));
+  const espTodos=espSg.concat(espPd.filter(t=>{ const k=siglaEsp(t); return !k || !espJa.has(k); }));
+  const fontesEsp=[pd?'SIMGEO':'',sg?'SISGRAN':''].filter(Boolean).join(' e ');
   const dimTxt=fr && fr.princ ? [relN(testada)+' m (testada) × '+relN(fr.prof)+' m (profundidade)'+(fr.lados.length!==4?' — lote irregular, lados de '+fr.lados.map(sd=>relN(sd.len)).join(' · ')+' m':'')+' — medidas do desenho cadastral'] : ['Lados de '+L.med.lados.filter(v=>v>=1).map(v=>relN(v)).join(' · ')+' m — ',ph('[indicar a testada]')];
   const infraLista=g.infra && g.infra.face ? [['pavimentacao','pavimentação'],['meio_fio','meio-fio'],['calcada','calçada'],['rede_eletrica','rede elétrica'],['iluminacao_publica','iluminação pública'],['agua','água'],['esgoto','esgoto'],['coleta_lixo','coleta de lixo'],['transporte_coletivo','transporte coletivo']].filter(x=>g.infra.face[x[0]]===true).map(x=>x[1]) : [];
   const infraTxt=infraLista.length ? [(infraLista.length>1 ? infraLista.slice(0,-1).join(', ')+' e '+infraLista[infraLista.length-1] : infraLista[0]).replace(/^./,m=>m.toUpperCase())] : [ph('[Pavimentação, meio-fio, rede elétrica, água, esgoto, coleta de lixo]')];
@@ -4937,7 +5193,7 @@ async function relMontar(d){
     ] : [new Paragraph({children:[]})],0,3,{vm});
   const dn=getDisplayName ? getDisplayName() : '';
   const rtNome=(dn && /\s/.test(dn) && !/^usu[áa]rio$/i.test(dn)) ? [dn.toUpperCase()] : [ph('[NOME DO RESPONSÁVEL TÉCNICO]')];
-  const indice=[['1.','RELATÓRIO TÉCNICO DE CONFORMIDADE URBANÍSTICA'],['1.1','APRESENTAÇÃO'],['1.2','OBJETIVO'],['1.3','DATA, HORÁRIO E LOCAL DO LEVANTAMENTO'],['1.4','DADOS GERAIS DO IMÓVEL'],['1.5','CROQUI DE IMPLANTAÇÃO'],['1.6','ÍNDICES URBANÍSTICOS'+(zTxt?' DA '+zTxt.toUpperCase():'')],['1.7','LEVANTAMENTO DA EDIFICAÇÃO — QUADRO DE ÁREAS'],['1.8','CONFRONTO DOS ÍNDICES — CONFORMIDADE'],['1.9','OUTORGA ONEROSA DO DIREITO DE CONSTRUIR'],['1.10','NORMAS E LEGISLAÇÃO DE REFERÊNCIA'],['1.11','CONCLUSÃO'],['1.12','RESPONSÁVEL TÉCNICO E ASSINATURA'],['1.13','ANEXOS']];
+  const indice=[['1.','RELATÓRIO TÉCNICO DE CONFORMIDADE URBANÍSTICA'],['1.1','APRESENTAÇÃO'],['1.2','OBJETIVO'],['1.3','DATA, HORÁRIO E LOCAL DO LEVANTAMENTO'],['1.4','DADOS GERAIS DO IMÓVEL'],['1.5','CROQUI DE IMPLANTAÇÃO'],['1.6','ÍNDICES URBANÍSTICOS'+(zTxt?' DA '+(zTxt.length>40 && zSig ? zSig : zTxt).toUpperCase():'')],['1.7','INSTRUMENTOS URBANÍSTICOS, RESTRIÇÕES E ENTORNO'],['1.8','LEVANTAMENTO DA EDIFICAÇÃO — QUADRO DE ÁREAS'],['1.9','CONFRONTO DOS ÍNDICES — CONFORMIDADE'],['1.10','OUTORGA ONEROSA DO DIREITO DE CONSTRUIR'],['1.11','NORMAS E LEGISLAÇÃO DE REFERÊNCIA'],['1.12','CONCLUSÃO'],['1.13','RESPONSÁVEL TÉCNICO E ASSINATURA'],['1.14','ANEXOS']];
   const revs=['Expedição','Original','Rev. A','Rev. B','Rev. C','Rev. D','Rev. E','Rev. F','Rev. G','Rev. H'];
   const REV=[[0,0],[1,1],[2,2],[3,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10]]; // colunas da grade que cada coluna do quadro de revisões ocupa
   const capa=new Table({
@@ -4978,10 +5234,10 @@ async function relMontar(d){
   add(TIT('1.1','Apresentação',true));
   add(PAR(['O presente documento apresenta o levantamento e a análise de conformidade urbanística da edificação ',ph('[residencial]'),' existente no imóvel situado à '].concat(temEnd?[rua+(num?', nº '+num:'')]:[ph('[endereço do imóvel]')],[parc?', '+parc:'',bairro?', bairro '+bairro:'',', Campo Grande/MS'],cep?[', CEP '+cep+'.']:[', ',ph('CEP [00000-000]'),'.'])));
   add(PAR(['O trabalho compreende o levantamento dos dados cadastrais e dimensionais do lote e da edificação, a elaboração do croqui de implantação e o confronto dos índices urbanísticos da zona de uso incidente sobre o imóvel, com indicação da conformidade ou inconformidade de cada parâmetro.']));
-  add(PAR(['Os dados cadastrais foram obtidos junto ao GeoCG e ao SIMGEO/CTM da Prefeitura Municipal de Campo Grande (cadastro público, consulta em '+relData(hoje)+'); as dimensões da edificação ',ph('[foram extraídas do projeto arquitetônico fornecido — identificar prancha e escala — ou levantadas no local]'),'.']));
+  add(PAR(['Os dados cadastrais foram obtidos junto ao GeoCG, ao SIMGEO/CTM'+(sg?' e ao SISGRAN 2026 (PLANURB)':'')+' da Prefeitura Municipal de Campo Grande (cadastro público, consulta em '+relData(hoje)+'); as dimensões da edificação ',ph('[foram extraídas do projeto arquitetônico fornecido — identificar prancha e escala — ou levantadas no local]'),'.']));
 
   add(TIT('1.2','Objetivo'));
-  add(PAR(['Confrontar os índices urbanísticos estabelecidos para a ',zTxt||ph('[zona de uso]'),' pela Lei Complementar nº 341, de 28 de dezembro de 2018 — Anexo 6, Zonas Urbanas — com as características da edificação existente, apurando taxa de ocupação, coeficiente de aproveitamento, taxa de permeabilidade e recuos, e informando a conformidade ou inconformidade de cada índice.']));
+  add(PAR(['Confrontar os índices urbanísticos estabelecidos para a ',zTxt||ph('[zona de uso]'),' pela Lei Complementar nº 341, de 28 de dezembro de 2018 — '+(z && z._zeie?'Anexo 13, Zonas Especiais de Interesse Econômico':'Anexo 6, Zonas Urbanas')+' — com as características da edificação existente, apurando taxa de ocupação, coeficiente de aproveitamento, taxa de permeabilidade e recuos, e informando a conformidade ou inconformidade de cada índice.']));
   add(PAR(['Verificada eventual extrapolação da taxa de ocupação ou do coeficiente de aproveitamento básico, apresenta-se o cálculo da outorga onerosa correspondente.']));
 
   add(TIT('1.3','Data, horário e local do levantamento'));
@@ -5000,7 +5256,9 @@ async function relMontar(d){
     ['Parcelamento / loteamento',[parc||ph('[Parcelamento]')]],
     ['Bairro / região urbana',[[bairro,regiao].filter(Boolean).join(' / ')||ph('[Bairro / região]')]],
     ['Quadra / Lote',[(quadra||lote)?'Quadra '+(quadra||'—')+' / Lote '+(lote||'—'):ph('[Quadra / Lote]'),tipoLote?' — lote '+tipoLote:'',nTest?(nTest===1?', uma testada':', '+nTest+' testadas'):'']],
-    ['Inscrição municipal (IPTU)',[prefixoInsc,ph(prefixoInsc?'xxxx':'[00000000000]'),areaEdif>0?' — imóvel predial':' — imóvel territorial']],
+    unid.length ? [unid.length>1?'Inscrições imobiliárias (IPTU)':'Inscrição municipal (IPTU)',[unid.slice(0,10).map(x=>x.insc+(unid.length>1?' ('+[x.compl||('unid. '+x.codimo)].concat(x.area>0?[relN(x.area)+' m²']:[]).join(', ')+')':'')).join(' · ')
+        +(unid.length>10?' e mais '+(unid.length-10)+' unidades':'')+(areaCad>0?' — imóvel predial':' — imóvel territorial')+' (cadastro imobiliário municipal'+(unid[0].ref?', ref. '+unid[0].ref.split('-').reverse().join('/'):'')+')']]
+      : ['Inscrição municipal (IPTU)',[prefixoInsc,ph(prefixoInsc?'xxxx':'[00000000000]'),areaEdif>0?' — imóvel predial':' — imóvel territorial']],
     ['Inscrição cartográfica',[ph('xx.xx.xx.xx.xx.xxxx.xx')]],
     ['Código do lote (GeoCG)',[L.cod]],
     ['Coordenadas (WGS84)',['Lat. '+L.pi[1].toFixed(7).replace('.',',')+' / Long. '+L.pi[0].toFixed(7).replace('.',',')]],
@@ -5008,11 +5266,12 @@ async function relMontar(d){
     ['Área do lote',[relN(areaLote)+' m²'+(area.fonte.includes('desenho')?' (medida no desenho cadastral)':'')]],
     ['Topografia',[topo||ph('[Topografia]')]],
     ['Infraestrutura urbana',infraTxt],
-    ['Zona de uso',[zTxt?zTxt+' — LC nº 341/2018, Anexo 8.1':ph('[Zona de uso]')]],
+    ['Zona de uso',z && z._zeie ? [zTxt+' — LC nº 341/2018, Anexo 13'+(zBaseTxt?' (zona base: '+zBaseTxt+')':'')] : (zTxt ? [zTxt+' — LC nº 341/2018, Anexo 8.1'] : (sg && sg.zonaNome ? [sg.zonaNome+' — LC nº 341/2018, Anexo 6 — ',ph('[conferir os índices na Consulta Prévia]')] : [ph('[Zona de uso]')]))],
     ['Zona ambiental',zaTxt],
-    pd && pd.macro ? ['Macrozona',[pd.macro+' — LC nº 341/2018, Anexo 5.2']] : null,
-    ['Zonas especiais sobrepostas',pd ? [pd.sobre.length?pd.sobre.join('; ')+' — o regime da zona especial prevalece sobre a zona base':'Nenhuma identificada no ponto (SIMGEO, '+relData(hoje)+')'] : [ph('[conferir no SIMGEO: ZC, eixo de adensamento, ZEIS, ZEIC, ZEIA, ZEPA]')]],
-    ['Uso da edificação',[ph('[Residencial unifamiliar (R1)]')]],
+    (pd && pd.macro) || (sg && sg.macro) ? ['Macrozona',[((pd && pd.macro) || sg.macro)+' — LC nº 341/2018, Anexo 5.2']] : null,
+    ['Zonas especiais sobrepostas',(pd || sg) ? [espTodos.length?espTodos.join('; ')+' — o regime da zona especial prevalece sobre a zona base':'Nenhuma identificada no ponto ('+fontesEsp+', '+relData(hoje)+')'] : [ph('[conferir no SIMGEO: ZC, eixo de adensamento, ZEIS, ZEIC, ZEIA, ZEPA]')]],
+    ['Uso da edificação',(()=>{ const usos=[...new Set(unid.map(x=>x.uso).filter(Boolean))];
+      return usos.length ? [usos.join(' / ')+' — cadastro imobiliário'+(unid.length>1?' ('+unid.length+' unidades)':'')+'; ',ph('[confirmar a categoria de uso no local — ex.: R1, unifamiliar]')] : [ph('[Residencial unifamiliar (R1)]')]; })()],
     ['Orientação da testada',fr && fr.princ ? [relRumo(fr.princ.az)+' — azimute '+Math.round(fr.princ.az)+'°'+(fr.princ.rua?' ('+fr.princ.rua.nome+')':'')] : [ph('[Orientação — azimute]')]],
     ['Zona bioclimática',['ZB6 — NBR 15220-3']],
     ['Registro imobiliário',[ph('[Matrícula nº ______ — ___ª Circunscrição Imobiliária]')]]
@@ -5028,7 +5287,9 @@ async function relMontar(d){
   add(PAR([ph('[Descrever a implantação: posição da edificação no lote, recuo frontal, acessos de veículos e pedestres, áreas cobertas e áreas permeáveis.]')]));
 
   add(TIT('1.6','Índices urbanísticos'+(zTxt?' da '+zTxt:'')));
-  add(NOTA('Parâmetros extraídos das camadas Zonas Urbanas e Zonas Ambientais do GeoCG e do SIMGEO/PMCG em '+relData(hoje)+' — Anexos 6, 7.1, 8.1 e 8.2 da LC nº 341, de 28/12/2018. Conferir com a Consulta Prévia / Certidão de Uso do Solo emitida pela PMCG.'));
+  add(NOTA(z && z._zeie
+    ? 'Parâmetros da '+zSig+' extraídos do SISGRAN 2026 (PLANURB/PMCG, camada ZEIE) em '+relData(hoje)+' — Anexo 13 da LC nº 341, de 28/12/2018. A zona especial prevalece sobre a zona base'+(zBaseTxt?' ('+zBaseTxt+')':'')+'. Conferir com a Consulta Prévia / Certidão de Uso do Solo emitida pela PMCG.'
+    : 'Parâmetros extraídos das camadas Zonas Urbanas e Zonas Ambientais do GeoCG e do SIMGEO/PMCG'+(sg?' e do SISGRAN 2026':'')+' em '+relData(hoje)+' — Anexos 6, 7.1, 8.1 e 8.2 da LC nº 341, de 28/12/2018. Conferir com a Consulta Prévia / Certidão de Uso do Solo emitida pela PMCG.'));
   if(z){
     add(TAB2([
       ['Sigla da zona',[zSig+' — '+zNome+(za?' · Zona ambiental '+za.sigla:'')]],
@@ -5047,7 +5308,68 @@ async function relMontar(d){
     ].concat(notasUsadas.map(n=>['Nota ('+n+') do Anexo 8.2',[REL_NOTAS_82[n]]]))));
   }else add(PAR([ph('[Não foi possível ler a zona de uso agora. Preencher os índices pela Consulta Prévia / SIMGEO.]')]));
 
-  add(TIT('1.7','Levantamento da edificação — quadro de áreas'));
+  // ---- 1.7 instrumentos, restrições e entorno (SISGRAN + GeoCG) ----
+  add(TIT('1.7','Instrumentos urbanísticos, restrições e entorno'));
+  add(NOTA(sg
+    ? 'Dados do SISGRAN 2026 (PLANURB/PMCG: camadas do PDDUA, cadastros imobiliário e de logradouros, Águas Guariroba, MSGÁS, Solurb, AGRAER, IBGE e INEP) e do GeoCG, consulta em '+relData(hoje)+'. Distâncias aproximadas, medidas a partir dos limites do lote (precisão de cerca de 10 m).'
+    : 'O SISGRAN não respondeu na geração deste relatório'+(d.sgErro?' ('+d.sgErro+')':'')+'; itens abaixo com base no GeoCG e no SIMGEO, consulta em '+relData(hoje)+'.'));
+  const ent=g.ent||{}, inf=g.infra||{};
+  const instSg=sg ? sg.inst : [];
+  const temPeuc=instSg.some(x=>x.k==='peuc' || x.k==='iptu_progressivo');
+  const zeicPerto=sg ? sg.zeic.filter(x=>x.d<=300) : [];
+  const zeicRot=x=>{ // quando o nome é só o da zona, identifica o bem pelo tipo e endereço
+    if(x.nome && !/interesse cultural/i.test(x.nome)) return x.nome;
+    const t=/^BEM/.test(x.tipo)?'bem':(/^AREA/.test(x.tipo)?'área':(/LOCAL/.test(x.tipo)?'local histórico':'registro'));
+    return x.end ? t+' na '+x.end : (x.nome||t);
+  };
+  const cor=ent.cor||null, cur=sg && sg.curso;
+  const dAgua=Math.min(cor && Number.isFinite(cor.dd)?cor.dd:Infinity, cur?cur.d:Infinity);
+  const redeTxt=x=>x<=0.5?'junto ao lote':sisgranM(x);
+  const hidro=[];
+  const nomeCurso=n=>{ n=relCap(n||''); return !n ? 'Curso d’água' : (/^(c[oó]rrego|rio|ribeir|riacho|lago|canal)/i.test(n) ? n : 'Córrego '+n); };
+  if(cor && Number.isFinite(cor.dd)) hidro.push(nomeCurso(cor.n)+(cor.b?' (bacia do '+relCap(cor.b)+')':'')+' '+(cor.dd<=0.5?'atravessa o lote':sisgranM(cor.dd)+' do lote')+' (GeoCG)');
+  else if(cur) hidro.push(cur.n+(cur.regime?' ('+cur.regime.toLowerCase()+')':'')+' '+(cur.d<=0.5?'atravessa o lote':sisgranM(cur.d)+' do lote')+' (AGRAER/SISGRAN)');
+  if(Number.isFinite(dAgua)) hidro.push(dAgua<=100 ? 'verificar a faixa de APP (Lei nº 12.651/2012, art. 4º) e a faixa não edificável' : 'sem interferência de APP de curso d’água');
+  else if(cor===null && !ent.semHidro) hidro.push('Nenhum curso d’água mapeado a menos de 3 km (GeoCG)');
+  else if(sg) hidro.push('Nenhum curso d’água mapeado a menos de 1 km (AGRAER/SISGRAN)');
+  if(sg && sg.alagavel && sg.alagavel.d<=300) hidro.push('área alagável (AGRAER) '+sisgranM(sg.alagavel.d));
+  if(sg && sg.massa && sg.massa.d<=300) hidro.push(sg.massa.t.toLowerCase()+' '+sisgranM(sg.massa.d));
+  const redes=[];
+  if(inf.agua!==undefined) redes.push('água '+(inf.agua===null?'— sem rede mapeada nas proximidades':redeTxt(inf.agua)));
+  if(inf.esgoto!==undefined) redes.push('esgoto '+(inf.esgoto===null?'— sem rede mapeada nas proximidades':redeTxt(inf.esgoto)));
+  if(sg) redes.push('gás natural (MSGÁS) '+(sg.gas?redeTxt(sg.gas.d):'— sem rede mapeada a menos de 200 m'));
+  const col=sg && sg.coleta, colTxt=[];
+  if(col && col.dom) colTxt.push('Domiciliar: '+col.dom.freq+(col.dom.periodo && !normTxt(col.dom.freq).includes(normTxt(col.dom.periodo))?' ('+col.dom.periodo.toLowerCase()+')':'')+(col.dom.setor?' — '+col.dom.setor.replace(/^setor/i,'setor'):''));
+  if(col && col.sel) colTxt.push('Seletiva: '+col.sel.freq+(col.sel.setor?' — setor '+String(col.sel.setor).replace(/^setor\s*/i,''):''));
+  const eixoTxt=[];
+  if(sg && sg.eixo && sg.eixo.d<=200) eixoTxt.push(sg.eixo.n+' '+sisgranM(sg.eixo.d)+' do lote'+(sg.eixo.anexo?' ('+sg.eixo.anexo+')':'')+(sg.eixo.d<=30?' — verificar se o lote tem testada para a via do eixo':''));
+  if(sg && sg.centralidade && sg.centralidade.d<=200) eixoTxt.push(sg.centralidade.d<=0.5 ? 'Lote dentro da '+sg.centralidade.n : sg.centralidade.n+' '+sisgranM(sg.centralidade.d));
+  const pavTxt=sg && sg.logr ? (sg.logr.pav===true?'pavimentada':(sg.logr.pav===false?'não pavimentada':'pavimentação não informada')) : '';
+  add(TAB2([
+    ['Instrumentos urbanísticos',sg ? [instSg.length ? instSg.map(x=>x.t+(x.det?' — '+x.det:'')+(x.anexo?' ('+x.anexo+')':'')).join('; ') : 'Nenhum instrumento do PDDUA mapeado no ponto (SISGRAN)']
+      : (pd ? [pd.inst.length ? pd.inst.join('; ') : 'Nenhum instrumento identificado no ponto (SIMGEO)'] : [ph('[conferir no SIMGEO/SISGRAN: OODC, OOAUS, TDC, PEUC, IPTU progressivo]')])],
+    eixoTxt.length ? ['Eixos e centralidades',[eixoTxt.join('; ')]] : null,
+    ['Patrimônio cultural (ZEIC)',!sg ? [ph('[conferir no SISGRAN: ZEIC 1 a 4 — bens tombados, inventariados, conjuntos e entornos]')]
+      : (sg.zeicNoLote.length ? [sg.zeicNoLote.map(x=>x.cat+' — '+zeicRot(x)+' (ficha '+x.ficha+')'+(x.gdu?' — exige GDU de restauro / análise patrimonial':' — alerta patrimonial (memória / local histórico)')).join('; ')]
+      : [zeicPerto.length ? 'Lote fora das áreas ZEIC; mais próximo: '+zeicRot(zeicPerto[0])+' ('+zeicPerto[0].cat+', ficha '+zeicPerto[0].ficha+') '+sisgranM(zeicPerto[0].d)+(zeicPerto[0].gdu?' — bem sujeito a GDU de restauro':'') : 'Nenhum bem ou área de interesse cultural (ZEIC 1 a 4) no lote nem a menos de 300 m'])],
+    ['Hidrografia e APP',hidro.length ? [hidro.join('; ').replace(/^./,m=>m.toUpperCase())] : [ph('[conferir hidrografia — GeoCG/SISGRAN]')]],
+    (sg && sg.bacia) || (cor && cor.b) ? ['Bacia hidrográfica',[relCap((sg && sg.bacia) || cor.b)+(sg && sg.bacia?' (ZEE/MS 2016)':'')]] : null,
+    redes.length ? ['Redes de infraestrutura',[redes.join(' · ').replace(/^./,m=>m.toUpperCase())+' — distância do lote à rede mais próxima']] : null,
+    sg ? ['Hidrante mais próximo',[sg.hidrante ? (sg.hidrante.n||'Hidrante')+' '+sisgranM(sg.hidrante.d)+' do lote (Águas Guariroba, 2025)' : 'Nenhum hidrante mapeado a menos de 400 m']] : null,
+    colTxt.length ? ['Coleta de resíduos (Solurb)',[colTxt.join(' · ').replace(/^./,m=>m.toUpperCase())]] : null,
+    pavTxt ? ['Via da testada',[(rua||relCap(sg.logr.nome))+' — '+pavTxt+(sg.logr.cep?' — CEP '+sg.logr.cep:'')+' (cadastro de logradouros)']] : null,
+    sg && sg.ivs ? ['Vulnerabilidade social do bairro',[String(sg.ivs.classe).toLowerCase().replace(/\bmedia\b/,'média').replace(/^./,m=>m.toUpperCase())+(sg.ivs.valor!==null?' — índice '+relN(sg.ivs.valor,3):'')+(sg.ivs.bairro?' ('+sg.ivs.bairro+', PLANURB 2022)':' (PLANURB 2022)')]] : null,
+    sg && (sg.favela || sg.quilombo) ? ['Comunidades (IBGE 2022)',[[sg.favela?'Favela / comunidade urbana: '+sg.favela:'',sg.quilombo?'Território quilombola: '+sg.quilombo:''].filter(Boolean).join('; ')]] : null
+  ]));
+  if(temPeuc) add(NOTA('PEUC e IPTU progressivo no tempo alcançam o imóvel não edificado, subutilizado ou não utilizado, após notificação do Município (Lei nº 10.257/2001 — Estatuto da Cidade, arts. 5º a 7º).'));
+  const eqs=(sg && sg.equip.length) ? sg.equip : (ent.eq||[]).map(e=>({...e,n:/[a-z]/.test(e.n||'')?e.n:sisgranNome(e.n)}));
+  if(eqs.length){
+    add(PAR(['Equipamentos públicos mais próximos'+((sg && sg.equip.length)?' (até 1,5 km — SISGRAN, INEP 2025)':' (até 3 km — GeoCG)')],{b:true,size:19,al:AlignmentType.LEFT,antes:220,depois:80,junto:true}));
+    add(TABN([3300,4732,1600],['Equipamento','Nome','Distância'],eqs.slice(0,12).map(e=>[{t:[e.t]},{t:[e.n||'—']},{t:[sisgranM(e.d).replace(/^a /,'')]}])));
+  }
+  add(vazio());
+
+  add(TIT('1.8','Levantamento da edificação — quadro de áreas'));
   add(NOTA('Áreas a apurar por medição no local ou sobre o projeto arquitetônico, em projeção horizontal, pelas faces externas das paredes. Varandas e demais áreas cobertas computam como área construída.'));
   const v=t=>({t:[ph(t)]});
   add(TABN([4180,2810,2642],['Discriminação','Dimensões','Área'],[
@@ -5055,21 +5377,22 @@ async function relMontar(d){
     [v('[Anexo / edícula]'),v('[0,00 × 0,00 m]'),v('[0,00 m²]')],
     [v('[Varanda / área coberta]'),v('[0,00 × 0,00 m]'),v('[0,00 m²]')],
     [{t:['ÁREA CONSTRUÍDA COBERTA (total)'],b:true},{t:['—']},{t:[ph('[0,00 m²]')],b:true}],
-    [{t:['Área edificada no cadastro municipal (referência)']},{t:['—']},{t:[areaEdif!==null?relN(areaEdif)+' m²':'—']}],
+    ...(unid.length>1 ? unid.slice(0,10).map(x=>[{t:['Unidade '+(x.compl||x.codimo)+' — inscrição '+x.insc+' (cadastro, referência)']},{t:['—']},{t:[x.area!==null?relN(x.area)+' m²':'—']}]) : []),
+    [{t:[unid.length>1?'Área edificada no cadastro imobiliário — soma das unidades (referência)':'Área edificada no cadastro municipal (referência)']},{t:['—']},{t:[areaCad!==null && areaCad!==undefined?relN(areaCad)+' m²':'—']}],
     [v('[Área descoberta — recuo frontal]'),v('[0,00 × 0,00 m]'),v('[0,00 m²]')],
     [v('[Área permeável]'),v('[0,00 × 0,00 m]'),v('[0,00 m²]')],
     [{t:['ÁREA DO LOTE'],b:true},{t:[fr && fr.princ && fr.lados.length===4?relN(testada)+' × '+relN(fr.prof)+' m':'—']},{t:[relN(areaLote)+' m²'],b:true}]
   ]));
   add(vazio());
 
-  add(TIT('1.8','Confronto dos índices — conformidade'));
+  add(TIT('1.9','Confronto dos índices — conformidade'));
   const sit=(ok)=>ok===null?{t:[ph('[VERIFICAR]')],b:true}:(ok?{t:['CONFORME'],b:true,cor:'2E7D32'}:{t:['INCONFORME'],b:true,cor:'C62828'});
   const minTest=z ? relNumTxt(nTest>=2 && geocgNum(z.esquina_m)?z.esquina_m:z.quadra_m) : null;
   const linhasConf=[];
   if(z && geocgNum(z.area_m2)) linhasConf.push([{t:['Área mínima do lote']},{t:['≥ '+relN(z.area_m2)+' m²']},{t:[relN(areaLote)+' m²']},sit(areaLote+0.005>=Number(z.area_m2))]);
   if(minTest!==null) linhasConf.push([{t:['Testada mínima'+(nTest>=2?' (lote de esquina)':'')]},{t:['≥ '+relN(minTest)+' m']},testada!==null?{t:[relN(testada)+' m']}:v('[0,00 m]'),testada!==null?sit(testada+0.05>=minTest):sit(null)]);
   linhasConf.push([{t:['Taxa de ocupação']},{t:[to!==null?'≤ '+pct(to)+' ('+relN(areaLote*to)+' m²)':(z?relQ(z.ocupacao):'—')]},v('[00,00% (0,00 m²)]'),sit(null)]);
-  linhasConf.push([{t:['Coeficiente de aproveitamento']},{t:[z?relN(z.camin)+' a '+relN(z.cabas)+' (máx. '+relN(z.camax)+')':'—']},areaEdif>0?{t:[ph('['+relN(areaEdif/areaLote)+' pelo cadastro ('+relN(areaEdif)+' m²) — confirmar]')]}:v('[0,00]'),sit(null)]);
+  linhasConf.push([{t:['Coeficiente de aproveitamento']},{t:[z?relN(z.camin)+' a '+relN(z.cabas)+' (máx. '+relN(z.camax)+')':'—']},areaCad>0?{t:[ph('['+relN(areaCad/areaLote)+' '+areaCadTxt+' ('+relN(areaCad)+' m²) — confirmar]')]}:v('[0,00]'),sit(null)]);
   linhasConf.push([{t:['Gabarito']},{t:[z && String(z.elevacao ?? '').trim()?'índice de elevação '+String(z.elevacao).trim():'—']},v('[0 pavimento(s)]'),sit(null)]);
   linhasConf.push([{t:['Recuo frontal']},{t:[z?relQ(z.frente)||'—':'—']},v('[0,00 m]'),sit(null)]);
   linhasConf.push([{t:['Uso']},{t:[z && z.residencia?String(z.residencia).trim()+' permitidos':'ver item 1.6']},v('[R1 — unifamiliar]'),sit(null)]);
@@ -5079,14 +5402,14 @@ async function relMontar(d){
   add(TABN([2900,2580,2400,1752],['Índice','Exigido','Verificado','Situação'],linhasConf));
   add(vazio());
 
-  add(TIT('1.9','Outorga onerosa do direito de construir'));
+  add(TIT('1.10','Outorga onerosa do direito de construir'));
   add(PAR([ph('[Após o levantamento: informar a taxa de ocupação e o coeficiente de aproveitamento verificados, se ficam dentro dos limites da zona e se há área construída excedente ao coeficiente básico.]')]));
   add(PAR([(pd ? (temOO||temTDC ? 'Registre-se que a '+(zNome||'zona')+' admite '+[temOO?'a outorga onerosa do direito de construir':'',temTDC?'a transferência do direito de construir':''].filter(Boolean).join(' e ')+'.' : 'No ponto consultado não foram identificados os instrumentos de outorga onerosa ou de transferência do direito de construir.') : ''),' Havendo excedente ao coeficiente básico, o valor devido é apurado pela expressão:']));
   add(PAR(['VO = At × Vm × Cp'],{b:true,al:AlignmentType.CENTER,depois:100}));
   [['VO','valor da outorga onerosa;'],['At','área construída excedente ao coeficiente de aproveitamento básico, em m²;'],['Vm','valor do metro quadrado do terreno, conforme a Planta Genérica de Valores do município;'],['Cp','coeficiente de ajuste / fator de planejamento definido em lei.']].forEach(x=>add(PAR([x[0]+' — '+x[1]],{marca:true,al:AlignmentType.LEFT,depois:40})));
   add(NOTA('Conferir a fórmula e os fatores vigentes na LC nº 341/2018 e na legislação tributária municipal antes de aplicar.'));
 
-  add(TIT('1.10','Normas e legislação de referência'));
+  add(TIT('1.11','Normas e legislação de referência'));
   ['Lei Complementar nº 341, de 28 de dezembro de 2018 — Plano Diretor de Desenvolvimento Urbano Ambiental de Campo Grande (PDDUA).',
    'LC nº 341/2018 — Anexo 7.1: Tabela de Taxa de Relevância Ambiental e taxas de permeabilidade por zona ambiental.',
    'LC nº 341/2018 — Anexos 8.1 e 8.2: categorias de usos permitidos, índices urbanísticos, lotes mínimos e recuos por zona.',
@@ -5094,24 +5417,38 @@ async function relMontar(d){
    'ABNT NBR 6492:1994 — Representação de projetos de arquitetura.',
    'ABNT NBR 13532:1995 — Elaboração de projetos de edificações — Arquitetura.',
    'ABNT NBR 15220-3:2005 — Desempenho térmico de edificações — Zoneamento bioclimático brasileiro.',
-   'GeoCG e SIMGEO/CTM — sistemas de informações geográficas da Prefeitura Municipal de Campo Grande, consulta em '+relData(hoje)+'.'
-  ].forEach(t=>add(PAR([t],{marca:true,al:AlignmentType.LEFT,depois:50})));
+   'GeoCG e SIMGEO/CTM — sistemas de informações geográficas da Prefeitura Municipal de Campo Grande, consulta em '+relData(hoje)+'.',
+   sg ? 'SISGRAN 2026 — portal de informações territoriais da PLANURB/PMCG (sisgranmaps.campogrande.ms.gov.br), consulta em '+relData(hoje)+'.' : '',
+   z && z._zeie ? 'LC nº 341/2018 — Anexo 13: Zonas Especiais de Interesse Econômico (ZEIE).' : '',
+   zeicPerto.length ? 'LC nº 341/2018 — Anexo 12: Zonas Especiais de Interesse Cultural (ZEIC).' : '',
+   temPeuc ? 'Lei Federal nº 10.257/2001 — Estatuto da Cidade, arts. 5º a 8º (PEUC e IPTU progressivo no tempo).' : '',
+   dAgua<=100 ? 'Lei Federal nº 12.651/2012 — Código Florestal, art. 4º (Áreas de Preservação Permanente).' : ''
+  ].filter(Boolean).forEach(t=>add(PAR([t],{marca:true,al:AlignmentType.LEFT,depois:50})));
 
-  add(TIT('1.11','Conclusão'));
+  add(TIT('1.12','Conclusão'));
   const okArea=z && geocgNum(z.area_m2) ? areaLote+0.005>=Number(z.area_m2) : null, okTest=(minTest!==null && testada!==null) ? testada+0.05>=minTest : null;
   add(PAR(['Com base nos dados cadastrais levantados, o lote '+(lote||L.cod)+(quadra?' da quadra '+quadra:'')+(temEnd?', '+rua+(num?', nº '+num:''):'')+', possui área de '+relN(areaLote)+' m²'+(testada!==null?' e testada de '+relN(testada)+' m':'')+
     (okArea!==null ? (okArea && okTest!==false ? ', atendendo à área'+(okTest?' e à testada':'')+' mínima'+(okTest?'s':'')+' da '+zTxt+'.' : ', '+(okArea?'atendendo à área mínima':'abaixo da área mínima')+(okTest===false?' e abaixo da testada mínima':'')+' da '+zTxt+'.') : '.'),' ',
     ph('[Completar após o levantamento da edificação: área construída coberta, taxa de ocupação, coeficiente de aproveitamento, recuos, uso e inconformidades identificadas.]')]));
+  const atencao=[];
+  if(z && z._zeie) atencao.push('os índices aplicáveis são os da '+zSig+' (Anexo 13 da LC nº 341/2018), que prevalecem sobre os da zona base'+(zBaseTxt?' '+zBaseTxt:''));
+  if(sg) sg.zeicNoLote.forEach(x=>atencao.push('a localização em '+x.cat+' ('+zeicRot(x)+', ficha '+x.ficha+')'+(x.gdu?', que exige GDU de restauro / análise patrimonial antes de qualquer intervenção':', com alerta patrimonial')));
+  if(sg && !sg.zeicNoLote.length && zeicPerto.length && zeicPerto[0].d<=50) atencao.push('a proximidade de bem de interesse cultural ('+zeicRot(zeicPerto[0])+', '+sisgranM(zeicPerto[0].d)+')');
+  if(dAgua<=100) atencao.push('a proximidade de curso d’água ('+sisgranM(dAgua)+'), a conferir quanto à faixa de APP');
+  if(sg && sg.alagavel && sg.alagavel.d<=100) atencao.push('a proximidade de área alagável ('+sisgranM(sg.alagavel.d)+')');
+  if(sg && sg.especiais.some(x=>x.k==='zepa')) atencao.push('a incidência da Zona Especial de Proteção do Aeroporto (ZEPA), com restrições de altura a conferir no Anexo 9');
+  if(atencao.length) add(PAR(['Registram-se ainda, para o lote: '+sisgranFrase(atencao)+'.']));
 
-  add(TIT('1.12','Responsável técnico e assinatura'));
+  add(TIT('1.13','Responsável técnico e assinatura'));
   add(PAR(['Campo Grande/MS, '+relDataExtenso(hoje)+'.'],{al:AlignmentType.CENTER,antes:500,depois:700}));
   add(PAR(['______________________________________________'],{al:AlignmentType.CENTER,depois:40}));
   add(PAR(rtNome,{al:AlignmentType.CENTER,b:true,depois:20}));
   add(PAR(['Arquiteto e Urbanista — ',ph('[CAU nº __________]')],{al:AlignmentType.CENTER,size:18}));
 
-  add(TIT('1.13','Anexos'));
+  add(TIT('1.14','Anexos'));
   add(PAR(['Anexo I — ',ph('[Projeto arquitetônico ou levantamento: identificar prancha e escala.]')],{marca:true,al:AlignmentType.LEFT,depois:50}));
   add(PAR(['Anexo II — Ficha do lote no GeoCG/PMCG, consulta em '+relData(hoje)+'.'],{marca:true,al:AlignmentType.LEFT,depois:50}));
+  if(sg) sg.zeicNoLote.filter(x=>x.link || x.linkGeral).slice(0,4).forEach((x,i)=>add(PAR(['Anexo '+['III','IV','V','VI'][i]+' — Ficha '+x.ficha+' (PLANURB): '+(x.link||x.linkGeral)],{marca:true,al:AlignmentType.LEFT,depois:50})));
 
   // ---- cabeçalho e rodapé das páginas internas ----
   const cab=new Header({children:[new Table({
@@ -5155,14 +5492,14 @@ async function relatorioGerar(point,gPronto,noMapa){
   try{
     if(!point || !Number.isFinite(point.lat) || !Number.isFinite(point.lng)) throw new Error('Faça a consulta de um lote antes de gerar o relatório.');
     if(!geocgInArea(point)) throw new Error('O relatório no modelo só está disponível para lotes de Campo Grande/MS.');
-    relStatus('Montando o relatório: coletando os dados do lote...');
+    relStatus('Montando o relatório: coletando os dados do lote (GeoCG, SIMGEO e SISGRAN)...');
     if(!await docxReady()) throw new Error('A biblioteca do Word não carregou. Verifique a conexão e recarregue a página.');
     const dados=await relColetar(point,gPronto);
     relStatus('Montando o relatório: escrevendo o documento...');
     const {doc,nomeArq}=await relMontar(dados);
     const blob=await packDocxBlob(doc);
     downloadBlob(blob,nomeArq);
-    relStatus('Relatório pronto: "'+nomeArq+'" foi para a pasta Downloads. Os campos em vermelho são para completar.','ok');
+    relStatus('Relatório pronto: "'+nomeArq+'" foi para a pasta Downloads. Os campos em vermelho são para completar.'+(dados.sgErro?' (SISGRAN não consultado: '+dados.sgErro+'.)':''),'ok');
     return nomeArq;
   }catch(e){
     console.error('Relatório:',e);
