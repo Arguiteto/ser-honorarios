@@ -4806,6 +4806,173 @@ function relCroqui(g,fr){
   if(fr.princ){ c.textAlign='right'; c.font='20px Arial, sans-serif'; c.fillStyle='#6b675e'; c.fillText('Testada voltada para '+relRumo(fr.princ.az).toLowerCase()+' (azimute '+Math.round(fr.princ.az)+'°)',W-60,H-46); }
   return {data:relBytes(cv.toDataURL('image/png')),w:W,h:H};
 }
+// croqui dos parâmetros: faixas de recuo e afastamento mínimos desenhadas sobre o lote e, ao lado,
+// os quantitativos que a zona permite neste lote (projeção, permeável, coeficientes) e o que o cadastro registra
+function relCroquiParametros(g,fr,P){
+  const W=1500, H=940, PW=880, cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const c=cv.getContext('2d');
+  c.fillStyle='#fff'; c.fillRect(0,0,W,H);
+  const tinta='#1E1D1A', cinza='#9a968c', suave='#6b675e', verm='#E1222E', verde='#2E7D32';
+  // mesma orientação do croqui de implantação: testada embaixo (ou à esquerda, em lote fundo)
+  let rot=0;
+  const gira=(p,a)=>[p[0]*Math.cos(a)-p[1]*Math.sin(a),p[0]*Math.sin(a)+p[1]*Math.cos(a)];
+  if(fr.princ){
+    rot=-fr.princ.ang;
+    if(gira(fr.princ.n,rot)[1]>0) rot+=Math.PI;
+    const q=fr.anel.map(p=>gira(p,rot)), lx=Math.max(...q.map(p=>p[0]))-Math.min(...q.map(p=>p[0])), ly=Math.max(...q.map(p=>p[1]))-Math.min(...q.map(p=>p[1]));
+    if(ly>lx*1.15) rot-=Math.PI/2;
+  }
+  const G=p=>gira(p,rot);
+  const quadro=fr.anel.map(G);
+  fr.frentes.forEach(sd=>{ const f=Math.min(Math.max(sd.dRua,6),14)+3; [sd.a,sd.b,sd.mid].forEach(p=>quadro.push(G([p[0]+sd.n[0]*f,p[1]+sd.n[1]*f]))); });
+  const xs=quadro.map(p=>p[0]), ys=quadro.map(p=>p[1]);
+  const x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys);
+  const mx=75, mt=110, mb=170;
+  const s=Math.min((PW-2*mx)/Math.max(x1-x0,1),(H-mt-mb)/Math.max(y1-y0,1));
+  const ox=(PW-(x1-x0)*s)/2-x0*s, oy=mt+((H-mt-mb)-(y1-y0)*s)/2+y1*s;
+  const T=p=>{ const q=G(p); return [ox+q[0]*s,oy-q[1]*s]; };
+  const dir=v=>{ const q=G(v); return [q[0],-q[1]]; };
+  const rotulo=(txt,x,y,tam,cor,forte,ang,al)=>{
+    c.save(); c.translate(x,y); if(ang) c.rotate(ang);
+    c.font=(forte?'600 ':'')+tam+'px Arial, sans-serif'; c.textAlign=al||'center'; c.textBaseline='middle'; c.lineJoin='round';
+    c.lineWidth=tam*0.34; c.strokeStyle='rgba(255,255,255,.96)'; c.strokeText(txt,0,0); c.fillStyle=cor||tinta; c.fillText(txt,0,0);
+    c.restore();
+  };
+  const traca=(pts,fecha)=>{ c.beginPath(); pts.forEach((p,i)=>{ const q=T(p); if(i) c.lineTo(q[0],q[1]); else c.moveTo(q[0],q[1]); }); if(fecha) c.closePath(); };
+  const titulo=(txt,x,y)=>{ c.font='600 21px Arial, sans-serif'; c.fillStyle=suave; c.textAlign='left'; c.textBaseline='alphabetic'; c.fillText(txt,x,y); };
+  titulo('FAIXAS DE RECUO E AFASTAMENTO MÍNIMOS',40,52);
+
+  // área livre para a edificação: o lote recortado, lado a lado, pelo recuo exigido (desenhada em lote de 4 lados)
+  const recuo=sd=>sd.frente ? (P.frente.v||0) : (P.lat.v||0);
+  let anel=fr.anel.slice(); if(anel.length>1 && anel[0][0]===anel[anel.length-1][0] && anel[0][1]===anel[anel.length-1][1]) anel.pop();
+  let env=null;
+  if(fr.lados.length===4 && fr.lados.some(sd=>recuo(sd)>0)){
+    env=anel.slice();
+    fr.lados.forEach(sd=>{
+      const d=recuo(sd); if(!(d>0) || !env.length) return;
+      const n=[-sd.n[0],-sd.n[1]], o=[sd.a[0]+n[0]*d,sd.a[1]+n[1]*d], f=p=>(p[0]-o[0])*n[0]+(p[1]-o[1])*n[1];
+      const out=[];
+      for(let i=0;i<env.length;i++){
+        const A=env[i], B=env[(i+1)%env.length], fa=f(A), fb=f(B);
+        if(fa>=0) out.push(A);
+        if((fa>=0)!==(fb>=0)){ const t=fa/(fa-fb); out.push([A[0]+(B[0]-A[0])*t,A[1]+(B[1]-A[1])*t]); }
+      }
+      env=out;
+    });
+    if(env.length<3) env=[];
+  }
+  const areaAnel=r=>{ let a=0; for(let i=0;i<r.length;i++){ const p=r[i], q=r[(i+1)%r.length]; a+=p[0]*q[1]-q[0]*p[1]; } return Math.abs(a)/2; };
+  const areaEnv=env && env.length ? areaAnel(env)*(P.areaLote/Math.max(areaAnel(anel),1)) : null; // ajusta à área oficial do lote
+
+  // eixo da rua e nome
+  c.save(); c.beginPath(); c.rect(20,70,PW-40,H-200); c.clip();
+  c.strokeStyle=cinza; c.lineWidth=1.8; c.setLineDash([20,8,4,8]);
+  (fr.ruas||[]).forEach(r=>r.linhas.forEach(l=>{ traca(l,false); c.stroke(); }));
+  c.setLineDash([]); c.restore();
+  // lote: tudo hachurado (faixa de recuo); por cima, em branco, a área livre para a edificação
+  const hach=document.createElement('canvas'); hach.width=hach.height=14;
+  const hc=hach.getContext('2d'); hc.fillStyle='rgba(225,34,46,.07)'; hc.fillRect(0,0,14,14); hc.strokeStyle='rgba(225,34,46,.45)'; hc.lineWidth=1.6;
+  hc.beginPath(); hc.moveTo(-2,16); hc.lineTo(16,-2); hc.stroke();
+  traca(anel,true); c.fillStyle=env ? c.createPattern(hach,'repeat') : 'rgba(225,34,46,.07)'; c.fill();
+  if(env && env.length){
+    traca(env,true); c.fillStyle='#fff'; c.fill();
+    c.fillStyle='rgba(30,29,26,.06)'; c.fill();
+    c.setLineDash([14,9]); c.lineWidth=3; c.strokeStyle=tinta; c.stroke(); c.setLineDash([]);
+  }
+  traca(anel,true); c.lineWidth=4; c.strokeStyle=tinta; c.stroke();
+  fr.frentes.forEach(sd=>{ traca([sd.a,sd.b],false); c.lineWidth=8; c.strokeStyle=verm; c.stroke(); });
+  // nome da rua
+  const feitas=new Set();
+  fr.frentes.forEach(sd=>{
+    if(!sd.rua || feitas.has(sd.rua.nome)) return; feitas.add(sd.rua.nome);
+    const f=Math.min(Math.max(sd.dRua,6),14), q=T([sd.mid[0]+sd.n[0]*f,sd.mid[1]+sd.n[1]*f]), dv=dir([Math.cos(sd.ang),Math.sin(sd.ang)]);
+    let ang=Math.atan2(dv[1],dv[0]); if(ang>Math.PI/2+0.01) ang-=Math.PI; if(ang<=-Math.PI/2+0.01) ang+=Math.PI;
+    if(Math.abs(Math.abs(ang)-Math.PI/2)<0.02) ang=-Math.PI/2;
+    rotulo(sd.rua.nome.toUpperCase(),q[0],q[1],23,suave,true,ang);
+  });
+  // cotas dos recuos: uma na testada principal e uma no maior lado de divisa
+  const cota=(sd,d,txt)=>{
+    const n=[-sd.n[0],-sd.n[1]], a=T(sd.mid), b=T([sd.mid[0]+n[0]*d,sd.mid[1]+n[1]*d]);
+    const ux=b[0]-a[0], uy=b[1]-a[1], k=Math.hypot(ux,uy)||1, px=-uy/k, py=ux/k;
+    c.strokeStyle=verm; c.fillStyle=verm; c.lineWidth=2.4;
+    c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(b[0],b[1]); c.stroke();
+    [[a,1],[b,-1]].forEach(([p,sg])=>{ c.beginPath(); c.moveTo(p[0],p[1]); c.lineTo(p[0]+sg*ux/k*13+px*6,p[1]+sg*uy/k*13+py*6); c.lineTo(p[0]+sg*ux/k*13-px*6,p[1]+sg*uy/k*13-py*6); c.closePath(); c.fill(); });
+    const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    c.font='600 22px Arial, sans-serif';
+    const off=16+Math.abs(px)*c.measureText(txt).width/2+Math.abs(py)*8;
+    rotulo(txt,m[0]+px*off,m[1]+py*off,22,verm,true);
+  };
+  const princ=fr.princ || fr.frentes[0];
+  if(env && princ && P.frente.v>0) cota(princ,P.frente.v,relN(P.frente.v)+' m'+(P.frente.cond?'*':''));
+  const divisa=fr.lados.filter(sd=>!sd.frente).sort((p,q)=>q.len-p.len)[0];
+  if(env && divisa && P.lat.v>0) cota(divisa,P.lat.v,relN(P.lat.v)+' m'+(P.lat.cond?'*':''));
+  // medidas dos lados, por fora
+  fr.lados.forEach(sd=>{
+    if(sd.len<1) return;
+    const txt=relN(sd.len)+' m', q=T(sd.mid), nd=dir(sd.n), k=Math.hypot(nd[0],nd[1])||1;
+    c.font='600 21px Arial, sans-serif';
+    const afast=22+Math.abs(nd[0]/k)*c.measureText(txt).width/2+Math.abs(nd[1]/k)*8;
+    rotulo(txt,q[0]+nd[0]/k*afast,q[1]+nd[1]/k*afast,21,sd.frente?'#C4161F':suave,true);
+  });
+  // área livre no centro
+  if(env && env.length){
+    const ce=env.reduce((acc,p)=>[acc[0]+p[0]/env.length,acc[1]+p[1]/env.length],[0,0]), q=T(ce);
+    rotulo('ÁREA LIVRE DE RECUOS',q[0],q[1]-15,21,tinta,true);
+    rotulo('≈ '+relN(areaEnv)+' m²',q[0],q[1]+15,21,suave,false);
+  }else{
+    const q=T(fr.PL ? fr.PL(g.lote.pi) : anel[0]);
+    rotulo(fr.lados.length!==4 ? 'LOTE IRREGULAR — FAIXAS NÃO DESENHADAS' : 'SEM RECUO NUMÉRICO NA ZONA',q[0],q[1],19,suave,true);
+  }
+  // norte
+  const nx=PW-80, ny=60, nd=dir([0,1]);
+  c.beginPath(); c.arc(nx,ny,34,0,2*Math.PI); c.fillStyle='#fff'; c.fill(); c.lineWidth=2; c.strokeStyle=cinza; c.stroke();
+  c.save(); c.translate(nx,ny); c.rotate(Math.atan2(nd[0],-nd[1]));
+  c.beginPath(); c.moveTo(0,-25); c.lineTo(10,16); c.lineTo(0,8); c.lineTo(-10,16); c.closePath(); c.fillStyle=tinta; c.fill(); c.restore();
+  // legenda da planta
+  const ly=H-92;
+  c.fillStyle=c.createPattern(hach,'repeat'); c.fillRect(40,ly-14,38,26); c.strokeStyle=tinta; c.lineWidth=1.5; c.strokeRect(40,ly-14,38,26);
+  c.font='19px Arial, sans-serif'; c.fillStyle=tinta; c.textAlign='left'; c.textBaseline='middle';
+  c.fillText('faixa de recuo / afastamento mínimo',90,ly);
+  c.setLineDash([10,7]); c.lineWidth=3; c.beginPath(); c.moveTo(470,ly); c.lineTo(510,ly); c.stroke(); c.setLineDash([]);
+  c.fillText('limite para a edificação',522,ly);
+  if(P.frente.cond || P.lat.cond){ c.font='italic 17px Arial, sans-serif'; c.fillStyle=suave; c.fillText('* exigido conforme a altura / nº de pavimentos — ver o quadro abaixo',40,ly+38); }
+  // escala
+  let barra=1; [1,2,5,10,20,25,50,100,200].forEach(v=>{ if(v*s<=PW*0.22) barra=v; });
+  const bl=barra*s, bx=PW-50-bl, by=H-30;
+  c.fillStyle=tinta; c.fillRect(bx,by,bl,5); c.fillStyle='#fff'; c.fillRect(bx+bl/2,by+1.2,bl/2-1.2,2.6);
+  c.font='600 17px Arial, sans-serif'; c.textBaseline='alphabetic'; c.fillStyle=tinta; c.textAlign='left'; c.fillText('0',bx,by-6); c.textAlign='right'; c.fillText(barra+' m',bx+bl,by-6);
+
+  // ---- quadro de áreas, à direita ----
+  const X=PW+40, BW=W-X-50;
+  c.strokeStyle='#e4e0d6'; c.lineWidth=2; c.beginPath(); c.moveTo(PW+8,40); c.lineTo(PW+8,H-40); c.stroke();
+  let y=52;
+  titulo('O QUE A ZONA PERMITE NESTE LOTE',X,y);
+  const grupo=(txt)=>{ y+=48; c.font='600 19px Arial, sans-serif'; c.fillStyle=tinta; c.textAlign='left'; c.textBaseline='alphabetic'; c.fillText(txt,X,y); y+=10; };
+  const barraQ=(rot,val,max,cor,vazada,extra)=>{
+    if(val===null || val===undefined || !isFinite(val)) return;
+    y+=34; c.font='18px Arial, sans-serif'; c.fillStyle=suave; c.textAlign='left'; c.textBaseline='alphabetic'; c.fillText(rot,X,y);
+    c.textAlign='right'; c.font='600 19px Arial, sans-serif'; c.fillStyle=(cor===cinza||cor==='#cfcabd')?tinta:cor; c.fillText(relN(val)+' m²'+(extra||''),X+BW,y);
+    y+=9; const w=Math.max(3,Math.min(1,val/Math.max(max,1))*BW);
+    c.fillStyle='#f1eee7'; c.fillRect(X,y,BW,20);
+    if(vazada){ c.setLineDash([8,5]); c.strokeStyle=cor; c.lineWidth=2.5; c.strokeRect(X+1,y+1,w-2,18); c.setLineDash([]); }
+    else{ c.fillStyle=cor; c.fillRect(X,y,w,20); }
+    y+=20;
+  };
+  grupo('No terreno (projeção)');
+  barraQ('Área do lote',P.areaLote,P.areaLote,'#cfcabd');
+  if(P.to!==null) barraQ('Projeção máxima — TO '+relN(P.to)+(P.toCond?'*':''),P.areaLote*P.to,P.areaLote,tinta);
+  if(P.perm!==null) barraQ('Área permeável mínima — '+relN(P.perm*100,0)+'%',P.areaLote*P.perm,P.areaLote,verde);
+  if(areaEnv!==null) barraQ('Livre de recuos (desenho ao lado)',areaEnv,P.areaLote,tinta,true);
+  const maxCA=Math.max(P.camax!==null?P.areaLote*P.camax:0,P.cabas!==null?P.areaLote*P.cabas:0,P.areaCad||0,1);
+  grupo('Área construída total');
+  if(P.camin!==null) barraQ('Mínima — CA '+relN(P.camin),P.areaLote*P.camin,maxCA,'#cfcabd');
+  if(P.cabas!==null) barraQ('Sem outorga — CA básico '+relN(P.cabas),P.areaLote*P.cabas,maxCA,tinta);
+  if(P.camax!==null) barraQ('Máxima, com outorga — CA '+relN(P.camax),P.areaLote*P.camax,maxCA,cinza);
+  if(P.areaCad>0) barraQ('Construída no cadastro municipal',P.areaCad,maxCA,verm);
+  if(P.gab){ y+=46; c.font='18px Arial, sans-serif'; c.fillStyle=suave; c.textAlign='left'; c.fillText('Gabarito: índice de elevação '+P.gab,X,y); }
+  if(P.toCond){ y+=30; c.font='italic 16px Arial, sans-serif'; c.fillStyle=suave; c.fillText('* TO do térreo; ver as condições no quadro abaixo',X,y); }
+  return {data:relBytes(cv.toDataURL('image/png')),w:W,h:H,areaEnv};
+}
 function relBytes(dataUrl){
   const bin=atob(String(dataUrl).split(',')[1]||''), u=new Uint8Array(bin.length);
   for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
@@ -5396,6 +5563,39 @@ async function relMontar(d){
   add(TIT('1.9','Confronto dos índices — conformidade'));
   const sit=(ok)=>ok===null?{t:[ph('[VERIFICAR]')],b:true}:(ok?{t:['CONFORME'],b:true,cor:'2E7D32'}:{t:['INCONFORME'],b:true,cor:'C62828'});
   const minTest=z ? relNumTxt(nTest>=2 && geocgNum(z.esquina_m)?z.esquina_m:z.quadra_m) : null;
+  // o que a zona exige para este lote: croqui das faixas de recuo + quantitativos, e o quadro-resumo
+  if(z){
+    const numDec=t=>{ const m=String(t ?? '').match(/\d+[.,]\d+/); return m ? parseFloat(m[0].replace(',','.')) : null; };
+    const recuoDe=t=>{ const s=relQ(t); const n=(s.match(/\d+,\d{2}/g)||[]).map(x=>parseFloat(x.replace(',','.'))); return {v:n.length?n[0]:(/livre/i.test(s)?0:null),cond:n.length>0 && /livre|\bie\b|pavimento/i.test(s),txt:s}; };
+    const toProj=to!==null ? to : numDec(z.ocupacao);
+    const Pq={areaLote,to:toProj,toCond:to===null && toProj!==null,perm:za && za.perm!==null ? za.perm : null,
+      camin:relNumTxt(z.camin),cabas:relNumTxt(z.cabas),camax:relNumTxt(z.camax),areaCad:areaCad>0?areaCad:0,
+      gab:String(z.elevacao ?? '').trim(),frente:recuoDe(z.frente),lat:recuoDe(z.lat_fundos)};
+    let cpar=null;
+    if(fr && fr.lados && fr.lados.length){ try{ cpar=relCroquiParametros(g,fr,Pq); }catch(e){ console.warn('Relatório, croqui de parâmetros:',e); } }
+    if(cpar){
+      add(new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:80},keepNext:true,children:[IMG(cpar,470)]}));
+      add(PAR(['Figura 02 — Parâmetros de ocupação do lote pela '+zTxt+': faixas de recuo e afastamento mínimos e quantitativos admitidos. Esquema indicativo, a confirmar na Consulta Prévia.'],{i:true,size:15,cor:REL_SUAVE,al:AlignmentType.CENTER,depois:160,linha:240}));
+    }
+    const vLote=k=>k!==null ? relN(areaLote*k)+' m²' : '—';
+    const condTxt=r=>r.v===null ? '—' : (r.v>0 ? relN(r.v)+' m'+(r.cond?' (na condição ao lado)':'') : 'livre');
+    const q=[
+      geocgNum(z.area_m2) ? ['Área mínima do lote','≥ '+relN(z.area_m2)+' m²',relN(areaLote)+' m² — '+(areaLote+0.005>=Number(z.area_m2)?'atende':'abaixo do mínimo')] : null,
+      minTest!==null ? ['Testada mínima'+(nTest>=2?' (lote de esquina)':''),'≥ '+relN(minTest)+' m',testada!==null?relN(testada)+' m — '+(testada+0.05>=minTest?'atende':'abaixo do mínimo'):'—'] : null,
+      toProj!==null ? ['Projeção máxima (TO)',relQ(z.ocupacao),'até '+vLote(toProj)+(Pq.toCond?' no térreo':'')] : null,
+      Pq.perm!==null ? ['Área permeável mínima',pct(Pq.perm)+' — '+za.sigla,'ao menos '+vLote(Pq.perm)] : null,
+      Pq.camin!==null ? ['Área construída mínima (CA mínimo)',relN(Pq.camin),vLote(Pq.camin)] : null,
+      Pq.cabas!==null ? ['Área construída sem outorga (CA básico)',relN(Pq.cabas),'até '+vLote(Pq.cabas)] : null,
+      Pq.camax!==null ? ['Área construída máxima (CA máximo)',relN(Pq.camax)+' — com outorga onerosa','até '+vLote(Pq.camax)] : null,
+      ['Recuo frontal',Pq.frente.txt||'—',condTxt(Pq.frente)],
+      ['Afastamentos laterais e de fundos',Pq.lat.txt||'—',condTxt(Pq.lat)+'; aberturas a 1,50 m da divisa, no mínimo (art. 101)'],
+      cpar && cpar.areaEnv ? ['Área livre de recuos (Figura 02)','—','≈ '+relN(cpar.areaEnv)+' m²'] : null
+    ].filter(Boolean);
+    add(PAR(['Quadro-resumo — o que a '+zTxt+' exige para este lote'],{b:true,size:19,al:AlignmentType.LEFT,antes:120,depois:80,junto:true}));
+    add(TABN([3000,3632,3000],['Parâmetro','Exigência da zona','Para este lote'],q.map(r=>[{t:[r[0]],b:true},{t:[r[1]]},{t:[r[2]]}])));
+    add(vazio());
+    add(PAR(['Confronto com a edificação existente'],{b:true,size:19,al:AlignmentType.LEFT,antes:120,depois:80,junto:true}));
+  }
   const linhasConf=[];
   if(z && geocgNum(z.area_m2)) linhasConf.push([{t:['Área mínima do lote']},{t:['≥ '+relN(z.area_m2)+' m²']},{t:[relN(areaLote)+' m²']},sit(areaLote+0.005>=Number(z.area_m2))]);
   if(minTest!==null) linhasConf.push([{t:['Testada mínima'+(nTest>=2?' (lote de esquina)':'')]},{t:['≥ '+relN(minTest)+' m']},testada!==null?{t:[relN(testada)+' m']}:v('[0,00 m]'),testada!==null?sit(testada+0.05>=minTest):sit(null)]);
