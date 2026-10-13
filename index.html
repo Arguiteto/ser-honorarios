@@ -4835,7 +4835,7 @@ function relImagem(src,maxLado=900){ // qualquer logo (SVG, PNG, JPG) vira PNG, 
 // O portal não libera leitura vinda de outros sites (sem CORS). A consulta tenta direto e, se o navegador bloquear, passa
 // pela ponte do escritório (Google Apps Script — arquivo ponte-sisgran.gs). Sem ponte, o relatório sai só com GeoCG/SIMGEO.
 const SISGRAN_HOST='https://sisgranmaps.campogrande.ms.gov.br';
-const SISGRAN_PONTE=''; // URL do App da Web da ponte (termina em /exec)
+const SISGRAN_PONTE='https://script.google.com/macros/s/AKfycbwrEcpSBHXYjQNK2AYcfiIYfCG3ustHuvKYh_8KnjGhgU5jkbgN-mb_2r-Vgfz9piM/exec'; // ponte no Apps Script da conta carlos.arquitetocg (projeto Ponte SISGRAN (Chaos))
 const SISGRAN_PONTO=['pd_macrozonas_urbanas','pd_regioes_urbanas','pd_bairros','pd_parcelamentos','pd_zonas_urbanas','pd_zonas_ambientais',
   'pd_oodc','pd_ooaus','pd_tdc_receber','pd_tdc_transferir','pd_peuc','pd_iptu_progressivo','pd_operacao_urbana_consorciada','pd_vazios_urbanos',
   'pd_zeis','pd_zeia','pd_zeie','pd_zeiu','pd_zepa','pd_centralidades','pd_agricultura_urbana','pd_zona_expansao_urbana',
