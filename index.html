@@ -4895,7 +4895,15 @@ function sisgranGfi(pt,camadas,raio,max){
   const buf=Math.max(1,Math.ceil(raio/(2*meio*111320/px)));
   const L=camadas.map(c=>'sisgran:vw_'+c).join(',');
   return '/sisgran/api/v1/maps/wms?'+new URLSearchParams({service:'WMS',version:'1.1.1',request:'GetFeatureInfo',layers:L,query_layers:L,styles:'',srs:'EPSG:4326',
-    bbox:[lng-dl,lat-meio,lng+dl,lat+meio].map(v=>v.toFixed(7)).join(','),width:px,height:px,x:50,y:50,info_format:'application/json',feature_count:max||50,buffer:buf}).toString();
+    bbox:[lng-dl,lat-meio,lng+dl,lat+meio].map(v=>v.toFixed(7)).join(','),width:px,height:px,x:50,y:50,info_format:'application/json',feature_count:max||50,buffer:buf}).toString()
+    .replace(/%3A/gi,':').replace(/%2C/gi,',');
+}
+// a ponte (Apps Script) recusa endereço com mais de 2 mil caracteres: divide as camadas em consultas menores
+function sisgranGfiPartes(pt,camadas,raio,max){
+  const partes=[]; let grupo=[];
+  camadas.forEach(c=>{ const tenta=grupo.concat(c); if(grupo.length && sisgranGfi(pt,tenta,raio,max).length>1600){ partes.push(sisgranGfi(pt,grupo,raio,max)); grupo=[c]; } else grupo=tenta; });
+  if(grupo.length) partes.push(sisgranGfi(pt,grupo,raio,max));
+  return partes;
 }
 
 // faz as consultas (direto ou pela ponte, todas numa chamada só) e devolve os JSON na mesma ordem
@@ -4927,19 +4935,19 @@ async function sisgranColetar(g){
   const L=g.lote, pt=L.pi, an=L.an, i0=(g.imoveis||[])[0]||{};
   const raioLote=Math.max(Number(L.raio)||10,5);
   const pedidos=[
-    {k:'ponto',   u:sisgranGfi(pt,SISGRAN_PONTO,2,80), g:false},
-    {k:'imoveis', u:sisgranGfi(pt,['infra_imoveis'],2,400), g:false},
-    {k:'logr',    u:sisgranGfi(pt,['infra_logradouros'],Math.round(raioLote+35),40), g:false},
-    {k:'equip',   u:sisgranGfi(pt,SISGRAN_EQUIP.map(e=>e[0]),1500,150), g:true},
-    {k:'hidrante',u:sisgranGfi(pt,['infra_agua_hidrantes'],400,30), g:true},
-    {k:'gas',     u:sisgranGfi(pt,['infra_msgas_rede_gas'],200,15), g:true},
-    {k:'agua',    u:sisgranGfi(pt,['hidrografia_curso_agua','hidrografia_massa_dagua','hidrografia_areas_alagadas'],1000,25), g:true},
-    {k:'zeic',    u:sisgranGfi(pt,SISGRAN_ZEIC,300,40), g:true},
-    {k:'eixo',    u:sisgranGfi(pt,['pd_eixos_adensamento','pd_centralidades'],200,10), g:true}
-  ];
+    ['ponto',SISGRAN_PONTO,2,80,false],
+    ['imoveis',['infra_imoveis'],2,400,false],
+    ['logr',['infra_logradouros'],Math.round(raioLote+35),40,false],
+    ['equip',SISGRAN_EQUIP.map(e=>e[0]),1500,150,true],
+    ['hidrante',['infra_agua_hidrantes'],400,30,true],
+    ['gas',['infra_msgas_rede_gas'],200,15,true],
+    ['agua',['hidrografia_curso_agua','hidrografia_massa_dagua','hidrografia_areas_alagadas'],1000,25,true],
+    ['zeic',SISGRAN_ZEIC,300,40,true],
+    ['eixo',['pd_eixos_adensamento','pd_centralidades'],200,10,true]
+  ].flatMap(([k,cam,raio,max,geo])=>sisgranGfiPartes(pt,cam,raio,max).map(u=>({k,u,g:geo})));
   const resp=await sisgranBuscar(pedidos);
   const R={}; let algum=false;
-  pedidos.forEach((p,i)=>{ const j=resp[i]; R[p.k]=j && Array.isArray(j.features) ? j.features : null; if(R[p.k]) algum=true; });
+  pedidos.forEach((p,i)=>{ const j=resp[i]; if(j && Array.isArray(j.features)){ R[p.k]=(R[p.k]||[]).concat(j.features); algum=true; } else if(!(p.k in R)) R[p.k]=null; });
   if(!algum) throw new Error('o SISGRAN não respondeu às consultas');
 
   // distância (m) entre o lote e uma geometria do SISGRAN (as coordenadas vêm com 4 casas: precisão de uns 10 m)
