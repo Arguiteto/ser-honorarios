@@ -7540,7 +7540,8 @@ init();
     -webkit-backdrop-filter:none!important;backdrop-filter:none!important;pointer-events:none}
   body.tela-mapa .hdr-logo,body.tela-mapa .hdr-right > *,body.tela-mapa .hdr > button{pointer-events:auto}
   body.tela-mapa .hdr-right{pointer-events:none}
-  body.tela-mapa .hdr-logo{background:transparent;box-shadow:none;padding:0}
+  body.tela-mapa .hdr-logo{background:transparent;box-shadow:none;padding:0;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.65),0 0 10px rgba(0,0,0,.35)}
+  body.tela-mapa .hdr-logo img{filter:invert(1) drop-shadow(0 1px 2px rgba(0,0,0,.6))!important}
   body.tela-mapa .hdr{min-height:48px}
   body.tela-mapa .hdr-right .tp-trigger{min-height:40px;height:40px}
   body.tela-mapa .hdr-right .tp-trigger{box-shadow:0 4px 14px rgba(20,14,8,.16)}
@@ -7635,6 +7636,21 @@ init();
   function telaMapa(){ document.body.classList.toggle('tela-mapa', !!hall && getComputedStyle(hall).display!=='none' && hall.classList.contains('com-mapa')); }
   if(hall) new MutationObserver(telaMapa).observe(hall,{attributes:true,attributeFilter:['style','class']});
   telaMapa();
+  // deitado no mapa: a busca ocupa exatamente o espaço entre o logo e o Tema (respeita a câmera e as bordas do aparelho)
+  function alinhaBusca(){
+    const f=document.getElementById('hall-mapa-iframe'); if(!f) return;
+    let d; try{ d=f.contentDocument; }catch(e){ return; } if(!d||!d.documentElement) return;
+    const logo=document.querySelector('.hdr-logo'), tema=document.querySelector('.hdr-right .tp-trigger')||document.querySelector('.hdr-right');
+    if(!document.body.classList.contains('tela-mapa')||!logo||!tema){ d.documentElement.style.removeProperty('--busca-esq'); d.documentElement.style.removeProperty('--busca-dir'); return; }
+    const fr=f.getBoundingClientRect(), l=logo.getBoundingClientRect(), t=tema.getBoundingClientRect();
+    d.documentElement.style.setProperty('--busca-esq',Math.round(l.right-fr.left+10)+'px');
+    d.documentElement.style.setProperty('--busca-dir',Math.round(fr.right-t.left+10)+'px');
+    d.documentElement.style.setProperty('--busca-topo',Math.round(t.top-fr.top)+'px');
+  }
+  ['resize','orientationchange'].forEach(ev=>addEventListener(ev,()=>setTimeout(alinhaBusca,120)));
+  if(hall) new MutationObserver(()=>setTimeout(alinhaBusca,60)).observe(hall,{attributes:true,attributeFilter:['style','class']});
+  document.addEventListener('load',e=>{ if(e.target&&e.target.id==='hall-mapa-iframe') setTimeout(alinhaBusca,60); },true);
+  setInterval(alinhaBusca,1500);
   (mq.addEventListener?mq.addEventListener('change',montar):mq.addListener(montar));
   montar();
 })();

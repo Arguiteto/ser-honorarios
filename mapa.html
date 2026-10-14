@@ -2334,7 +2334,7 @@ doHash();
 @media (min-width:701px) and (max-height:500px) and (pointer:coarse){
   /* deitado: busca na linha do logo e do Tema; botões do canto esquerdo afastados dos botões flutuantes do Chaos */
   /* mesma altura do botão Tema (40 px) e alinhada com ele */
-  .top{top:calc(4px + env(safe-area-inset-top,0px))!important;left:140px!important;right:112px!important;width:auto!important;padding:3px!important;border-radius:12px}
+  .top{top:var(--busca-topo,calc(4px + env(safe-area-inset-top,0px)))!important;left:var(--busca-esq,140px)!important;right:var(--busca-dir,112px)!important;width:auto!important;padding:3px!important;border-radius:12px}
   .top .brand{display:none!important}
   .top .busca,.top .ql{margin:0!important;gap:4px;padding:0!important}
   .top .cp,.top .b{height:34px;min-height:34px;padding-top:0;padding-bottom:0;font-size:13.5px;border-radius:9px}
