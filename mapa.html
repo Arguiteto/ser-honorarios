@@ -2341,6 +2341,8 @@ doHash();
   .top .cp{font-size:16px!important}
   #sol{left:84px!important;bottom:12px!important;width:56px!important;height:56px!important}
   .leaflet-bottom.leaflet-left{margin-left:76px}
+  /* carta solar no meio da tela, abaixo da busca, longe dos botões flutuantes */
+  #psol.panel.esq{left:50%!important;right:auto!important;top:calc(52px + env(safe-area-inset-top,0px))!important;bottom:8px!important;transform:translateX(-50%);width:min(560px,calc(100vw - 200px))!important;max-height:none!important;overflow:auto}
   /* deitado: ficha como painel lateral na altura toda, barra de ferramentas do mapa fora */
   #tools{display:none!important}
   body.comficha #sol,body.comficha #coord{display:none!important}

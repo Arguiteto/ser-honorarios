@@ -2630,7 +2630,7 @@ function hallMapaSync(){
   if(!pode) return;
   const f=$('hall-mapa-iframe');
   if(f && !f.getAttribute('src')){
-    f.src=HALL_MAPA_URL+'?tema='+encodeURIComponent(hallMapaTema());
+    f.src=HALL_MAPA_URL+'?tema='+encodeURIComponent(hallMapaTema())+'&v=20261014b';
     clearTimeout(hallMapaTimer);
     hallMapaTimer=setTimeout(()=>{ const av=$('hall-mapa-aviso'); if(av && !hallMapaPronto) av.style.display='flex'; },9000);
   }
