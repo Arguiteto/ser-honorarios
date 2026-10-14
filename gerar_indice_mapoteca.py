@@ -16,7 +16,7 @@ Uso:
 
 Requer: pip install pypdf
 """
-import argparse, io, json, re, sys, time, unicodedata, urllib.request, urllib.parse
+import argparse, io, json, os, re, sys, time, unicodedata, urllib.request, urllib.parse
 from datetime import datetime, timezone
 
 SITES = ["https://www.campogrande.ms.gov.br/semades", "https://www.campogrande.ms.gov.br/semadur"]
@@ -145,7 +145,7 @@ def norm_rua(s):
 def ler_pdf(url):
     from pypdf import PdfReader
     req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=90) as r:
+    with urllib.request.urlopen(req, timeout=45) as r:
         dados = r.read()
     txt = "\n".join((p.extract_text() or "") for p in PdfReader(io.BytesIO(dados)).pages)
     up = sem_acento(txt)
@@ -162,14 +162,8 @@ def data_ord(f):
     return f.get("upload", "")
 
 
-def montar(midias, abrir_pdf=True, anterior=None):
-    anterior = anterior or {}
-    cache = {}
-    for lot in anterior.get("loteamentos", {}).values():
-        for f in lot.get("folhas", []):
-            cache[f["url"]] = f
-    lots = {}
-    coladas = []
+def agrupar(midias):
+    lots, coladas = {}, []
     for m in midias:
         t, u = m["titulo"], m["url"]
         if not u.lower().endswith(".pdf") or not eh_prancha(t, u):
@@ -191,38 +185,30 @@ def montar(midias, abrir_pdf=True, anterior=None):
             continue
         fo, de = num_folha(m["titulo"], m["url"])
         lots[k]["folhas"].setdefault(fo, []).append({"folha": fo, "de": de, "url": m["url"], "upload": ano_upload(m["url"])})
+    return lots
 
-    total = sum(len(v) for l in lots.values() for v in l["folhas"].values())
-    feitos = 0
-    for k, l in lots.items():
-        for fo, versoes in l["folhas"].items():
-            for v in versoes:
-                feitos += 1
-                if v["url"] in cache and "ruas" in cache[v["url"]]:
-                    v.update({x: cache[v["url"]].get(x) for x in ("ruas", "quadras", "atualizada", "temTexto")})
-                elif abrir_pdf:
-                    try:
-                        v.update(ler_pdf(v["url"]))
-                    except Exception as e:
-                        v["erro"] = str(e)[:120]
-                    if feitos % 20 == 0:
-                        print(f"  PDFs lidos: {feitos}/{total}", file=sys.stderr)
-                    time.sleep(0.4)
-    saida = {}
-    dup = 0
+
+def montar_saida(lots):
+    saida, dup = {}, 0
     for k, l in sorted(lots.items()):
         folhas = []
         for fo, versoes in sorted(l["folhas"].items()):
-            versoes.sort(key=data_ord, reverse=True)
+            # mais recente primeiro; entre uploads do mesmo mês, prefere a URL sem sufixo -1/-2
+            versoes.sort(key=lambda v: (v.get("upload", ""), not re.search(r"-\d\.pdf$", v["url"])), reverse=True)
             dup += len(versoes) - 1
             melhor = dict(versoes[0])
             melhor["versoes"] = len(versoes)
             folhas.append(melhor)
         saida[k] = {"nome": l["nome"], "folhas": folhas}
+    return saida, dup
+
+
+def pacote(saida, dup, lidas, pendentes):
     return {
         "geradoEm": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
         "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
-        "totais": {"loteamentos": len(saida), "folhas": sum(len(v["folhas"]) for v in saida.values()), "duplicatasDescartadas": dup},
+        "totais": {"loteamentos": len(saida), "folhas": sum(len(v["folhas"]) for v in saida.values()),
+                   "duplicatasDescartadas": dup, "folhasLidas": lidas, "folhasPendentes": pendentes},
         "loteamentos": saida,
     }
 
@@ -232,11 +218,19 @@ def main():
     ap.add_argument("--seed", help="arquivo 'titulo | url' por linha (modo offline)")
     ap.add_argument("--sem-pdf", action="store_true")
     ap.add_argument("--saida", default=SAIDA)
+    ap.add_argument("--minutos", type=float, default=80, help="tempo máximo lendo PDFs; o resto fica para a próxima rodada")
+    ap.add_argument("--paralelo", type=int, default=4)
     a = ap.parse_args()
+    inicio = time.time()
     try:
         anterior = json.load(open(a.saida, encoding="utf-8"))
     except Exception:
         anterior = None
+    cache = {}
+    for lot in (anterior or {}).get("loteamentos", {}).values():
+        for f in lot.get("folhas", []):
+            if "ruas" in f:
+                cache[f["url"]] = f
     if a.seed:
         midias = []
         for linha in open(a.seed, encoding="utf-8"):
@@ -247,11 +241,66 @@ def main():
         midias = coletar_midias()
         if not midias:
             sys.exit("Portal sem resposta — índice anterior mantido.")
-    idx = montar(midias, abrir_pdf=not a.sem_pdf and not a.seed, anterior=anterior)
-    if anterior and idx["totais"]["folhas"] < 0.5 * anterior.get("totais", {}).get("folhas", 0):
+    saida, dup = montar_saida(agrupar(midias))
+    if anterior and sum(len(v["folhas"]) for v in saida.values()) < 0.5 * anterior.get("totais", {}).get("folhas", 0):
         sys.exit("Coleta veio muito menor que a anterior (portal instável?) — índice anterior mantido.")
-    json.dump(idx, open(a.saida, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    print(json.dumps(idx["totais"], ensure_ascii=False))
+
+    # só a melhor versão de cada folha é aberta; o que já foi lido em rodada anterior vem do cache
+    alvo = []
+    for l in saida.values():
+        for f in l["folhas"]:
+            c = cache.get(f["url"])
+            if c:
+                f.update({x: c.get(x) for x in ("ruas", "quadras", "atualizada", "temTexto") if x in c})
+            else:
+                alvo.append(f)
+
+    def contar():
+        lidas = sum(1 for l in saida.values() for f in l["folhas"] if "ruas" in f)
+        return lidas, sum(len(l["folhas"]) for l in saida.values()) - lidas
+
+    def gravar():
+        lidas, pend = contar()
+        tmp = a.saida + ".tmp"
+        json.dump(pacote(saida, dup, lidas, pend), open(tmp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        os.replace(tmp, a.saida)
+        return lidas, pend
+
+    print(f"Folhas: {sum(len(l['folhas']) for l in saida.values())} · já lidas: {len(cache)} · a ler agora: {len(alvo)}", file=sys.stderr)
+    gravar()
+    if alvo and not a.sem_pdf and not a.seed:
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        limite = inicio + a.minutos * 60
+        feitos = 0
+        with ThreadPoolExecutor(max_workers=a.paralelo) as ex:
+            fut = {}
+            fila = iter(alvo)
+            def enviar():
+                for f in fila:
+                    if time.time() > limite:
+                        return
+                    fut[ex.submit(ler_pdf, f["url"])] = f
+                    return
+            for _ in range(a.paralelo * 2):
+                enviar()
+            while fut:
+                for fu in as_completed(list(fut)):
+                    f = fut.pop(fu)
+                    try:
+                        f.update(fu.result())
+                        f.pop("erro", None)
+                    except Exception as e:
+                        f["erro"] = str(e)[:120]
+                    feitos += 1
+                    if feitos % 25 == 0:
+                        lidas, pend = gravar()
+                        print(f"  PDFs lidos nesta rodada: {feitos}/{len(alvo)} · total lido: {lidas} · faltam: {pend}", file=sys.stderr)
+                    enviar()
+                    break
+        if time.time() > limite:
+            print("Tempo da rodada esgotado — o restante fica para a próxima execução.", file=sys.stderr)
+    lidas, pend = gravar()
+    print(json.dumps({"lidas": lidas, "pendentes": pend}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
