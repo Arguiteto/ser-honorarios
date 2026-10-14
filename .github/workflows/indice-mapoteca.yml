@@ -1,19 +1,21 @@
-# Atualiza o índice próprio da Mapoteca (mapoteca-indice.json) toda segunda-feira.
-# Caminho no GitHub: .github/workflows/indice-mapoteca.yml
 name: Atualizar índice da Mapoteca
 
 on:
   schedule:
-    - cron: "17 9 * * 1"   # segunda, 06:17 em Campo Grande
-  workflow_dispatch:        # botão "Run workflow" na aba Actions
+    - cron: "17 9 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: indice-mapoteca
+  cancel-in-progress: false
+
 jobs:
   indice:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
 
@@ -24,10 +26,13 @@ jobs:
       - name: Instalar leitor de PDF
         run: pip install pypdf
 
-      - name: Gerar índice (lista + leitura das pranchas)
-        run: python gerar_indice_mapoteca.py
+      - name: Gerar índice
+        continue-on-error: true
+        timeout-minutes: 95
+        run: python gerar_indice_mapoteca.py --minutos 80
 
-      - name: Salvar se mudou
+      - name: Salvar o que foi lido
+        if: always()
         run: |
           if git diff --quiet -- mapoteca-indice.json; then
             echo "Índice sem mudanças."
@@ -36,5 +41,6 @@ jobs:
             git config user.email "chaos-bot@users.noreply.github.com"
             git add mapoteca-indice.json
             git commit -m "Mapoteca: índice atualizado"
+            git pull --rebase
             git push
           fi
