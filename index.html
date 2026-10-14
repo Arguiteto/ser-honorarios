@@ -6257,16 +6257,14 @@ async function searchMapotecaFiles(info,point){
     notes.push('Índice próprio indisponível ('+mtIdxErro+') — buscando no portal da prefeitura.');
   }
   mapotecaStatus('Procurando arquivos na Mapoteca e mídias do portal...');
-  for(const t of uniqueTerms.slice(0,6)){
-    try{ candidates.push(...await searchWpMedia(t)); }
-    catch(e){ notes.push(`Mídias WordPress (${t}): ${e.message}`); }
-  }
-  for(const page of [MAPOTECA_URL,MAPOTECA_ALT_URL]){
-    try{
-      const html=await fetchTextAny(page);
-      candidates.push(...extractLinksFromHtml(html,page.includes('/semadur/')?'Página Mapoteca SEMADUR':'Página Mapoteca SEMADES'));
-    }catch(e){ notes.push(`Página ${page}: ${e.message}`); }
-  }
+  // portal da prefeitura: tudo em paralelo e com teto de 20 s, para não travar a tela quando o site está fora
+  const tarefas=[
+    ...uniqueTerms.slice(0,6).map(t=>searchWpMedia(t).then(r=>candidates.push(...r)).catch(e=>notes.push(`Mídias WordPress (${t}): ${e.message}`))),
+    ...[MAPOTECA_URL,MAPOTECA_ALT_URL].map(page=>fetchTextAny(page).then(html=>candidates.push(...extractLinksFromHtml(html,page.includes('/semadur/')?'Página Mapoteca SEMADUR':'Página Mapoteca SEMADES'))).catch(e=>notes.push(`Página ${page}: ${e.message}`)))
+  ];
+  let estourou=false;
+  await Promise.race([Promise.allSettled(tarefas),new Promise(r=>setTimeout(()=>{estourou=true;r();},20000))]);
+  if(estourou) notes.unshift('O portal da prefeitura não respondeu em 20 s (site fora do ar ou lento).');
   const dedup=[...new Map(candidates.filter(c=>c.url).map(c=>[c.url,c])).values()];
   const ranked=dedup.map(c=>({...c,score:rankMapotecaCandidate(c,uniqueTerms,info)})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score).slice(0,12);
   return {candidates:ranked,terms:uniqueTerms,notes};
@@ -6340,7 +6338,7 @@ async function buscarMapoteca(doMapa){
     renderMapotecaResult(mapotecaLastResult);
     const aviso=(loteOk || point.soIndice) ? '' : ' O lote não foi identificado no GeoCG — confira quadra, lote e área.';
     const topo=search.candidates[0];
-    mapotecaStatus((topo && topo.indice ? (topo.decisivo?'Prancha encontrada pelo índice próprio.':'Loteamento encontrado no índice. Confira qual folha é a do lote e marque “É esta a prancha”.') : search.candidates.length?'Busca concluída. Confira o arquivo mais provável.':'Busca concluída, mas nenhum arquivo direto foi confirmado. Use os links de busca manual.')+aviso, aviso?'err':'ok');
+    if(!topo && (search.notes||[]).some(n=>/não respondeu em 20 s/.test(n))){ mapotecaStatus('Este loteamento ainda não está no índice próprio e o portal da prefeitura está fora do ar. Tente de novo mais tarde.','err'); } else mapotecaStatus((topo && topo.indice ? (topo.decisivo?'Prancha encontrada pelo índice próprio.':'Loteamento encontrado no índice. Confira qual folha é a do lote e marque “É esta a prancha”.') : search.candidates.length?'Busca concluída. Confira o arquivo mais provável.':'Busca concluída, mas nenhum arquivo direto foi confirmado. Use os links de busca manual.')+aviso, aviso?'err':'ok');
   }catch(e){
     console.error('Erro Mapoteca:',e);
     $('mt-result').innerHTML=`<div class="mapoteca-empty">Não consegui concluir a busca.<br><br><span style="color:var(--err)">${esc(e.message)}</span><br><br>Você ainda pode abrir a Mapoteca oficial e pesquisar manualmente.</div>`;
