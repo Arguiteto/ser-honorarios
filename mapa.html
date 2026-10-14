@@ -795,6 +795,29 @@ document.addEventListener('click', function(e){
   });
 })();
 
+/* ---- ortofoto da prefeitura lenta: cai sozinho para o satélite Esri ----
+   Se a Ortofoto 2023 (simgeoctm/PMCG) não entregar nenhuma imagem em 4 s, troca a base para a Esri
+   e avisa. Só vale para a base aberta com o mapa: se você escolher a ortofoto de novo em "Mapa base", ela fica. */
+(function(){
+  var ESPERA_MS = 4000, cam = null, timer = null, chegou = 0, feito = false;
+  baseAtual.eachLayer && baseAtual.eachLayer(function(l){ if (l instanceof ArcExport) cam = l; });
+  if (!cam) return;
+  function troca(){
+    if (feito || !map.hasLayer(cam)) return;
+    feito = true; clearTimeout(timer);
+    var esri = defBase('esri'), radios = document.querySelectorAll('#pbase input[name="base"]');
+    map.removeLayer(baseAtual); baseAtual = esri.f().addTo(map); baseId = esri.id;
+    BASES.forEach(function(b, i){ if (radios[i]) radios[i].checked = (b.id === esri.id); });
+    toast('A ortofoto da prefeitura está lenta agora. Mudei para o satélite Esri; para voltar, use Mapa base.', 7000);
+  }
+  function vigia(){ if (feito) return; chegou = 0; clearTimeout(timer); timer = setTimeout(function(){ if (!chegou) troca(); }, ESPERA_MS); }
+  cam.on('loading', vigia);
+  cam.on('tileload', function(){ chegou++; });
+  cam.on('load', function(){ clearTimeout(timer); });
+  cam.on('remove', function(){ feito = true; clearTimeout(timer); });
+  if (cam.isLoading && cam.isLoading()) vigia(); // a camada já começou a carregar ao abrir o mapa
+})();
+
 /* ---- painel: camadas ---- */
 var CAMADAS = [], CAM = {};
 function legendaUrl(c){ return WMS + '?service=WMS&version=1.1.1&request=GetLegendGraphic&format=image/png&layer=' + c.name; }
