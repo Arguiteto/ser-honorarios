@@ -1,0 +1,737 @@
+{
+ "geradoEm": "2026-10-14T12:20Z",
+ "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
+ "totais": {
+  "loteamentos": 37,
+  "folhas": 69,
+  "duplicatasDescartadas": 5
+ },
+ "loteamentos": {
+  "ACLIMACAO": {
+   "nome": "ACLIMAÇÃO – JARDIM",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ACLIMACAO-JARDIM-Folha-1-2-3.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/11/ACLIMA%C3%87%C3%83O-JD-Folha-2-2.pdf",
+     "upload": "2020-11",
+     "versoes": 1
+    }
+   ]
+  },
+  "AERORANCHO": {
+   "nome": "AERO RANCHO – NUC. HABIT",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/aerorancho-nuc-habit-ii-folha01_02-prefcg-1648837392.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/AERO-RANCHO-NUC.-HABIT-FOLHA-02_02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "AERORANCHOII": {
+   "nome": "AERO RANCHO – NUC. HABIT. II",
+   "folhas": [
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/AERO-RANCHO-NUC.-HABIT.-II-folha-02_02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "ANTONINO": {
+   "nome": "CEL ANTONINO",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/04/CEL.-ANTONINO-Folha-01.pdf",
+     "upload": "2026-04",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/01/CEL-ANTONINO-FOLHA-02.pdf",
+     "upload": "2026-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "BATISTAO": {
+   "nome": "BATISTÃO JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/BATIST%C3%83O-JD-FOLHA-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "CANGURU": {
+   "nome": "CANGURU JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CANGURU-JD-FOLHA-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "CEREJEIRAS": {
+   "nome": "DAS CEREJEIRAS – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAS-CEREJEIRAS-JD-FOLHA-011.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAS-CEREJEIRAS-JD-FOLHA-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "CHACARACACHOEIRA": {
+   "nome": "CHACARA CACHOEIRA",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CHACARA-CACHOEIRA_Folha-1.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CHACARA-CACHOEIRA_Folha-2-1.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "CIDADEANHANDUI": {
+   "nome": "CIDADE ANHANDUI",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CIDADE-ANHANDUI-FOLHA-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/cidadeanhandui-folha02-prefcg-1673618371.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "DESBARRANCADO": {
+   "nome": "DO DESBARRANCADO – B",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DO-DESBARRANCADO-B-FOLHA-01-3.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DO-DESBARRANCADO-B-FOLHA-02-2.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "GIRASSOIS": {
+   "nome": "DOS GIRASSÓIS PQ RES",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DOS-GIRASSOIS-PQ-RES-Folha-01-1.pdf",
+     "upload": "2017-01",
+     "versoes": 2
+    }
+   ]
+  },
+  "ITAMARACA": {
+   "nome": "ITAMARACA – JD",
+   "folhas": [
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ITAMARACA-JD.folha-02_-3.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 3,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/04/ITAMARACA-JD.folha-03.pdf",
+     "upload": "2026-04",
+     "versoes": 2,
+     "ruas": [
+      "JOANA MARIA SOUZA",
+      "ANA BATISTA CAMINHA",
+      "GEORGINA PEREIRA BARBOSA",
+      "MUSA TUMA",
+      "SIZUO NAKAZATO",
+      "JOAO CASTILHO MORENO",
+      "VICENTE SANTANA",
+      "MARIO SILVEIRA BARBOSA",
+      "EUFRATES",
+      "CELITA LAGE BRANDAO",
+      "GUAICURUS",
+      "DARWIN DOLABANI",
+      "MACARANDUBA"
+     ],
+     "quadras": [
+      "13"
+     ],
+     "temTexto": true
+    }
+   ]
+  },
+  "ITAPARICA": {
+   "nome": "ITAPARICA – LOTEAMENTO",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2022/03/ITAPARICA-LOTEAMENTO.pdf",
+     "upload": "2022-03",
+     "versoes": 1
+    }
+   ]
+  },
+  "LAGEADO": {
+   "nome": "PARQUE DO LAGEADO",
+   "folhas": [
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARQUE-DO-LAGEADO-Folha-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "LOSANGELES": {
+   "nome": "LOS ANGELES – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-JD-folha-01-2.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-JD-folha-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "MARIAAPARECIDAPEDROSSIAN": {
+   "nome": "MARIA APARECIDA PEDROSSIAN – PARQUE RES",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MARIA-APARECIDA-PEDROSSIAN-PARQUE-RES-FOLHA-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MARIA-APARECIDA-PEDROSSIAN-PARQUE-RES-FOLHA-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "MONTEALEGRE": {
+   "nome": "MONTE ALEGRE – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTE-ALEGRE-JD.-folha-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "MONTEVIDEU": {
+   "nome": "MONTEVIDEU JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 4,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTEVIDEU-JD-Folha-01_04.pdf",
+     "upload": "2017-01",
+     "versoes": 1,
+     "ruas": [
+      "OTACILIO ALMEIDA",
+      "GENTIL VIEIRA MARQUES",
+      "HENRIQUE SILVA",
+      "ELIAS BUDIB",
+      "PEDRO GUIMARAES",
+      "CAUE",
+      "MONTE SERRAT",
+      "PANONIA",
+      "ANA ROSA CASTILHO OCAMPO"
+     ],
+     "quadras": [],
+     "temTexto": true
+    },
+    {
+     "folha": 2,
+     "de": 4,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTEVIDEU-JD-Folha-02_04.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 3,
+     "de": 4,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTEVIDEU-JD-Folha-03_04.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 4,
+     "de": 4,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTEVIDEU-JD-Folha-04_04.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "MONUMENTO": {
+   "nome": "MONUMENTO – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONUMENTO-JD-folha-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONUMENTO-JD-folha-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "MORADASOL": {
+   "nome": "MORADA DO SOL – JD",
+   "folhas": [
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/morada-do-sol-jd-folha-02-1634158796.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "NATHALIA": {
+   "nome": "NATHÁLIA",
+   "folhas": [
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NATHALIA-folha-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "NOROESTE": {
+   "nome": "NOROESTE – BAIRRO JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOROESTE-BAIRRO-JD-FOLHA-01.pdf",
+     "upload": "2017-01",
+     "versoes": 2
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOROESTE-BAIRRO-JD-FOLHA-02-1.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 3,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/noroeste-bairro-jd-folha-03-1628279327.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 4,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/02/NOROESTE-BAIRRO-JD-FOLHA-04.pdf",
+     "upload": "2026-02",
+     "versoes": 2
+    },
+    {
+     "folha": 5,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/noroeste-bairro-jd-folha-05-1636033075.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 6,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/noroeste-bairro-jd-folha-06-1629831457.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 7,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/noroestebairrojdfolha07-prefcg-1652795415.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "NOVABAHIA": {
+   "nome": "NOVA BAHIA – CONJ. RESID",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-BAHIA-CONJ.-RESID-folha-01_02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-BAHIA-CONJ.-RESID-folha-02_02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "NOVACAMPOGRANDEBL11": {
+   "nome": "NOVA CAMPO GRANDE – BL 11",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/03/NOVA-CAMPO-GRANDE-BL-11-FOLHA-01.pdf",
+     "upload": "2026-03",
+     "versoes": 2
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-CAMPO-GRANDE-BL-11-FOLHA-02-2.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "NOVACAMPOGRANDEBLOCO12": {
+   "nome": "NOVA CAMPO GRANDE – BLOCO 12",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2022/01/nova-campo-grande-bloco-12-folha-1-2-1641330034.pdf",
+     "upload": "2022-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/nova-campo-grande-bloco-12-folha-2-2-1641329946.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "NOVACONQUISTA": {
+   "nome": "LOTEAMENTO NOVA CONQUISTA",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2021/06/loteamento-nova-conquista-1623763948.pdf",
+     "upload": "2021-06",
+     "versoes": 1
+    }
+   ]
+  },
+  "OESTE": {
+   "nome": "OESTE – V",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/OESTE-V-FOLHA-1-2.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/06/OESTE-V.-FOLHA-2-2-Model.pdf",
+     "upload": "2020-06",
+     "versoes": 1
+    }
+   ]
+  },
+  "PARAISOLAGEADO": {
+   "nome": "LOTEAMENTO PARAISO DO LAGEADO",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/04/LOTEAMENTO-PARAISO-DO-LAGEADO.pdf",
+     "upload": "2017-04",
+     "versoes": 1
+    }
+   ]
+  },
+  "PARAVA": {
+   "nome": "PARAVÁ – LOTEAMENTO",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-01.pdf",
+     "upload": "2020-12",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
+     "upload": "2020-12",
+     "versoes": 1
+    }
+   ]
+  },
+  "PORTALCAIOBAII": {
+   "nome": "PORTAL CAIOBÁ II",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAL-CAIOB%C3%81-II-Folha-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAL-CAIOB%C3%81-II-Folha-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "PORTINHOFREDERICOPACHE": {
+   "nome": "PORTINHO FREDERICO PACHE",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTINHO-FREDERICO-PACHE-Folha1-2-3.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2019/06/PORTINHO-FREDERICO-PACHE-Folha2-2.pdf",
+     "upload": "2019-06",
+     "versoes": 1
+    }
+   ]
+  },
+  "PRESIDENTE": {
+   "nome": "PRESIDENTE – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PRESIDENTE-JD-folha-01_02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "SANTAEMILIA": {
+   "nome": "SANTA EMILIA – B JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/santaemilia-b-jdfolha01-prefcg-1670251025.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SANTA-EMILIA-B-JD-FOLHA-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "TAQUARALBOSQUE": {
+   "nome": "TAQUARAL BOSQUE",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/TAQUARAL-BOSQUE-FOLHA-01.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/TAQUARAL-BOSQUE-FOLHA-02.zip-1.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "TERRAMORENA": {
+   "nome": "TERRA MORENA – RES",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/terra-morena-res-folha-01-1639679254.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/terra-morena-res-folha-02-1646074560.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "TERRASGOLF": {
+   "nome": "TERRAS DO GOLF",
+   "folhas": [
+    {
+     "folha": 2,
+     "de": 7,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/terras-do-golf-folha-2-7-1634318531.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 5,
+     "de": 7,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/terras-do-golf-folha-5-7-1634318898.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    }
+   ]
+  },
+  "TIJUCA": {
+   "nome": "TIJUCA JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/tijuca-jd-folha-01-1623413836.pdf",
+     "upload": "2017-01",
+     "versoes": 1
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/TIJUCA-JD-FOLHA-02.pdf",
+     "upload": "2017-01",
+     "versoes": 1,
+     "ruas": [
+      "BARTOLOMEU MITRE",
+      "PARAGUASSU",
+      "VISCONDE SUASSUNA",
+      "TABIRA",
+      "ALFREDO LISBOA",
+      "CONDE BOA VISTA",
+      "SEVERINO PINHEIRO",
+      "BUARQUE MACEDO",
+      "MAURICIO NASSAU",
+      "MARQUES RECIFE",
+      "DANTAS BARRETO",
+      "CABO VERDE",
+      "RIO PRATA",
+      "XAVANTES",
+      "CULUENE",
+      "NHAMBIQUARA",
+      "GUNTER HANS"
+     ],
+     "quadras": [
+      "A",
+      "C"
+     ],
+     "atualizada": "27/02/2026",
+     "temTexto": true
+    }
+   ]
+  }
+ },
+ "observacao": "Índice inicial (amostra). O GitHub Actions completa com todas as pranchas e lê ruas/quadras de cada PDF."
+}
