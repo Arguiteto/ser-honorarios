@@ -2360,5 +2360,52 @@ doHash();
 }
 @media (prefers-reduced-motion:reduce){#ficha{transition:none!important}}
 </style>
+<style id="mapa-mobile-acoes">
+#bdados,#facfundo{display:none}
+@media (max-width:700px), (max-height:500px) and (pointer:coarse){
+  /* botão "Baixar dados" logo abaixo do título da ficha: abre as ações numa gaveta, sem rolar a ficha */
+  html.embutido #bdados{display:none!important}
+  #bdados{display:flex;align-items:center;justify-content:center;gap:8px;position:sticky;top:64px;z-index:3;
+    margin:10px 16px 6px;min-height:48px;width:calc(100% - 32px);border:0;border-radius:12px;background:var(--e);color:var(--on-e);
+    font:600 15px/1 inherit;font-family:inherit;cursor:pointer;box-shadow:0 6px 16px rgba(20,14,8,.18)}
+  #bdados svg{width:20px;height:20px}
+  #ficha #fac.fixa{display:none!important}
+  body.acoes-on #ficha{z-index:1001}
+  body.acoes-on #ficha #fac.fixa{display:block!important;position:fixed!important;left:0;right:0;bottom:0;z-index:1300;
+    max-height:80vh;overflow:auto;border-radius:20px 20px 0 0;background:var(--surface);
+    box-shadow:0 -12px 34px rgba(20,14,8,.25);padding:8px 16px calc(18px + env(safe-area-inset-bottom,0px))!important;
+    animation:facsobe .24s cubic-bezier(.2,.8,.2,1)}
+  body.acoes-on #ficha #fac.fixa::before{content:"Baixar dados";display:block;text-align:center;font-weight:600;font-size:14px;color:var(--muted,#6b5b4a);
+    padding:14px 0 12px;background:linear-gradient(var(--border-em),var(--border-em)) center 4px/44px 5px no-repeat}
+  #facfundo{position:fixed;inset:0;z-index:999;background:rgba(20,14,8,.4)}
+  body.acoes-on #facfundo{display:block}
+}
+@media (min-width:701px) and (max-height:500px) and (pointer:coarse){
+  body.acoes-on #ficha #fac.fixa{left:calc(84px + env(safe-area-inset-left,0px));right:auto;width:min(640px,calc(100vw - 100px));max-height:calc(100vh - 56px)}
+}
+@keyframes facsobe{from{transform:translateY(40px);opacity:.4}}
+@media (prefers-reduced-motion:reduce){body.acoes-on #ficha #fac.fixa{animation:none}}
+</style>
+<script id="mapa-mobile-acoes-js">
+(function(){
+  var ficha=document.getElementById('ficha'); if(!ficha) return;
+  var fundo=document.createElement('div'); fundo.id='facfundo'; document.body.appendChild(fundo);
+  function fechar(){ document.body.classList.remove('acoes-on'); }
+  fundo.addEventListener('click',fechar);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
+  function poe(){
+    if(!ficha.querySelector('#fac')||ficha.querySelector('#bdados')) return;
+    var h=ficha.querySelector('h2'); if(!h) return;
+    var b=document.createElement('button'); b.type='button'; b.id='bdados'; b.className='noprint';
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Baixar dados';
+    b.addEventListener('click',function(){ document.body.classList.add('acoes-on'); });
+    h.insertAdjacentElement('afterend',b);
+  }
+  // fecha a gaveta depois de escolher uma ação (menos ao digitar nos campos)
+  ficha.addEventListener('click',function(e){ var t=e.target.closest('#fac button,#fac a'); if(t&&document.body.classList.contains('acoes-on')) setTimeout(fechar,150); });
+  new MutationObserver(function(){ poe(); if(ficha.hidden) fechar(); }).observe(ficha,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
+  poe();
+})();
+</script>
 </body>
 </html>

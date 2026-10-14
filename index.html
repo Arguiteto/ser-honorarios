@@ -7439,6 +7439,11 @@ init();
   .tool-dock .dock-btn.active .ico{color:var(--e)}
   .tool-dock .dock-btn.mob-sec{display:none!important}
   .tool-dock #dock-mais{display:flex}
+  .tool-dock #dock-dados{display:none}
+  body.lote-aberto .tool-dock #dock-dados{display:flex}
+  body.lote-aberto .tool-dock{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .tool-dock #dock-dados{color:var(--on-e)!important;background:var(--e)!important}
+  .tool-dock #dock-dados .ico,.tool-dock #dock-dados .ico svg *{color:var(--on-e)!important;stroke:var(--on-e)!important}
   .tool-dock #dock-mais[aria-expanded="true"]{color:var(--e)}
   .tool-dock #dock-mais[aria-expanded="true"]{background:var(--el)!important}
   body.dock-mais-on #nbr-toggle,body.dock-mais-on #nbr-badge{display:none!important}
@@ -7599,8 +7604,9 @@ init();
       todos.forEach(b=>b.classList.toggle('mob-sec',!fixos.includes(b.id)));
       fixos.forEach(id=>{const b=document.getElementById(id); b&&dock.appendChild(b);});
       dock.appendChild(mais);
+      if(typeof dados!=='undefined') dock.appendChild(dados);
     }else{
-      fechar(false); mais.remove(); todos.forEach(b=>b.classList.remove('mob-sec'));
+      fechar(false); mais.remove(); const dd=document.getElementById('dock-dados'); dd&&dd.remove(); todos.forEach(b=>b.classList.remove('mob-sec'));
     }
     espelha();
   }
@@ -7651,6 +7657,21 @@ init();
   if(hall) new MutationObserver(()=>setTimeout(alinhaBusca,60)).observe(hall,{attributes:true,attributeFilter:['style','class']});
   document.addEventListener('load',e=>{ if(e.target&&e.target.id==='hall-mapa-iframe') setTimeout(alinhaBusca,60); },true);
   setInterval(alinhaBusca,1500);
+  // lote aberto no mapa: aparece "Baixar dados" na barra, que abre as ações da ficha
+  const dados=document.createElement('button'); dados.type='button'; dados.className='dock-btn'; dados.id='dock-dados';
+  dados.innerHTML='<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></span>Baixar dados';
+  function mapaDoc(){ const f=document.getElementById('hall-mapa-iframe'); try{ return f&&f.contentDocument; }catch(e){ return null; } }
+  dados.onclick=()=>{ const d=mapaDoc(); if(d&&d.body){ d.body.classList.add('acoes-on'); } };
+  let obsLote=null;
+  function vigiaLote(){
+    const d=mapaDoc(); if(!d||!d.body) return;
+    const atualiza=()=>document.body.classList.toggle('lote-aberto', d.body.classList.contains('comficha') && !!hall && getComputedStyle(hall).display!=='none');
+    if(obsLote) obsLote.disconnect();
+    obsLote=new MutationObserver(atualiza); obsLote.observe(d.body,{attributes:true,attributeFilter:['class']}); atualiza();
+  }
+  document.addEventListener('load',e=>{ if(e.target&&e.target.id==='hall-mapa-iframe') setTimeout(vigiaLote,80); },true);
+  if(hall) new MutationObserver(()=>{ const d=mapaDoc(); document.body.classList.toggle('lote-aberto', !!(d&&d.body&&d.body.classList.contains('comficha')) && getComputedStyle(hall).display!=='none'); }).observe(hall,{attributes:true,attributeFilter:['style']});
+  setTimeout(vigiaLote,500);
   (mq.addEventListener?mq.addEventListener('change',montar):mq.addListener(montar));
   montar();
 })();
