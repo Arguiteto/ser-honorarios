@@ -2076,10 +2076,13 @@ function gerarPlanta(){
       if (!blob){ fimPlanta('Não consegui montar o arquivo da planta.'); return; }
       blob.arrayBuffer().then(function(buf){
         var pdf = pdfDeJpeg(new Uint8Array(buf), canvas.width, canvas.height, PW / 25.4 * 72, PH / 25.4 * 72);
-        ultimaPlanta = { nome:nome, blob:pdf };
-        baixarBlob(nome, pdf);
-        fimPlanta(null);
-        barra('Planta pronta. O arquivo "' + nome + '" foi para a sua pasta Downloads.', true);
+        var junta = window.anexaMapoteca ? (barra('Gerando a planta… juntando a prancha da Mapoteca.'), window.anexaMapoteca(pdf, lote)) : Promise.resolve({ blob:pdf, msg:'' });
+        junta.then(function(res){
+          ultimaPlanta = { nome:nome, blob:res.blob };
+          baixarBlob(nome, res.blob);
+          fimPlanta(null);
+          barra('Planta pronta' + res.msg + '. O arquivo "' + nome + '" foi para a sua pasta Downloads.', true);
+        });
       }, function(){ fimPlanta('Não consegui montar o arquivo da planta.'); });
     }, 'image/jpeg', 0.9);
   }).catch(function(e){ if (window.console) console.error(e); fimPlanta('Não consegui gerar a planta agora: o servidor de mapas não respondeu. Tente de novo em instantes.'); });
@@ -2095,6 +2098,7 @@ function fimPlanta(msgErro){
     + '<label>Modelo<select id="plmod" class="cp" style="margin:2px 0 8px">' + MODELOS.map(function(m, i){ return '<option value="' + i + '">' + h(m.t) + '</option>'; }).join('') + '</select></label>'
     + '<div class="lin"><label style="flex:1">Papel<select id="plpapel" class="cp" style="margin:2px 0 0"><option value="A4">A4 deitado</option><option value="A3">A3 deitado</option></select></label>'
     + '<label style="flex:1">Escala<select id="plesc" class="cp" style="margin:2px 0 0"><option value="0">Automática</option>' + ESCALAS.map(function(e){ return '<option value="' + e + '">1:' + e.toLocaleString('pt-BR') + '</option>'; }).join('') + '</select></label></div>'
+    + '<label style="display:flex;gap:8px;align-items:center;margin:2px 0 8px;font-size:13px"><input type="checkbox" id="plmapo" checked> Incluir a prancha da Mapoteca no PDF</label>'
     + '<input id="pltit" class="cp" autocomplete="off" placeholder="Título (opcional)"><textarea id="plobs" class="cp" placeholder="Observações (opcional)"></textarea>'
     + '<div class="acoes"><button class="b" type="button" id="plgo">Gerar planta (PDF)</button></div>'
     + '<h3>Imprimir a tela</h3>'
@@ -2407,6 +2411,110 @@ doHash();
   ficha.addEventListener('click',function(e){ var t=e.target.closest('#fac button,#fac a'); if(t&&document.body.classList.contains('acoes-on')) setTimeout(fechar,150); });
   new MutationObserver(function(){ poe(); if(ficha.hidden) fechar(); }).observe(ficha,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
   poe();
+})();
+</script>
+<style id="mapa-mobile-paineis">
+#painelfundo{display:none}
+@media (max-width:700px), (max-height:500px) and (pointer:coarse){
+  /* painéis rolam com o dedo sem arrastar o mapa */
+  .panel{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+  .panel h2 a[data-fecha]{min-width:40px;min-height:40px;display:grid;place-items:center;font-size:22px;cursor:pointer}
+  #painelfundo{position:fixed;inset:0;z-index:999;background:rgba(20,14,8,.25)}
+  body.painel-on #painelfundo{display:block}
+}
+</style>
+<script id="mapa-mobile-paineis-js">
+(function(){
+  var mq=matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
+  var ficha=document.getElementById('ficha');
+  var esq=[].slice.call(document.querySelectorAll('.panel.esq'));
+  var fundo=document.createElement('div'); fundo.id='painelfundo'; document.body.appendChild(fundo);
+  function fecha(p){ var x=p.querySelector('h2 [data-fecha]'); if(x) x.click(); else p.hidden=true; }
+  function abertos(){ return esq.filter(function(p){ return !p.hidden; }); }
+  function atualiza(){ document.body.classList.toggle('painel-on', mq.matches && abertos().length>0); }
+  // toque fora fecha o painel aberto (carta solar, camadas, planta…)
+  fundo.addEventListener('click',function(){ abertos().forEach(fecha); atualiza(); });
+  // no celular, um painel de cada vez: abrir um fecha o outro
+  var ultimo=null;
+  function vigia(p){
+    new MutationObserver(function(){
+      if(!mq.matches){ atualiza(); return; }
+      if(!p.hidden && ultimo!==p){
+        ultimo=p;
+        if(p===ficha){ abertos().forEach(fecha); }
+        else { esq.forEach(function(o){ if(o!==p && !o.hidden) fecha(o); }); if(ficha && !ficha.hidden){ var x=ficha.querySelector('[data-fecha]'); x&&x.click(); } }
+      }
+      if(p.hidden && ultimo===p) ultimo=null;
+      atualiza();
+    }).observe(p,{attributes:true,attributeFilter:['hidden']});
+  }
+  esq.forEach(vigia); if(ficha) vigia(ficha);
+  // Esc fecha
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ abertos().forEach(fecha); atualiza(); } });
+})();
+</script>
+<script id="mapa-mapoteca-pdf">
+/* Planta em PDF: junta a prancha oficial da Mapoteca (índice próprio do Chaos) ao final do arquivo */
+(function(){
+  var STOP={};'JD JARDIM BAIRRO B PQ PARQUE RES RESID RESIDENCIAL CONJ CONJUNTO NUC NUCLEO HABIT HABITACIONAL V VL VILA DO DOS DA DAS DE E LOTEAMENTO LOT CEL CORONEL MODEL ZIP PDF FOLHA FL SETOR'.split(' ').forEach(function(w){STOP[w]=1;});
+  function sa(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase(); }
+  function chave(s){ return sa(s).replace(/FOLHA\s*\d+([_\-\/ ]?\d+)?/g,' ').replace(/[^A-Z0-9 ]/g,' ').split(/\s+/).filter(function(w){ return w && !STOP[w]; }).join(''); }
+  function rua(s){ var t=sa(s).replace(/\./g,' ').replace(/\s+/g,' ').trim().replace(/^(R|RUA|AV|AVENIDA|TV|TRAVESSA|AL|ALAMEDA|ROD|RODOVIA|ESTR|ESTRADA)\s+/,'');
+    t=t.replace(/VISC /g,'VISCONDE ').replace(/GUINTER/g,'GUNTER').replace(/CEL /g,'CORONEL ').replace(/\b(DR|DRA|PROF|PROFA|PE|PADRE|ENG|GAL|GEN|DEP|VER|SEN|DES|MAL|CAP|TEN|SGT)\b/g,' ');
+    return t.replace(/[^A-Z0-9 ]/g,' ').split(/\s+/).filter(function(w){ return w && ['DE','DA','DO','DAS','DOS','E'].indexOf(w)<0; }).join(' '); }
+  function qd(q){ return sa(q).replace(/^(QUADRA|QD)\s*/,'').replace(/[^A-Z0-9]/g,'').replace(/^0+(?=\w)/,''); }
+  var idxP=null;
+  function indice(){ if(!idxP) idxP=fetch('./mapoteca-indice.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).catch(function(){ idxP=null; return null; }); return idxP; }
+  var glob=null;
+  function globais(){ return fetch('./mapoteca-confirmadas.json',{cache:'no-store'}).then(function(r){ return r.ok?r.json():{}; }).catch(function(){ return {}; }).then(function(g){ glob=g; }); }
+  function escolhe(idx,i0){
+    var L=(idx&&idx.loteamentos)||{}, c=chave(i0.parcelamen||''), k=L[c]?c:null;
+    if(!k && c.length>=5){ var m=null; Object.keys(L).forEach(function(x){ if(x.length>=5 && (x.indexOf(c)>=0||c.indexOf(x)>=0)){ var s=Math.min(x.length,c.length)/Math.max(x.length,c.length); if(!m||s>m.s) m={k:x,s:s}; } }); if(m&&m.s>=.6) k=m.k; }
+    if(!k) return null;
+    var lot=L[k], Q=qd(i0.quadra||''), R=rua([i0.tipoloc,i0.ruaimo].filter(Boolean).join(' '));
+    var conf={}; try{ conf=JSON.parse(localStorage.getItem('chaos-mapoteca-confirmadas')||'{}')||{}; }catch(e){}
+    conf=Object.assign({},glob||{},conf);
+    var cu=(Q&&conf[k+'|'+Q])||conf[k]||'';
+    var lista=(lot.folhas||[]).map(function(f){ var s=0;
+      if(Q && (f.quadras||[]).map(qd).indexOf(Q)>=0) s+=120;
+      if(R.length>3 && (f.ruas||[]).some(function(r){ return r===R || (r.length>5 && (r.indexOf(R)>=0||R.indexOf(r)>=0)); })) s+=80;
+      if(cu && cu===f.url) s+=300;
+      return {f:f,s:s}; }).sort(function(a,b){ return b.s-a.s || a.f.folha-b.f.folha; });
+    if(!lista.length) return null;
+    var certas=lista[0].s>0 || lista.length===1 ? [lista[0]] : lista.slice(0,Math.min(3,lista.length));
+    return {nome:lot.nome, folhas:certas.map(function(x){ return x.f; }), certeza:lista[0].s>0||lista.length===1};
+  }
+  function baixaPdf(url){
+    var tent=[url,'https://api.allorigins.win/raw?url='+encodeURIComponent(url),'https://corsproxy.io/?url='+encodeURIComponent(url)];
+    var i=0;
+    function prox(){ if(i>=tent.length) return Promise.reject(new Error('sem acesso'));
+      var u=tent[i++]; return fetch(u,{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); })
+        .then(function(b){ var v=new Uint8Array(b.slice(0,5)); if(String.fromCharCode.apply(null,v)!=='%PDF-') throw 0; return b; }).catch(prox); }
+    return prox();
+  }
+  var libP=null;
+  function pdfLib(){ if(window.PDFLib) return Promise.resolve(window.PDFLib);
+    if(!libP) libP=new Promise(function(ok,erro){ var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js'; s.onload=function(){ ok(window.PDFLib); }; s.onerror=function(){ libP=null; erro(new Error('pdf-lib')); }; document.head.appendChild(s); });
+    return libP; }
+  window.anexaMapoteca=function(pdfBlob,lote){
+    var semNada={blob:pdfBlob,msg:''};
+    var chk=document.getElementById('plmapo'); if(chk && !chk.checked) return Promise.resolve(semNada);
+    var i0=lote && lote.imoveis && lote.imoveis[0]; if(!i0 || !i0.parcelamen) return Promise.resolve(semNada);
+    return Promise.all([indice(),globais()]).then(function(rr){ var idx=rr[0];
+      var e=idx&&escolhe(idx,i0); if(!e) return {blob:pdfBlob,msg:' (o loteamento ainda não está no índice da Mapoteca)'};
+      return Promise.all([pdfLib(), pdfBlob.arrayBuffer ? pdfBlob.arrayBuffer() : new Response(pdfBlob).arrayBuffer()].concat(e.folhas.map(function(f){ return baixaPdf(f.url).catch(function(){ return null; }); })))
+        .then(function(r){
+          var L=r[0], base=r[1], pr=r.slice(2).filter(Boolean);
+          if(!pr.length) return {blob:pdfBlob,msg:' (não consegui baixar a prancha da Mapoteca agora)'};
+          return L.PDFDocument.load(base).then(function(doc){
+            return pr.reduce(function(p,buf){ return p.then(function(){ return L.PDFDocument.load(buf,{ignoreEncryption:true}).then(function(src){ return doc.copyPages(src,src.getPageIndices()).then(function(pg){ pg.forEach(function(x){ doc.addPage(x); }); }); }); }); },Promise.resolve())
+              .then(function(){ return doc.save(); })
+              .then(function(bytes){ var n=e.folhas.map(function(f){ return 'folha '+String(f.folha).padStart(2,'0'); }).join(', ');
+                return {blob:new Blob([bytes],{type:'application/pdf'}), msg:' com a prancha da Mapoteca ('+e.nome+' — '+n+(e.certeza?'':', confira qual é a do lote')+')'}; });
+          });
+        });
+    }).catch(function(){ return {blob:pdfBlob,msg:' (sem a prancha da Mapoteca: não consegui juntar os arquivos)'}; });
+  };
 })();
 </script>
 </body>

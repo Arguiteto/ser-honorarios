@@ -2630,7 +2630,7 @@ function hallMapaSync(){
   if(!pode) return;
   const f=$('hall-mapa-iframe');
   if(f && !f.getAttribute('src')){
-    f.src=HALL_MAPA_URL+'?tema='+encodeURIComponent(hallMapaTema())+'&v=20261014b';
+    f.src=HALL_MAPA_URL+'?tema='+encodeURIComponent(hallMapaTema())+'&v=20261014c';
     clearTimeout(hallMapaTimer);
     hallMapaTimer=setTimeout(()=>{ const av=$('hall-mapa-aviso'); if(av && !hallMapaPronto) av.style.display='flex'; },9000);
   }
@@ -6175,6 +6175,7 @@ async function mtIndice(){
     const r=await fetch(MT_IDX_URL+'?v='+Math.floor(Date.now()/36e5),{cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status);
     mtIdx=await r.json();
+    try{ const g=await fetch('mapoteca-confirmadas.json?v='+Math.floor(Date.now()/36e5),{cache:'no-store'}); if(g.ok) mtGlob=await g.json(); }catch(e){}
   }catch(e){ mtIdxErro=e.message||'sem resposta'; }
   return mtIdx;
 }
@@ -6190,7 +6191,8 @@ function mtRua(s){
 function mtQuadra(q){ return mtSemAcento(q).replace(/^(QUADRA|QD)\.?\s*/,'').replace(/[^A-Z0-9]/g,'').replace(/^0+(?=\w)/,''); }
 function mtPad(n){ return String(n).padStart(2,'0'); }
 function mtCoord(p){ return (p && Number.isFinite(p.lat) && Number.isFinite(p.lng)) ? `${p.lat.toFixed(7)}, ${p.lng.toFixed(7)}` : '—'; }
-function mtConfirmadas(){ try{ return JSON.parse(localStorage.getItem(MT_CONF_KEY)||'{}')||{}; }catch(e){ return {}; } }
+let mtGlob={};
+function mtConfirmadas(){ let l={}; try{ l=JSON.parse(localStorage.getItem(MT_CONF_KEY)||'{}')||{}; }catch(e){} return Object.assign({},mtGlob,l); }
 function mtConfirmar(chave,quadra,url){
   const c=mtConfirmadas(); c[chave]=url; if(quadra) c[chave+'|'+quadra]=url;
   try{ localStorage.setItem(MT_CONF_KEY,JSON.stringify(c)); }catch(e){}
@@ -7449,7 +7451,7 @@ init();
   body.dock-mais-on #nbr-toggle,body.dock-mais-on #nbr-badge{display:none!important}
 
   /* gaveta "Mais": sobe de baixo, fecha tocando fora, arrastando para baixo ou no próprio "Mais" */
-  #mais-sheet{
+  .gaveta{
     position:fixed;left:8px;right:8px;z-index:101;
     bottom:calc(76px + env(safe-area-inset-bottom,0px));
     background:var(--surface);border:0.5px solid var(--border-em);border-radius:22px;
@@ -7459,29 +7461,29 @@ init();
     transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s linear .26s;
     touch-action:none;
   }
-  #mais-sheet.on{transform:translateY(var(--dy,0px));visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s}
-  #mais-sheet.arrastando{transition:none}
-  #mais-sheet .alca{display:block;width:44px;height:5px;border-radius:3px;background:var(--border-em);margin:6px auto 10px;border:0;padding:0}
-  #mais-sheet .alca-area{display:flex;justify-content:center;min-height:24px;cursor:grab}
-  #mais-sheet .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  #mais-sheet .grupos{display:grid;gap:4px}
-  #mais-sheet .grupo + .grupo{border-top:0.5px solid var(--border);padding-top:6px}
-  #mais-sheet h3{font:600 11.5px/1 var(--font-body,inherit);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:4px 6px 2px}
-  #mais-sheet .grade{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 2px}
-  #mais-sheet .dock-btn{
+  .gaveta.on{transform:translateY(var(--dy,0px));visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s}
+  .gaveta.arrastando{transition:none}
+  .gaveta .alca{display:block;width:44px;height:5px;border-radius:3px;background:var(--border-em);margin:6px auto 10px;border:0;padding:0}
+  .gaveta .alca-area{display:flex;justify-content:center;min-height:24px;cursor:grab}
+  .gaveta .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .gaveta .grupos{display:grid;gap:4px}
+  .gaveta .grupo + .grupo{border-top:0.5px solid var(--border);padding-top:6px}
+  .gaveta h3{font:600 11.5px/1 var(--font-body,inherit);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:4px 6px 2px}
+  .gaveta .grade{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 2px}
+  .gaveta .dock-btn{
     flex-direction:column;justify-content:flex-start;gap:6px;min-width:0;min-height:68px;
     padding:10px 2px 6px;border:0!important;border-radius:14px;background:transparent!important;
     font-size:12px;font-weight:500;line-height:1.2;text-align:center;white-space:normal;color:var(--text);box-shadow:none
   }
-  #mais-sheet .dock-btn .ico{width:40px;height:30px;font-size:22px;display:grid;place-items:center;color:var(--e);border-radius:10px}
-  #mais-sheet .dock-btn .ico svg{width:22px;height:22px}
-  #mais-sheet .dock-btn .ico svg,#mais-sheet .dock-btn .ico svg *{stroke:var(--icon-accent,var(--e))!important}
-  #mais-sheet .dock-btn.active{color:var(--e);font-weight:600}
-  #mais-sheet .dock-btn.active .ico{background:var(--el)}
-  #mais-sheet .dock-btn:active{background:var(--surf2)!important}
-  #mais-sheet .rodape{display:flex;justify-content:flex-start;margin-top:6px;padding-top:8px;border-top:0.5px solid var(--border)}
-  #mais-sheet .rodape .dock-btn{flex-direction:row;min-height:44px;padding:0 14px 0 8px;gap:6px;border-radius:999px;background:var(--surf2)!important;font-weight:600}
-  #mais-sheet .rodape .dock-btn .ico{width:28px;height:28px}
+  .gaveta .dock-btn .ico{width:40px;height:30px;font-size:22px;display:grid;place-items:center;color:var(--e);border-radius:10px}
+  .gaveta .dock-btn .ico svg{width:22px;height:22px}
+  .gaveta .dock-btn .ico svg,.gaveta .dock-btn .ico svg *{stroke:var(--icon-accent,var(--e))!important}
+  .gaveta .dock-btn.active{color:var(--e);font-weight:600}
+  .gaveta .dock-btn.active .ico{background:var(--el)}
+  .gaveta .dock-btn:active{background:var(--surf2)!important}
+  .gaveta .rodape{display:flex;justify-content:flex-start;margin-top:6px;padding-top:8px;border-top:0.5px solid var(--border)}
+  .gaveta .rodape .dock-btn{flex-direction:row;min-height:44px;padding:0 14px 0 8px;gap:6px;border-radius:999px;background:var(--surf2)!important;font-weight:600}
+  .gaveta .rodape .dock-btn .ico{width:28px;height:28px}
   #dock-fundo{position:fixed;inset:0;background:rgba(20,14,8,.38);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);z-index:99;opacity:0;pointer-events:none;transition:opacity .2s}
   #dock-fundo.on{opacity:1;pointer-events:auto}
 
@@ -7497,7 +7499,7 @@ init();
   .hall-mapa-quadro{height:calc(100dvh - 60px - 84px - 20px);min-height:420px;border-radius:12px}
 }
 #dock-mais{display:none}
-#mais-sheet{display:none}
+.gaveta{display:none}
 
 /* celular deitado: as regras de desktop (barra lateral, recuo de 180 px) não valem; vira o mesmo layout do celular em pé, mais baixo */
 @media (min-width:721px) and (max-height:500px) and (pointer:coarse){
@@ -7553,16 +7555,47 @@ init();
   body.tela-mapa #hall-view.com-mapa{padding:0!important}
   body.tela-mapa .hall-mapa-quadro{position:fixed;inset:0;height:auto!important;min-height:0!important;border:0;border-radius:0;z-index:1}
   /* gaveta de ferramentas abre ao lado dos botões */
-  #mais-sheet{left:calc(76px + env(safe-area-inset-left,0px));right:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  .gaveta{left:calc(76px + env(safe-area-inset-left,0px));right:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));
     width:min(600px,calc(100vw - 100px));transform:translateY(calc(100% + 40px))}
-  #mais-sheet.on{transform:translateY(var(--dy,0px))}
-  #mais-sheet h3{display:none}
-  #mais-sheet .grupo + .grupo{padding-top:2px}
-  #mais-sheet .dock-btn{min-height:52px;padding:4px 2px;gap:3px}
-  #mais-sheet .alca-area{min-height:16px}
+  .gaveta.on{transform:translateY(var(--dy,0px))}
+  .gaveta h3{display:none}
+  .gaveta .grupo + .grupo{padding-top:2px}
+  .gaveta .dock-btn{min-height:52px;padding:4px 2px;gap:3px}
+  .gaveta .alca-area{min-height:16px}
 }
-@media (max-width:720px), (max-height:500px) and (pointer:coarse){#mais-sheet{display:block}}
-@media (prefers-reduced-motion:reduce){#dock-fundo,#mais-sheet,#mais-sheet.on{transition:none!important}}
+@media (max-width:720px), (max-height:500px) and (pointer:coarse){.gaveta{display:block}}
+@media (prefers-reduced-motion:reduce){#dock-fundo,.gaveta,.gaveta.on{transition:none!important}}
+</style>
+<style id="chaos-mobile-v2-extra">
+.nbr-x,#nbr-fundo{display:none}
+@media (max-width:720px), (max-height:500px) and (pointer:coarse){
+  /* X das gavetas */
+  .gaveta{overflow:auto;max-height:calc(100dvh - 120px);overscroll-behavior:contain}
+  .gaveta .gaveta-x{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:50%;background:var(--surf2);color:var(--muted);display:grid;place-items:center;cursor:pointer;z-index:2}
+  .gaveta .gaveta-x svg{width:18px;height:18px}
+  .gaveta .alca-area{cursor:pointer}
+  .gaveta .alca{display:block;width:44px;height:5px;border-radius:3px;background:var(--border-em);margin:6px auto 10px}
+  /* Baixar dados no mesmo modelo da gaveta de ferramentas */
+  #dados-sheet .dock-btn{text-decoration:none}
+  #dados-sheet .dock-btn.forte .ico{background:var(--el)}
+  #dados-sheet .campos .grade{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:4px 6px 6px}
+  #dados-sheet .campo-linha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  #dados-sheet .campo{min-height:44px;font-size:16px;padding:0 12px;border-radius:12px;border:0.5px solid var(--border-em);background:var(--surface);color:var(--text);min-width:0}
+  #dados-sheet .campo-bt{min-height:44px;padding:0 14px;border-radius:12px;border:0.5px solid var(--border-em);background:var(--surf2);color:var(--text);font:600 13px inherit;font-family:inherit;cursor:pointer;white-space:nowrap}
+  body.lote-aberto .tool-dock #dock-dados{display:flex}
+  /* Painel NBR: X e fundo */
+  #nbr-panel .nbr-x{display:grid;place-items:center;position:absolute;top:10px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:var(--surf2);color:var(--text);z-index:30;cursor:pointer}
+  #nbr-panel .nbr-x svg{width:18px;height:18px}
+  #nbr-panel .nbr-header-actions{margin-right:44px}
+  #nbr-fundo{position:fixed;inset:0;background:rgba(20,14,8,.38);z-index:9997}
+  #nbr-fundo.on{display:block}
+}
+/* deitado: NBR cabe na altura e rola por dentro */
+@media (max-height:500px) and (pointer:coarse){
+  #nbr-panel{top:calc(8px + env(safe-area-inset-top,0px))!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;right:max(8px,env(safe-area-inset-right,0px))!important;left:auto!important;
+    width:min(440px,calc(100vw - 110px))!important;max-height:none!important;border-radius:18px!important}
+  .gaveta{max-height:calc(100dvh - 24px)}
+}
 </style>
 <script id="chaos-mobile-v2-js">
 (function(){
@@ -7571,83 +7604,113 @@ init();
   const fixos=['tool-home'];
   const todos=[...dock.querySelectorAll('.dock-btn')];
   const grupos=[['Propostas',['tool-new','tool-props','tool-propdesign','tool-propinteriores']],['Técnicas',['tool-mapoteca','tool-labeee','tool-nbr']],['Escritório',['tool-chart','tool-carta']]];
+  const SVG=(p)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
 
-  const mais=document.createElement('button');
-  mais.type='button'; mais.className='dock-btn'; mais.id='dock-mais';
-  mais.setAttribute('aria-expanded','false'); mais.setAttribute('aria-controls','mais-sheet');
-  mais.innerHTML='<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></span>Ferramentas';
-
-  const sheet=document.createElement('div');
-  sheet.id='mais-sheet'; sheet.setAttribute('role','dialog'); sheet.setAttribute('aria-modal','true'); sheet.setAttribute('aria-labelledby','mais-tit');
-  sheet.innerHTML='<div class="alca-area"><button type="button" class="alca" aria-label="Fechar ferramentas"></button></div><h2 id="mais-tit" class="sr-only">Ferramentas</h2><div class="grupos"></div>';
-  const caixa=sheet.querySelector('.grupos'); const blocos=[];
-  const fundo=document.createElement('div'); fundo.id='dock-fundo';
-  document.body.append(fundo,sheet);
-
-  // a gaveta mostra uma cópia de cada ferramenta; tocar na cópia aciona o botão original
-  const copias=[];
-  function copia(orig,destino){
-    const c=document.createElement('button'); c.type='button'; c.className='dock-btn'; c.innerHTML=orig.innerHTML; c.dataset.de=orig.id;
-    c.addEventListener('click',()=>{ fechar(false); orig.click(); });
-    destino.appendChild(c); copias.push([c,orig]);
+  const fundo=document.createElement('div'); fundo.id='dock-fundo'; document.body.appendChild(fundo);
+  const gavetas=[];
+  // gaveta genérica: abre de baixo, fecha tocando fora, no X, arrastando para baixo ou com Esc
+  function criaGaveta(id,titulo,botao){
+    const g=document.createElement('div'); g.id=id; g.className='gaveta'; g.setAttribute('role','dialog'); g.setAttribute('aria-modal','true'); g.setAttribute('aria-labelledby',id+'-tit');
+    g.innerHTML='<div class="alca-area"><span class="alca" aria-hidden="true"></span></div><button type="button" class="gaveta-x" aria-label="Fechar">'+SVG('<path d="M6 6l12 12M18 6 6 18"/>')+'</button><h2 id="'+id+'-tit" class="sr-only">'+titulo+'</h2><div class="grupos"></div>';
+    document.body.appendChild(g);
+    const api={el:g,caixa:g.querySelector('.grupos'),botao,antesDeAbrir:null,
+      aberta(){ return g.classList.contains('on'); },
+      abrir(){ gavetas.forEach(o=>o!==api&&o.aberta()&&o.fechar(false)); api.antesDeAbrir&&api.antesDeAbrir(); g.classList.add('on'); fundo.classList.add('on'); document.body.classList.add('dock-mais-on'); botao&&botao.setAttribute('aria-expanded','true'); marcar();
+        const p=[...g.querySelectorAll('button:not(.gaveta-x),a,input')].find(b=>!b.hidden&&b.offsetParent!==null); setTimeout(()=>p&&p.focus({preventScroll:true}),60); },
+      fechar(foco=true){ g.style.removeProperty('--dy'); g.classList.remove('on','arrastando'); if(!gavetas.some(o=>o!==api&&o.aberta())){ fundo.classList.remove('on'); document.body.classList.remove('dock-mais-on'); }
+        botao&&botao.setAttribute('aria-expanded','false'); if(foco&&mq.matches&&botao) botao.focus({preventScroll:true}); marcar(); }
+    };
+    g.querySelector('.gaveta-x').onclick=()=>api.fechar();
+    g.querySelector('.alca-area').onclick=()=>api.fechar();
+    let y0=null,dy=0;
+    g.addEventListener('pointerdown',e=>{ if(e.target.closest('input')) return; y0=e.clientY; dy=0; });
+    g.addEventListener('pointermove',e=>{ if(y0===null) return; dy=Math.max(0,e.clientY-y0); if(dy>6&&g.scrollTop<=0){ g.classList.add('arrastando'); g.style.setProperty('--dy',dy+'px'); } });
+    const soltar=()=>{ if(y0===null) return; const d=dy; y0=null; g.classList.remove('arrastando'); if(d>70&&g.scrollTop<=0) api.fechar(false); else g.style.removeProperty('--dy'); };
+    g.addEventListener('pointerup',soltar); g.addEventListener('pointercancel',soltar);
+    g.addEventListener('click',e=>{ if(dy>6){ e.stopPropagation(); e.preventDefault(); dy=0; } },true);
+    gavetas.push(api); return api;
   }
+  fundo.addEventListener('click',()=>gavetas.forEach(o=>o.aberta()&&o.fechar()));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') gavetas.forEach(o=>o.aberta()&&o.fechar()); });
+
+  /* ── Ferramentas ── */
+  const mais=document.createElement('button');
+  mais.type='button'; mais.className='dock-btn'; mais.id='dock-mais'; mais.setAttribute('aria-expanded','false'); mais.setAttribute('aria-controls','mais-sheet');
+  mais.innerHTML='<span class="ico">'+SVG('<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>')+'</span>Ferramentas';
+  const gFer=criaGaveta('mais-sheet','Ferramentas',mais);
+  const copias=[],blocos=[];
+  function bloco(api,nome){ const sec=document.createElement('section'); sec.className='grupo'; sec.innerHTML='<h3>'+nome+'</h3><div class="grade"></div>'; api.caixa.appendChild(sec); return sec; }
   grupos.forEach(([nome,ids])=>{
-    const sec=document.createElement('section'); sec.className='grupo';
-    sec.innerHTML='<h3>'+nome+'</h3><div class="grade"></div>'; const g=sec.querySelector('.grade');
-    ids.forEach(id=>{ const o=document.getElementById(id); o&&copia(o,g); });
-    caixa.appendChild(sec); blocos.push(sec);
+    const sec=bloco(gFer,nome), g=sec.querySelector('.grade');
+    ids.forEach(id=>{ const o=document.getElementById(id); if(!o) return;
+      const c=document.createElement('button'); c.type='button'; c.className='dock-btn'; c.innerHTML=o.innerHTML; c.dataset.de=o.id;
+      c.addEventListener('click',()=>{ gFer.fechar(false); o.click(); }); g.appendChild(c); copias.push([c,o]); });
+    blocos.push(sec);
   });
   function espelha(){ copias.forEach(([c,o])=>{ c.hidden=(o.style.display==='none'||o.hidden); c.classList.toggle('active',o.classList.contains('active')); }); blocos.forEach(b=>{ b.hidden=![...b.querySelectorAll('.dock-btn')].some(c=>!c.hidden); }); marcar(); }
+  gFer.antesDeAbrir=espelha;
+  mais.onclick=()=> gFer.aberta()?gFer.fechar():gFer.abrir();
+  function marcar(){ mais.classList.toggle('active', !gFer.aberta() && !!dock.querySelector('.dock-btn.mob-sec.active')); }
+
+  /* ── Baixar dados (lote aberto no mapa) ── */
+  const dados=document.createElement('button'); dados.type='button'; dados.className='dock-btn'; dados.id='dock-dados'; dados.setAttribute('aria-expanded','false'); dados.setAttribute('aria-controls','dados-sheet');
+  dados.innerHTML='<span class="ico">'+SVG('<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>')+'</span>Baixar dados';
+  const gDad=criaGaveta('dados-sheet','Baixar dados',dados);
+  function mapaDoc(){ const f=document.getElementById('hall-mapa-iframe'); try{ return f&&f.contentDocument; }catch(e){ return null; } }
+  const ICO={apl:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h4"/>',arel:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="m8.5 12 1.5 5 2-4 2 4 1.5-5"/>',aimp:'<path d="M7 8V3h10v5"/><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+    adxf:'<path d="M4 20 20 4"/><circle cx="4" cy="20" r="1.6"/><circle cx="20" cy="4" r="1.6"/><path d="M4 9V4h5"/>',akml:'<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',acop:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',alink:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    gmaps:'<path d="M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2z"/><path d="M9 4v14M15 6v14"/>',sview:'<circle cx="12" cy="5" r="2.2"/><path d="M12 8v6M9 11h6M10 14l-1 6M14 14l1 6"/><path d="M5 18c-1.3.5-2 1-2 1.6C3 21 7 22 12 22s9-1 9-2.4c0-.6-.7-1.1-2-1.6"/>',geocg:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/>'};
+  const ROT={apl:'Gerar planta (PDF)',arel:'Relatório (Word)',aimp:'Imprimir ficha',adxf:'DXF',akml:'KML',acop:'Copiar dados',alink:'Copiar link'};
+  function montaDados(){
+    const d=mapaDoc(); const cx=gDad.caixa; cx.innerHTML='';
+    if(!d) return;
+    const tile=(icone,rot,fn,extra)=>{ const b=document.createElement(extra&&extra.href?'a':'button'); if(extra&&extra.href){ b.href=extra.href; b.target='_blank'; b.rel='noopener'; } else b.type='button';
+      b.className='dock-btn'+(extra&&extra.forte?' forte':''); b.innerHTML='<span class="ico">'+SVG(icone)+'</span>'+rot; b.addEventListener('click',()=>{ fn&&fn(); setTimeout(()=>gDad.fechar(false),120); }); return b; };
+    const grupo=(nome,itens)=>{ itens=itens.filter(Boolean); if(!itens.length) return; const sec=bloco(gDad,nome); const g=sec.querySelector('.grade'); itens.forEach(i=>g.appendChild(i)); };
+    const orig=id=>d.getElementById(id);
+    const viaOrig=id=>orig(id)?tile(ICO[id],ROT[id],()=>orig(id).click(),{forte:id==='apl'||id==='arel'}):null;
+    grupo('Documentos',['apl','arel','aimp'].map(viaOrig));
+    grupo('Arquivos',['adxf','akml','acop','alink'].map(viaOrig));
+    const links=[...d.querySelectorAll('#fac .lk a')];
+    const nomesLk=[['gmaps','Google Maps'],['sview','Street View'],['geocg','GeoCG oficial']];
+    grupo('Abrir em',links.map((a,i)=>tile(ICO[(nomesLk[i]||nomesLk[2])[0]],a.textContent.trim()||(nomesLk[i]||[])[1],null,{href:a.href})));
+    // campos: espelham os campos da ficha
+    const campos=[['finsc','aofi','Inscrição imobiliária (opcional)','numeric'],['favrot','afav','Etiqueta (ex.: nome do cliente)','text']];
+    const sec=bloco(gDad,'Este lote'); sec.classList.add('campos'); const g=sec.querySelector('.grade');
+    campos.forEach(([inId,btId,ph,modo])=>{
+      const bt=orig(btId); if(!bt) return; const inp=orig(inId);
+      const linha=document.createElement('div'); linha.className='campo-linha';
+      if(inp){ const c=document.createElement('input'); c.className='campo'; c.placeholder=ph; c.value=inp.value; c.inputMode=modo; c.autocomplete='off';
+        c.addEventListener('input',()=>{ inp.value=c.value; inp.dispatchEvent(new Event('input',{bubbles:true})); b.textContent=bt.textContent; }); linha.appendChild(c); }
+      const b=document.createElement('button'); b.type='button'; b.className='campo-bt'; b.textContent=bt.textContent;
+      b.addEventListener('click',()=>{ bt.click(); setTimeout(()=>gDad.fechar(false),150); }); linha.appendChild(b); g.appendChild(linha);
+    });
+  }
+  gDad.antesDeAbrir=montaDados;
+  dados.onclick=()=> gDad.aberta()?gDad.fechar():gDad.abrir();
 
   function montar(){
     if(mq.matches){
       todos.forEach(b=>b.classList.toggle('mob-sec',!fixos.includes(b.id)));
       fixos.forEach(id=>{const b=document.getElementById(id); b&&dock.appendChild(b);});
-      dock.appendChild(mais);
-      if(typeof dados!=='undefined') dock.appendChild(dados);
+      dock.appendChild(mais); dock.appendChild(dados);
     }else{
-      fechar(false); mais.remove(); const dd=document.getElementById('dock-dados'); dd&&dd.remove(); todos.forEach(b=>b.classList.remove('mob-sec'));
+      gavetas.forEach(o=>o.fechar(false)); mais.remove(); dados.remove(); todos.forEach(b=>b.classList.remove('mob-sec'));
     }
     espelha();
   }
-  function aberto(){ return sheet.classList.contains('on'); }
-  function abrir(){
-    espelha();
-    sheet.classList.add('on'); fundo.classList.add('on'); document.body.classList.add('dock-mais-on');
-    mais.setAttribute('aria-expanded','true'); marcar();
-    const p=copias.map(x=>x[0]).find(b=>!b.hidden); setTimeout(()=>p&&p.focus({preventScroll:true}),60);
-  }
-  function fechar(devolverFoco=true){
-    sheet.style.removeProperty('--dy'); sheet.classList.remove('on','arrastando'); fundo.classList.remove('on'); document.body.classList.remove('dock-mais-on');
-    mais.setAttribute('aria-expanded','false'); if(devolverFoco && mq.matches) mais.focus({preventScroll:true});
-    marcar();
-  }
-  function marcar(){ mais.classList.toggle('active', !aberto() && !!dock.querySelector('.dock-btn.mob-sec.active')); }
-
-  mais.onclick=()=> aberto()?fechar():abrir();
-  fundo.addEventListener('click',()=>fechar());
-  sheet.querySelector('.alca').onclick=()=>fechar();
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&aberto()) fechar(); });
-
-  // arrastar para baixo fecha (acompanha o dedo)
-  let y0=null,dy=0;
-  sheet.addEventListener('pointerdown',e=>{ y0=e.clientY; dy=0; });
-  sheet.addEventListener('pointermove',e=>{ if(y0===null) return; dy=Math.max(0,e.clientY-y0); if(dy>6){ sheet.classList.add('arrastando'); sheet.style.setProperty('--dy',dy+'px'); } });
-  const soltar=()=>{ if(y0===null) return; const d=dy; y0=null; sheet.classList.remove('arrastando'); if(d>70) fechar(false); else sheet.style.removeProperty('--dy'); };
-  sheet.addEventListener('pointerup',soltar); sheet.addEventListener('pointercancel',soltar);
-  sheet.addEventListener('click',e=>{ if(dy>6){ e.stopPropagation(); e.preventDefault(); } },true);
-
   new MutationObserver(espelha).observe(dock,{subtree:true,attributes:true,attributeFilter:['class','style','hidden']});
+
+  /* ── Início com mapa ── */
   const hall=document.getElementById('hall-view');
   function telaMapa(){ document.body.classList.toggle('tela-mapa', !!hall && getComputedStyle(hall).display!=='none' && hall.classList.contains('com-mapa')); }
   if(hall) new MutationObserver(telaMapa).observe(hall,{attributes:true,attributeFilter:['style','class']});
   telaMapa();
-  // deitado no mapa: a busca ocupa exatamente o espaço entre o logo e o Tema (respeita a câmera e as bordas do aparelho)
   function alinhaBusca(){
     const f=document.getElementById('hall-mapa-iframe'); if(!f) return;
     let d; try{ d=f.contentDocument; }catch(e){ return; } if(!d||!d.documentElement) return;
     const logo=document.querySelector('.hdr-logo'), tema=document.querySelector('.hdr-right .tp-trigger')||document.querySelector('.hdr-right');
-    if(!document.body.classList.contains('tela-mapa')||!logo||!tema){ d.documentElement.style.removeProperty('--busca-esq'); d.documentElement.style.removeProperty('--busca-dir'); return; }
+    if(!document.body.classList.contains('tela-mapa')||!logo||!tema){ ['--busca-esq','--busca-dir','--busca-topo'].forEach(v=>d.documentElement.style.removeProperty(v)); return; }
     const fr=f.getBoundingClientRect(), l=logo.getBoundingClientRect(), t=tema.getBoundingClientRect();
     d.documentElement.style.setProperty('--busca-esq',Math.round(l.right-fr.left+10)+'px');
     d.documentElement.style.setProperty('--busca-dir',Math.round(fr.right-t.left+10)+'px');
@@ -7655,23 +7718,25 @@ init();
   }
   ['resize','orientationchange'].forEach(ev=>addEventListener(ev,()=>setTimeout(alinhaBusca,120)));
   if(hall) new MutationObserver(()=>setTimeout(alinhaBusca,60)).observe(hall,{attributes:true,attributeFilter:['style','class']});
-  document.addEventListener('load',e=>{ if(e.target&&e.target.id==='hall-mapa-iframe') setTimeout(alinhaBusca,60); },true);
   setInterval(alinhaBusca,1500);
-  // lote aberto no mapa: aparece "Baixar dados" na barra, que abre as ações da ficha
-  const dados=document.createElement('button'); dados.type='button'; dados.className='dock-btn'; dados.id='dock-dados';
-  dados.innerHTML='<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></span>Baixar dados';
-  function mapaDoc(){ const f=document.getElementById('hall-mapa-iframe'); try{ return f&&f.contentDocument; }catch(e){ return null; } }
-  dados.onclick=()=>{ const d=mapaDoc(); if(d&&d.body){ d.body.classList.add('acoes-on'); } };
   let obsLote=null;
-  function vigiaLote(){
-    const d=mapaDoc(); if(!d||!d.body) return;
-    const atualiza=()=>document.body.classList.toggle('lote-aberto', d.body.classList.contains('comficha') && !!hall && getComputedStyle(hall).display!=='none');
-    if(obsLote) obsLote.disconnect();
-    obsLote=new MutationObserver(atualiza); obsLote.observe(d.body,{attributes:true,attributeFilter:['class']}); atualiza();
-  }
-  document.addEventListener('load',e=>{ if(e.target&&e.target.id==='hall-mapa-iframe') setTimeout(vigiaLote,80); },true);
-  if(hall) new MutationObserver(()=>{ const d=mapaDoc(); document.body.classList.toggle('lote-aberto', !!(d&&d.body&&d.body.classList.contains('comficha')) && getComputedStyle(hall).display!=='none'); }).observe(hall,{attributes:true,attributeFilter:['style']});
+  function atualizaLote(){ const d=mapaDoc(); const on=!!(d&&d.body&&d.body.classList.contains('comficha')) && !!hall && getComputedStyle(hall).display!=='none'; document.body.classList.toggle('lote-aberto',on); if(!on&&gDad.aberta()) gDad.fechar(false); }
+  function vigiaLote(){ const d=mapaDoc(); if(!d||!d.body) return; if(obsLote) obsLote.disconnect(); obsLote=new MutationObserver(atualizaLote); obsLote.observe(d.body,{attributes:true,attributeFilter:['class']}); atualizaLote(); }
+  document.addEventListener('load',e=>{ if(e.target&&e.target.id==='hall-mapa-iframe'){ setTimeout(vigiaLote,80); setTimeout(alinhaBusca,80); } },true);
+  if(hall) new MutationObserver(atualizaLote).observe(hall,{attributes:true,attributeFilter:['style']});
   setTimeout(vigiaLote,500);
+
+  /* ── Painel NBR: X para fechar e toque fora fecha ── */
+  const nbr=document.getElementById('nbr-panel');
+  if(nbr){
+    const x=document.createElement('button'); x.type='button'; x.className='nbr-x'; x.setAttribute('aria-label','Fechar NBR'); x.innerHTML=SVG('<path d="M6 6l12 12M18 6 6 18"/>');
+    x.onclick=e=>{ e.stopPropagation(); if(nbr.classList.contains('open')&&typeof nbrTogglePanel==='function') nbrTogglePanel(); };
+    nbr.appendChild(x);
+    const nf=document.createElement('div'); nf.id='nbr-fundo'; document.body.appendChild(nf);
+    nf.onclick=()=>{ if(nbr.classList.contains('open')&&typeof nbrTogglePanel==='function') nbrTogglePanel(); };
+    new MutationObserver(()=>{ nf.classList.toggle('on',nbr.classList.contains('open')&&mq.matches); }).observe(nbr,{attributes:true,attributeFilter:['class']});
+  }
+
   (mq.addEventListener?mq.addEventListener('change',montar):mq.addListener(montar));
   montar();
 })();
