@@ -2105,6 +2105,7 @@ function gerarPlanta(){
           baixarBlob(nome, res.blob);
           fimPlanta(null);
           barra('Planta pronta' + res.msg + '. O arquivo "' + nome + '" foi para a sua pasta Downloads.', true);
+          (res.links || []).forEach(function(l){ var x = document.createElement('a'); x.href = l.url; x.target = '_blank'; x.rel = 'noopener'; x.textContent = ' ' + l.t; x.style.cssText = 'margin-left:8px;font-weight:600;text-decoration:underline;cursor:pointer'; $('barratxt').appendChild(x); });
         });
       }, function(){ fimPlanta('Não consegui montar o arquivo da planta.'); });
     }, 'image/jpeg', 0.9);
@@ -2507,12 +2508,24 @@ doHash();
     var certas=lista[0].s>0 || lista.length===1 ? [lista[0]] : lista.slice(0,Math.min(3,lista.length));
     return {nome:lot.nome, folhas:certas.map(function(x){ return x.f; }), certeza:lista[0].s>0||lista.length===1};
   }
+  // a prefeitura não deixa o navegador baixar o PDF direto (CORS): vai primeiro pela ponte do escritório (Apps Script)
+  var PONTE='https://script.google.com/macros/s/AKfycbwrEcpSBHXYjQNK2AYcfiIYfCG3ustHuvKYh_8KnjGhgU5jkbgN-mb_2r-Vgfz9piM/exec';
+  function ponteUrl(){ var v=''; try{ v=String(localStorage.getItem('chaos-sisgran-ponte')||'').trim(); }catch(e){} return /^https:\/\//.test(v)?v:PONTE; }
+  function ehPdf(b){ var v=new Uint8Array(b.slice(0,5)); if(String.fromCharCode.apply(null,v)!=='%PDF-') throw 0; return b; }
+  function comPrazo(u,ms){ var c=window.AbortController?new AbortController():null; var t=setTimeout(function(){ c&&c.abort(); },ms);
+    return fetch(u,{cache:'no-store',redirect:'follow',signal:c&&c.signal}).then(function(r){ clearTimeout(t); return r; },function(e){ clearTimeout(t); throw e; }); }
+  function pelaPonte(url){
+    return comPrazo(ponteUrl()+'?pdf='+encodeURIComponent(url),60000).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+      if(!j || !j.ok || !j.b64) throw new Error((j&&j.erro)||'ponte sem PDF');
+      var bin=atob(j.b64), u8=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
+      return ehPdf(u8.buffer); });
+  }
   function baixaPdf(url){
-    var tent=[url,'https://api.allorigins.win/raw?url='+encodeURIComponent(url),'https://corsproxy.io/?url='+encodeURIComponent(url)];
+    var tent=[function(){ return pelaPonte(url); },
+      function(){ return comPrazo(url,15000).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(ehPdf); },
+      function(){ return comPrazo('https://api.allorigins.win/raw?url='+encodeURIComponent(url),25000).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(ehPdf); }];
     var i=0;
-    function prox(){ if(i>=tent.length) return Promise.reject(new Error('sem acesso'));
-      var u=tent[i++]; return fetch(u,{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); })
-        .then(function(b){ var v=new Uint8Array(b.slice(0,5)); if(String.fromCharCode.apply(null,v)!=='%PDF-') throw 0; return b; }).catch(prox); }
+    function prox(){ if(i>=tent.length) return Promise.reject(new Error('sem acesso')); return tent[i++]().catch(prox); }
     return prox();
   }
   var libP=null;
@@ -2528,7 +2541,8 @@ doHash();
       return Promise.all([pdfLib(), pdfBlob.arrayBuffer ? pdfBlob.arrayBuffer() : new Response(pdfBlob).arrayBuffer()].concat(e.folhas.map(function(f){ return baixaPdf(f.url).catch(function(){ return null; }); })))
         .then(function(r){
           var L=r[0], base=r[1], pr=r.slice(2).filter(Boolean);
-          if(!pr.length) return {blob:pdfBlob,msg:' (não consegui baixar a prancha da Mapoteca agora)'};
+          var links=e.folhas.map(function(f){ return {t:'Abrir folha '+String(f.folha).padStart(2,'0'),url:f.url}; });
+          if(!pr.length) return {blob:pdfBlob,msg:' (não consegui baixar a prancha da Mapoteca agora: abra pelo link ao lado)',links:links};
           return L.PDFDocument.load(base).then(function(doc){
             return pr.reduce(function(p,buf){ return p.then(function(){ return L.PDFDocument.load(buf,{ignoreEncryption:true}).then(function(src){ return doc.copyPages(src,src.getPageIndices()).then(function(pg){ pg.forEach(function(x){ doc.addPage(x); }); }); }); }); },Promise.resolve())
               .then(function(){ return doc.save(); })

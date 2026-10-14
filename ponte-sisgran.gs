@@ -3,6 +3,7 @@
  * ---------------------------------------------------------------------------
  * O portal SISGRAN 2026 (PLANURB/PMCG) não libera leitura vinda de outros sites,
  * então o Chaos (no GitHub Pages) não consegue consultar direto pelo navegador.
+ * Também baixa as pranchas em PDF da Mapoteca para a Planta do mapa (?pdf=...).
  * Este script, publicado como "App da Web" na conta Google do escritório, faz a
  * consulta no lugar do navegador e devolve o resultado para o Chaos.
  *
@@ -27,6 +28,10 @@ const PERMITIDOS = [
   /^\/sisgran\/api\/v1\/territory\/[A-Za-z0-9_\-\/%.?=&]+$/,
   /^\/sisgran\/api\/v1\/search\?/
 ];
+// Pranchas da Mapoteca (PDF) no CDN da prefeitura: o CDN não deixa o navegador baixar direto (CORS),
+// então a ponte baixa e devolve em base64. Só aceita PDF das mídias públicas do portal (site 24 = SEMADES/SEMADUR).
+const PDF_OK = /^https:\/\/cdn\.campogrande\.ms\.gov\.br\/portal\/prod\/uploads\/sites\/24\/[^?#]+\.pdf$/i;
+const PDF_MAX = 30 * 1024 * 1024;
 const MAX_PEDIDOS = 25;
 const CACHE_SEG = 6 * 60 * 60; // 6 horas: o mesmo lote consultado de novo sai na hora
 
@@ -35,7 +40,8 @@ function doGet(e) {
   const p = (e && e.parameters) || {};
   const us = [].concat(p.u || []);
   const gs = [].concat(p.g || []);
-  if (!us.length) return saida({ ok: true, servico: 'ponte-sisgran', versao: 1 });
+  if (p.pdf) return saida(baixarPdf(String([].concat(p.pdf)[0] || '')));
+  if (!us.length) return saida({ ok: true, servico: 'ponte-sisgran', versao: 2, pdf: true });
   return saida(executar(us.map(function (u, i) { return { u: u, g: gs[i] !== '0' }; })));
 }
 
@@ -84,6 +90,21 @@ function executar(pedidos) {
   return { r: r };
 }
 
+// GET ?pdf=<url da prancha> → {ok:true, n:<bytes>, b64:"..."}
+function baixarPdf(url) {
+  if (!PDF_OK.test(url)) return { ok: false, erro: 'endereço não permitido' };
+  try {
+    const resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true });
+    const s = resp.getResponseCode();
+    if (s !== 200) return { ok: false, s: s, erro: 'a prefeitura respondeu HTTP ' + s };
+    const bytes = resp.getContent();
+    if (bytes.length > PDF_MAX) return { ok: false, erro: 'arquivo grande demais (' + Math.round(bytes.length / 1048576) + ' MB)' };
+    return { ok: true, n: bytes.length, b64: Utilities.base64Encode(bytes) };
+  } catch (err) {
+    return { ok: false, erro: String(err && err.message || err) };
+  }
+}
+
 function semGeometria(j) {
   if (j && Array.isArray(j.features)) j.features.forEach(function (f) { if (f) f.geometry = null; });
   return j;
@@ -105,4 +126,10 @@ function testar() {
     + '&srs=EPSG:4326&bbox=-54.6155,-20.4635,-54.6145,-20.4625&width=101&height=101&x=50&y=50'
     + '&info_format=application/json&feature_count=5';
   Logger.log(JSON.stringify(executar([{ u: u, g: false }])));
+}
+
+// Teste da prancha (botão Executar com "testarPdf"): deve mostrar ok:true e o tamanho do PDF.
+function testarPdf() {
+  const r = baixarPdf('https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/04/CEL.-ANTONINO-Folha-01.pdf');
+  Logger.log(JSON.stringify({ ok: r.ok, n: r.n, erro: r.erro }));
 }
