@@ -2537,7 +2537,13 @@ doHash();
     var chk=document.getElementById('plmapo'); if(chk && !chk.checked) return Promise.resolve(semNada);
     var i0=lote && lote.imoveis && lote.imoveis[0]; if(!i0 || !i0.parcelamen) return Promise.resolve(semNada);
     return Promise.all([indice(),globais()]).then(function(rr){ var idx=rr[0];
-      var e=idx&&escolhe(idx,i0); if(!e) return {blob:pdfBlob,msg:' (o loteamento ainda não está no índice da Mapoteca)'};
+      if(!idx) return {blob:pdfBlob,msg:' (sem a prancha da Mapoteca: não consegui carregar o índice agora, tente de novo em instantes)'};
+      var pn=String(i0.parcelamen||'').trim();
+      // desdobro, desmembramento, remembramento, rede ferroviária etc.: numeração própria, não é loteamento da Mapoteca
+      // (a letra da quadra pode coincidir com a do loteamento vizinho — não tentar casar pelo bairro)
+      if(/DESDOBR|DESMEMBR|REMEMBR|UNIFICA|FRACION|FERROVI|REMANESC/i.test(sa(pn)))
+        return {blob:pdfBlob,msg:' (sem prancha da Mapoteca: o parcelamento “'+pn+'” é desdobro, com quadra e lote próprios; use a planta do desdobro aprovado/matrícula)'};
+      var e=escolhe(idx,i0); if(!e) return {blob:pdfBlob,msg:' (sem prancha da Mapoteca: o parcelamento “'+pn+'” não tem planta publicada no portal da prefeitura)'};
       return Promise.all([pdfLib(), pdfBlob.arrayBuffer ? pdfBlob.arrayBuffer() : new Response(pdfBlob).arrayBuffer()].concat(e.folhas.map(function(f){ return baixaPdf(f.url).catch(function(){ return null; }); })))
         .then(function(r){
           var L=r[0], base=r[1], pr=r.slice(2).filter(Boolean);

@@ -2670,6 +2670,7 @@ function loteMapaGuardar(l){
   loteMapaAtual=l;
   try{ localStorage.setItem(LOTE_MAPA_KEY,JSON.stringify(l)); }catch(e){}
   loteMapaInfo();
+  try{ if(window.nbrUsarLote) window.nbrUsarLote(l); }catch(e){} // Assistente NBR já assume o lote como local da obra
 }
 function loteDoMapa(){
   if(loteMapaValido(loteMapaAtual)) return loteMapaAtual;
@@ -8308,7 +8309,26 @@ function reopenCep(){
   if(inp){ inp.value=''; inp.focus(); }
 }
 
+// ─── LOTE CLICADO NO MAPA → LOCALIZAÇÃO DA OBRA (automático) ─────────
+// Toda vez que um lote é selecionado no mapa do Início, o assistente já assume ele como local da obra,
+// sem precisar digitar CEP. Dados vêm do GeoCG (Campo Grande/MS — ZB6, NBR 15220-3).
+function usarLote(l){
+  if(!l || !l.cod) return;
+  const ql=[l.quadra?'Qd '+l.quadra:'', l.lote?'Lt '+l.lote:''].filter(Boolean).join(' ');
+  S.location={ cep:'', logradouro:[l.rua,l.numero].filter(Boolean).join(', '), bairro:l.bairro||'', cidade:'Campo Grande', uf:'MS', zonaBio:'6',
+    complemento:[ql, l.parcelamento, 'lote '+l.cod].filter(Boolean).join(' · '), lote:l };
+  const prev=document.getElementById('nbr-cep-preview-text'), comp=document.getElementById('nbr-cep-complemento'), cf=document.getElementById('nbr-cep-confirm');
+  if(comp) comp.value=S.location.complemento;
+  if(prev){ prev.innerHTML=`<div class="nbr-loc-text"><strong>Campo Grande — MS</strong>${S.location.logradouro?'<br>'+S.location.logradouro:''}<br>${ql}${l.bairro?' · '+l.bairro:''}<div class="nbr-cep-tags" style="margin-top:5px"><span class="nbr-cep-tag">ZB 6</span><span class="nbr-cep-tag">lote do mapa</span></div></div>`; document.getElementById('nbr-cep-preview')?.classList.add('loaded'); }
+  if(cf) cf.disabled=false;
+  if(document.getElementById('nbr-cep-screen')) closeCepScreen();
+  const lb=document.getElementById('nbr-loc-badge'), bt=document.getElementById('nbr-loc-badge-text');
+  if(bt) bt.textContent=[ql||('lote '+l.cod), l.bairro].filter(Boolean).join(' · ');
+  if(lb){ lb.classList.add('visible'); lb.title=[S.location.logradouro, S.location.complemento].filter(Boolean).join(' — '); }
+}
+
 // ─── GLOBAIS ─────────────────────────────────────────
+window.nbrUsarLote        = usarLote;
 window.nbrTogglePanel     = ()=>{ if(window.guardTool && guardTool('nbr')) return; togglePanel(); };
 window.nbrSearch          = nbrSearch;
 window.nbrSearchByCode    = q=>{ document.getElementById('nbr-search-input').value=q; document.querySelectorAll('.nbr-tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.nbr-tab-panel').forEach(x=>x.classList.remove('active')); document.querySelector('[data-nbrtab="buscar"]').classList.add('active'); document.getElementById('nbr-tab-buscar').classList.add('active'); nbrSearchNow(q); };
