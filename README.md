@@ -1,6 +1,6 @@
 # Chaos + Arq & Art
 
-Sistema interno do escritório **Referência Soluções Arquitetônicas e Ambientais** (Arqta Samária Rosa), Campo Grande/MS.
+Sistema interno do escritório **Chaos Arq & Art**, Campo Grande/MS.
 Reúne o mapa de consulta de imóveis de Campo Grande, as propostas comerciais e as ferramentas técnicas do dia a dia: Mapoteca, LabEEE e Normas NBR.
 
 **[→ Abrir o sistema](https://arguiteto.github.io/ser-honorarios/)** · **[→ Abrir só o mapa](https://arguiteto.github.io/ser-honorarios/mapa.html)**
