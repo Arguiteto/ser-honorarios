@@ -40,6 +40,8 @@ No topo ficam **Áudio** (player), **Nome** (perfil de quem está usando), **Log
    - **Salvar em Meus lotes**: guarda o lote com uma etiqueta, por exemplo o nome do cliente.
 4. A barra de ferramentas embaixo do mapa tem **Camadas · Mapa base · Atalhos · Medir · Desenhar · Comparar · Entorno · Planta · Importar · Ajuda · Limpar**.
 
+> **Lote de desmembramento, desdobro, remembramento ou da antiga Rede Ferroviária:** ao clicar num lote desses, aparece um aviso na tela (no computador e no celular). Ele explica que a quadra e o lote têm numeração própria, diferente da do loteamento do bairro, que a Mapoteca não tem prancha dele e que os dados do cadastro devem ser conferidos na matrícula ou na planta aprovada. Dá para marcar "Não avisar de novo neste parcelamento". Em Campo Grande são cerca de 57 parcelamentos nessa situação (dado do GeoCG em out/2026), concentrados em Jardim dos Estados, Leblon, São Francisco, Bandeirantes, Tiradentes, Vilasboas e Cabreúva.
+
 > O sistema guarda o último lote clicado. **Mapoteca**, **LabEEE** e o **Assistente NBR** usam esse lote sem precisar digitar os dados de novo.
 
 #### Planta em PDF + prancha da Mapoteca
@@ -50,7 +52,7 @@ No painel **Planta**, escolha modelo, papel e escala e clique **Gerar planta (PD
 |-------|-----------------|
 | *com a prancha da Mapoteca (LOTEAMENTO, folha 03)* | A prancha foi encontrada e anexada |
 | *…confira qual é a do lote* | O loteamento tem várias folhas e a quadra não bastou para escolher uma. Confira a folha anexada |
-| *o parcelamento "X" é desdobro, com quadra e lote próprios* | O lote vem de **desdobro, desmembramento, remembramento ou área da rede ferroviária**. A numeração dele não segue a do loteamento do bairro, e a Mapoteca não publica essa planta. Use a planta do desdobro aprovado ou a matrícula |
+| *o parcelamento "X" é desmembramento/desdobro, com quadra e lote próprios* | O lote vem de **desdobro, desmembramento, remembramento ou área da rede ferroviária**. A numeração dele não segue a do loteamento do bairro, e a Mapoteca não publica essa planta. Use a planta do desdobro aprovado ou a matrícula |
 | *o parcelamento "X" não tem planta publicada* | A prefeitura não publicou prancha desse parcelamento no portal |
 | *não consegui carregar o índice agora* | Houve falha de conexão. Tente de novo |
 | *não consegui baixar a prancha agora* | A prancha foi encontrada, mas o site da prefeitura não respondeu. Abra pelo link do aviso |

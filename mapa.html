@@ -965,6 +965,7 @@ function secBase(){
     + '</table>';
   $('fbase').innerHTML = s;
   avisaSistema();
+  try { if (window.chaosAvisoParcelamento) window.chaosAvisoParcelamento(atual.cod, i0); } catch (e) {}
 }
 
 function carregaZona(meu){
@@ -2541,8 +2542,8 @@ doHash();
       var pn=String(i0.parcelamen||'').trim();
       // desdobro, desmembramento, remembramento, rede ferroviária etc.: numeração própria, não é loteamento da Mapoteca
       // (a letra da quadra pode coincidir com a do loteamento vizinho — não tentar casar pelo bairro)
-      if(/DESDOBR|DESMEMBR|REMEMBR|UNIFICA|FRACION|FERROVI|REMANESC/i.test(sa(pn)))
-        return {blob:pdfBlob,msg:' (sem prancha da Mapoteca: o parcelamento “'+pn+'” é desdobro, com quadra e lote próprios; use a planta do desdobro aprovado/matrícula)'};
+      if(/DESDOB|DESMEMB|REMEMB|UNIFICA|FRACION|FERROVI|REMANESC/i.test(sa(pn)))
+        return {blob:pdfBlob,msg:' (sem prancha da Mapoteca: o parcelamento “'+pn+'” é desmembramento/desdobro, com quadra e lote próprios; use a planta do desdobro aprovado/matrícula)'};
       var e=escolhe(idx,i0); if(!e) return {blob:pdfBlob,msg:' (sem prancha da Mapoteca: o parcelamento “'+pn+'” não tem planta publicada no portal da prefeitura)'};
       return Promise.all([pdfLib(), pdfBlob.arrayBuffer ? pdfBlob.arrayBuffer() : new Response(pdfBlob).arrayBuffer()].concat(e.folhas.map(function(f){ return baixaPdf(f.url).catch(function(){ return null; }); })))
         .then(function(r){
@@ -2557,6 +2558,55 @@ doHash();
           });
         });
     }).catch(function(){ return {blob:pdfBlob,msg:' (sem a prancha da Mapoteca: não consegui juntar os arquivos)'}; });
+  };
+})();
+</script>
+<script id="mapa-aviso-parcelamento">
+/* Aviso na tela quando o lote é de desmembramento, desdobro, remembramento ou área da Rede Ferroviária:
+   a quadra/lote têm numeração própria (não a do loteamento do bairro) e a Mapoteca não tem prancha deles. */
+(function(){
+  var RE=/DESDOB|DESMEMB|REMEMB|UNIFICA|FRACION|FERROVI|REMANESC/;
+  var KEY='chaos-aviso-parc-oculto', vistos={};
+  function sa(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase(); }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function sz(v){ return String(v||'').replace(/^0+(?=\w)/,''); }
+  function ocultos(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ return {}; } }
+  var css=document.createElement('style');
+  css.textContent='#aviso-parc{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.38)}'
+   +'#aviso-parc[hidden]{display:none}'
+   +'#aviso-parc .ap{width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--warnb,var(--border-em));border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:var(--font-body);font-size:14px;line-height:1.5}'
+   +'#aviso-parc .ap-h{display:flex;gap:10px;align-items:flex-start;padding:16px 18px 10px;background:var(--warnl,var(--surf2));border-bottom:1px solid var(--warnb,var(--border));border-radius:16px 16px 0 0}'
+   +'#aviso-parc .ap-i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--warn,#8B6914);color:#fff;font-weight:700}'
+   +'#aviso-parc h3{margin:0;font-family:var(--font-display);font-size:17px;line-height:1.25;color:var(--text)}'
+   +'#aviso-parc .ap-s{font-size:12px;color:var(--muted);margin-top:2px}'
+   +'#aviso-parc .ap-b{padding:12px 18px 4px}#aviso-parc .ap-b p{margin:0 0 10px}'
+   +'#aviso-parc .ap-b b{color:var(--text)}'
+   +'#aviso-parc .ap-f{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 18px 16px}'
+   +'#aviso-parc label{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);cursor:pointer}'
+   +'#aviso-parc button{border:0;border-radius:999px;padding:9px 20px;background:var(--text);color:var(--surface);font:600 13px var(--font-body);cursor:pointer;min-height:40px}'
+   +'@media (max-width:600px){#aviso-parc{align-items:flex-end;padding:0}#aviso-parc .ap{width:100%;border-radius:18px 18px 0 0;max-height:85vh;padding-bottom:env(safe-area-inset-bottom,0px)}#aviso-parc .ap-h{border-radius:18px 18px 0 0}#aviso-parc .ap-f button{flex:1}}';
+  document.head.appendChild(css);
+  var box=null, atualParc='';
+  function fecha(){ if(!box) return; var c=box.querySelector('#ap-nao'); if(c && c.checked){ var o=ocultos(); o[atualParc]=1; try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} } box.hidden=true; }
+  function monta(){
+    box=document.createElement('div'); box.id='aviso-parc'; box.hidden=true; box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true');
+    box.addEventListener('click',function(e){ if(e.target===box) fecha(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape' && box && !box.hidden){ e.stopPropagation(); fecha(); } },true);
+    document.body.appendChild(box);
+  }
+  window.chaosAvisoParcelamento=function(cod,i0){
+    var pn=String(i0&&i0.parcelamen||'').trim(), P=sa(pn);
+    if(!pn || !RE.test(P) || vistos[cod] || ocultos()[P]) return;
+    vistos[cod]=1; atualParc=P; if(!box) monta();
+    var fer=/FERROVI/.test(P), tipo=fer?'área da antiga Rede Ferroviária (desdobro)':/DESDOB/.test(P)?'desdobro':/REMEMB/.test(P)?'remembramento':'desmembramento';
+    var ql=[i0.quadra?'Quadra '+sz(i0.quadra):'', i0.lote?'Lote '+sz(i0.lote):''].filter(Boolean).join(', ');
+    var bairro=String(i0.nomebairro||'').trim();
+    box.innerHTML='<div class="ap"><div class="ap-h"><div class="ap-i">!</div><div><h3>Confira: lote de '+esc(tipo)+'</h3><div class="ap-s">'+esc(pn)+(bairro?' · bairro '+esc(bairro):'')+'</div></div></div>'
+      +'<div class="ap-b"><p>'+(ql?'<b>'+esc(ql)+'</b> segue':'A quadra e o lote seguem')+' a numeração própria deste '+(fer?'desdobro':esc(tipo))+', <b>não a do loteamento do bairro</b>'+(bairro?' ('+esc(bairro)+')':'')+'. Uma quadra com a mesma letra na prancha do bairro é outra área.</p>'
+      +'<p>A Mapoteca não tem prancha deste parcelamento. As medidas e a área do mapa vêm do cadastro da prefeitura e <b>não são certeza</b>: confirme na <b>matrícula</b> ou na <b>planta do '+(fer?'desdobro':esc(tipo))+' aprovado</b>.</p></div>'
+      +'<div class="ap-f"><label><input type="checkbox" id="ap-nao"> Não avisar de novo neste parcelamento</label><button type="button" id="ap-ok">Entendi</button></div></div>';
+    box.querySelector('#ap-ok').addEventListener('click',fecha);
+    box.hidden=false; box.querySelector('#ap-ok').focus();
   };
 })();
 </script>
