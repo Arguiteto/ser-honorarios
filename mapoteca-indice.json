@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-15T14:54Z",
+ "geradoEm": "2026-10-16T14:22Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
-  "loteamentos": 549,
+  "loteamentos": 551,
   "folhas": 587,
-  "duplicatasDescartadas": 1318,
-  "folhasLidas": 487,
-  "folhasPendentes": 100
+  "duplicatasDescartadas": 1305,
+  "folhasLidas": 549,
+  "folhasPendentes": 38
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -195,7 +195,7 @@
      "de": null,
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/AERO-RANCHO-V-NUC.-HABIT.pdf",
      "upload": "2017-01",
-     "versoes": 7,
+     "versoes": 6,
      "ruas": [],
      "quadras": [],
      "atualizada": "",
@@ -372,7 +372,28 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/aerorancho4-prefcg-1659967297.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "21 A",
+      "ARIQUEMES",
+      "ARQUIMEDES",
+      "CABEDELO",
+      "DESM",
+      "GRACA ARANHA",
+      "PIANO",
+      "R 217"
+     ],
+     "quadras": [
+      "148",
+      "175",
+      "182",
+      "183",
+      "217",
+      "219",
+      "234",
+      "3"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -675,7 +696,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ALTA-V.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -788,7 +812,22 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ALVORADA-V.-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "14 JULHO",
+      "24 OUTUBRO",
+      "CALOGERAS",
+      "CAVALCANTI",
+      "JOAO PEDRO SOUZA",
+      "JOSE ALVES MULLER",
+      "LIBERDADE",
+      "MARIO CORREA",
+      "VINTE QUATRO OUTUBRO"
+     ],
+     "quadras": [
+      "09"
+     ],
+     "atualizada": "07/05/2026",
+     "temTexto": true
     }
    ]
   },
@@ -842,7 +881,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/AMERICA-_-V.-JD.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -995,7 +1037,24 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/03/ANFE-V.pdf",
      "upload": "2026-03",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "03E04",
+      "0524002",
+      "13 MAIO",
+      "AMAZONAS",
+      "EDUARDO SANTOS PEREIRA",
+      "ELIAS NASSER",
+      "OSSIAN VIRGILIO SENNA",
+      "PEDRO CELESTINO",
+      "PERNAMBUCO",
+      "RUI BARBOSA",
+      "SAO PAULO"
+     ],
+     "quadras": [
+      "1"
+     ],
+     "atualizada": "29/07/2026",
+     "temTexto": true
     }
    ]
   },
@@ -1210,7 +1269,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/aquarius-ii-1642102720.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -1726,7 +1788,16 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/07/BARTIRIA-V1.pdf",
      "upload": "2017-07",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "13 MAIO",
+      "26 AGOSTO",
+      "FERNADO CORREA COSTA",
+      "IRIA LOUREIRO VIANA",
+      "RUI BARBOSA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -2029,7 +2100,34 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/BETAVILLE-RES.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABIB POSSIK",
+      "ALEX CARAMALAC",
+      "ARAGUACEMA",
+      "ARMANDO BOGUS",
+      "ARTHUR VASCONCELOS DIAS",
+      "AUSTREGESILO ATHAIDE",
+      "BASILIO ALMEIDA LIMA",
+      "CAIQUE FERREIRA",
+      "CASSIANO GABUS MENDES",
+      "CESAR GUERRA PEIXE",
+      "DANIELA PEREZ",
+      "FREDERICO FELLINI",
+      "HERCULES MAYMONE",
+      "IVON MOREIRA EGITO",
+      "JULIO VERNE",
+      "MANOEL JULIATO FILHO",
+      "MARIO QUINTANA",
+      "NAZARETH PEREIRA MENDES",
+      "NOROESTE",
+      "ODILA RONDON CORREA",
+      "OSWALDO MASSAINI",
+      "SENNA PAULO CORREA",
+      "TARCISIO DAL FARRA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -2095,7 +2193,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/BONJARDIM1.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -2124,7 +2225,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/bosque-de-avilan-jd-1633112809.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -2192,7 +2296,18 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/botafogo-res-1645637852.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANA LUIZA SOUZA",
+      "CASCAIS",
+      "GONCALVES",
+      "JOANA D ARC",
+      "JOSE TEODORO ANDRADE",
+      "SAGRES",
+      "TEODORO AURELIO OLIVEIRA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -2314,7 +2429,36 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/BUZIOS-RES.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ADA FRAIHA NOVAES",
+      "ADELIA FRAIHA",
+      "AMANDA GOMES",
+      "ARAIOSES",
+      "ARAUCARIA",
+      "AROLDO LEITE SOARES",
+      "ARTUR BARROS",
+      "BEQUIMAO",
+      "CARLOS GARCIA QUEIROZ",
+      "CARLOS ROBERTO FRAIHA",
+      "DOLCINOPOLIS",
+      "FELIPE CURY",
+      "HEITOR VIEIRA ALMEIDA",
+      "ITAPEVA",
+      "JOSE",
+      "JOSE BARBOSA RODRIGUES",
+      "KOJUN YAMAKY",
+      "LAGOA PATOS",
+      "LAGOA VERMELHA",
+      "LILI CHAIA JACOB",
+      "NAVIOS NEGREIROS",
+      "PEPA SOBRAL",
+      "RIO GALHEIROS",
+      "URQUIZA",
+      "WANDERLEY PAVAO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -2561,7 +2705,26 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/04/CANADA-JD.pdf",
      "upload": "2026-04",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AMELIO CARVALHO BAIS",
+      "AREA VERDE",
+      "BANGU",
+      "COLORADO",
+      "COMERCIAL",
+      "FLAMENGO",
+      "FLUMINENSE",
+      "NAUTICO",
+      "PRES ARTHUR BERNARDES",
+      "PRES CAFE FILHO",
+      "PRES DELFIM MOREIRA",
+      "PRES NILO PECANHA",
+      "YOKOAMA"
+     ],
+     "quadras": [
+      "10"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -2592,7 +2755,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CANGURU-JD.02.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -2637,7 +2803,32 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CARANDA-BOSQUE-F01-2.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "01 1 PAS PEDESTRE",
+      "01 12 L",
+      "01 24R",
+      "02 09",
+      "03 06",
+      "04 11",
+      "04 21",
+      "04 30",
+      "09 10R",
+      "09 24",
+      "09 28P",
+      "10 01",
+      "10 14N",
+      "10 15A",
+      "10 R1",
+      "11 45",
+      "12 14",
+      "25 R2",
+      "BOIPEVA"
+     ],
+     "quadras": [
+      "R"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -3016,7 +3207,30 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CENTRO-OESTE-JD.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ADILON SOUZA NOGUEIRA",
+      "ANA JACINTA OLIVEIRA",
+      "ARARAQUARA",
+      "BARAO TEFE",
+      "BRAZ CLEMENTINO MENDONCA",
+      "CAFEZAIS",
+      "ENCHOVA",
+      "JAGUAR",
+      "JARDEL FILHO",
+      "JARDIM BONITO",
+      "LEOLINA DIAS MARTINS",
+      "MANE GARRINCHA",
+      "MARIA LOURDES VIEIRA MATOS",
+      "MEDRADO",
+      "MURITIBA",
+      "PATOS",
+      "PINUS",
+      "POMPEU",
+      "TIMBOS"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -3319,81 +3533,65 @@
     }
    ]
   },
-  "CIDADEANHANDUI": {
+  "CIDADEANHANDUI02": {
    "nome": "CIDADE ANHANDUI",
    "folhas": [
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CIDADE-ANHANDUI-FOLHA-01.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CIDADE-ANHANDUI-FOLHA-01-E-02.pdf",
      "upload": "2017-01",
      "versoes": 2,
      "ruas": [
       "ALCANTARAS",
+      "ALCANTARASRUA ALCANTARAS",
       "BARAO VON OPEL",
+      "BARCARENA",
       "BARRANQUILA",
       "CASTELINHO",
       "CORRIENTES",
+      "CRISTIAN",
+      "FRONTEIRAS",
       "GUIMARAES ROSA",
       "HIDROLANDIA",
+      "IMPERIO SERRANO",
       "IPORANGA",
+      "IPORANGA ENTRE",
+      "IPORANGARUA IPORANGA",
+      "JOAIMA",
+      "JOANA",
+      "JOSMAR LIMA SANTOS",
       "JOVIANIA",
       "KARTODROMO",
       "LAGOA DOURADA",
       "LARGO TRIUNFO",
       "LUNAR",
       "LUXEMBURGO",
-      "METEOROS",
-      "MISSISSIPI",
-      "MONTES URAIS",
-      "OLIMPIADAS",
-      "RIVADAVIA",
-      "SALTO VELOSO",
-      "VINA DEL MAR"
-     ],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
-    },
-    {
-     "folha": 2,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/cidadeanhandui-folha02-prefcg-1673618371.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [
-      "ALCANTARAS",
-      "BARAO VON OPEL",
-      "BARCARENA",
-      "CRISTIAN",
-      "FRONTEIRAS",
-      "GUIMARAES ROSA",
-      "IMPERIO SERRANO",
-      "IPORANGA",
-      "JOAIMA",
-      "JOSMAR LIMA SANTOS",
-      "LARGO TRIUNFO",
-      "LUNAR",
-      "LUXEMBURGO",
+      "LUXEMBURGORUA LUXEMBURGO",
       "MAIRIPORA",
       "MARSELHA",
       "MERIDIONAL",
+      "METEOROS",
       "MISSISSIPI",
+      "MONTES URAIS",
       "NABUCODONOSOR",
       "NUREMBERG",
       "OLIMPIADAS",
+      "OLIMPIADASRUA OLIMPIADAS",
       "PERA",
       "PORTO XV",
       "PROCOPIO FERREIRA",
+      "RIVADAVIA",
+      "SALTO VELOSO",
       "TORPEDO",
+      "VALDEMIR C RESENDE",
       "VALDEMIR CORREA RESENDE",
       "VILA NOVA",
       "VILACTAS",
+      "VINA DEL MAR",
       "ZAPATRIA"
      ],
-     "quadras": [
-      "P"
-     ],
+     "quadras": [],
      "atualizada": "",
      "temTexto": true
     }
@@ -3604,7 +3802,44 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/05/COLUMBIA-JD-SETOR-01.pdf",
      "upload": "2026-05",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "01 01",
+      "04 03",
+      "13 16",
+      "13 6",
+      "18 26",
+      "24 23",
+      "24 24",
+      "29 12",
+      "40 24",
+      "CAMARAIPE",
+      "CARUMA",
+      "CORIATUBA",
+      "EMBIRA",
+      "JARAUCU",
+      "JAUAPERI",
+      "LINO VILLACHA",
+      "LUIZ CARLOS SIUFI",
+      "MAICURU",
+      "MAPUERA",
+      "MATIAS ALBUQUERQUE",
+      "NHAMUNDA",
+      "PARANAPEBAS",
+      "PINDARE",
+      "PIXUNA",
+      "PURUS",
+      "QUADRAQUADRA",
+      "R 13",
+      "SUCUNDURI",
+      "TAPAUA",
+      "UATUMA",
+      "URARIOCARA"
+     ],
+     "quadras": [
+      "N"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -3686,7 +3921,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/COOHAFAMA.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -3734,7 +3972,36 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/coophasul-1629135389.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABDO CHEQUER",
+      "AFONSO ACUNZO",
+      "ANTONIO VELOSO",
+      "ARGEMIRO SALLES",
+      "ATILIO BANDUCI",
+      "BENITO MELCHIADES OLIVEIRA",
+      "CARLOS ASSUMPCAORUA AMERICO CARDOSO COSTA",
+      "CARLOS SCARDINE",
+      "CLOVIS MATO GROSSO",
+      "COTEGIPE",
+      "DOMINGOS G SALVI",
+      "EDUARDO SADDI",
+      "HERCULES SANTOS CAMPOS",
+      "HUGO BORGES SOARES",
+      "JOSE",
+      "JOSE CAMINHA",
+      "JOSE RIBEIRO SA CARVALHO",
+      "JOSE WILSON MANGINI MARQUES",
+      "LAURINDO MARQUES",
+      "MARIO COSTA FREITAS",
+      "MICHEL BITTAR",
+      "MOUSSA H TANNOUS",
+      "NOBRE",
+      "NORBERTO HOZANO SOUZA",
+      "PEDRO BALDUINO SILVA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4104,7 +4371,16 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/03/C%C3%B3rrego-Limpo-Cidade-Viva-2013.pdf",
      "upload": "2017-03",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "BOM PASTOR COM A",
+      "EULER",
+      "MORENA PROXIMO A",
+      "RACHID NEDDER",
+      "TRES BARRAS CONFLUI COM O CORREGO LAGEADO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4461,7 +4737,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CRISTO-REDENTOR-JD-FOLHA-02.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -4549,7 +4828,17 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/dalila-v-1621443722.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ACARAPE",
+      "FRANCISCO",
+      "JUIZ",
+      "PIEDADE",
+      "SACRAMENTO",
+      "TAMANDARE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -4629,7 +4918,18 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAMHA-III.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4674,7 +4974,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/delfos-residencial-1644601203.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -4713,7 +5016,15 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DO-DESBARRANCADO-B-FOLHA-02.pdf",
      "upload": "2017-01",
      "versoes": 8,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "DALVA",
+      "JOSE NOGUEIRA VIEIRA",
+      "MINISTRO JOAO ARINOS",
+      "SOLDADO PM REINALDO ANDRADE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4846,7 +5157,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DR.-JOAO-ROSA.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -4926,7 +5240,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/enseada-dos-passaros-1632316461.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -5042,7 +5359,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DOS-ESTADOS-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -5612,7 +5932,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/GRANJA-BANDEIRA2.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -5849,7 +6172,55 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/GUANANDI-II-F4.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABATE",
+      "ALTAMIRA",
+      "ALTEROSA",
+      "ANICUNS",
+      "ANTONIO B FIGUEIREDO",
+      "ARARIPINA",
+      "ARIQUEMES",
+      "ASSAI",
+      "BETIM",
+      "BUENO",
+      "CABEDELO",
+      "CABEDELORUA CARATINGA",
+      "CAMBARA",
+      "CAMBE",
+      "CARATINGA",
+      "CARMEM MIRANDA",
+      "CLEVELANDIA",
+      "COCAL",
+      "COMODORO",
+      "EZEQUIEL FERREIRA LIMA",
+      "FERNANDO",
+      "FERNANDO TORRES",
+      "G SOUZA",
+      "GALEAO",
+      "GUARUVA",
+      "GURUPI",
+      "IBICARE",
+      "IGARASSU",
+      "IGARASSURUA IPIGUA",
+      "IPERO",
+      "IPIGUA",
+      "IRANDUBA",
+      "ITARUMA",
+      "JORNALISTA VALDIR LAGO",
+      "LEONOR GARCIA ROSA PIRES",
+      "MAURITANIA",
+      "PIANO",
+      "PRESIDENTE TANCREDO NEVES",
+      "RITOSHI SOGABE",
+      "SESMARIA",
+      "TANCREDO NEVES",
+      "TAUMATURGO",
+      "TOKUEI NAKAO",
+      "URUBUPUNGA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -6509,7 +6880,25 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/iracy-coelho-netto-pq-resid-1632419821.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ALBINO AZEVEDO",
+      "ANTONIO CASTILHO",
+      "CORONEL J VIEIRA BRAGA",
+      "DONA ALBERTINA ROSA",
+      "GAUDILEY BRUN",
+      "GUENHEI SHIROMA",
+      "HARRY BECKER",
+      "HOMERO CASTILHO",
+      "JOSE FERREIRA CUNHA",
+      "KOSON TIBANA",
+      "SABINO FARIAS",
+      "SANTA QUITERIA",
+      "VALERIO ALMEIDA",
+      "VICENTE MARONI"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -6602,7 +6991,23 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/itamaraca-jd-folha-01-prefcg-1654115396.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AMABILE",
+      "DEOCLECIANO",
+      "FILOMENA SEGUNDO NASCIMENTO",
+      "GEORGINA",
+      "JOANA",
+      "JOAQUIM BARBOSA ALMEIDA",
+      "KAMA",
+      "LEGENDA",
+      "NAOR",
+      "ROMULO CAPPI",
+      "SALOMAO ABDALA",
+      "SIZUO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -6802,7 +7207,45 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ITATIAIA-BAIRRO-RESIDENCIAL.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "02 SETEMBRO",
+      "10 MAIO",
+      "AMELIA RIBEIRO SOUZA",
+      "ANA PAULA FERNANDES",
+      "ANTONIO CARLOS VALE",
+      "ASSEF BUAINAIN",
+      "AURY VASCONCELOS",
+      "AVELINA CORREA",
+      "AYD SARAVY SOUZA",
+      "BRAULIO SOUZA",
+      "CONDE SAO JOAQUIM",
+      "DOIS IRMAOS",
+      "DONA ZIZA",
+      "DORGIVAL SALVIANO SILVA",
+      "ERCY CUNHA MARTINS",
+      "FINAL",
+      "FRANCISCO PAULA SOUZA",
+      "FRANKLIN PAEL",
+      "FREDERICO ORNELAS SARAVY",
+      "HEITOR LABURU",
+      "JOAO CASSIMIRO",
+      "JOAOCASSIMIRO29",
+      "JORGE LUIZ ANCHIETA CURADO",
+      "JOSE MARCOS FONSECA",
+      "JOSE NOGUEIRA VIEIRA",
+      "LUIZ GOES",
+      "MANOEL OLEGARIO SILVA",
+      "MARIA SCATENA",
+      "NILO",
+      "NORBERTO RIBEIRO SOUZA",
+      "SANTA MARINA",
+      "SEBASTIAO SANTOS",
+      "SILVIO ROMERO",
+      "TRES BARRAS"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -6815,7 +7258,28 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/IZABEL-GARDENS-PQ.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "CALAFATE",
+      "CARLOS LEITE",
+      "ELMIRIA",
+      "FRANCISCO",
+      "GERMINO",
+      "HIROSE",
+      "JACINTO",
+      "JACUTINGA",
+      "LUIZ",
+      "MANOEL",
+      "MIGUEL",
+      "PEDRO",
+      "PIRIQUITO",
+      "SERRA",
+      "SERRA ALEGRIA",
+      "SERRA GERAL",
+      "SERRA IMERI"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -6901,7 +7365,43 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/JERUSALEM-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "2001",
+      "ABILIO SOARES",
+      "ALEXANDRITA",
+      "ALEXANDRITARUA",
+      "ALVARO SILVEIRA",
+      "AMAZONITA",
+      "AMBAR",
+      "ANTONIO MARQUES",
+      "ARAGONITA",
+      "BRONZITA",
+      "CITRINO",
+      "CRISTAL",
+      "CRISTAL NEGRO",
+      "ESMERALDA",
+      "HONORIA CORREA",
+      "JOAO CASSIMIRO",
+      "JOAO GARCIA CARVALHO FILHO",
+      "KANGA ROSA",
+      "MANDANA",
+      "MARREY JUNIOR",
+      "MORGANITA",
+      "PEROLA",
+      "PONTAL",
+      "PRATA",
+      "RANCHEIRO",
+      "RETONO",
+      "SODALITA",
+      "TEIXEIRA SILVA",
+      "TRES BARRAS",
+      "TURMALINA PARAIBA"
+     ],
+     "quadras": [
+      "28"
+     ],
+     "atualizada": "02/01/2018",
+     "temTexto": true
     }
    ]
   },
@@ -6927,7 +7427,46 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/JOSE-ABRAO-NUC-HAB.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AFONSO EDUARDO REIDY",
+      "ALBERTO LAMEGO",
+      "ANDRE LHOTE",
+      "ANTONIO GAUDI",
+      "ANTONIO LANDI",
+      "ANTONIO LOPES",
+      "ARMANDO HOLANDA",
+      "ARNALDO HORTA",
+      "ATILIO CORREA",
+      "CARLOS LEAO",
+      "ERNESTO FIORI",
+      "JACOB JORDAN",
+      "JESUINO GUSMAO",
+      "JOAQUIM CANDIDO",
+      "LELIO LANDUCI",
+      "LOURIVAL GOMES MACHADO",
+      "MARCELO ROBERTO",
+      "MARCO FERREZ",
+      "MOREIRA",
+      "MURILO LAGRECA",
+      "NELSON LINS",
+      "OSWALDO GOELDI",
+      "PAULO HENRIQUE",
+      "RAFAEL HARDI",
+      "RINO LEVI",
+      "SERAFIM LEITE",
+      "TEODORO CARVALHO",
+      "VICTOR DUBUGRAS",
+      "VICTOR HORTA",
+      "WALTER JONAS"
+     ],
+     "quadras": [
+      "34",
+      "34A",
+      "36",
+      "50"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -7047,7 +7586,37 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/04/LAGOA-DOURADA-JARDIM.pdf",
      "upload": "2026-04",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ARMAL",
+      "ARRAIA",
+      "AZIZ",
+      "CHAKER MIGUEL",
+      "CURIMBATA",
+      "DARWIN",
+      "FILOMENA",
+      "JURUPESCEM",
+      "JURUPOCA",
+      "MANDI",
+      "MANOEL",
+      "MATRINCHAN",
+      "MUNICIPIO CAMPO GRANDE10B1B A",
+      "PACU",
+      "PIAUCU",
+      "PINTADO",
+      "PIRACANJUBA",
+      "SURUBIM",
+      "TILAPIA",
+      "TRAIRA",
+      "TRES BARRAS",
+      "TUCUNARE",
+      "TUVIRA",
+      "XIMBURE"
+     ],
+     "quadras": [
+      "20"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -7281,78 +7850,73 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-JD-folha-01.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-JD.pdf",
      "upload": "2017-01",
-     "versoes": 8,
-     "ruas": [
-      "AFONSO CELSO",
-      "ANTONIO CARLOS NOVAIS MARQUES",
-      "ANTONIO LUIZ PEREIRA",
-      "ANTONIO PRADO",
-      "ARTUR PIRES",
-      "CIRO AZEVEDO",
-      "CORONEL MOREIRA CEZAR",
-      "DOM FERNANDES SARDINHA",
-      "ENGENHEIRO PAULO FRONTIN",
-      "ESCARAMUCA",
-      "FAUZE SAUEIA8",
-      "FRANCISCO CHAVES",
-      "FRANCISCO ESPINHOSA",
-      "IZOLINO ALVES PEREIRA",
-      "JOSE MAURICIO",
-      "JOSE PEIXOTO",
-      "LAURO MULLER",
-      "LUIS VASCONCELOS",
-      "MANOEL PEREIRA SOUZA",
-      "MARQUES BARBACENA",
-      "Y JUCA PIRAMA"
-     ],
-     "quadras": [
-      "12",
-      "16",
-      "2",
-      "29",
-      "48",
-      "7",
-      "8"
-     ],
-     "atualizada": "",
-     "temTexto": true
-    },
-    {
-     "folha": 2,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-JD-folha-02.pdf",
-     "upload": "2017-01",
-     "versoes": 4,
+     "versoes": 2,
      "ruas": [
       "AFONSO CELSO",
       "AGNELO",
       "ALMIRANTE COCHRANE",
       "ANGOSTURA",
+      "ANTONIO CARLOS NOVAIS MARQUES",
+      "ANTONIO LUIZ PEREIRA",
+      "ANTONIO PRADO",
+      "ARTUR PIRES",
       "BOTELHO MAGALHAES",
       "BRIGIDA MELO",
       "CAPISTRANO",
       "CASSIM",
+      "CIRO AZEVEDO",
       "CORONEL MOREIRA CEZAR",
       "DIVINO",
+      "DOM FERNANDES SARDINHA",
       "ENGENHEIRO PAULO FRONTIN",
       "EUSEBIO QUEIROS",
+      "FAUZE SAUEIA",
+      "FRANCISCO CHAVES",
+      "FRANCISCO ESPINHOSA",
       "FRANCISCO MANOEL SILVA",
       "GONCALVES MAGALHAES",
+      "IZOLINO ALVES PEREIRA",
+      "JOAO PENELO",
       "JOSE ANTONIO SARAIVA",
+      "JOSE MAURICIO",
+      "JOSE PEIXOTO",
       "LAURO MULLER",
       "LUIS VASCONCELOS",
+      "MANOEL PEREIRA SOUZA",
       "MANSOUR",
       "MARQUES",
-      "OLINDA"
+      "MARQUES BARBACENA",
+      "OLINDA",
+      "TEREZINHA CASTRO",
+      "VIVENDAS EMPREENDIMENTOS IMOBILIARIOS LTDA",
+      "Y JUCA PIRAMA"
      ],
      "quadras": [
+      "01",
+      "02",
+      "07",
+      "102",
       "103",
+      "118",
+      "16",
+      "27",
+      "32",
+      "35",
+      "51",
+      "54",
       "55",
+      "62",
       "65",
+      "71",
+      "75",
+      "77",
+      "8",
       "95",
-      "97"
+      "97",
+      "A",
+      "P"
      ],
      "atualizada": "",
      "temTexto": true
@@ -7374,6 +7938,31 @@
       "EUSEBIO QUEIROZ",
       "OLINDA MELO",
       "PROJETADA A"
+     ],
+     "quadras": [
+      "1",
+      "2"
+     ],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
+  "LOSANGELESIII": {
+   "nome": "LOS ANGELES III – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-III-JD.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "ruas": [
+      "ANTONIO CARLOS NOVAIS MARQUES",
+      "ANTONIO LUIZ PEREIRA",
+      "DOM FERNANDES SARDINHA",
+      "JOSE MAURICIO",
+      "PROJETADA"
      ],
      "quadras": [
       "1",
@@ -7553,7 +8142,27 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/manoel-taveira-b.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "A N C I S C O",
+      "A R U A",
+      "C I A",
+      "C I L I A",
+      "DOM ANTONIO BARBOSA",
+      "G A S",
+      "L I CE",
+      "L I TA",
+      "O F S S O",
+      "R A S",
+      "S I D N T",
+      "S O N",
+      "T A N U",
+      "U S S U"
+     ],
+     "quadras": [
+      "P"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -7715,7 +8324,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MARACANA-V.-JD1.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "12/09/2017",
+     "temTexto": true
     }
    ]
   },
@@ -8288,7 +8900,29 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTE-CASTELO-B.-setor-01.pdf",
      "upload": "2017-01",
      "versoes": 10,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "13 JUNHO",
+      "ALIPIO SOARES VARGAS",
+      "CASTRO FARIA",
+      "CORUMBA",
+      "DOUTOR MEIRELES",
+      "HAITI",
+      "HAVAIRUA SORRISO",
+      "JOSE ALBERTO PEREIRA",
+      "JULIA",
+      "MASCARENHAS MORAES",
+      "MONTE CASTELO",
+      "NAPOLES",
+      "OLEGARIA LACERDA SOUZA",
+      "ONORIA MARTINS PEREIRA",
+      "PISTOIA",
+      "PRESIDENTE DUTRA",
+      "SANTA MARIA",
+      "SAO JOAO BOSCO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -8325,7 +8959,39 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/MONTE-CASTELO-B-Setor-2.pdf",
      "upload": "2026-07",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "13 JUNHO",
+      "9HAS",
+      "ALBERTO PEREIRA",
+      "ALEGRIA",
+      "ANTONINA",
+      "CASCUDO",
+      "D D8",
+      "DONA",
+      "ENCANTADO",
+      "INGA",
+      "JOSE",
+      "JOSE ALBERTO",
+      "JULIA MAKSOUD",
+      "JURITI",
+      "LACERDA",
+      "MASCARENHAS",
+      "MONTE",
+      "NAPOLES",
+      "PEDRO",
+      "PEDRO CELESTINO",
+      "PREFEITO DEUSDEDITH CARVALHO",
+      "RACHID",
+      "SAO JOAO BOSCO",
+      "SAO JUDAS TADEU",
+      "SEBASTIAO"
+     ],
+     "quadras": [
+      "12",
+      "23"
+     ],
+     "atualizada": "20/01/2026",
+     "temTexto": true
     }
    ]
   },
@@ -8443,7 +9109,19 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONTEVIDEU-JD-Folha-04_04.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "CARIMA",
+      "COATA",
+      "CORSEGA",
+      "DIAMANTE",
+      "ITAITINGA",
+      "IVONE",
+      "MONTE SERRAT",
+      "PANONIA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -8577,7 +9255,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MORADIA-DO-SOL.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -8761,7 +9442,35 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NASSER-V-2a-SEC.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIO",
+      "AURORA",
+      "BENITO",
+      "CORDISBURGO",
+      "DONA",
+      "ELMANO SOARES",
+      "ESTEVAO",
+      "ITURBIDES",
+      "JANUARIO",
+      "JOAO",
+      "JOSE RIBEIRO",
+      "LINDOIA",
+      "LUCIARA",
+      "OSCAR",
+      "OVIDEO",
+      "POCRANE",
+      "PORANGATU",
+      "PROFESSOR",
+      "SABINO JOSE COSTA",
+      "SANTA",
+      "SAO NICOLAU",
+      "TAQUARAL",
+      "TENENTE",
+      "THEODORE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -9782,7 +10491,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2021/06/loteamento-nova-conquista-1623763948.pdf",
      "upload": "2021-06",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
@@ -10265,7 +10974,31 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2023/12/NOVO-SAMAMBAIA-LOT-FL-2.pdf",
      "upload": "2023-12",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10294,7 +11027,27 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/N.-S.-DAS-GRACAS-B.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AMADOR",
+      "CEZARIO",
+      "CONSELHEIRO",
+      "COTEGIPE",
+      "DUARTE",
+      "DUMONTINA",
+      "GENERAL",
+      "JAIME",
+      "JOAO",
+      "JOSE",
+      "MARIA",
+      "TOME",
+      "VISCONDE"
+     ],
+     "quadras": [
+      "20",
+      "7"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10519,7 +11272,27 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/OLIVEIRA-I-RES.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AFONSA SILVA ROSA",
+      "ANTONIO GARCIA FREITAS",
+      "ANTONIO JOAO ESCOBAR",
+      "DOROTHEA OLIVEIRA",
+      "EMILIA ESCOBAR NUNES",
+      "JOAO RIBEIRO GUIMARAES",
+      "JOSE GARCIA LOPES FILHO",
+      "JULIO AUGUSTO CAMPOS",
+      "LINDOLFO FERREIRA ROSA",
+      "MARIA CONCEICAO GUIMARAES",
+      "MARIA JOSE",
+      "MARIA LUIZA",
+      "ORLANDINA OLIVEIRA LIMA",
+      "PEDRO MANIERI",
+      "SALADINO NUNES",
+      "TECLA MELLO CAMPOS"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10641,7 +11414,26 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/05/ORPHEU-BAIS-V.pdf",
      "upload": "2026-05",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "BRILHANTE",
+      "BRILHANTEAVENIDA",
+      "CORIOLANO",
+      "FABIO ZAHRAN",
+      "GENERAL",
+      "MANOEL",
+      "ORPHEU",
+      "PAISSANDU",
+      "PARTICULAR",
+      "PRESID ERNESTO GEISEL",
+      "PRESIDENTE",
+      "PROFESSOR",
+      "REVELLEAU",
+      "SANTA",
+      "TONICO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10783,7 +11575,15 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/paqueta-jd-1629728854.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "COTEGIPE",
+      "FRANCISCO"
+     ],
+     "quadras": [
+      "P"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10887,7 +11687,26 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/parati-ii-jd-1626705171.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABIGAIL RAMONA HOLSBACK AMORIM",
+      "AMILCAR ARAUJO FALCAO",
+      "ANTONIO CARLOS DIAS",
+      "AVELINO REIS",
+      "DIVISAO",
+      "DOCURA",
+      "ESPIRIDIAO CASTELO BRANCO",
+      "FRANCISCO JOSE BARRETO",
+      "GETULIO MARQUES PINHEIRO",
+      "HIRAN JOSE HORN",
+      "IZABEL BORGES FIGUEIREDEO",
+      "JOAO HERNANDEZ",
+      "JOAO LOUREIRO ALMEIDA",
+      "TENENTE GABINO SOILET SOARES",
+      "VICENTE RAO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -11004,7 +11823,24 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PAULISTA-V.-JD.-F-2.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIO CORREA",
+      "ARI COELHO OLIVEIRA",
+      "EDUARDO",
+      "EVANGELO PALIERAQUI",
+      "FLAVIO MATOS",
+      "GERALDO AGOSTINHO RAMOS",
+      "HELIO",
+      "JORNALISTA LEITE NETO",
+      "QUINTINO",
+      "RAPOSO TAVARES",
+      "RUI BARBOSA",
+      "SALGADO FILHO",
+      "SENADOR PONCE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -11421,7 +12257,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTO-SEGURO-LOT.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -11639,43 +12478,29 @@
     }
    ]
   },
+  "RITAVIEIRA01": {
+   "nome": "PARQUE RITA VIEIRA – SETOR 01",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARQUE-RITA-VIEIRA-SETOR-01.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "erro": "<urlopen error timed out>"
+    }
+   ]
+  },
   "RITAVIEIRA02": {
    "nome": "PARQUE RITA VIEIRA – SETOR 02",
    "folhas": [
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/01/PARQUE-RITA-VIEIRA-SETOR-02.pdf",
-     "upload": "2026-01",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/PARQUE-RITA-VIEIRA-SETOR-02.pdf",
+     "upload": "2026-09",
      "versoes": 2,
-     "ruas": [
-      "ADEIR A VILA ANDRADE",
-      "ANA BASILIA",
-      "ASSUNCAO",
-      "BERTOLINO VIEIRA",
-      "DELCIDES MARIANO",
-      "GERVAL BERNARDINO SOUZA",
-      "IRENE VILLELA FERREIRA",
-      "JOAO VIEIRA MENEZES",
-      "JOSE VIEIRA MENEZES",
-      "JOSUE PEREIRA FERREIRA",
-      "LAZARO ALVES DIAS",
-      "MARCINIO COSTA",
-      "MARIA JUSTINA SOUZA",
-      "MARIZA ANDRADE RIBEIRO",
-      "MARTINIANO ALVES",
-      "OLINDA ALVES",
-      "RITA VIEIRA ANDRADE",
-      "ROQUE TERTULIANO ANDRADE",
-      "ROTTERDAN",
-      "VILMA ANDRADE COSTA"
-     ],
-     "quadras": [
-      "76",
-      "S"
-     ],
-     "atualizada": "",
-     "temTexto": true
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -11685,10 +12510,36 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARQUE-RITA-VIEIRA-SETOR-03-.pdf",
-     "upload": "2017-01",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/08/PARQUE-RITA-VIEIRA-SETOR-03-.pdf",
+     "upload": "2026-08",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABADIA ALVES SOUZA",
+      "ANTONIO",
+      "BALTAZAR SOUZA",
+      "COLETA ANA GOIS",
+      "DONA IRACEMA ALMEIDA",
+      "DORCAS FERREIRA CORREIA",
+      "ENEDINA PEREIRA FERREIRA",
+      "FELIPE DUAILIBE",
+      "FRANCISCO SOUZA",
+      "JOSE VILLELA BASTOS",
+      "LAZARA SOUZA",
+      "MACARIO ALVES",
+      "MARTINE MORAES",
+      "NESTOR COSTA",
+      "NOVO",
+      "OLINDA ALVES",
+      "RAFAEL",
+      "ROTTERDAN",
+      "STELA GOIS",
+      "TRES BARRAS"
+     ],
+     "quadras": [
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -11701,7 +12552,38 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/RIVIERA-PARK-LOT.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AFLUENTE",
+      "ALUIZIO OLIVEIRA MARTINS",
+      "ANNA MEDEIROS COSTA FARIA",
+      "ANTONIO GARCIA SANTOS MEDEIROS",
+      "AVENIDA AFLUENTE",
+      "BENE FILINTO SILVA",
+      "CAPITAO AIRTON P REBOUCAS",
+      "CAPITAO MARIO PIO PEREIRA",
+      "CASSIANO ARAUJO BRITO",
+      "DARIO TOMAZELLI JUNIOR",
+      "FLORA PANTANAL",
+      "GILDETE CHAVES FEIJO",
+      "IGNES CORREA COSTA",
+      "JORNALISTA JOSE FILINTO SILVA",
+      "JOSE FRANCISCO PAULA EDUARDO",
+      "JOSE SIMONETTI",
+      "LEAO ZARDO",
+      "LIBANIO FIGUEIRO",
+      "LUIZ ALFREDO ADLER RALHO",
+      "LUIZ FILINTO SILVA",
+      "MAESTRO KALIL RAHE",
+      "MAESTRO KALIL RAHERUA ALBINO FARIA",
+      "RODOLPHO JOSE ROSPIDE MOTTA",
+      "RUBENS PAULA EDUARDO",
+      "TUNITA MENDES",
+      "WEGA NERI",
+      "ZENAIDE VILLELA ANDRADE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -11750,24 +12632,15 @@
    ]
   },
   "ROSALINA": {
-   "nome": "ROSALINA – V.-Model",
+   "nome": "ROSALINA – V",
    "folhas": [
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ROSALINA-V.-Model.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ROSALINA-V.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "ruas": [
-      "CAMBURIU",
-      "CORONEL MIQUELINO BARBOSA",
-      "DUARTE PACHECO",
-      "GUARATUBA",
-      "SENAI"
-     ],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": false
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12086,7 +12959,39 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SANTA-FE-V.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "11 39",
+      "30 50",
+      "ABRAO JULIO RAHE",
+      "ANTONIO MARIA COELHO",
+      "CUBEL OLIVEIRA",
+      "EUCLIDES CUNHA",
+      "FAIXA EXCEDENTE REMEMBRADA COMLOTE",
+      "FREDERICO",
+      "G CORDONIZ",
+      "HERMELITA OLIVEIRA GOMES",
+      "ITIQUIRA",
+      "JOAO",
+      "JOAO AKAMINE14MUNICIPIO CAMPO GRANDE",
+      "JOSE",
+      "MANOEL INACIO SOUZA",
+      "MATO",
+      "NORTELANDIA",
+      "PARANA",
+      "PARANALEV",
+      "PEREIRA FERREIRA",
+      "PIRATININGA",
+      "R 10",
+      "R DESAF",
+      "TABELIAO MURILO ROLIM",
+      "ZEZE"
+     ],
+     "quadras": [
+      "14",
+      "45"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -12130,7 +13035,16 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/santa-lucia-v-1628690894.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "FRUTAL",
+      "MASCARENHAS MORAES",
+      "OVIDEO SERRA",
+      "SACRAMENTO",
+      "TAMANDARE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -12143,7 +13057,26 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SANTA-LUIZA-VILA.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "01 1 A",
+      "01 7",
+      "02 02",
+      "06 119 AO",
+      "BRAS",
+      "CALOGERAS",
+      "INDEPENDENCIA",
+      "LIBERDADE",
+      "MARCO POLO",
+      "MEXICOAVENIDA",
+      "NAGIB ACIB NACER",
+      "OURINHOS",
+      "SALGADO"
+     ],
+     "quadras": [
+      "1"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -12249,9 +13182,9 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SANTA-RITA-V.pdf",
-     "upload": "2017-01",
-     "versoes": 6,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/01/SANTA-RITA-V.pdf",
+     "upload": "2026-01",
+     "versoes": 2,
      "ruas": [
       "CAMBURIU",
       "CORONEL MIQUELINO BARBOSA",
@@ -12266,7 +13199,9 @@
       "SENAI",
       "TAMANDARE"
      ],
-     "quadras": [],
+     "quadras": [
+      "03"
+     ],
      "atualizada": "",
      "temTexto": true
     }
@@ -12485,7 +13420,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SANTOS-GOMES-V.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -12936,7 +13874,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SERRADINHO-V.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -13066,7 +14007,109 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/setvillage-ii-1625500206.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABDO CHEQUER",
+      "ACUPE",
+      "ALFREDO NOBEL",
+      "ALICE M ZAMPIERI",
+      "ALMERINDA",
+      "AMADOR BUENO",
+      "ANGELA ABDULAHAD",
+      "ANTONIO RUFINO SOUZA",
+      "BARTIRA",
+      "BENDITO XAVIER",
+      "BENEDITO PACHE TERRA",
+      "BONANCA",
+      "CAMBUI",
+      "CARLOTA ALMEIDA LEMOS",
+      "CASAL VASCO",
+      "CAXAMBU",
+      "COLOMBO",
+      "CONSELHEIRO JOAO ALFREDO",
+      "COTEGIPE",
+      "CRISTO REI",
+      "CRISTOVAO BARRO",
+      "DIVINOPOLIS",
+      "DOMINGUES G SALVI",
+      "DUARTE COELHO",
+      "DUMONTINA",
+      "EDUARDO SADI",
+      "ELMANO SOARES",
+      "EMBOABAS",
+      "EMBOADAS",
+      "ESTEVAO MENDONCA",
+      "EULER AZEVEDO",
+      "FC BARBATO",
+      "FC SABINO",
+      "FERNANDO MAGALHAES",
+      "FRUTAL",
+      "FRUTUOSO BARBOSA",
+      "GENEROSO LEITE",
+      "GEORGIA",
+      "GERALDO LEITE",
+      "HANNA ABDULAHAD",
+      "HEITOR MEDEIROS",
+      "HUGO BORGES SOARES",
+      "INDAIA",
+      "ITABIRA",
+      "ITAJUBA",
+      "ITAMARACA",
+      "JAIME FERREIRA VASCONCELOS",
+      "JOAO FALCO",
+      "JOAO GUIMARAES ROSA",
+      "JOAO RAMALHO",
+      "JOSE CAMINHA",
+      "JOSE MARQUES",
+      "JOSE NOBRE",
+      "JOSE RIBEIRO SA CARVALHO",
+      "JUIZ FORA",
+      "LEONARDO DAVINCE",
+      "LEOPOLDINA",
+      "LINDOIA",
+      "MARAJO",
+      "MARIA ISABEL COUTO PONTES",
+      "MARIA IZABEL COUTO PONTES",
+      "MARLY",
+      "MARQUES",
+      "MASCARENHAS MORAES",
+      "MEM SA",
+      "MICHEL BITAR",
+      "MIRABELA",
+      "MONTE AZUL",
+      "MONTES CLARO",
+      "MONTES CLARORUA ALFREDO NOBEL",
+      "MORTERLEI",
+      "MOUSSA TANNOUS",
+      "OLARIO OLIVEIRA FRANCA",
+      "OSCAR F BUGRE",
+      "OTAVIO GONCALVES GOMES",
+      "OVIDIO SERRA",
+      "PASSOS",
+      "PEDRO BALDUINO SILVA",
+      "PEDRO PAULINO",
+      "PIEDADE",
+      "RAUL MACHADO",
+      "ROSARIO CONCGRO",
+      "SACRAMENTO",
+      "SACRAMENTORUA ACARAPE",
+      "SANTA ELVIRA",
+      "SARGENTO HERCULES S CAMPOS",
+      "TAMANDARE",
+      "TAMANDARERUA JUIZ FORA",
+      "TEODORO ROOSEVELTE",
+      "TOME SOUZA",
+      "TRES MARIAS",
+      "VERDUM",
+      "VISCONDE PIRAJA",
+      "WALDOMIRO VENANCIO",
+      "YOUSSIF ABDULAHAD"
+     ],
+     "quadras": [
+      "13",
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -13162,7 +14205,28 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SILVIA-REGINA-VILA.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "10 26",
+      "CAPIBARIBE",
+      "CATENDE",
+      "GUAIANAS",
+      "JABOATAO",
+      "JAPECANGA",
+      "JULIO CASTILHO",
+      "MACAE",
+      "PARACATU",
+      "PINDAIBA",
+      "PITANGUI",
+      "SERRADINHO",
+      "TORDESILHAS"
+     ],
+     "quadras": [
+      "01",
+      "12",
+      "5"
+     ],
+     "atualizada": "18/03/2026",
+     "temTexto": true
     }
    ]
   },
@@ -14106,7 +15170,12 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/tijucajd-folha02-prefcg-1660069189.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [
+      "A"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -14393,7 +15462,30 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/UNIAO-PARQUE-RES.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ALEXANDRE PATRICIO REZENDE",
+      "ANGELO ESNARRIAGA",
+      "ANTONIO JOAO ESCOBAR",
+      "ARNALDO SANCHES VARGAS",
+      "ATAIDE CONCEICAO MACHADO",
+      "CIRO",
+      "DIAMIRO ALVES",
+      "DINARTE ANTUNES MOREIRA",
+      "GENEROSO COSTA BENEVIDE",
+      "JOAO MIZAEL MAMORE",
+      "JOSE GARCIA LOPES FILHO",
+      "JOSE SOARES DIAS",
+      "LUIZ RIBEIRO PIRES",
+      "MARIO ALVES CORREA",
+      "OSVALDINO MENDES ROCHA",
+      "OTACILIO SOUZA",
+      "PAULO HIDEO KATAYAMA",
+      "PETROPOLIS",
+      "ZACARIAS PAULA NANTES"
+     ],
+     "quadras": [],
+     "atualizada": "20/05/2026",
+     "temTexto": true
     }
    ]
   },
@@ -14707,7 +15799,68 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/veraneio-prancha-03-1635273241.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ACROPOLE",
+      "ADELAIDE L BRITO",
+      "ALEXANDRE HERCULANO",
+      "ASTRONAUTAS",
+      "BAIA GOLFINHOS",
+      "BAIA SANCHO",
+      "BARRA COQUEIRO",
+      "BARRA CUNHAU",
+      "BRAVA ALMADA",
+      "CANDIDO PORTINARI",
+      "CANOA QUEBRADA",
+      "CARPAS",
+      "CASTELHANOS",
+      "CHAC",
+      "COM AUGUSTO M CABRAL",
+      "COMENDADOR JOAQUIM L FRANCO",
+      "CORINTO",
+      "COSTA SAUIPE",
+      "CRUZ LORENA",
+      "CRUZ MALTA",
+      "DI CAVALCANTI",
+      "DOIS CORREGOS",
+      "GALES",
+      "GUARDA EMBAU",
+      "H D OESTE",
+      "HERCULANDIA",
+      "HORIZONTINA",
+      "IDE ABDUL AHAD",
+      "ILHA CAMPECHE",
+      "ILHA MEL",
+      "JERICOACOARA",
+      "JESUANIA",
+      "LAGOA PARAISO",
+      "LAVINIA",
+      "LISE ROSE",
+      "MARCONI",
+      "MARESIAS",
+      "MIRADOR",
+      "MORERE",
+      "MOSSORO",
+      "PENINSULA MARAU",
+      "PINDORAMA",
+      "PONTAL ATALAIA",
+      "PORTO GALINHAS",
+      "PRAIA CALHETAS",
+      "PRAIA CEDRO",
+      "PRAIA DUNAS",
+      "PRAIA ENCANTO",
+      "PRAIA FRANCES",
+      "PRAIA ITAUNAS",
+      "PRAIA REFUGIO",
+      "PRAIA RIACHO DOCE",
+      "PRAIA ROSA",
+      "UNIAO VITORIA",
+      "WAGNER JORGE BORTOTTO GARCIA"
+     ],
+     "quadras": [
+      "51"
+     ],
+     "atualizada": "26/10/2021",
+     "temTexto": true
     }
    ]
   },
@@ -15054,7 +16207,41 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/04/VIVENDAS-DO-PARQUE.pdf",
      "upload": "2026-04",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ADERBAL M NETTO",
+      "ANTONIO COELHO NETTO",
+      "ANTONIO MANDETTA",
+      "CONCEICAO INTERLANDO NETTO",
+      "DILCE AZEVEDO CHAVES",
+      "ERECHIMRUA MIMOSO",
+      "ERNESTO BERNARD",
+      "ESMERALDO SERRA",
+      "GIBRAN KALIL GIBRAN",
+      "GUARAPUAVA",
+      "GUILHERME ROCHA",
+      "IRACY COELHO NETTO",
+      "JOANA OLIVEIRA CHAVES",
+      "JOAO BATISTA CARDOSO",
+      "JOSE VICENTE P NETTO",
+      "LONDRINA",
+      "MARIA POVOA BRAGA",
+      "MINISTRO JOAO ARINO",
+      "MOMBASSA",
+      "NIQUEL",
+      "OSCAR BRAGA",
+      "PAULO ADOLFO BERNARD",
+      "POMPEU",
+      "PORTO VELHO",
+      "SALIM JACOB SALIBA",
+      "SANGARI",
+      "TEREZA MAYMONE",
+      "TIBAGI",
+      "TRES PODERES",
+      "VICENTINA COELHO NETTO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
