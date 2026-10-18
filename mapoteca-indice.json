@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-17T13:09Z",
+ "geradoEm": "2026-10-18T13:29Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 551,
   "folhas": 587,
   "duplicatasDescartadas": 1305,
-  "folhasLidas": 575,
-  "folhasPendentes": 12
+  "folhasLidas": 583,
+  "folhasPendentes": 4
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -10856,7 +10856,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2024/09/NOVA-LIMA-BAIRRO-01.pdf",
      "upload": "2024-09",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -11752,7 +11755,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PALMIRA-JD.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -12008,7 +12014,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "Reached maximum number of tokens per stream."
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12354,7 +12360,12 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAL-CAIOB%C3%81-II-Folha-01.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [
+      "16"
+     ],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -12734,7 +12745,40 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARQUE-RITA-VIEIRA-SETOR-01.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "01 07",
+      "05 6",
+      "07 59",
+      "17 1",
+      "17 17",
+      "1A 8A",
+      "24 05",
+      "29 03",
+      "29 12",
+      "33 05",
+      "57 11",
+      "ADEIR",
+      "ASSUNCAO",
+      "DELCIDES",
+      "JOAO VIEIRA",
+      "JUAZEIRO",
+      "LUIZ",
+      "MARIO",
+      "MARIZA",
+      "RITA",
+      "ROTTERDAN",
+      "THEOFILO ALVES DIAS",
+      "VERA",
+      "VILMA"
+     ],
+     "quadras": [
+      "50",
+      "59",
+      "R",
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -12959,7 +13003,19 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SAMAMBAIA-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error [Errno 111] Connection refused>"
+     "ruas": [
+      "ALZIRA",
+      "BURNIER",
+      "EMBAUVAS",
+      "MARINES",
+      "MERCEDES",
+      "MERUCE",
+      "PIRINOPOLIS",
+      "RIBEIRAO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -13905,7 +13961,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/S%C3%83O-CONRADO-B.-JD.-prancha-02.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -13959,7 +14018,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/sao-gabriel-v-1631217020.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -14004,7 +14066,12 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SAO-MARCOS.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AMERICO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
