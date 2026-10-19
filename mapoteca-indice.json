@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-18T13:29Z",
+ "geradoEm": "2026-10-19T16:47Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
-  "loteamentos": 551,
-  "folhas": 587,
-  "duplicatasDescartadas": 1305,
-  "folhasLidas": 583,
-  "folhasPendentes": 4
+  "loteamentos": 554,
+  "folhas": 590,
+  "duplicatasDescartadas": 1290,
+  "folhasLidas": 581,
+  "folhasPendentes": 9
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -623,63 +623,6 @@
       "17",
       "18",
       "2",
-      "S"
-     ],
-     "atualizada": "",
-     "temTexto": true
-    }
-   ]
-  },
-  "ALPHAVILLECAMPOGRANDE4": {
-   "nome": "ALPHAVILLE CAMPO GRANDE 4",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ALPHAVILLE-CAMPO-GRANDE-4.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [
-      "ABIU",
-      "AGAVE",
-      "AJURU",
-      "ANILEIRA",
-      "BULANDI",
-      "CAMBOTA",
-      "CORDILINI",
-      "GERATACA",
-      "GOMEIRA",
-      "GUACATONGA",
-      "GUAPERE",
-      "JALAPA",
-      "LANTANINHA",
-      "MERCURI",
-      "MONTE SERRAT",
-      "PAINA",
-      "PITA",
-      "SELENITA",
-      "SINGONIO",
-      "TAPURA",
-      "TRACOA",
-      "VELAME"
-     ],
-     "quadras": [
-      "02",
-      "1",
-      "11",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
       "S"
      ],
      "atualizada": "",
@@ -3426,13 +3369,73 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/chacaras-das-mansoes-1643897400.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CHACARAS-DAS-MANSOES.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "ruas": [],
+     "ruas": [
+      "25 9",
+      "ACLIMACAO",
+      "ARCADIA",
+      "ARIRANHA",
+      "AURILANDIA",
+      "BARRETO",
+      "BELA ALIANCA",
+      "BOCAIUVA SUL",
+      "BOM RETIRO",
+      "BR 163",
+      "CANTO PASSAROS",
+      "CAPAO REDONDO",
+      "CARAGUATA",
+      "CASA VERDE",
+      "CELESTE",
+      "D QUADRA",
+      "EVALDO BRAGA",
+      "INDUSTRIAL",
+      "LOUVEIRA",
+      "MANSOES",
+      "MASCOTE",
+      "MIRASELVA",
+      "NIQUELANDIA",
+      "NOVA MANCHESTER",
+      "PAPANDUVAS",
+      "PARATI",
+      "RIO PEGUENO",
+      "SAUDE",
+      "SERTANOPOLIS",
+      "TATUAPE",
+      "VATICANO",
+      "VERDES CAMPOS"
+     ],
+     "quadras": [
+      "15",
+      "25",
+      "28"
+     ],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
+  "CHACARASMANSOESII": {
+   "nome": "CHÁCARAS DAS MANSÕES II",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CHACARAS-DAS-MANSOES-II.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "ruas": [
+      "BOM RETIRO",
+      "CANTO PASSAROS",
+      "MANSOES",
+      "PARATI",
+      "TATUAPE",
+      "VERDES CAMPOS"
+     ],
      "quadras": [],
      "atualizada": "",
-     "temTexto": false
+     "temTexto": true
     }
    ]
   },
@@ -3534,10 +3537,14 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/VILA-CIDADE.pdf",
-     "upload": "2026-07",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/08/VILA-CIDADE.pdf",
+     "upload": "2026-08",
      "versoes": 8,
      "ruas": [
+      "10M MAT",
+      "142L",
+      "A MAT 52 347 AR",
+      "A2 A3 R1",
       "AFONSO PENA",
       "ANHANDUI",
       "ANTONIO",
@@ -3548,10 +3555,20 @@
       "BARAO",
       "BARAO MELGACO",
       "CALOGERAS",
+      "CELSO BAPTISTA OGATHA TABOSAFAE F",
+      "CONDOMINIO EDIFICIO CONCORD OUTRO9B08",
+      "CONSTRUMAT LTDA COMERCIO08",
       "CORONEL SEBASTIAO LIMA",
+      "ESPOLIO NAIN DIBO14X",
+      "ESPOLIO SADAO ARAKAKI18A18 EXCESSO TRANS",
+      "FAUZI ADRIA31",
       "FERNANDO",
       "FERNANDO CORREA COSTA",
       "FRANCISCO CANDIDO XAVIER",
+      "GERALDO AUGUSTO MELO NETOA56A2",
+      "IMPACTO TRANSPORTE LTDAIRF PARTE LOTE",
+      "IMPACTO TRANSPORTES LTDAWM",
+      "ITACOLOMI PECUARIA LTDA7XPARTE LOTE",
       "JOAO ROSA PIRES",
       "JOAQUIM",
       "JOAQUIM TAVORA",
@@ -3559,14 +3576,19 @@
       "JOSE",
       "JUNIN4",
       "LAZARO GONCALVES MARTINS",
-      "LOTE",
       "LYDIA BAIS",
       "MARACAJU",
       "MARECHAL RONDON",
       "MATO",
       "MATO GROSSO",
+      "NELSON BUAINAIN OUTRO101A",
+      "PARTE",
+      "PARTE LOTE",
+      "PARTE MAT",
+      "PAULO TADEU HAENDCHEN11A10",
       "PEDRO",
       "PIMENTEL",
+      "PORTAL EMPREENDIMENTOS LTDA MEPA1",
       "PRES ERNESTO GEISEL",
       "QUATORZE",
       "QUINZE",
@@ -3577,7 +3599,7 @@
      "quadras": [
       "R"
      ],
-     "atualizada": "17/07/2026",
+     "atualizada": "14/09/2026",
      "temTexto": true
     }
    ]
@@ -3750,34 +3772,6 @@
      "quadras": [],
      "atualizada": "",
      "temTexto": false
-    }
-   ]
-  },
-  "CLUBCAMPESTREYPE": {
-   "nome": "CLUB CAMPESTRE YPE",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CLUB-CAMPESTRE-YPE.pdf",
-     "upload": "2017-01",
-     "versoes": 8,
-     "ruas": [
-      "ANTONINA CASTRO FARIA",
-      "CORONEL ZOZIMO",
-      "EDUARDO OLIMPIO MACHADO",
-      "GRAMADO",
-      "LIVRAMENTO",
-      "MASCARENHAS MORAES",
-      "MISSOES",
-      "RACHID NEDER",
-      "RIACHAO",
-      "ROSARIO",
-      "SAO LEOPOLDO"
-     ],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
     }
    ]
   },
@@ -5036,44 +5030,32 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DO-DESBARRANCADO-B-FOLHA-01.pdf",
-     "upload": "2017-01",
-     "versoes": 10,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/01/DO-DESBARRANCADO-B-FOLHA-01.pdf",
+     "upload": "2026-01",
+     "versoes": 2,
      "ruas": [
       "ABDALLA DUAILLIBI",
       "CASTELNUEVO",
-      "GEORGES AYOUB",
       "JERONIMO CORDOBA",
-      "JORNALISTA MARCOS FERNANDO RODRIGUES",
-      "JUBAIL",
-      "JUNI",
+      "JORNALISTA MARCOS FERNANDO HUGO RODRIGUES",
       "MINISTRO JOAO ARINOS",
+      "MOACIR CARMO",
       "POETA MANOEL BARROS",
       "RIO LITANI",
-      "SIDON",
-      "SLEIMAN GEORGES",
       "SOLDADO PM REINALDO ANDRADE",
       "WILSON LUZ"
      ],
      "quadras": [],
-     "atualizada": "",
+     "atualizada": "15/09/2026",
      "temTexto": true
     },
     {
      "folha": 2,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DO-DESBARRANCADO-B-FOLHA-02.pdf",
-     "upload": "2017-01",
-     "versoes": 8,
-     "ruas": [
-      "DALVA",
-      "JOSE NOGUEIRA VIEIRA",
-      "MINISTRO JOAO ARINOS",
-      "SOLDADO PM REINALDO ANDRADE"
-     ],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/03/DO-DESBARRANCADO-B-FOLHA-02.pdf",
+     "upload": "2026-03",
+     "versoes": 2,
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -6499,7 +6481,7 @@
    ]
   },
   "HORTENSIASI": {
-   "nome": "DAS HORTENSIAS I – JD",
+   "nome": "DAS HORTENSIAS I JD",
    "folhas": [
     {
      "folha": 1,
@@ -7248,8 +7230,8 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2022/03/ITAPARICA-LOTEAMENTO.pdf",
-     "upload": "2022-03",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/ITAPARICA-LOTEAMENTO.pdf",
+     "upload": "2026-09",
      "versoes": 2,
      "ruas": [
       "ABATUPEBA",
@@ -8063,8 +8045,8 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2024/11/LOS-ANGELES-II-JD.pdf",
-     "upload": "2024-11",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/LOS-ANGELES-II-JD.pdf",
+     "upload": "2026-10",
      "versoes": 2,
      "ruas": [
       "DIVINO CASTRO",
@@ -8088,8 +8070,8 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/LOS-ANGELES-III-JD.pdf",
-     "upload": "2017-01",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/LOS-ANGELES-III-JD.pdf",
+     "upload": "2026-10",
      "versoes": 2,
      "ruas": [
       "ANTONIO CARLOS NOVAIS MARQUES",
@@ -8205,6 +8187,32 @@
      "upload": "2017-01",
      "versoes": 2,
      "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
+  "MANDALA": {
+   "nome": "MANDALA – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/MANDALA-JD.pdf",
+     "upload": "2026-10",
+     "versoes": 2,
+     "ruas": [
+      "ANDIROBA",
+      "BACABA",
+      "GECIBA",
+      "ITABEPI",
+      "MENINO DEUS",
+      "NATALIO ABRAO",
+      "RAZA",
+      "SACAMBU",
+      "TIPUANA"
+     ],
      "quadras": [],
      "atualizada": "",
      "temTexto": true
@@ -9386,6 +9394,19 @@
     }
    ]
   },
+  "MORADAVERDE": {
+   "nome": "MORADA VERDE – B",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/MORADA-VERDE-B.pdf",
+     "upload": "2026-09",
+     "versoes": 2,
+     "erro": "<urlopen error timed out>"
+    }
+   ]
+  },
   "MORADIASOL": {
    "nome": "MORADIA DO SOL",
    "folhas": [
@@ -9495,10 +9516,12 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NASCENTE-VILA.pdf",
-     "upload": "2017-01",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/08/NASCENTE-VILA.pdf",
+     "upload": "2026-08",
      "versoes": 2,
      "ruas": [
+      "01 A",
+      "21 3",
       "CELSO",
       "CHAFICA",
       "FADEL TAJHER IUNES",
@@ -9507,6 +9530,7 @@
       "JOSE",
       "JOSELITO",
       "JUDSON",
+      "JURSTINOMENDES LEAL AQUINO",
       "JUSTINO",
       "KIOTO",
       "LISE",
@@ -10691,7 +10715,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2021/06/loteamento-nova-conquista-1623763948.pdf",
      "upload": "2021-06",
      "versoes": 2,
-     "erro": "Reached maximum number of tokens per stream."
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -10872,7 +10896,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-LIMA-BAIRRO-02.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "Stream has ended unexpectedly"
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -11165,6 +11189,19 @@
      ],
      "atualizada": "22/04/2026",
      "temTexto": true
+    }
+   ]
+  },
+  "NOVORIOGRANDESUL": {
+   "nome": "NOVO RIO GRANDE DO SUL – CONJ.RESID",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVO-RIO-GRANDE-DO-SUL-CONJ.RESID_.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -11890,15 +11927,16 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARANAENSE-B.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/PARANAENSE-B.pdf",
+     "upload": "2026-09",
+     "versoes": 4,
      "ruas": [
       "FABIO ZAHRAN",
       "FLAVIO MATOS",
       "GERALDO CASTELO",
       "LIBRARUA PLANALTO",
       "MARCO",
+      "MORENA",
       "ROLANDIA"
      ],
      "quadras": [
@@ -12014,7 +12052,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
@@ -12148,6 +12186,42 @@
      "quadras": [],
      "atualizada": "",
      "temTexto": false
+    }
+   ]
+  },
+  "PETITPARK": {
+   "nome": "PETIT PARK – LOT",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PETIT-PARK-LOT.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "ruas": [
+      "ALEXANDRE",
+      "AREA",
+      "BONITO",
+      "CAPITAL",
+      "CASSILANDIA",
+      "CLAUDIA",
+      "CLOVIS",
+      "INAJA",
+      "JALES",
+      "MINAS GERAIS",
+      "PERFIL LONGITUDINAL",
+      "PIQUIRI",
+      "POCONE",
+      "SAPE",
+      "ST BARBARA",
+      "TAPAJOS"
+     ],
+     "quadras": [
+      "AV",
+      "DE"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -12422,6 +12496,19 @@
      "quadras": [],
      "atualizada": "",
      "temTexto": false
+    }
+   ]
+  },
+  "PORTAOFERRO": {
+   "nome": "PORTÃO DE FERRO – V",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAO-DE-FERRO-V.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12742,43 +12829,10 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARQUE-RITA-VIEIRA-SETOR-01.pdf",
-     "upload": "2017-01",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/PARQUE-RITA-VIEIRA-SETOR-01.pdf",
+     "upload": "2026-10",
      "versoes": 2,
-     "ruas": [
-      "01 07",
-      "05 6",
-      "07 59",
-      "17 1",
-      "17 17",
-      "1A 8A",
-      "24 05",
-      "29 03",
-      "29 12",
-      "33 05",
-      "57 11",
-      "ADEIR",
-      "ASSUNCAO",
-      "DELCIDES",
-      "JOAO VIEIRA",
-      "JUAZEIRO",
-      "LUIZ",
-      "MARIO",
-      "MARIZA",
-      "RITA",
-      "ROTTERDAN",
-      "THEOFILO ALVES DIAS",
-      "VERA",
-      "VILMA"
-     ],
-     "quadras": [
-      "50",
-      "59",
-      "R",
-      "S"
-     ],
-     "atualizada": "",
-     "temTexto": true
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12788,8 +12842,8 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/PARQUE-RITA-VIEIRA-SETOR-02.pdf",
-     "upload": "2026-09",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/PARQUE-RITA-VIEIRA-SETOR-02.pdf",
+     "upload": "2026-10",
      "versoes": 2,
      "ruas": [
       "ADEIR A VILA ANDRADE",
@@ -12828,80 +12882,10 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/08/PARQUE-RITA-VIEIRA-SETOR-03-.pdf",
-     "upload": "2026-08",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/PARQUE-RITA-VIEIRA-SETOR-03-.pdf",
+     "upload": "2026-10",
      "versoes": 2,
-     "ruas": [
-      "ABADIA ALVES SOUZA",
-      "ANTONIO",
-      "BALTAZAR SOUZA",
-      "COLETA ANA GOIS",
-      "DONA IRACEMA ALMEIDA",
-      "DORCAS FERREIRA CORREIA",
-      "ENEDINA PEREIRA FERREIRA",
-      "FELIPE DUAILIBE",
-      "FRANCISCO SOUZA",
-      "JOSE VILLELA BASTOS",
-      "LAZARA SOUZA",
-      "MACARIO ALVES",
-      "MARTINE MORAES",
-      "NESTOR COSTA",
-      "NOVO",
-      "OLINDA ALVES",
-      "RAFAEL",
-      "ROTTERDAN",
-      "STELA GOIS",
-      "TRES BARRAS"
-     ],
-     "quadras": [
-      "S"
-     ],
-     "atualizada": "",
-     "temTexto": true
-    }
-   ]
-  },
-  "RIVIERAPARK": {
-   "nome": "RIVIERA PARK – LOT",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/RIVIERA-PARK-LOT.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [
-      "AFLUENTE",
-      "ALUIZIO OLIVEIRA MARTINS",
-      "ANNA MEDEIROS COSTA FARIA",
-      "ANTONIO GARCIA SANTOS MEDEIROS",
-      "AVENIDA AFLUENTE",
-      "BENE FILINTO SILVA",
-      "CAPITAO AIRTON P REBOUCAS",
-      "CAPITAO MARIO PIO PEREIRA",
-      "CASSIANO ARAUJO BRITO",
-      "DARIO TOMAZELLI JUNIOR",
-      "FLORA PANTANAL",
-      "GILDETE CHAVES FEIJO",
-      "IGNES CORREA COSTA",
-      "JORNALISTA JOSE FILINTO SILVA",
-      "JOSE FRANCISCO PAULA EDUARDO",
-      "JOSE SIMONETTI",
-      "LEAO ZARDO",
-      "LIBANIO FIGUEIRO",
-      "LUIZ ALFREDO ADLER RALHO",
-      "LUIZ FILINTO SILVA",
-      "MAESTRO KALIL RAHE",
-      "MAESTRO KALIL RAHERUA ALBINO FARIA",
-      "RODOLPHO JOSE ROSPIDE MOTTA",
-      "RUBENS PAULA EDUARDO",
-      "TUNITA MENDES",
-      "WEGA NERI",
-      "ZENAIDE VILLELA ANDRADE"
-     ],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12958,7 +12942,16 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/ROSALINA-V.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "CAMBURIU",
+      "CORONEL MIQUELINO BARBOSA",
+      "DUARTE PACHECO",
+      "GUARATUBA",
+      "SENAI"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -14978,31 +14971,44 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/taquarussu-jd-1622464635.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/TAQUARUSSU-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
      "ruas": [
+      "03 MALVINAS MARIAS AGROPECUARIA LTDA OUTROS",
+      "ABOLICAO",
+      "ANTONIO JOAO FIGUEIREDO",
       "BANDEIRANTES",
       "BRIGADEIRO MACHADO",
       "BRIGADEIRO TOBIAS",
+      "BRIGADEIRO TOBIAS2",
       "CAIAPOS",
       "CONGONHAS",
       "DOIS MARCO",
       "ENGENHEIRO ROBERTO MANGE",
       "EUROPA",
+      "EUROPA D",
+      "EUROPA MUNICIPIO CAMPO GRANDE",
       "IPORA",
       "JACIRO SOUZA SILVA",
       "JURUENA",
-      "MADRE DEUSRUA ABOLICAO",
+      "MADRE DEUS",
+      "MELANIAS BARBOSA",
       "PATRIARCA",
+      "PRES ERNESTO GEISEL",
       "PRESID ERNESTO GEISEL",
+      "PRESIDENTE G",
       "SALGADO FILHO",
       "SANTA ADELIA",
       "SAO ROQUE",
-      "TURIASSU"
+      "TURIASSU",
+      "XAVIER TOLEDO"
      ],
      "quadras": [
-      "01"
+      "01",
+      "18",
+      "20",
+      "71"
      ],
      "atualizada": "",
      "temTexto": true
@@ -15732,8 +15738,8 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/08/TV-MORENA-JD.pdf",
-     "upload": "2026-08",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/TV-MORENA-JD.pdf",
+     "upload": "2026-09",
      "versoes": 2,
      "ruas": [
       "AMANDO CUNHA",
