@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-19T16:47Z",
+ "geradoEm": "2026-10-20T14:37Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 554,
   "folhas": 590,
   "duplicatasDescartadas": 1290,
-  "folhasLidas": 581,
-  "folhasPendentes": 9
+  "folhasLidas": 585,
+  "folhasPendentes": 5
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -5055,7 +5055,16 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/03/DO-DESBARRANCADO-B-FOLHA-02.pdf",
      "upload": "2026-03",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "1 F A I X A",
+      "DALVA",
+      "JOSE NOGUEIRA VIEIRA",
+      "MINISTRO JOAO ARINOS",
+      "SOLDADO PM REINALDO ANDRADE"
+     ],
+     "quadras": [],
+     "atualizada": "16/10/2026",
+     "temTexto": true
     }
    ]
   },
@@ -9403,7 +9412,67 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/09/MORADA-VERDE-B.pdf",
      "upload": "2026-09",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "AGUIA",
+      "ALBATROZ",
+      "ANDORINHA",
+      "ARACA",
+      "CALAFATE",
+      "CARCARA",
+      "CONSUL ASSAF TRAD",
+      "COTINGA",
+      "COTOVIA",
+      "COTOVIA ENTRE OS LOTES",
+      "COTOVIA ENTREOS LOTES",
+      "COTOXO",
+      "COXIM",
+      "CURIO",
+      "ENGENHEIRO",
+      "ENGENHEIRO AREA",
+      "ENGENHEIRO VICTOR PENTEADO CUNHA",
+      "ENGENHEIROVICTOR PENTEADO CUNHA",
+      "FALCAO",
+      "FALCAO ENTRE OS",
+      "FALCAO ENTRE OS LOTES",
+      "FRAGATA",
+      "GAVIAO",
+      "HERACLITO JOSE DINIZ FIGUEIREDO",
+      "JACINTO MAXIMO GOMES",
+      "JACUTINGA",
+      "JUSSARA",
+      "JUSSARA MARTINS",
+      "JUSSARA MARTINS LINDEIRA AOLOTE",
+      "MACUCO",
+      "MORADA AZUL",
+      "MORADA DOURADA",
+      "MORADA VERDE",
+      "P1 P2",
+      "PAVAO",
+      "PELICANO",
+      "PERIQUITO",
+      "PERIQUITO ENTRE OS LOTES",
+      "PERIQUITO ENTREOS LOTES",
+      "PINTASSILGO",
+      "S3 5",
+      "SERRA ARARAS",
+      "XORORO",
+      "XORORO ENTRE OS LOTES"
+     ],
+     "quadras": [
+      "01",
+      "10",
+      "11",
+      "13",
+      "16",
+      "26",
+      "28",
+      "29",
+      "30",
+      "33",
+      "34"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10715,7 +10784,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2021/06/loteamento-nova-conquista-1623763948.pdf",
      "upload": "2021-06",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
@@ -10896,7 +10965,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-LIMA-BAIRRO-02.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "erro": "Stream has ended unexpectedly"
     }
    ]
   },
@@ -11201,7 +11270,23 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVO-RIO-GRANDE-DO-SUL-CONJ.RESID_.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ARATIBA",
+      "CAMOBI",
+      "CATUIPE",
+      "DOSELENTA",
+      "ITAPARICA",
+      "JANDAIRA",
+      "JATAUBA",
+      "NOSSO SENHOR BONFIM",
+      "PANONIA",
+      "PAULOPOLISRUA COTIPORA",
+      "PENAPOLIS",
+      "VERDEJANTE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -12832,7 +12917,40 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/PARQUE-RITA-VIEIRA-SETOR-01.pdf",
      "upload": "2026-10",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "01 07",
+      "05 6",
+      "07 59",
+      "17 1",
+      "17 17",
+      "1A 8A",
+      "24 05",
+      "29 03",
+      "29 12",
+      "33 05",
+      "57 11",
+      "ADEIR",
+      "ASSUNCAO",
+      "DELCIDES",
+      "JOAO VIEIRA",
+      "JUAZEIRO",
+      "LUIZ",
+      "MARIO",
+      "MARIZA",
+      "RITA",
+      "ROTTERDAN",
+      "THEOFILO ALVES DIAS",
+      "VERA",
+      "VILMA"
+     ],
+     "quadras": [
+      "50",
+      "59",
+      "R",
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
