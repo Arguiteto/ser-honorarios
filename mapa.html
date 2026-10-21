@@ -1213,7 +1213,40 @@ function baixarDxf(){
     var u = utm(lat, lon);
     par(0, 'TEXT'); par(8, cam); par(62, cor); par(10, u[0].toFixed(3)); par(20, u[1].toFixed(3)); par(30, '0.0'); par(40, alt); par(1, ascii(s));
   }
-  function monta(viz){
+  /* eixo da rua + nome ao longo do trecho mais longo de cada pedaço, sempre de pé para leitura */
+  function rua(f){
+    var nome = f.properties && (f.properties.rotulo || [f.properties.tipo, f.properties.nome].filter(Boolean).join(' '));
+    linhasDe(f.geometry).forEach(function(ln){
+      if (ln.length < 2) return;
+      var p = ln.map(function(c){ return utm(c[1], c[0]); }), k = 0, dk = 0, i;
+      par(0, 'POLYLINE'); par(8, 'RUAS_EIXO'); par(62, 2); par(66, 1); par(70, 0);
+      for (i = 0; i < p.length; i++){ par(0, 'VERTEX'); par(8, 'RUAS_EIXO'); par(10, p[i][0].toFixed(3)); par(20, p[i][1].toFixed(3)); par(30, '0.0'); }
+      par(0, 'SEQEND'); par(8, 'RUAS_EIXO');
+      for (i = 0; i < p.length - 1; i++){ var d = Math.hypot(p[i+1][0] - p[i][0], p[i+1][1] - p[i][1]); if (d > dk){ dk = d; k = i; } }
+      if (!nome || dk < 20) return;
+      var a = p[k], b = p[k+1], ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
+      if (ang > 90) ang -= 180; else if (ang < -90) ang += 180;
+      var mx = ((a[0] + b[0]) / 2).toFixed(3), my = ((a[1] + b[1]) / 2).toFixed(3);
+      par(0, 'TEXT'); par(8, 'RUAS_TEXTO'); par(62, 2); par(10, mx); par(20, my); par(30, '0.0'); par(40, 2.5); par(1, ascii(nome));
+      par(50, ang.toFixed(3)); par(72, 1); par(11, mx); par(21, my); par(31, '0.0'); par(73, 2);
+    });
+  }
+  /* sem cabeçalho o AutoCAD abre olhando para a origem (0,0), longe do lote: aqui a vista já nasce centrada nele */
+  function cabecalho(){
+    var c = utm(lote.pi[1], lote.pi[0]), r = Math.max(40, lote.raio + 70), x0 = (c[0] - r).toFixed(3), y0 = (c[1] - r).toFixed(3), x1 = (c[0] + r).toFixed(3), y1 = (c[1] + r).toFixed(3);
+    return ['0','SECTION','2','HEADER','9','$ACADVER','1','AC1009',
+      '9','$EXTMIN','10',x0,'20',y0,'30','0.0','9','$EXTMAX','10',x1,'20',y1,'30','0.0',
+      '9','$LIMMIN','10',x0,'20',y0,'9','$LIMMAX','10',x1,'20',y1,
+      '0','ENDSEC','0','SECTION','2','TABLES','0','TABLE','2','VPORT','70','1',
+      '0','VPORT','2','*ACTIVE','70','0','10','0.0','20','0.0','11','1.0','21','1.0',
+      '12',c[0].toFixed(3),'22',c[1].toFixed(3),'13','0.0','23','0.0','14','1.0','24','1.0','15','0.0','25','0.0',
+      '16','0.0','26','0.0','36','1.0','17','0.0','27','0.0','37','0.0',
+      '40',(2 * r).toFixed(3),'41','1.6','42','50.0','43','0.0','44','0.0','50','0.0','51','0.0',
+      '71','0','72','100','73','1','74','3','75','0','76','0','77','0','78','0',
+      '0','ENDTAB','0','ENDSEC'].join('\r\n') + '\r\n';
+  }
+  function monta(viz, ruas){
+    ruas.forEach(rua);
     viz.forEach(function(f){
       var an = aneis(f.geometry);
       if (!an.length || (f.properties && f.properties.cod_lote === cod)) return;
@@ -1226,12 +1259,15 @@ function baixarDxf(){
       medidas(r).lados.forEach(function(l){ if (l.d >= 1) texto(l.meio[1], l.meio[0], 0.5, l.d.toFixed(2), 'COTAS', 7); });
     });
     texto(lote.pi[0], lote.pi[1], 1.2, 'LOTE ' + cod, 'LOTE_TEXTO', 7);
-    baixar('LOTE ' + cod + ' - UTM SIRGAS2000 21S.dxf', '0\r\nSECTION\r\n2\r\nENTITIES\r\n' + L0.join('\r\n') + '\r\n0\r\nENDSEC\r\n0\r\nEOF\r\n', 'application/dxf');
-    toast('DXF gerado: coordenadas UTM em metros, com os lotes vizinhos.', 5000);
+    baixar('LOTE ' + cod + ' - UTM SIRGAS2000 21S.dxf', cabecalho() + '0\r\nSECTION\r\n2\r\nENTITIES\r\n' + L0.join('\r\n') + '\r\n0\r\nENDSEC\r\n0\r\nEOF\r\n', 'application/dxf');
+    toast('DXF gerado: coordenadas UTM em metros, com os lotes vizinhos e os nomes das ruas.', 5000);
   }
+  function feicoes(j){ return (j && j.features) || []; }
   toast('Montando o DXF…', 8000);
-  wfs('sefaz:lotes', 'DWITHIN(geom, ' + pontoWkt() + ', ' + Math.round(lote.raio + 60) + ', meters)', 'cod_lote,geom', 250)
-    .then(function(j){ monta(j.features || []); }, function(){ monta([]); });
+  Promise.all([
+    wfs('sefaz:lotes', 'DWITHIN(geom, ' + pontoWkt() + ', ' + Math.round(lote.raio + 60) + ', meters)', 'cod_lote,geom', 250).catch(nulo),
+    wfs('sefaz:logradouros', 'DWITHIN(geom, ' + pontoWkt() + ', ' + Math.round(lote.raio + 80) + ', meters)', 'tipo,nome,rotulo,geom', 120).catch(nulo)
+  ]).then(function(r){ monta(feicoes(r[0]), feicoes(r[1])); });
 }
 
 /* ---- meus lotes e atalhos ---- */
