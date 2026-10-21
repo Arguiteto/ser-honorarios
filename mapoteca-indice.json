@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-20T14:37Z",
+ "geradoEm": "2026-10-21T14:44Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 554,
   "folhas": 590,
   "duplicatasDescartadas": 1290,
-  "folhasLidas": 585,
-  "folhasPendentes": 5
+  "folhasLidas": 586,
+  "folhasPendentes": 4
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -13003,7 +13003,33 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/PARQUE-RITA-VIEIRA-SETOR-03-.pdf",
      "upload": "2026-10",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABADIA ALVES SOUZA",
+      "ANTONIO",
+      "BALTAZAR SOUZA",
+      "COLETA ANA GOIS",
+      "DONA IRACEMA ALMEIDA",
+      "DORCAS FERREIRA CORREIA",
+      "ENEDINA PEREIRA FERREIRA",
+      "FELIPE DUAILIBE",
+      "FRANCISCO SOUZA",
+      "JOSE VILLELA BASTOS",
+      "LAZARA SOUZA",
+      "MACARIO ALVES",
+      "MARTINE MORAES",
+      "NESTOR COSTA",
+      "NOVO",
+      "OLINDA ALVES",
+      "RAFAEL",
+      "ROTTERDAN",
+      "STELA GOIS",
+      "TRES BARRAS"
+     ],
+     "quadras": [
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
