@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-21T14:44Z",
+ "geradoEm": "2026-10-22T14:45Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 554,
   "folhas": 590,
   "duplicatasDescartadas": 1290,
-  "folhasLidas": 586,
-  "folhasPendentes": 4
+  "folhasLidas": 587,
+  "folhasPendentes": 3
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -12593,7 +12593,18 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAO-DE-FERRO-V.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "BANDEIRANTES",
+      "BARBOSAS",
+      "BRILHANTE",
+      "CORIOLANO FERRAZ",
+      "ENGENHEIRO ROBERTO MANGE",
+      "PAISSANDU",
+      "SALGADO FILHO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
