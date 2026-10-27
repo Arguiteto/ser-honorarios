@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-10-26T16:35Z",
+ "geradoEm": "2026-10-27T15:29Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 554,
@@ -10784,7 +10784,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2021/06/loteamento-nova-conquista-1623763948.pdf",
      "upload": "2021-06",
      "versoes": 2,
-     "erro": "<urlopen error [Errno -5] No address associated with hostname>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
@@ -10965,7 +10965,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-LIMA-BAIRRO-02.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error [Errno -5] No address associated with hostname>"
+     "erro": "Stream has ended unexpectedly"
     }
    ]
   },
@@ -12137,7 +12137,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "<urlopen error [Errno -5] No address associated with hostname>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
