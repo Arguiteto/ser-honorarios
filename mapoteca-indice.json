@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-27T15:29Z",
+ "geradoEm": "2026-10-28T16:16Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
-  "loteamentos": 554,
-  "folhas": 590,
-  "duplicatasDescartadas": 1290,
-  "folhasLidas": 587,
-  "folhasPendentes": 3
+  "loteamentos": 556,
+  "folhas": 594,
+  "duplicatasDescartadas": 1302,
+  "folhasLidas": 588,
+  "folhasPendentes": 6
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -2520,9 +2520,9 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CAMPO-BELO-JD.pdf",
-     "upload": "2017-01",
-     "versoes": 4,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/CAMPO-BELO-JD.pdf",
+     "upload": "2026-07",
+     "versoes": 6,
      "ruas": [
       "05 23",
       "20 6",
@@ -2629,9 +2629,9 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CAMPO-NOVO-JD..pdf",
-     "upload": "2017-01",
-     "versoes": 2,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/CAMPO-NOVO-JD.pdf",
+     "upload": "2026-07",
+     "versoes": 4,
      "ruas": [],
      "quadras": [],
      "atualizada": "",
@@ -3206,25 +3206,22 @@
    ]
   },
   "CEREJEIRAS": {
-   "nome": "DAS CEREJEIRAS – JD",
+   "nome": "DAS CEREJEIRAS JD",
    "folhas": [
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAS-CEREJEIRAS-JD-FOLHA-011.pdf",
-     "upload": "2017-01",
-     "versoes": 4,
-     "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": false
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/DAS-CEREJEIRAS-JD-FOLHA-01.pdf",
+     "upload": "2026-07",
+     "versoes": 6,
+     "erro": "<urlopen error timed out>"
     },
     {
      "folha": 2,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAS-CEREJEIRAS-JD-FOLHA-02.pdf",
-     "upload": "2017-01",
-     "versoes": 4,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/DAS-CEREJEIRAS-JD-FOLHA-02.pdf",
+     "upload": "2026-07",
+     "versoes": 6,
      "ruas": [
       "AMILCAR ARTONI",
       "CICERO CAMPOS GURGEL",
@@ -4891,8 +4888,8 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PARQUE-DALLAS-LOT.pdf",
-     "upload": "2017-01",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/01/PARQUE-DALLAS-LOT.pdf",
+     "upload": "2026-01",
      "versoes": 2,
      "ruas": [
       "AGUACERITO",
@@ -5822,6 +5819,22 @@
     }
    ]
   },
+  "GAMA": {
+   "nome": "RESID GAMA",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/RESID-GAMA.pdf",
+     "upload": "2026-07",
+     "versoes": 2,
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
+    }
+   ]
+  },
   "GASPAR": {
    "nome": "GASPAR – V",
    "folhas": [
@@ -6051,7 +6064,7 @@
      "de": null,
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/GUANABARA-B.pdf",
      "upload": "2017-01",
-     "versoes": 4,
+     "versoes": 2,
      "ruas": [
       "ARACA",
       "CAARAPO",
@@ -8290,10 +8303,26 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/manoel-taveira-b.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/MANOEL-TAVEIRA-B-FOLHA-01.pdf",
+     "upload": "2026-10",
+     "versoes": 2,
+     "ruas": [
+      "DOM ANTONIO BARBOSA",
+      "G A S",
+      "S I D N T"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MANOEL-TAVEIRA-B-FOLHA-02.pdf",
      "upload": "2017-01",
      "versoes": 2,
      "ruas": [
+      "A A V N I D A",
       "A N C I S C O",
       "A R U A",
       "C I A",
@@ -8309,9 +8338,7 @@
       "T A N U",
       "U S S U"
      ],
-     "quadras": [
-      "P"
-     ],
+     "quadras": [],
      "atualizada": "",
      "temTexto": true
     }
@@ -9623,6 +9650,22 @@
     }
    ]
   },
+  "NASCENTESEGREDO": {
+   "nome": "NASCENTE DO SEGREDO – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/NASCENTE-DO-SEGREDO-JD.pdf",
+     "upload": "2026-07",
+     "versoes": 2,
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
   "NASHVILLE": {
    "nome": "NASHVILLE – JD",
    "folhas": [
@@ -10209,41 +10252,6 @@
      "upload": "2017-01",
      "versoes": 2,
      "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
-    }
-   ]
-  },
-  "NORTHPARK": {
-   "nome": "North Park",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/North-Park.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [
-      "ABROLHOS",
-      "ATACAMA",
-      "BAHIA BLANCA",
-      "BOIADEIRO",
-      "CARACAS",
-      "CARTAGENA",
-      "COCHABAMBA",
-      "CONTORNO SEGREDO",
-      "FOZ IGUACU",
-      "IQUITOS",
-      "LA PAZ",
-      "MAR DEL PLATA",
-      "PUNTA ARENA",
-      "QUITO",
-      "SAN JUAN",
-      "SANTIAGO CHILE",
-      "TAMANDARE",
-      "USHUAIA"
-     ],
      "quadras": [],
      "atualizada": "",
      "temTexto": true
@@ -12137,7 +12145,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "Reached maximum number of tokens per stream."
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12722,18 +12730,23 @@
    ]
   },
   "PRESIDENTE": {
-   "nome": "PRESIDENTE – JD",
+   "nome": "PRESIDENTE JD",
    "folhas": [
     {
      "folha": 1,
      "de": 2,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PRESIDENTE-JD-folha-01_02.pdf",
-     "upload": "2017-01",
-     "versoes": 6,
-     "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/PRESIDENTE-JD-folha-01_02.pdf",
+     "upload": "2026-07",
+     "versoes": 8,
+     "erro": "<urlopen error timed out>"
+    },
+    {
+     "folha": 2,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/PRESIDENTE-JD_folha2.pdf",
+     "upload": "2026-07",
+     "versoes": 2,
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -13277,6 +13290,39 @@
       "TERLITA"
      ],
      "quadras": [],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
+  "SANTACATARINA": {
+   "nome": "SANTA CATARINA – JD",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SANTA-CATARINA-JD.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "ruas": [
+      "13C03",
+      "17M03",
+      "1A02",
+      "21R03",
+      "3A03",
+      "6A A",
+      "AG01",
+      "CERRO CORA",
+      "CERRO CORA FERNANDO C",
+      "DESAF",
+      "FRANCISCO BENTO",
+      "JOAQUIM MURTINHO",
+      "MARINO VERARDO",
+      "RICARDO BRANDAO"
+     ],
+     "quadras": [
+      "2"
+     ],
      "atualizada": "",
      "temTexto": true
     }
