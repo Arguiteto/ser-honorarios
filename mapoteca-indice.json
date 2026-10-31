@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-30T16:12Z",
+ "geradoEm": "2026-10-31T15:37Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
   "folhas": 594,
   "duplicatasDescartadas": 1302,
-  "folhasLidas": 566,
-  "folhasPendentes": 28
+  "folhasLidas": 579,
+  "folhasPendentes": 15
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -3115,7 +3115,33 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CENTENARIO-JD-PRANCHA-02.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANALIA NARCIZO MARTINS",
+      "BALIZA",
+      "BARRA CORDA",
+      "CABRALIA PAULISTA",
+      "CAMPESTRE",
+      "CAXIUANA",
+      "GRANADA",
+      "HECIO BENFATTI JUNIOR",
+      "ITABIRITO",
+      "ITAITUBA",
+      "LAGOA PRATA",
+      "LIMAO",
+      "MANOEL GONCALVES NETO",
+      "MESQUITA",
+      "MOCAMBIQUE",
+      "MORRO CHAPEU",
+      "REGENERACAO",
+      "RIBEIRAO NEVES",
+      "SANTA QUITERIA",
+      "SEIS OUTUBRO",
+      "TREMEMBE",
+      "XANXERE"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -3456,7 +3482,21 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/CHACARAS-DOS-PODERES-PRANCHA-07.pdf",
      "upload": "2017-01",
      "versoes": 4,
-     "erro": "<urlopen error [Errno 111] Connection refused>"
+     "ruas": [
+      "ELIAS CHAFIC FERZELI",
+      "EW 15",
+      "EW 16",
+      "EW 17",
+      "EW 18",
+      "EW 19",
+      "NE 11",
+      "NS 10",
+      "NS 11",
+      "SE 05"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4223,7 +4263,57 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2012/10/C%C3%B3rrego-Limpo-Cidade-Viva-2011.pdf",
      "upload": "2012-10",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIO BANDEIRA ESQUINA COM A",
+      "ANTONIO OLIVEIRA LIMA COM O CORREGO",
+      "BOM PASTOR MONTANTE LAGO RADIO CLUBE CAMPO",
+      "CAPIBARIBE COM",
+      "DEZESSEIS",
+      "DUQUE",
+      "EALIZADO",
+      "ECEBE",
+      "ECEBE O",
+      "ERNESTO GEISEL",
+      "ERNESTO GEISEL COM O PONTILHAO",
+      "ERNESTO GEISEL ENTRE A",
+      "ERNESTO GEISEL ESQUINA COM A",
+      "ESCARAMUCA COM O CORREGO",
+      "ESULTADOS DESDE O INICIO D AS ANALISES EM",
+      "EULER",
+      "EVELINA FIGUEIREDO",
+      "FERNANDO CORREA COSTA COM A",
+      "GOLDEN GATE",
+      "GONCALVES",
+      "GUAICURUS ENTRE A",
+      "HIPODROMO",
+      "LUIZ CARDOSO AIRES NASCENTE CORREGO BURITI",
+      "MACAE NASCENTE CORREGO SERRADINHO",
+      "MANOEL COSTA LIMA ESQUINA COM",
+      "MANOEL JOSE LOPES COM O CORREGO",
+      "MARGINAL",
+      "NELLY",
+      "NIPOA ENTRE AS RUAS ANGATUA",
+      "PARAISOPOLIS ESQUINA COM A",
+      "PATRIARCA A",
+      "PEDRO",
+      "PIO ROJAS PROXIMO A",
+      "PLANALTO ESQUINA COM A",
+      "QUE ACESSO A",
+      "QUE ACESSO PARA AEROPORTO",
+      "RACHID NEDER ENTRE AS RUAS",
+      "RACHID NEDER NASCENTE CORREGO CASCUDO",
+      "RIO NEGRO ESQUINA COM A",
+      "RITA VIEIRA ANDRADE COM A",
+      "RITA VIEIRA COM A",
+      "ROLANDIA NASCENTE CORREGO CABACA",
+      "SALOMAO ABDALA",
+      "SE 3 NASCENTE CORREGO PEDREGULHO",
+      "SERTAOZINHO JUSANTE LAGO AMOR",
+      "SILVIO AYALA SILVEIRA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4236,7 +4326,75 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2015/03/C%C3%B3rrego-Limpo-Cidade-Viva-2012.pdf",
      "upload": "2015-03",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIO BANDEIRA ESQUINA",
+      "ANTONIO OLIVEIRA LIMA COM O",
+      "BARAO",
+      "BOM PASTOR",
+      "BOM PASTOR COM A",
+      "CAMPO SALES COM O",
+      "CANAA COM O",
+      "CAPIBARIBE COM",
+      "DEZESSEIS",
+      "DUQUE",
+      "ELMIRA FERREIRA COM O",
+      "ERNESTO",
+      "ERNESTO GEISEL",
+      "ERNESTO GEISEL COM O",
+      "ERNESTO GEISEL ENTRE A",
+      "ERNESTO GEISEL ESQUINA COM",
+      "ESCARAMUCA COM",
+      "ESOLUCAO CONAMA",
+      "EULER",
+      "EVELINA",
+      "EZEQUIEL",
+      "FERNANDO CORREA COSTA",
+      "FRANCISCO MARTINS",
+      "FRANCISCO PEREIRA",
+      "GOLDEN GATE",
+      "GONCALVES",
+      "GUAICURUS ENTRE A",
+      "HELIO PEREIRA CORREIA",
+      "HIPODROMO COM A",
+      "INTERLAGOS APRESENTA",
+      "JOAQUIM MURTINHO COM A",
+      "JULIO",
+      "LUIZ ALEXANDRE OLIVEIRA",
+      "LUIZ CARDOSO AIRES",
+      "MACAE",
+      "MANOEL COSTA LIMA",
+      "MANOEL JOSE LOPES",
+      "MARGINAL BALSAMO A",
+      "MATHIAS",
+      "MORENA PROXIMO A",
+      "NIPOA ENTRE AS",
+      "NS 05",
+      "OLAVO VILELLA",
+      "PARAISOPOLIS ESQUINA",
+      "PATRIARCA A",
+      "PIO ROJAS PROXIMO A",
+      "PIQUIA",
+      "PLANALTO ESQUINA",
+      "QUE ACESSO PARA",
+      "RACHID NEDDER COM A ERNESTO GEISEL",
+      "RACHID NEDER",
+      "RACHID NEDER ENTRE AS",
+      "RICARDO BRANDAO POSSUI",
+      "RIO NEGRO ESQUINA COM",
+      "RITA VIEIRA",
+      "RITA VIEIRA ANDRADE",
+      "ROLANDIA",
+      "ROSEIRA COM O CORREGO",
+      "SALOMAO",
+      "SE 1",
+      "SE 3",
+      "SEBASTIAO LIMA",
+      "SERTAOZINHO",
+      "SILVIO AYALA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -5503,7 +5661,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/FLUMINENSE-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -7821,7 +7982,33 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAS-MACA%C3%9ABAS-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIO CARLOS NOVAIS MARQUES",
+      "ANTONIO LUIZ PEREIRA",
+      "ARTUR PIRES",
+      "CASTORINA",
+      "DOLORES",
+      "ENEAS",
+      "FIDELIS",
+      "FRANCISCO CHAVES",
+      "FRANCISCO GAMA",
+      "GUAIRA",
+      "JACOB",
+      "JACUARUNA",
+      "JOAQUIM",
+      "JOSE MAURICIO",
+      "LEOLINA",
+      "LUIZ VASCONCELOS",
+      "MARTINEZ",
+      "OLIVERIO",
+      "PATROCINIO",
+      "RICARDO",
+      "SAO PIO PIETRELCINA",
+      "TRIANGULO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -10607,7 +10794,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-LIMA-BAIRRO-02.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "Stream has ended unexpectedly"
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -11429,7 +11616,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/OSCAR-SALAZAR.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -11619,7 +11809,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/paraiso-v.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
@@ -11754,7 +11947,15 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-01.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "LEGENDA",
+      "O V A D O"
+     ],
+     "quadras": [
+      "R"
+     ],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -11762,7 +11963,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "Reached maximum number of tokens per stream."
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12141,7 +12342,12 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAL-CAIOB%C3%81-II-Folha-01.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [
+      "16"
+     ],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -12234,7 +12440,37 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/portinhofredericopache-folha1-2-prefcg-1671652238.pdf",
      "upload": "2017-01",
      "versoes": 10,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANDRELANDIA",
+      "BOLIVAR",
+      "CERQUILHO",
+      "COROA",
+      "CORONEL",
+      "CRUZEIRO",
+      "DRACMA",
+      "FERNAO DIAS",
+      "FLORIM",
+      "FRANCO",
+      "GUARANI",
+      "JUNQUEIROPOLIS",
+      "LEMPIRA",
+      "MARCO",
+      "MATUTINA",
+      "RUPIA",
+      "SANTA LINA",
+      "SANTANA",
+      "SAO REMO",
+      "SERRA PARIMA",
+      "SIDERAL",
+      "SPIPE CALARGE",
+      "SUCRE",
+      "TRICORDIANO"
+     ],
+     "quadras": [
+      "S"
+     ],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -13045,7 +13281,35 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/santaemilia-bjdfolha02-prefcg-1667241994.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABATIXI",
+      "ABDON",
+      "ACREUNA",
+      "BARBALHA",
+      "BARBEDORUA ACRISIO",
+      "BERGAMO",
+      "CAFUNDORUA",
+      "CARANGOLA",
+      "CAVARI",
+      "CONDE",
+      "EVANDRO FERREIRA VIANA BANDEIRA",
+      "GAZELAFARORUA",
+      "GENARO",
+      "GUADIOSO",
+      "INGO",
+      "ITAMBI",
+      "JANDAIA SUL",
+      "JAPIM",
+      "LAMEGO",
+      "LEAO ZARDO",
+      "LIGIA",
+      "PLANALTINA",
+      "RUA ANTONIO IGNACIO SOUZADE",
+      "VITORIA ZARDO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -14383,7 +14647,55 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/sirio-libanes-ii.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ABIURENA",
+      "AMELIA GELELAITE MONACO",
+      "ANGELIM",
+      "BACABA",
+      "BACURI",
+      "BOGONI",
+      "CAFE CENTRAL",
+      "CAFE CENTRALRUA CAFE SUAVE",
+      "CAFE NECTAR",
+      "CAFE PRIMOROSA",
+      "CAFE SUAVE",
+      "CANJARANA",
+      "CAROBA",
+      "CUMBARU",
+      "EUCLIDES LINO",
+      "EXTREMOSA",
+      "EXTREMOSARUA EXTREMOSA",
+      "FRANKLIN",
+      "GUATAMBU",
+      "IBIRAPUA",
+      "IMBIRUSSU",
+      "IMBUIA",
+      "IPIRA",
+      "ITABEPI",
+      "JASMELINDA FERREIRA CARVALHO",
+      "JOAO VIEIRA ALMEIDA",
+      "JOAO VIEIRA ALMEIDARUA CAFE CENTRAL",
+      "JOAQUIM FRANCISCO LOPES",
+      "JOAQUIM LACERDA",
+      "JOSE BARBOSA RODRIGUES",
+      "MANOEL ALMEIDA TINOCO",
+      "MANOEL MESSIAS SANTOS",
+      "MILTON INSUELA PEREIRA",
+      "OTAVIO CAVALCANTE CUNHA",
+      "PADARIA MODERNA",
+      "PEQUI",
+      "PEROBA",
+      "QUIRI",
+      "SACAMBU",
+      "SANTA CLARA",
+      "SERAPIAO FERREIRA MAURICIO",
+      "TAMER GELELAITE"
+     ],
+     "quadras": [
+      "10"
+     ],
+     "atualizada": "30/01/2018",
+     "temTexto": true
     }
    ]
   },
