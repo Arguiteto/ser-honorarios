@@ -222,7 +222,7 @@ body{font-family:var(--font-body);min-height:100vh;background:var(--bg);color:va
 
 
 @media(min-width:721px){
-  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#prop-design-view,#prop-interiores-view,#labeee-view,#mapoteca-view,#equipe-view{padding-left:180px}
+  #hall-view,#dash-view,#chart-view,#carta-view,#calc-view,#prop-design-view,#prop-interiores-view,#labeee-view,#mapoteca-view,#quadro3d-view,#equipe-view{padding-left:180px}
 }
 
 /* ── SIMGEO CONSULTA ────────────────────────────── */
@@ -568,6 +568,12 @@ body{font-family:var(--font-body);min-height:100vh;background:var(--bg);color:va
 
 /* ── MAPOTECA / TERRENO ─────────────────────────── */
 #mapoteca-view{display:none;padding:1.5rem;max-width:980px;margin:0 auto;flex:1;width:100%}
+#quadro3d-view{display:none;padding:1.5rem;flex:1;width:100%}
+@media(min-width:721px){#quadro3d-view{padding-left:180px}}
+.quadro3d-quadro{position:relative;height:max(560px,calc(100vh - 170px));border:0.5px solid var(--border-em);border-radius:14px;overflow:hidden;background:var(--surf2);box-shadow:0 2px 14px rgba(0,0,0,.05)}
+.quadro3d-quadro iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:var(--surf2)}
+.quadro3d-quadro:fullscreen{border:0;border-radius:0;height:100vh}
+@media(max-width:720px){#quadro3d-view{padding:1rem .6rem}.quadro3d-quadro{height:auto;min-height:calc(100vh - 150px)}.quadro3d-quadro iframe{position:relative;height:1500px}}
 .mapoteca-wrap{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:14px;align-items:start}
 .mapoteca-card,.mapoteca-result{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.035)}
 .mapoteca-card h2,.mapoteca-result h2{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.4rem}
@@ -1267,6 +1273,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
     <div class="dock-sep" aria-hidden="true"></div>
     <button class="dock-btn" id="tool-labeee" onclick="showLabeee()"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3 17 7M7 17l-1.7 1.7"/></svg></span>LabEEE</button>
     <button class="dock-btn" id="tool-mapoteca" onclick="showMapoteca()"><span class="ico"><svg viewBox="0 0 24 24"><path d="M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg></span>Mapoteca</button>
+    <button class="dock-btn" id="tool-quadro3d" onclick="showQuadro3d()"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 17.5 12 21l8.5-3.5"/><path d="M3.5 13.5 12 17l8.5-3.5"/><path d="M6.5 12.3V7.5l3-1.2v4.8M11 13.4V5l3.5-1.4v9.6M16 11.6V8l2.5-1v3.6"/></svg></span>Quadro 3D</button>
     <button class="dock-btn" id="tool-nbr" onclick="nbrTogglePanel()"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 4.5V20M8.5 20h7"/><path d="M12 6 5.5 8M12 6l6.5 2"/><path d="M3.2 13.2a2.4 2.4 0 0 0 4.6 0L5.5 8ZM16.2 13.2a2.4 2.4 0 0 0 4.6 0L18.5 8Z"/></svg></span>Normas NBR</button>
   </nav>
 
@@ -1418,12 +1425,36 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
         </div>
         <span class="hall-go">Buscar arquivo →</span>
       </button>
+      <button class="hall-card" onclick="showQuadro3d()">
+        <div>
+          <div class="hall-icon">▦</div>
+          <h2>Quadro 3D</h2>
+          <p>Gera o quadro volumétrico da cidade e a medalha de corrida com relevo e rota, prontos para fatiar no Bambu Studio.</p>
+        </div>
+        <span class="hall-go">Montar peça →</span>
+      </button>
     </div>
   </div>
 
 
 
 
+
+  <!-- QUADRO 3D / MEDALHA (arquivo quadro3d.html, na mesma pasta) -->
+  <div id="quadro3d-view" style="display:none">
+    <div class="dash-top">
+      <div class="dash-title">Quadro 3D — Quadro volumétrico e medalha</div>
+      <div class="hall-mapa-acoes">
+        <button class="btn ghost" type="button" onclick="quadro3dFull()">Tela cheia</button>
+        <a class="btn ghost" id="quadro3d-aba" href="./quadro3d.html" target="_blank" rel="noopener">Abrir em nova aba</a>
+        <button class="btn ghost" onclick="showHall()">← Início</button>
+      </div>
+    </div>
+    <div class="quadro3d-quadro" id="quadro3d-quadro">
+      <iframe id="quadro3d-iframe" title="Quadro 3D — quadro volumétrico e medalha para impressão 3D" allow="fullscreen"></iframe>
+      <div class="hall-mapa-aviso" id="quadro3d-aviso" style="display:none">O Quadro 3D não carregou.<br>Confira se o arquivo <b>quadro3d.html</b> está na mesma pasta do index.html e se há conexão com a internet.</div>
+    </div>
+  </div>
 
   <!-- MAPOTECA / TERRENO -->
   <div id="mapoteca-view" style="display:none">
@@ -2508,7 +2539,7 @@ function canUseTool(tool){
   if(!r) return true;
   if(r==='dono') return true;
   if(r==='arquiteto') return tool !== 'propdesign'; // arquiteto tem propinteriores, não propdesign
-  const minionTools=['labeee','mapoteca','mapa','nbr'];
+  const minionTools=['labeee','mapoteca','quadro3d','mapa','nbr'];
   const financeiroTools=['home','new','props','chart'];
   const designerTools=['home','propdesign'];
   if(r==='minion') return minionTools.includes(tool);
@@ -2530,7 +2561,7 @@ function applyRoleUI(){
   const isDesigner = normalizedRole(currentRole)==='designer';
   document.body.classList.toggle('role-minion', isMetecos);
   document.body.classList.toggle('role-designer', isDesigner);
-  ['home','props','chart','new','carta','propdesign','propinteriores','labeee','mapoteca','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','propinteriores','labeee','mapoteca','quadro3d','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.style.display=canUseTool(k)?'flex':'none';
   });
@@ -2579,14 +2610,14 @@ function loadCurrentRole(){
 
 // ── VIEWS ─────────────────────────────────────────
 function hideViews(){
-  ['hall-view','dash-view','calc-view','prop-design-view','prop-interiores-view','carta-view','labeee-view','mapoteca-view','audioamp-view','equipe-view'].forEach(id=>{
+  ['hall-view','dash-view','calc-view','prop-design-view','prop-interiores-view','carta-view','labeee-view','mapoteca-view','quadro3d-view','audioamp-view','equipe-view'].forEach(id=>{
     const el=$(id);
     if(el) el.style.display='none';
   });
 }
 
 function setTool(active){
-  ['home','props','chart','new','carta','propdesign','propinteriores','labeee','mapoteca','nbr','equipe'].forEach(k=>{
+  ['home','props','chart','new','carta','propdesign','propinteriores','labeee','mapoteca','quadro3d','nbr','equipe'].forEach(k=>{
     const el=$('tool-'+k);
     if(el) el.classList.toggle('active',k===active);
   });
@@ -2659,6 +2690,47 @@ window.addEventListener('message',ev=>{
   hallMapaEnviar();
 });
 new MutationObserver(hallMapaEnviar).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+// ── QUADRO 3D / MEDALHA ───────────────────────────
+// Mora no arquivo quadro3d.html (mesma pasta) e só carrega na primeira vez que a ferramenta é aberta.
+// Recebe o mesmo tema, a paleta e o logo que o mapa (mensagem chaos-tema).
+const QUADRO3D_URL='./quadro3d.html';
+let quadro3dPronto=false, quadro3dTimer=null;
+function quadro3dEnviar(){
+  try{
+    const a=$('quadro3d-aba'); if(a) a.href=QUADRO3D_URL+'?tema='+encodeURIComponent(hallMapaTema());
+    const f=$('quadro3d-iframe');
+    if(!f || !f.getAttribute('src') || !f.contentWindow) return;
+    f.contentWindow.postMessage(hallMapaMsg(),/^https?:$/.test(location.protocol) ? location.origin : '*');
+  }catch(e){ console.warn('Quadro 3D:',e); }
+}
+function showQuadro3d(){
+  if(guardTool('quadro3d')) return;
+  hideViews();
+  $('quadro3d-view').style.display='block';
+  setTool('quadro3d');
+  const f=$('quadro3d-iframe');
+  if(f && !f.getAttribute('src')){
+    f.src=QUADRO3D_URL+'?tema='+encodeURIComponent(hallMapaTema())+'&v=20261101a';
+    clearTimeout(quadro3dTimer);
+    quadro3dTimer=setTimeout(()=>{ const av=$('quadro3d-aviso'); if(av && !quadro3dPronto) av.style.display='flex'; },12000);
+  }
+  quadro3dEnviar();
+}
+function quadro3dFull(){
+  const q=$('quadro3d-quadro'); if(!q) return;
+  if(document.fullscreenElement){ if(document.exitFullscreen) document.exitFullscreen(); return; }
+  const pedir=q.requestFullscreen || q.webkitRequestFullscreen;
+  if(pedir){ try{ const r=pedir.call(q); if(r && r.catch) r.catch(()=>{}); }catch(e){} }
+}
+window.addEventListener('message',ev=>{
+  const f=$('quadro3d-iframe');
+  if(!f || ev.source!==f.contentWindow || !ev.data || ev.data.tipo!=='chaos-quadro3d-pronto') return;
+  quadro3dPronto=true;
+  const av=$('quadro3d-aviso'); if(av) av.style.display='none';
+  quadro3dEnviar();
+});
+new MutationObserver(quadro3dEnviar).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
 // ── LOTE SELECIONADO NO MAPA (botão "Pegar dados do mapa") ────────────
 // O mapa do Início avisa qual lote está selecionado; Mapoteca e LabEEE usam esse lote (dados do GeoCG).
@@ -8814,6 +8886,7 @@ function logoSave(){
     if(st){ st.textContent='✓ Identidade salva com sucesso!'; st.style.color='var(--green)'; }
     window._logoTempSrc = null;
     if(typeof hallMapaEnviar==='function') hallMapaEnviar();
+    if(typeof quadro3dEnviar==='function') quadro3dEnviar();
     setTimeout(closeLogoModal, 1200);
   }catch(e){
     const st = $('logo-modal-status');
@@ -8829,6 +8902,7 @@ function logoReset(){
   const s = $('logo-sub');  if(s) s.value='';
   logoPreviewUpdate();
   if(typeof hallMapaEnviar==='function') hallMapaEnviar();
+    if(typeof quadro3dEnviar==='function') quadro3dEnviar();
   $('logo-file-status').textContent='Logo padrão restaurado';
   $('logo-file-status').style.color='var(--faint)';
 }

@@ -21,6 +21,7 @@ Reúne o mapa de consulta de imóveis de Campo Grande, as propostas comerciais e
 | **Prop. Design** / **Prop. Interiores** | Propostas específicas de design e de interiores |
 | **LabEEE** | Análise ambiental preliminar: carta solar, ZB, brises e ventilação |
 | **Mapoteca** | Localiza a prancha oficial do loteamento do terreno |
+| **Quadro 3D** | Quadro volumétrico da cidade e medalha de corrida com relevo e rota, em 3MF pronto para o Bambu Studio |
 | **Normas NBR** | Assistente de NBRs com link oficial ABNT, favoritos e alertas de atualização |
 
 No topo ficam **Áudio** (player), **Nome** (perfil de quem está usando), **Logo** (identidade visual dos PDFs) e **Tema** (claro/escuro).
@@ -81,7 +82,18 @@ No painel **Planta**, escolha modelo, papel e escala e clique **Gerar planta (PD
 
 Informe o CEP (ou use **Pegar dados do mapa**), escolha a fachada e clique **Gerar ficha**. A ficha traz carta solar, estratégia bioclimática (ZBBR/NBR 15220), zoneamento LabEEE 2024, proteção solar/brises e máscara de obstrução. É um pré-estudo: a análise final continua nos softwares oficiais (SOL-AR, Analysis BIO, ZBBR).
 
-### 5. Assistente NBR
+### 5. Quadro 3D e medalha (impressão 3D)
+
+Gera peças para imprimir na Bambu (A1, A1 mini, P1S/X1C, H2D), com bico de 0,2 a 0,8 mm e até 4 cores do AMS.
+
+- **Quadro:** escolha o local (busca ou clique no mapa), o tamanho da área e a forma (quadrado, círculo ou hexágono). Os prédios vêm do OpenStreetMap e têm três níveis de detalhe: telhado de 4 águas nas casas, casa de máquinas, caixa d'água, linhas dos pavimentos e embasamento nas torres. Clique num prédio na prévia para corrigir os pavimentos.
+- **Medalha:** trace a rota de um local a outro (a pé) ou envie o GPX do Strava/Garmin. A medalha sai com o relevo real do terreno. Distância, tempo e desnível são preenchidos sozinhos e vão na moldura, junto com o nome. A passagem pode ser para cordão, para fita ou nenhuma.
+- **Moldura separada:** a borda com os textos vira outra peça. O mapa encaixa num rebaixo, sobre uma aba de apoio, e a rota encaixa num canal aberto no mapa. Fica uma cor por peça, sem troca de filamento e sem cola. A folga pode ser justa (0,10 mm), normal (0,15 mm) ou folgada (0,25 mm).
+- **Exportar:** gera um 3MF com cada peça como um objeto e cada parte na sua cor, já no prato. Quando as peças não cabem juntas, sai um 3MF por peça. As malhas são verificadas na hora: o aviso em **Exportar** diz se todas as partes estão fechadas.
+
+O Quadro 3D segue o tema do sistema e usa o logo do escritório quando ele está em SVG. Também abre sozinho em `quadro3d.html` (`?modo=medalha` abre direto na medalha).
+
+### 6. Assistente NBR
 
 <img src="prints/06-assistente-nbr.jpg" alt="Assistente NBR com o lote do mapa" width="320" align="right">
 
@@ -101,6 +113,7 @@ Fica no botão **NBR**, no canto inferior direito.
 |---------|---------|
 | `index.html` | Sistema completo: menu, propostas, ferramentas e assistente NBR |
 | `mapa.html` | Mapa de consulta. Abre sozinho ou embutido no Início |
+| `quadro3d.html` | Quadro 3D e medalha para impressão 3D. Abre sozinho ou embutido no menu **Quadro 3D** |
 | `mapoteca-indice.json` | Índice próprio das pranchas da Mapoteca: loteamento → folhas, ruas e quadras |
 | `mapoteca-confirmadas.json` | Folhas confirmadas com "É esta a prancha" |
 | `gerar_indice_mapoteca.py` | Script que gera o índice a partir do portal da prefeitura (`pip install pypdf`) |
@@ -127,6 +140,8 @@ Depois, suba o `mapoteca-indice.json` novo para o GitHub. Desdobros, desmembrame
 - **SISGRAN**: dados urbanísticos do lote, via ponte Apps Script
 - **ViaCEP**: localização por CEP
 - **ABNT**: links oficiais das normas
+- **OpenStreetMap**: prédios, ruas e água do Quadro 3D, lidos dos blocos vetoriais do **OpenFreeMap** (OpenMapTiles), com o **Overpass** como reserva. Busca de endereço pelo **Nominatim**. Rotas a pé pelo roteador do routing.openstreetmap.de
+- **Terrain Tiles (AWS Open Data / Mapzen)**: relevo do terreno
 - **NBR 13531/13532** e **tabela CAU/BR**: referência para fases e honorários
 
 ---
