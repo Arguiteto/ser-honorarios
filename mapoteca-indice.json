@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-10-31T15:37Z",
+ "geradoEm": "2026-11-01T16:20Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
   "folhas": 594,
   "duplicatasDescartadas": 1302,
-  "folhasLidas": 579,
-  "folhasPendentes": 15
+  "folhasLidas": 584,
+  "folhasPendentes": 10
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -4188,7 +4188,14 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2012/10/C%C3%B3rrego-Limpo-Cidade-Viva-2009.pdf",
      "upload": "2012-10",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "14 JULHO",
+      "MATO",
+      "O NUMERO"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4558,7 +4565,18 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/docorrego-jd-folha02-prefcg-1649095019.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "CORUMBATAI",
+      "EMBAUBA",
+      "JOSE VILLELA ANDRADE JUNIOR",
+      "MOGIANA",
+      "NAZARENA MILFONT SOBREIRA",
+      "O V A D O",
+      "SAPUCAIA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -4914,7 +4932,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DAN%C3%9ABIO-AZUL-V.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -9148,7 +9169,22 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/MONUMENTO-JD-folha-01.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ARROBAS MARTINSRUA",
+      "ELVIRA",
+      "EMIGDIO",
+      "ENZO",
+      "FILOMENA",
+      "FRANCISCO",
+      "GUAICURUS",
+      "GURY MARQUES",
+      "MESTRE",
+      "VISCONDE",
+      "WALDEMAR"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -11976,7 +12012,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/10/PARIS-JD.pdf",
      "upload": "2020-10",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
@@ -12585,7 +12621,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/07/PRESIDENTE-JD_folha2.pdf",
      "upload": "2026-07",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
