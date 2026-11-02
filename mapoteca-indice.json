@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-11-01T16:20Z",
+ "geradoEm": "2026-11-02T19:47Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
   "folhas": 594,
   "duplicatasDescartadas": 1302,
-  "folhasLidas": 584,
-  "folhasPendentes": 10
+  "folhasLidas": 590,
+  "folhasPendentes": 4
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -4589,7 +4589,76 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2018/07/C%C3%B3rrego-Limpo-Cidade-Viva-2017.pdf",
      "upload": "2018-07",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIO",
+      "ANTONIO OLIVEIRA LIMA COM O CORREGO VENDAS",
+      "BARAO RIO BRANCO",
+      "BARNABE HONORIO",
+      "BOM PASTOR",
+      "BOM PASTOR COM A",
+      "CAMPO SALES COM O CORREGO LAGOA",
+      "CANAA COM O CORREGO SEGREDO",
+      "CAPIBARIBE COM",
+      "CORREGO EM LEITO NATURAL APP PRESERVADA POREM",
+      "COSTA SILVA",
+      "DEZESSEIS",
+      "DUAS OCORRENCIAS QUALIDADE BOA",
+      "DUQUE",
+      "ELMIRA FERREIRA COM O CORREGO",
+      "ERNESTO GEISEL",
+      "ERNESTO GEISEL COM O PONTILHAO",
+      "ERNESTO GEISEL ENTRE A",
+      "ERNESTO GEISEL ESQUINA COM A",
+      "ESCARAMUCA COM O CORREGO LAGEADO",
+      "EULER AZEVEDO ATE SUA",
+      "EZEQUIEL",
+      "FERNANDO CORREA COSTA COM A",
+      "FRANCISCO PEREIRA LIMA",
+      "GAMELEIRA",
+      "GONCALVES",
+      "GUAICURUS ENTRE A",
+      "HIPODROMO COM A",
+      "JOAQUIM",
+      "LEITO COM VEGETACAO AQUATICA",
+      "MACAE",
+      "MANOEL COSTA LIMA ESQUINA COM",
+      "MANOEL JOSE LOPES COM O CORREGO",
+      "MARGINAL BALSAMO A",
+      "MARINHA",
+      "MARQUES",
+      "MATHIAS ALBUQUERQUE",
+      "MATO GROSSO",
+      "NELLY MARTINS",
+      "NIPOA ENTRE AS RUAS ANGATUA",
+      "NS 05",
+      "OLAVO VILELLA",
+      "PANAMBI VERA",
+      "PARAIS OPOLIS ESQUINA COM A",
+      "PARAISOPOLIS ESQUINA COM A",
+      "PATRIARCA A",
+      "PIO ROJAS PROXIMO A",
+      "PIQUIA",
+      "PLANALTO ESQUINA COM A",
+      "PRES ERNESTO GEISEL",
+      "QUE ACESSO A",
+      "QUE ACESSO PARA AEROPORTO SANTA MARIA",
+      "RACHID NEDER",
+      "RACHID NEDER ENTRE AS RUAS",
+      "RICARDO BRANDAO",
+      "RIO EM LEITO NATURAL APP PRESERVADA POREM NAO",
+      "RIO NEGRO ESQUINA COM A",
+      "RITA VIEIRA ANDRADE COM A CONTINUIDADEDA",
+      "RITA VIEIRA COM A",
+      "ROLANDIA",
+      "SALOMAO",
+      "SE 3",
+      "SEBASTIAO LIMA",
+      "SERTAOZINHO",
+      "SILVIO AYALA SILVEIRA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -5083,7 +5152,39 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/DR.ALBUQUERQUE-V.pdf",
      "upload": "2017-01",
      "versoes": 8,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ANTONIETA BORGES",
+      "ANTONIO NERCINO",
+      "BERNA",
+      "CRISTALINA",
+      "D ELISA",
+      "DELFINA BORGES",
+      "DOLAR",
+      "EMANUEL",
+      "FLAVIO MATOS",
+      "JULIO",
+      "LIBRA",
+      "MAGNUS FONTAINE",
+      "MAJOR",
+      "MARCOS",
+      "MARGARETH",
+      "MARIA",
+      "MIRIAM",
+      "MONTE",
+      "MONTE SIAO",
+      "MOTORISTAS",
+      "NOROESTE",
+      "NOROESTERUA OPERARIOS",
+      "PHEBUS LAMBERT",
+      "PLANALTO",
+      "RAMALHO",
+      "VASCO GAMA",
+      "VITOR HUGO",
+      "WERNECK"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -6359,7 +6460,16 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/GUARACIABA-VILA.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "25 DEZEMBRO",
+      "ANTONIO MARIA COELHO",
+      "BRASIL",
+      "MATO GROSSO",
+      "PROPRIA"
+     ],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -7378,7 +7488,43 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/JERUSALEM-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "2001",
+      "ABILIO SOARES",
+      "ALEXANDRITA",
+      "ALEXANDRITARUA",
+      "ALVARO SILVEIRA",
+      "AMAZONITA",
+      "AMBAR",
+      "ANTONIO MARQUES",
+      "ARAGONITA",
+      "BRONZITA",
+      "CITRINO",
+      "CRISTAL",
+      "CRISTAL NEGRO",
+      "ESMERALDA",
+      "HONORIA CORREA",
+      "JOAO CASSIMIRO",
+      "JOAO GARCIA CARVALHO FILHO",
+      "KANGA ROSA",
+      "MANDANA",
+      "MARREY JUNIOR",
+      "MORGANITA",
+      "PEROLA",
+      "PONTAL",
+      "PRATA",
+      "RANCHEIRO",
+      "RETONO",
+      "SODALITA",
+      "TEIXEIRA SILVA",
+      "TRES BARRAS",
+      "TURMALINA PARAIBA"
+     ],
+     "quadras": [
+      "28"
+     ],
+     "atualizada": "02/01/2018",
+     "temTexto": true
     }
    ]
   },
@@ -10649,7 +10795,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2021/06/loteamento-nova-conquista-1623763948.pdf",
      "upload": "2021-06",
      "versoes": 2,
-     "erro": "Reached maximum number of tokens per stream."
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -11351,7 +11497,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/OESTE-V.-FOLHA-1-2-Model.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     },
     {
      "folha": 2,
@@ -11999,7 +12148,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
@@ -14973,7 +15122,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/TALISMA-JD.pdf",
      "upload": "2017-01",
      "versoes": 8,
-     "erro": "<urlopen error timed out>"
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
