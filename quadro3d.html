@@ -510,13 +510,35 @@ async function photon(q, perto, sinal) {
   if (!r.ok) throw new Error("busca de endereço respondeu " + r.status);
   return (await r.json()).features;
 }
+// tipo do lugar, para mostrar na lista e ordenar: referência > endereço > lote
+const TIPOS = {
+  leisure: ["lazer", 3], tourism: ["turismo", 3], historic: ["histórico", 3], natural: ["natureza", 3], place: ["", 3],
+  boundary: ["região", 3], amenity: ["serviço", 2], building: ["edifício", 2], shop: ["loja", 2], office: ["escritório", 2],
+  railway: ["estação", 2], highway: ["rua", 2], landuse: ["área", 1],
+};
+const VALORES = { park: "parque", garden: "jardim", stadium: "estádio", square: "praça", pedestrian: "calçadão", cycleway: "ciclovia", footway: "caminho", retail: "área comercial", commercial: "área comercial", residential: "área residencial", industrial: "área industrial", university: "universidade", school: "escola", hospital: "hospital", place_of_worship: "igreja", city: "cidade", town: "cidade", suburb: "bairro", neighbourhood: "bairro" };
+function tipoLugar(p) {
+  const [nome, peso] = TIPOS[p.osm_key] || ["", 2];
+  const tipo = VALORES[p.osm_value] || nome;
+  // caminho e ciclovia valem menos que a rua; parque e praça, mais
+  const ajuste = ["footway", "cycleway", "path", "service"].includes(p.osm_value) ? -0.5 : ["park", "square"].includes(p.osm_value) ? 0.5 : 0;
+  return { tipo, peso: peso + ajuste };
+}
 async function sugerir(q, sinal) {
   const numero = (q.match(/[\s,]+(\d+[a-z]?)\s*$/i) || [])[1];
   const semNumero = numero ? q.slice(0, q.lastIndexOf(numero)).replace(/[\s,]+$/, "") : q;
+  // o servidor público do Photon recusa rajadas: o mundo todo só é consultado se perto achar pouco
+  let falhas = 0;
+  const pegar = (p) => p.catch((e) => { if (sinal && sinal.aborted) throw e; falhas++; return []; });
   const pedidos = [photon(q, true, sinal)];
   if (numero && semNumero.length >= 3) pedidos.push(photon(semNumero, true, sinal));
-  pedidos.push(photon(q, false, sinal));
-  const listas = await Promise.all(pedidos.map((p) => p.catch((e) => { if (sinal && sinal.aborted) throw e; return []; })));
+  const listas = await Promise.all(pedidos.map(pegar));
+  let feitos = pedidos.length;
+  pedidos.push(null);   // a última lista é a do mundo todo (marca "longe")
+  if (listas.reduce((s, l) => s + l.length, 0) < 3) { feitos++; listas.push(await pegar(photon(q, false, sinal))); }
+  else listas.push([]);
+  // todas as consultas falharam (servidor fora ou recusando): avisa em vez de dizer que não existe
+  if (falhas === feitos) throw new Error("busca indisponível");
   const vistos = new Set(), out = [];
   listas.forEach((lista, li) => lista.forEach((f) => {
     const p = f.properties, id = p.osm_type + p.osm_id;
@@ -528,12 +550,16 @@ async function sugerir(q, sinal) {
     const lugar = [p.name && rua && rua !== p.name ? rua : "", p.district || p.locality || "", [p.city, p.state].filter(Boolean).join(" - ")].filter(Boolean).join(" · ");
     const longe = li === pedidos.length - 1 && Math.hypot(lat - S.center[0], lon - S.center[1]) > 0.45;
     const semNumeroNoMapa = numero && !(p.housenumber && String(p.housenumber).toLowerCase() === numero.toLowerCase());
-    out.push({ titulo, lugar, lat, lon, longe, aviso: semNumeroNoMapa && (p.type === "street" || !p.housenumber) ? `nº ${numero} não está no mapa: ponto na rua` : "" });
+    const { tipo, peso } = tipoLugar(p);
+    out.push({ titulo, lugar, lat, lon, longe, tipo, peso, ordem: out.length, cidade: p.city || (p.type === "city" ? p.name : ""), estado: p.state, pais: p.countrycode, aviso: semNumeroNoMapa && (p.type === "street" || !p.housenumber) ? `nº ${numero} não está no mapa: ponto na rua` : "" });
   }));
-  return out.sort((a, b) => a.longe - b.longe).slice(0, 7);
+  // por perto primeiro; depois lugares de referência antes de lotes ("Parque Sóter" é um lote
+  // comercial no OSM; o parque está como "Praça Ecológico do Sóter"); empate fica na ordem do Photon
+  return out.sort((a, b) => a.longe - b.longe || b.peso - a.peso || a.ordem - b.ordem).slice(0, 7);
 }
 // Liga a lista de sugestões a um campo; aoEscolher recebe {titulo, lat, lon, ...}
 const ESCOLHAS = {};
+const CACHE_SUG = new Map();
 function autocompletar(input, aoEscolher) {
   const lista = document.createElement("ul");
   lista.className = "sugestoes"; lista.hidden = true; lista.setAttribute("role", "listbox");
@@ -548,24 +574,38 @@ function autocompletar(input, aoEscolher) {
     fechar();
     aoEscolher(it);
   };
+  const aviso = (txt) => { lista.innerHTML = `<li class="vazio">${txt}</li>`; lista.hidden = false; ativo = -1; };
   const mostrar = () => {
     lista.innerHTML = itens.length
-      ? itens.map((it, i) => `<li role="option" data-i="${i}"><b>${esc(it.titulo)}</b><small>${esc(it.lugar)}</small>${it.longe ? `<small class="longe">longe do mapa</small>` : ""}${it.aviso ? `<small class="longe">${esc(it.aviso)}</small>` : ""}</li>`).join("")
+      ? itens.map((it, i) => `<li role="option" data-i="${i}"><b>${esc(it.titulo)}</b><small>${it.tipo ? esc(it.tipo) + " · " : ""}${esc(it.lugar)}</small>${it.longe ? `<small class="longe">longe do mapa</small>` : ""}${it.aviso ? `<small class="longe">${esc(it.aviso)}</small>` : ""}</li>`).join("")
       : `<li class="vazio">Nada encontrado. Tente o nome da rua sem o número, ou o bairro.</li>`;
     lista.hidden = false; marcar(-1);
   };
-  input.addEventListener("input", () => {
-    delete ESCOLHAS[input.id];
+  // repetir uma busca já feita (apagar e redigitar) responde na hora, sem ir ao servidor
+  const procurar = (atraso) => {
     clearTimeout(timer);
     const q = input.value.trim();
     if (q.length < 3) { fechar(); return; }
+    const chave = q.toLowerCase() + "|" + S.center.map((v) => v.toFixed(2));
+    if (CACHE_SUG.has(chave)) { itens = CACHE_SUG.get(chave); mostrar(); return; }
+    itens = []; aviso("Procurando…");   // a lista velha não serve para o texto novo (Enter escolheria errado)
     timer = setTimeout(async () => {
       if (ctrl) ctrl.abort();
       ctrl = new AbortController();
-      try { itens = await sugerir(q, ctrl.signal); if (input.value.trim() === q) mostrar(); }
-      catch (e) { if (e.name !== "AbortError") { itens = []; mostrar(); } }
-    }, 300);
-  });
+      try {
+        const res = await sugerir(q, ctrl.signal);
+        CACHE_SUG.set(chave, res);
+        if (input.value.trim() === q) { itens = res; mostrar(); }
+      } catch (e) {
+        if (e.name === "AbortError") return;
+        itens = [];
+        if (input.value.trim() === q) aviso("A busca de endereços não respondeu. Continue digitando ou tente de novo em instantes.");
+      }
+    }, atraso);
+  };
+  input.addEventListener("input", () => { delete ESCOLHAS[input.id]; procurar(450); });
+  // voltar ao campo com um texto ainda não escolhido reabre a lista
+  input.addEventListener("focus", () => { if (!ESCOLHAS[input.id]) procurar(0); });
   input.addEventListener("keydown", (e) => {
     if (lista.hidden || !itens.length) return;
     if (e.key === "ArrowDown") { e.preventDefault(); marcar(Math.min(itens.length - 1, ativo + 1)); }
@@ -580,16 +620,51 @@ function autocompletar(input, aoEscolher) {
   input.addEventListener("blur", () => setTimeout(fechar, 150));
 }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-// Coordenadas de um campo: a sugestão escolhida, ou a melhor sugestão (que passa a aparecer no campo)
+/* Nominatim: só no Buscar (uma consulta por clique, como pede a política de uso). Entende nomes em
+   português ("Torre Eiffel"), que o Photon guarda só no idioma local, e prefere a região do mapa. */
+async function nominatim(q) {
+  const [lat, lon] = S.center, d = 0.45;
+  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=3&accept-language=pt-BR`
+    + `&viewbox=${[lon - d, lat + d, lon + d, lat - d].join(",")}&q=${encodeURIComponent(q)}`;
+  const r = await buscar(url, {}, 15000);
+  if (!r.ok) return [];
+  return (await r.json()).map((f) => {
+    const a = f.address || {}, cidade = a.city || a.town || a.village || a.municipality || "";
+    const titulo = f.name || f.display_name.split(",")[0];
+    const lugar = [a.suburb || "", [cidade, a.state].filter(Boolean).join(" - ")].filter(Boolean).join(" · ");
+    return { titulo, lugar, lat: +f.lat, lon: +f.lon, cidade, estado: a.state, pais: a.country_code };
+  });
+}
+// Coordenadas de um campo: a sugestão escolhida; senão o melhor resultado por perto ou do Nominatim.
+// Nunca pula sozinho para o outro lado do mundo por causa de um nome parecido.
 async function geocodificar(input) {
   const q = input.value.trim(), e = ESCOLHAS[input.id];
   if (e && e.texto === input.value) return [e.lat, e.lon];
-  const res = await sugerir(q);
-  if (!res.length) throw new Error(`não encontrei “${q}”`);
-  const it = res[0];
+  const res = await sugerir(q).catch(() => []);   // Photon fora do ar: segue pelo Nominatim
+  // o Photon aceita nomes só parecidos ("Avenida Paulista, São Paulo" vira uma avenida daqui):
+  // o resultado por perto só vale se trouxer as palavras digitadas
+  const norm = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  const palavras = norm(q).split(/[^a-z0-9]+/).filter((p) => p.length >= 3 && !/^\d+$/.test(p));
+  const casa = (r) => { const t = norm(r.titulo + " " + r.lugar); return palavras.filter((p) => t.includes(p)).length >= Math.ceil(palavras.length * 0.8); };
+  let it = res.find((r) => !r.longe && casa(r));
+  if (!it) it = (await nominatim(q).catch(() => []))[0];
+  if (!it) {
+    input.dispatchEvent(new Event("input"));   // reabre a lista para escolher
+    throw new Error(res.length ? `“${q}” só aparece longe daqui: escolha na lista` : `não encontrei “${q}”`);
+  }
   input.value = it.lugar ? `${it.titulo}, ${it.lugar.split(" · ").pop()}` : it.titulo;
   ESCOLHAS[input.id] = { ...it, texto: input.value };
   return [it.lat, it.lon];
+}
+// o texto de baixo do quadro acompanha a cidade escolhida, enquanto não for editado à mão
+const UF = { "Acre": "AC", "Alagoas": "AL", "Amapá": "AP", "Amazonas": "AM", "Bahia": "BA", "Ceará": "CE", "Distrito Federal": "DF", "Espírito Santo": "ES", "Goiás": "GO", "Maranhão": "MA", "Mato Grosso": "MT", "Mato Grosso do Sul": "MS", "Minas Gerais": "MG", "Pará": "PA", "Paraíba": "PB", "Paraná": "PR", "Pernambuco": "PE", "Piauí": "PI", "Rio de Janeiro": "RJ", "Rio Grande do Norte": "RN", "Rio Grande do Sul": "RS", "Rondônia": "RO", "Roraima": "RR", "Santa Catarina": "SC", "São Paulo": "SP", "Sergipe": "SE", "Tocantins": "TO" };
+let textoAuto = "CAMPO GRANDE · MS";
+function textoDaCidade(it) {
+  if (!it || !it.cidade || S.textos.bottom !== textoAuto) return;
+  const fim = String(it.pais).toLowerCase() === "br" ? UF[it.estado] || it.estado : it.estado;
+  textoAuto = [it.cidade, fim].filter(Boolean).join(" · ").toUpperCase();
+  S.textos.bottom = textoAuto;
+  syncTextos();
 }
 let marcadores = {};
 function marcarPonto(id, lat, lon, rotulo) {
@@ -602,10 +677,11 @@ async function geocode() {
   setStatus("Procurando endereço…");
   try {
     S.center = await geocodificar($("q"));
+    textoDaCidade(ESCOLHAS.q);
     map.setView(S.center, 15);
     drawArea();
     stale();
-  } catch (e) { setStatus("Endereço não encontrado. Tente o nome do bairro e da cidade.", true); }
+  } catch (e) { setStatus(/longe daqui/.test(e.message) ? e.message[0].toUpperCase() + e.message.slice(1) + "." : "Endereço não encontrado. Tente o nome do bairro e da cidade.", true); }
 }
 function stale() { setStatus(GEOMS.base ? "A área mudou. Clique em “Gerar modelo” para atualizar." : "Clique em “Gerar modelo”."); }
 function setStatus(msg, erro) {
@@ -2487,7 +2563,7 @@ window.addEventListener("message", (ev) => {
   aplicaTema();
 });
 
-autocompletar($("q"), (it) => { S.center = [it.lat, it.lon]; map.setView(S.center, 15); drawArea(); stale(); });
+autocompletar($("q"), (it) => { S.center = [it.lat, it.lon]; textoDaCidade(it); map.setView(S.center, 15); drawArea(); stale(); });
 autocompletar($("r-de"), (it) => { marcarPonto("r-de", it.lat, it.lon, "Partida"); map.panTo([it.lat, it.lon]); });
 autocompletar($("r-ate"), (it) => { marcarPonto("r-ate", it.lat, it.lon, "Chegada"); map.panTo([it.lat, it.lon]); });
 $("go").addEventListener("click", geocode);
