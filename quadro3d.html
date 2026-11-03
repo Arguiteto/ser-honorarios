@@ -180,6 +180,17 @@ html.so-medalha .quadro-only{display:none!important}
         <div class="campo"><span>Chegada</span><div class="auto"><input class="cp" type="text" id="r-ate" placeholder="Ex.: Praça Ary Coelho" autocomplete="off" aria-label="Chegada"></div></div>
         <p class="hint">Escolha o endereço na lista que aparece ao digitar: ela mostra bairro e cidade, para ter certeza do lugar.</p>
         <button class="b sec" id="r-tracar">Traçar rota a pé</button>
+        <button class="b sec" id="r-desenhar">Desenhar a rota no mapa</button>
+        <div id="desenho-box" class="sub" hidden>
+          <p class="hint">Clique no mapa ponto a ponto, na ordem do percurso. Começa na Partida, se ela já estiver marcada.</p>
+          <label class="check"><input type="checkbox" id="d-ruas" checked> <span>Seguir as ruas entre os cliques</span></label>
+          <p class="hint" id="d-info">0 pontos</p>
+          <div class="row">
+            <button class="b sec" id="d-desfazer">Desfazer ponto</button>
+            <button class="b sec" id="d-cancelar">Cancelar</button>
+            <button class="b" id="d-concluir">Concluir</button>
+          </div>
+        </div>
         <label>Ou envie o GPX (Strava, Garmin…) <input class="cp" type="file" id="r-gpx" accept=".gpx,application/gpx+xml"></label>
         <div class="row"><p class="hint" id="r-info">Sem rota.</p><button class="b sec" id="r-limpar" style="flex:0 0 auto" hidden>Limpar</button></div>
       </div>
@@ -495,7 +506,69 @@ function drawRota() {
   if (!S.rota) return;
   rotaLayer = L.polyline(S.rota.pts, { color: S.fil[S.map.route], weight: 4, opacity: 0.95 }).addTo(map);
 }
-map.on("click", (e) => { S.center = [e.latlng.lat, e.latlng.lng]; drawArea(); stale(); });
+map.on("click", (e) => {
+  if (DESENHO) { pontoDesenho([e.latlng.lat, e.latlng.lng]); return; }
+  S.center = [e.latlng.lat, e.latlng.lng]; drawArea(); stale();
+});
+
+/* Desenhar a rota: cada clique é um ponto; com "seguir as ruas" o trecho até ele vai pelo roteador
+   a pé, senão em linha reta (trilha, parque, praia). Cada trecho fica guardado para o Desfazer. */
+let DESENHO = null;   // { trechos: [[pontos...]], linha, pontos: L.layerGroup }
+function iniciarDesenho() {
+  const p0 = marcadores["r-de"] && marcadores["r-de"].getLatLng();
+  DESENHO = { trechos: p0 ? [[[p0.lat, p0.lng]]] : [], linha: L.polyline([], { color: S.fil[S.map.route], weight: 4, dashArray: "6 6" }).addTo(map), pontos: L.layerGroup().addTo(map), ocupado: false };
+  $("desenho-box").hidden = false; $("r-desenhar").hidden = true;
+  $("map").style.cursor = "crosshair";
+  atualizarDesenho();
+}
+function fimDesenho() {
+  if (!DESENHO) return;
+  DESENHO.linha.remove(); DESENHO.pontos.remove(); DESENHO = null;
+  $("desenho-box").hidden = true; $("r-desenhar").hidden = false;
+  $("map").style.cursor = "";
+}
+function atualizarDesenho() {
+  const pts = DESENHO.trechos.flat();
+  DESENHO.linha.setLatLngs(pts);
+  DESENHO.pontos.clearLayers();
+  DESENHO.trechos.forEach((t) => { const [la, lo] = t[t.length - 1]; L.circleMarker([la, lo], { radius: 4, color: S.fil[S.map.route], weight: 2, fillColor: "#fff", fillOpacity: 1 }).addTo(DESENHO.pontos); });
+  let dist = 0; for (let i = 1; i < pts.length; i++) dist += haversine(pts[i - 1], pts[i]);
+  $("d-info").textContent = `${DESENHO.trechos.length} ponto${DESENHO.trechos.length === 1 ? "" : "s"} · ${fmtKm(dist)}${DESENHO.ocupado ? " · procurando o caminho…" : DESENHO.aviso ? " · " + DESENHO.aviso : ""}`;
+  $("d-concluir").disabled = pts.length < 2;
+  $("d-desfazer").disabled = !DESENHO.trechos.length;
+}
+async function pontoDesenho(p) {
+  if (!DESENHO || DESENHO.ocupado) return;
+  DESENHO.aviso = "";
+  const ant = DESENHO.trechos.length ? DESENHO.trechos[DESENHO.trechos.length - 1].slice(-1)[0] : null;
+  if (!ant || !$("d-ruas").checked) { DESENHO.trechos.push([p]); atualizarDesenho(); return; }
+  DESENHO.ocupado = true; atualizarDesenho();
+  let trecho = [p];
+  try {
+    const r = await buscar(`${ROTEADOR}${ant[1]},${ant[0]};${p[1]},${p[0]}?overview=full&geometries=geojson`, {}, 20000);
+    const j = await r.json();
+    if (j.code === "Ok" && j.routes.length) {
+      const g = j.routes[0].geometry.coordinates.map(([lo, la]) => [la, lo]);
+      // clique numa trilha que só liga às ruas do outro lado (ciclovia interna de parque) faz o
+      // roteador dar a volta: aí o trecho sai reto, que é o que a pessoa quis desenhar
+      if (j.routes[0].distance > haversine(ant, p) * 1.8 + 150) DESENHO.aviso = "um trecho saiu reto: pelas ruas dava uma volta grande";
+      // o roteador encosta o trecho na rua mais próxima; o clique continua sendo o fim do trecho
+      else trecho = g.slice(1).concat([p]);
+    }
+  } catch (e) { /* sem roteador: o trecho sai em linha reta */ }
+  if (!DESENHO) return;
+  DESENHO.ocupado = false;
+  DESENHO.trechos.push(trecho);
+  atualizarDesenho();
+}
+function concluirDesenho() {
+  const pts = DESENHO.trechos.flat().filter((p, i, a) => !i || haversine(a[i - 1], p) > 0.5);
+  if (pts.length < 2) return;
+  fimDesenho();
+  marcarPonto("r-de", pts[0][0], pts[0][1], "Partida");
+  marcarPonto("r-ate", pts[pts.length - 1][0], pts[pts.length - 1][1], "Chegada");
+  definirRota(pts, null, null);
+}
 new ResizeObserver(() => map.invalidateSize()).observe($("map"));   // janela/iframe mudou de tamanho
 
 /* ---------- endereços: sugestões enquanto digita (Photon, dados do OSM) ----------
@@ -754,6 +827,10 @@ async function tracarRota() {
     const j = await r.json();
     if (j.code !== "Ok" || !j.routes.length) throw new Error("o roteador não achou caminho");
     definirRota(j.routes[0].geometry.coordinates.map(([lo, la]) => [la, lo]), null, null);
+    // o roteador encosta cada ponta na via mais próxima; se for uma trilha interna de parque,
+    // o caminho dá a volta para entrar por outro lado
+    if (j.routes[0].distance > haversine(a, b) * 2.2 + 300)
+      setStatus("A rota ficou bem mais longa que a distância direta e pode estar dando uma volta. Confira no mapa; se precisar, use “Desenhar a rota no mapa”.", true);
   } catch (e) { setStatus("Não deu para traçar a rota: " + e.message + ".", true); }
   finally { $("r-tracar").disabled = false; }
 }
@@ -2474,7 +2551,12 @@ $("logo").addEventListener("change", async (e) => {
 
 $("r-tracar").addEventListener("click", tracarRota);
 $("r-gpx").addEventListener("change", (e) => { if (e.target.files[0]) lerGPX(e.target.files[0]); });
+$("r-desenhar").addEventListener("click", iniciarDesenho);
+$("d-desfazer").addEventListener("click", () => { if (DESENHO && !DESENHO.ocupado) { DESENHO.trechos.pop(); atualizarDesenho(); } });
+$("d-cancelar").addEventListener("click", fimDesenho);
+$("d-concluir").addEventListener("click", concluirDesenho);
 $("r-limpar").addEventListener("click", () => {
+  fimDesenho();
   S.rota = null; $("r-gpx").value = "";
   for (const id of ["r-de", "r-ate"]) { if (marcadores[id]) marcadores[id].remove(); delete marcadores[id]; }
   drawRota(); atualizarRotaUI(); syncMoldura(); later();
