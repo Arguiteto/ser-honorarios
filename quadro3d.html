@@ -124,6 +124,15 @@ main{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);min-height:0
 .edit .pc{padding:10px 14px 12px;display:grid;gap:8px}
 .edit .fonte{font-size:12px;color:var(--muted)}
 .edit .fonte b{color:var(--text);font-weight:600}
+.campo{display:grid;gap:4px;font-size:13px}
+.auto{position:relative}
+.sugestoes{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;margin:0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--border-em);border-radius:10px;box-shadow:var(--sombra);max-height:300px;overflow:auto}
+.sugestoes li{padding:7px 9px;border-radius:7px;cursor:pointer;display:grid;gap:1px}
+.sugestoes li[aria-selected=true],.sugestoes li:hover{background:var(--el)}
+.sugestoes b{font-weight:600;font-size:13px;color:var(--text)}
+.sugestoes small{font-size:11.5px;color:var(--muted)}
+.sugestoes small.longe{color:var(--warn)}
+.sugestoes .vazio{color:var(--muted);font-size:12px;cursor:default}
 .leaflet-container{font:inherit;background:var(--surf2)}
 .leaflet-bar{border-color:var(--border-em)!important}
 .leaflet-bar a,.leaflet-bar a:hover{background:var(--surface);color:var(--text);border-bottom-color:var(--border)}
@@ -161,14 +170,15 @@ html.so-medalha .quadro-only{display:none!important}
     <section>
       <h2><b>01</b> <span class="quadro-only">Local</span><span class="medalha-only">Percurso</span></h2>
       <div class="row quadro-only">
-        <input class="cp" type="text" id="q" placeholder="Endereço, bairro ou lugar" value="Praça Ary Coelho, Campo Grande">
+        <div class="auto"><input class="cp" type="text" id="q" placeholder="Endereço, bairro ou lugar" value="Praça Ary Coelho, Campo Grande" autocomplete="off"></div>
         <button class="b sec" id="go" style="flex:0 0 auto">Buscar</button>
       </div>
       <p class="hint quadro-only">Ou clique no mapa para mudar o centro.</p>
       <div class="sub" id="rota-box">
         <h3><span class="quadro-only">Rota (opcional)</span><span class="medalha-only">Rota da corrida</span></h3>
-        <label>Partida <input class="cp" type="text" id="r-de" placeholder="Ex.: Parque das Nações Indígenas, Campo Grande"></label>
-        <label>Chegada <input class="cp" type="text" id="r-ate" placeholder="Ex.: Praça Ary Coelho, Campo Grande"></label>
+        <div class="campo"><span>Partida</span><div class="auto"><input class="cp" type="text" id="r-de" placeholder="Ex.: Parque das Nações Indígenas" autocomplete="off" aria-label="Partida"></div></div>
+        <div class="campo"><span>Chegada</span><div class="auto"><input class="cp" type="text" id="r-ate" placeholder="Ex.: Praça Ary Coelho" autocomplete="off" aria-label="Chegada"></div></div>
+        <p class="hint">Escolha o endereço na lista que aparece ao digitar: ela mostra bairro e cidade, para ter certeza do lugar.</p>
         <button class="b sec" id="r-tracar">Traçar rota a pé</button>
         <label>Ou envie o GPX (Strava, Garmin…) <input class="cp" type="file" id="r-gpx" accept=".gpx,application/gpx+xml"></label>
         <div class="row"><p class="hint" id="r-info">Sem rota.</p><button class="b sec" id="r-limpar" style="flex:0 0 auto" hidden>Limpar</button></div>
@@ -486,19 +496,112 @@ function drawRota() {
   rotaLayer = L.polyline(S.rota.pts, { color: S.fil[S.map.route], weight: 4, opacity: 0.95 }).addTo(map);
 }
 map.on("click", (e) => { S.center = [e.latlng.lat, e.latlng.lng]; drawArea(); stale(); });
+new ResizeObserver(() => map.invalidateSize()).observe($("map"));   // janela/iframe mudou de tamanho
 
-async function geocodificar(q) {
-  const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q));
-  const j = await r.json();
-  if (!j.length) throw new Error(`não encontrei “${q}”`);
-  return [+j[0].lat, +j[0].lon];
+/* ---------- endereços: sugestões enquanto digita (Photon, dados do OSM) ----------
+   Primeiro procura perto do mapa (~50 km); o número da casa quase nunca está no OSM brasileiro,
+   então também tenta sem o número. Resultados de longe aparecem depois, marcados com a cidade. */
+const PHOTON = "https://photon.komoot.io/api/";
+async function photon(q, perto, sinal) {
+  const [lat, lon] = S.center, d = 0.45;
+  const filtro = perto ? `&bbox=${[lon - d, lat - d, lon + d, lat + d].join(",")}` : `&lat=${lat}&lon=${lon}`;
+  const url = `${PHOTON}?limit=6${filtro}&q=${encodeURIComponent(q)}`;
+  const r = sinal ? await fetch(url, { signal: sinal }) : await buscar(url, {}, 15000);
+  if (!r.ok) throw new Error("busca de endereço respondeu " + r.status);
+  return (await r.json()).features;
+}
+async function sugerir(q, sinal) {
+  const numero = (q.match(/[\s,]+(\d+[a-z]?)\s*$/i) || [])[1];
+  const semNumero = numero ? q.slice(0, q.lastIndexOf(numero)).replace(/[\s,]+$/, "") : q;
+  const pedidos = [photon(q, true, sinal)];
+  if (numero && semNumero.length >= 3) pedidos.push(photon(semNumero, true, sinal));
+  pedidos.push(photon(q, false, sinal));
+  const listas = await Promise.all(pedidos.map((p) => p.catch((e) => { if (sinal && sinal.aborted) throw e; return []; })));
+  const vistos = new Set(), out = [];
+  listas.forEach((lista, li) => lista.forEach((f) => {
+    const p = f.properties, id = p.osm_type + p.osm_id;
+    if (vistos.has(id) || !f.geometry) return;
+    vistos.add(id);
+    const [lon, lat] = f.geometry.coordinates;
+    const rua = p.street ? p.street + (p.housenumber ? ", " + p.housenumber : "") : "";
+    const titulo = p.name || rua || p.city || "Sem nome";
+    const lugar = [p.name && rua && rua !== p.name ? rua : "", p.district || p.locality || "", [p.city, p.state].filter(Boolean).join(" - ")].filter(Boolean).join(" · ");
+    const longe = li === pedidos.length - 1 && Math.hypot(lat - S.center[0], lon - S.center[1]) > 0.45;
+    const semNumeroNoMapa = numero && !(p.housenumber && String(p.housenumber).toLowerCase() === numero.toLowerCase());
+    out.push({ titulo, lugar, lat, lon, longe, aviso: semNumeroNoMapa && (p.type === "street" || !p.housenumber) ? `nº ${numero} não está no mapa: ponto na rua` : "" });
+  }));
+  return out.sort((a, b) => a.longe - b.longe).slice(0, 7);
+}
+// Liga a lista de sugestões a um campo; aoEscolher recebe {titulo, lat, lon, ...}
+const ESCOLHAS = {};
+function autocompletar(input, aoEscolher) {
+  const lista = document.createElement("ul");
+  lista.className = "sugestoes"; lista.hidden = true; lista.setAttribute("role", "listbox");
+  input.parentElement.appendChild(lista);
+  input.setAttribute("role", "combobox"); input.setAttribute("aria-autocomplete", "list");
+  let itens = [], ativo = -1, timer = 0, ctrl = null;
+  const fechar = () => { lista.hidden = true; ativo = -1; };
+  const marcar = (i) => { ativo = i; [...lista.children].forEach((li, k) => li.setAttribute("aria-selected", k === i)); };
+  const escolher = (it) => {
+    input.value = it.lugar ? `${it.titulo}, ${it.lugar.split(" · ").pop()}` : it.titulo;
+    ESCOLHAS[input.id] = { ...it, texto: input.value };
+    fechar();
+    aoEscolher(it);
+  };
+  const mostrar = () => {
+    lista.innerHTML = itens.length
+      ? itens.map((it, i) => `<li role="option" data-i="${i}"><b>${esc(it.titulo)}</b><small>${esc(it.lugar)}</small>${it.longe ? `<small class="longe">longe do mapa</small>` : ""}${it.aviso ? `<small class="longe">${esc(it.aviso)}</small>` : ""}</li>`).join("")
+      : `<li class="vazio">Nada encontrado. Tente o nome da rua sem o número, ou o bairro.</li>`;
+    lista.hidden = false; marcar(-1);
+  };
+  input.addEventListener("input", () => {
+    delete ESCOLHAS[input.id];
+    clearTimeout(timer);
+    const q = input.value.trim();
+    if (q.length < 3) { fechar(); return; }
+    timer = setTimeout(async () => {
+      if (ctrl) ctrl.abort();
+      ctrl = new AbortController();
+      try { itens = await sugerir(q, ctrl.signal); if (input.value.trim() === q) mostrar(); }
+      catch (e) { if (e.name !== "AbortError") { itens = []; mostrar(); } }
+    }, 300);
+  });
+  input.addEventListener("keydown", (e) => {
+    if (lista.hidden || !itens.length) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); marcar(Math.min(itens.length - 1, ativo + 1)); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); marcar(Math.max(0, ativo - 1)); }
+    else if (e.key === "Enter") { e.preventDefault(); e.stopImmediatePropagation(); escolher(itens[Math.max(0, ativo)]); }
+    else if (e.key === "Escape") fechar();
+  });
+  lista.addEventListener("mousedown", (e) => {
+    const li = e.target.closest("li[data-i]");
+    if (li) { e.preventDefault(); escolher(itens[+li.dataset.i]); }
+  });
+  input.addEventListener("blur", () => setTimeout(fechar, 150));
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// Coordenadas de um campo: a sugestão escolhida, ou a melhor sugestão (que passa a aparecer no campo)
+async function geocodificar(input) {
+  const q = input.value.trim(), e = ESCOLHAS[input.id];
+  if (e && e.texto === input.value) return [e.lat, e.lon];
+  const res = await sugerir(q);
+  if (!res.length) throw new Error(`não encontrei “${q}”`);
+  const it = res[0];
+  input.value = it.lugar ? `${it.titulo}, ${it.lugar.split(" · ").pop()}` : it.titulo;
+  ESCOLHAS[input.id] = { ...it, texto: input.value };
+  return [it.lat, it.lon];
+}
+let marcadores = {};
+function marcarPonto(id, lat, lon, rotulo) {
+  if (marcadores[id]) marcadores[id].remove();
+  marcadores[id] = L.circleMarker([lat, lon], { radius: 7, color: corTema("--e", "#1E1D1A"), weight: 2, fillColor: corTema("--surface", "#fff"), fillOpacity: 1 })
+    .bindTooltip(rotulo, { permanent: true, direction: "top", offset: [0, -6] }).addTo(map);
 }
 async function geocode() {
-  const q = $("q").value.trim();
-  if (!q) return;
+  if (!$("q").value.trim()) return;
   setStatus("Procurando endereço…");
   try {
-    S.center = await geocodificar(q);
+    S.center = await geocodificar($("q"));
     map.setView(S.center, 15);
     drawArea();
     stale();
@@ -568,8 +671,10 @@ async function tracarRota() {
   $("r-tracar").disabled = true;
   setStatus("Traçando a rota a pé…");
   try {
-    const [a, b] = await Promise.all([geocodificar(de), geocodificar(ate)]);
-    const r = await fetch(`${ROTEADOR}${a[1]},${a[0]};${b[1]},${b[0]}?overview=full&geometries=geojson`);
+    const [a, b] = await Promise.all([geocodificar($("r-de")), geocodificar($("r-ate"))]);
+    marcarPonto("r-de", a[0], a[1], "Partida");
+    marcarPonto("r-ate", b[0], b[1], "Chegada");
+    const r = await buscar(`${ROTEADOR}${a[1]},${a[0]};${b[1]},${b[0]}?overview=full&geometries=geojson`, {}, 30000);
     const j = await r.json();
     if (j.code !== "Ok" || !j.routes.length) throw new Error("o roteador não achou caminho");
     definirRota(j.routes[0].geometry.coordinates.map(([lo, la]) => [la, lo]), null, null);
@@ -653,8 +758,16 @@ function linhasMVT(cmds) {
   }
   return linhas;
 }
+// fetch com tempo limite: conexão pendurada vira erro (com aviso e nova tentativa), não trava a tela
+async function buscar(url, opts = {}, ms = 40000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try { return await fetch(url, { ...opts, signal: ctrl.signal }); }
+  catch (e) { throw new Error(e.name === "AbortError" ? "o servidor não respondeu a tempo" : e.message); }
+  finally { clearTimeout(t); }
+}
 async function baixarVetorial(center, area) {
-  const tj = await (await fetch(OPENFREEMAP)).json();
+  const tj = await (await buscar(OPENFREEMAP)).json();
   const url = tj.tiles[0], z = 14, n = 2 ** z;
   const [lat, lon] = center, h = area / 2 + 30, [dy, dx] = metersToDeg(lat);
   const tx = (lo) => Math.floor((lo + 180) / 360 * n);
@@ -666,7 +779,7 @@ async function baixarVetorial(center, area) {
   const elements = [];
   const jobs = [];
   for (let x = X0; x <= X1; x++) for (let y = Y0; y <= Y1; y++) jobs.push((async () => {
-    const r = await fetch(url.replace("{z}", z).replace("{x}", x).replace("{y}", y));
+    const r = await buscar(url.replace("{z}", z).replace("{x}", x).replace("{y}", y));
     if (r.status === 204 || r.status === 404) return;
     if (!r.ok) throw new Error("bloco vetorial respondeu " + r.status);
     const camadas = decodificarMVT(await r.arrayBuffer());
@@ -768,8 +881,9 @@ async function baixarDEM(center, area) {
   const jobs = [];
   for (let x = X0; x <= X1; x++) for (let y = Y0; y <= Y1; y++) jobs.push(new Promise((ok, err) => {
     const img = new Image(); img.crossOrigin = "anonymous";
-    img.onload = () => { g.drawImage(img, (x - X0) * 256, (y - Y0) * 256); ok(); };
-    img.onerror = () => err(new Error("bloco de relevo indisponível"));
+    const limite = setTimeout(() => { img.src = ""; err(new Error("o servidor de relevo não respondeu a tempo")); }, 40000);
+    img.onload = () => { clearTimeout(limite); g.drawImage(img, (x - X0) * 256, (y - Y0) * 256); ok(); };
+    img.onerror = () => { clearTimeout(limite); err(new Error("bloco de relevo indisponível")); };
     img.src = `${DEM_URL}${z}/${x}/${y}.png`;
   }));
   await Promise.all(jobs);
@@ -777,6 +891,24 @@ async function baixarDEM(center, area) {
   let el = new Float32Array(W * H);
   // mar (profundidade do oceano) e falta de dado viram nível zero: o mar fica plano no quadro
   for (let i = 0; i < W * H; i++) el[i] = Math.max(0, d[i * 4] * 256 + d[i * 4 + 1] + d[i * 4 + 2] / 256 - 32768);
+  // o SRTM mede o topo do que vê: grupos de torres viram morrinhos pontudos no meio da cidade.
+  // Abertura (mínimo e depois máximo, raio 150 m) apaga saliências com menos de ~300 m de largura
+  // e mantém morros e vales de verdade
+  const mpix = 156543 * Math.cos(lat0 * Math.PI / 180) / n;
+  const raio = Math.max(1, Math.min(30, Math.round(150 / mpix)));
+  const filtro = (src, horiz, fn) => {
+    const o = new Float32Array(W * H);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      let v = src[y * W + x];
+      for (let k = -raio; k <= raio; k++) {
+        const xx = horiz ? x + k : x, yy = horiz ? y : y + k;
+        if (xx >= 0 && yy >= 0 && xx < W && yy < H) v = fn(v, src[yy * W + xx]);
+      }
+      o[y * W + x] = v;
+    }
+    return o;
+  };
+  el = filtro(filtro(filtro(filtro(el, true, Math.min), false, Math.min), true, Math.max), false, Math.max);
   // duas passadas de média 3×3 tiram o ruído de árvores e prédios do modelo de satélite
   for (let p = 0; p < 2; p++) {
     const o = new Float32Array(W * H);
@@ -1108,17 +1240,25 @@ function montarRelevo(dom, topo, fundo, cel, fx, fy) {
     return out;
   };
   dom = dom.map((e) => ({ outer: cruzar(e.outer), holes: e.holes.map(cruzar) }));
+  // células de borda: as que algum segmento do contorno toca de fato (teste exato do segmento contra
+  // a célula, com folga mínima). As demais ficam inteiras dentro ou fora e não passam pela Clipper.
   const borda = new Uint8Array(nx * ny);
+  const toca = (a, b, cx0, cy0, cx1, cy1) => {
+    const e = 1e-7; let t0 = 0, t1 = 1;
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    for (const [p, q] of [[-dx, a[0] - (cx0 - e)], [dx, (cx1 + e) - a[0]], [-dy, a[1] - (cy0 - e)], [dy, (cy1 + e) - a[1]]]) {
+      if (p === 0) { if (q < 0) return false; continue; }
+      const t = q / p;
+      if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+    }
+    return true;
+  };
   for (const r of rings) for (let s = 0; s < r.length; s++) {
     const a = r[s], b = r[(s + 1) % r.length];
-    const n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / (cel * 0.25)) + 1;
-    for (let t = 0; t <= n; t++) {
-      const ci = Math.floor((a[0] + (b[0] - a[0]) * t / n - x0) / cel), cj = Math.floor((a[1] + (b[1] - a[1]) * t / n - y0) / cel);
-      for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
-        const ii = ci + di, jj = cj + dj;
-        if (ii >= 0 && jj >= 0 && ii < nx && jj < ny) borda[jj * nx + ii] = 1;
-      }
-    }
+    const i0 = Math.max(0, Math.floor((Math.min(a[0], b[0]) - x0) / cel) - 1), i1 = Math.min(nx - 1, Math.floor((Math.max(a[0], b[0]) - x0) / cel) + 1);
+    const j0 = Math.max(0, Math.floor((Math.min(a[1], b[1]) - y0) / cel) - 1), j1 = Math.min(ny - 1, Math.floor((Math.max(a[1], b[1]) - y0) / cel) + 1);
+    for (let jj = j0; jj <= j1; jj++) for (let ii = i0; ii <= i1; ii++)
+      if (!borda[jj * nx + ii] && toca(a, b, X(ii), Y(jj), X(ii + 1), Y(jj + 1))) borda[jj * nx + ii] = 1;
   }
   const pos = [];
   const tri = (a, b, c, fz) => pos.push(a[0], a[1], fz(a[0], a[1]), b[0], b[1], fz(b[0], b[1]), c[0], c[1], fz(c[0], c[1]));
@@ -1128,6 +1268,7 @@ function montarRelevo(dom, topo, fundo, cel, fx, fy) {
     pos.push(a[0], a[1], af, b[0], b[1], bf, b[0], b[1], bt, a[0], a[1], af, b[0], b[1], bt, a[0], a[1], at);
   };
   const ccw = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) > 0;
+  const faixas = new Map();
   for (let j = 0; j < ny; j++) {
     const ya = Y(j), yb = Y(j + 1), yc = (ya + yb) / 2;
     const xs = [];
@@ -1136,17 +1277,39 @@ function montarRelevo(dom, topo, fundo, cel, fx, fy) {
       if ((a[1] > yc) !== (b[1] > yc)) xs.push(a[0] + (yc - a[1]) * (b[0] - a[0]) / (b[1] - a[1]));
     }
     xs.sort((m, n) => m - n);
-    let faixaLinha = null, ptr = 0, dentro = false;
+    let ptr = 0, dentro = false;
+    const daBorda = [];
     for (let i = 0; i < nx; i++) {
       const xa = X(i), xb = X(i + 1), xc = (xa + xb) / 2;
       while (ptr < xs.length && xs[ptr] < xc) { dentro = !dentro; ptr++; }
-      if (!borda[j * nx + i]) {
-        if (dentro) { face([xa, ya], [xb, ya], [xb, yb]); face([xa, ya], [xb, yb], [xa, yb]); }
-        continue;
+      if (borda[j * nx + i]) { daBorda.push(i); continue; }
+      if (dentro) { face([xa, ya], [xb, ya], [xb, yb]); face([xa, ya], [xb, yb], [xa, yb]); }
+    }
+    if (!daBorda.length) continue;
+    // a linha sai de uma faixa de 16 linhas (recortada uma vez), e não do domínio inteiro
+    const fi = Math.floor(j / 16);
+    if (!faixas.has(fi)) faixas.set(fi, interseccao(dom, exDe(retangulo(X(0), Y(fi * 16), X(nx), Y(Math.min(ny, (fi + 1) * 16)))), 0));
+    const faixa16 = faixas.get(fi);
+    if (!faixa16.length) continue;
+    const faixaLinha = interseccao(faixa16, exDe(retangulo(X(0), ya, X(nx), yb)), 0);
+    if (!faixaLinha.length) continue;
+    // Recorta todas as células de borda da linha em duas chamadas: pares e ímpares. Células da mesma
+    // paridade não se encostam, então cada pedaço que volta pertence a uma célula só.
+    const porCelula = new Map();
+    for (const paridade of [0, 1]) {
+      const sel = daBorda.filter((i) => i % 2 === paridade);
+      if (!sel.length) continue;
+      const res = interseccao(faixaLinha, sel.map((i) => ({ outer: retangulo(X(i), ya, X(i + 1), yb), holes: [] })), 0);
+      for (const p of res) {
+        let mx = Infinity, Mx = -Infinity;
+        for (const v of p.outer) { mx = Math.min(mx, v[0]); Mx = Math.max(Mx, v[0]); }
+        const i = Math.floor(((mx + Mx) / 2 - x0) / cel);
+        if (!porCelula.has(i)) porCelula.set(i, []);
+        porCelula.get(i).push(p);
       }
-      if (!faixaLinha) faixaLinha = interseccao(dom, exDe(retangulo(X(0), ya, X(nx), yb)), 0);
-      if (!faixaLinha.length) continue;
-      const pedacos = interseccao(faixaLinha, exDe(retangulo(xa, ya, xb, yb)), 0);
+    }
+    for (const [i, pedacos] of porCelula) {
+      const xa = X(i), xb = X(i + 1);
       const naGrade = (a, b) => (Math.abs(a[0] - xa) < 1e-6 && Math.abs(b[0] - xa) < 1e-6) || (Math.abs(a[0] - xb) < 1e-6 && Math.abs(b[0] - xb) < 1e-6)
         || (Math.abs(a[1] - ya) < 1e-6 && Math.abs(b[1] - ya) < 1e-6) || (Math.abs(a[1] - yb) < 1e-6 && Math.abs(b[1] - yb) < 1e-6);
       // limpa pontos repetidos/alinhados, mas só os que estão fora das linhas da grade: esses
@@ -1317,10 +1480,47 @@ function geometriaLogo(H, depth) {
   g.scale(s, s, 1);
   return { g, w: (b.max.x - b.min.x) * s };
 }
+// No círculo a faixa é curva: cada letra vai no seu ponto do arco, girada junto, e o texto inteiro
+// cabe no trecho de borda daquela posição (texto reto escaparia da faixa nas pontas)
+function textoNoArco(list, itens, normal, am, meiaAbertura, z, H) {
+  const espaco = H * 0.07;
+  const total = itens.reduce((s, it) => s + it.w, 0) + espaco * (itens.length - 1);
+  const fit = Math.min(1, (2 * meiaAbertura * am) / total);
+  const topoFora = Math.sin(normal) >= -0.01;          // em cima: topo da letra para fora
+  const passo = topoFora ? -1 : 1;                      // sentido de leitura ao longo do arco
+  let cursor = 0;
+  const inicio = normal - passo * (total * fit / 2) / am;
+  for (const it of itens) {
+    const a = inicio + passo * (cursor + it.w * fit / 2) / am;
+    if (it.g) {
+      it.g.scale(fit, fit, 1);
+      it.g.rotateZ(topoFora ? a - Math.PI / 2 : a + Math.PI / 2);
+      it.g.translate(Math.cos(a) * am, Math.sin(a) * am, z);
+      list.push(it.g);
+    }
+    cursor += (it.w + espaco) * fit;
+  }
+}
 function textosNaBorda(list, R, M, z, depth) {
   if (M < 4.5) return;
   const H = Math.min(M * 0.55, 9);
   const b = bordas(S.shape, R, M), t = textos();
+  if (S.shape === "circle") {
+    const am = R - M / 2;
+    for (const [key, ed] of Object.entries(b)) {
+      const txt = (t[key] || "").normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+      const itens = [];
+      if (key === "bottom") { const lg = geometriaLogo(H, depth); if (lg) itens.push(lg); }
+      for (const ch of txt) {
+        if (ch === " ") itens.push({ g: null, w: H * 0.25 });
+        else { const g = geometriaTexto(ch, H, depth); if (g) itens.push(g); }
+      }
+      if (!itens.length) continue;
+      const meia = (key === "top" || key === "bottom" ? 32 : 20) * Math.PI / 180;
+      textoNoArco(list, itens, ed.normal, am, meia, z, H);
+    }
+    return;
+  }
   for (const [key, ed] of Object.entries(b)) {
     const itens = [];
     if (key === "bottom") { const lg = geometriaLogo(H, depth); if (lg) itens.push(lg); }
@@ -1378,6 +1578,18 @@ function build() {
   const chaoEm = relevo
     ? (x, y) => top + Math.max(0, DEM.elev(x / k, y / k) - DEM.min) * k * exagT
     : () => top;
+  // o relevo é a parte cara: guarda cada sólido pronto e só refaz quando algo que o afeta muda
+  // (mexer em prédios, cores ou detalhe reaproveita terreno, ruas e água)
+  const rotaChave = S.rota ? `${S.rota.pts.length}:${S.rota.dist.toFixed(1)}:${S.rota.pts[0]}` : "";
+  const chaveRelevo = JSON.stringify([DATA.center, DATA.area, S.shape, S.size, S.margin, S.base, S.moldura, S.folga, exagT, cel, rotaChave, S.rotaW, S.rotaH, S.nozzle]);
+  const relevoGuardado = (nome, fazer) => {
+    const chave = chaveRelevo + "|" + nome;
+    if (CACHE_RELEVO.has(chave)) { const g = CACHE_RELEVO.get(chave); return g && g.clone(); }
+    const g = fazer();
+    CACHE_RELEVO.set(chave, g && g.clone());
+    while (CACHE_RELEVO.size > 30) CACHE_RELEVO.delete(CACHE_RELEVO.keys().next().value);
+    return g;
+  };
   const ctx = { k, L, noz, snap, sinkB };
   const parts = {}, owners = {};
   for (const [key] of ELEMENTS) { parts[key] = []; owners[key] = []; }
@@ -1405,9 +1617,9 @@ function build() {
   else if (canal.length) {
     pushAll("base", extrudeEx(miolo, zOff, zCanal - zOff));
     const cima = menos(miolo, canal);
-    if (relevo) push("base", solidoRelevo(cima, chaoEm, () => zCanal - 0.05, cel));
+    if (relevo) push("base", relevoGuardado("base-canal", () => solidoRelevo(cima, chaoEm, () => zCanal - 0.05, cel)));
     else pushAll("base", extrudeEx(cima, zCanal - 0.05, top - zCanal + 0.05));
-  } else push("base", solidoRelevo(miolo, chaoEm, () => zOff, cel));
+  } else push("base", relevoGuardado("base", () => solidoRelevo(miolo, chaoEm, () => zOff, cel)));
 
   // feições do mapa
   const dom = menos(conteudo, canal);
@@ -1443,7 +1655,7 @@ function build() {
     // imprimem e, no relevo, viram "regiões flutuantes" (apoio fino demais para o fatiador)
     const d = deslocar(deslocar(menos(interseccao(ex, dom), semPredios), -abre, true), abre, true);
     if (!d.length) return;
-    if (relevo) push(key, solidoRelevo(d, (x, y) => chaoEm(x, y) + alt, (x, y) => chaoEm(x, y) - sinkF, cel));
+    if (relevo) push(key, relevoGuardado(`${key}|${S.predios}|${S.thin}|${S.roads}`, () => solidoRelevo(d, (x, y) => chaoEm(x, y) + alt, (x, y) => chaoEm(x, y) - sinkF, cel)));
     else pushAll(key, extrudeEx(d, top - sinkF, sinkF + alt));
   };
   if (S.parques) camada("parks", uniao(feats.filter((f) => f.kind === "park").flatMap(exMM)), flat.parks);
@@ -1487,7 +1699,7 @@ function build() {
 
   // peça da rota: fundo plano no canal, topo acompanhando o terreno
   if (rotaEx.length) {
-    if (relevo) push("route", solidoRelevo(rotaEx, (x, y) => chaoEm(x, y) + S.rotaH, () => zCanal, cel));
+    if (relevo) push("route", relevoGuardado("rota", () => solidoRelevo(rotaEx, (x, y) => chaoEm(x, y) + S.rotaH, () => zCanal, cel)));
     else pushAll("route", extrudeEx(rotaEx, zCanal, top - zCanal + S.rotaH));
   }
 
@@ -1797,7 +2009,144 @@ function cabemJuntas(blocos) {
   const larg = blocos.reduce((a, b) => a + (b.bb.max.x - b.bb.min.x), 0) + 8 * (blocos.length - 1);
   return larg <= bw - 4 && blocos.every((b) => b.bb.max.y - b.bb.min.y <= bh - 4);
 }
+/* 3MF de PROJETO do Bambu Studio (A1, A1 mini, P1S): abre com cada parte já no seu slot do AMS, as
+   cores dos 4 slots, a impressora, o perfil e a altura de camada escolhidos. Os perfis são os do
+   próprio Bambu (pelo nome); o arquivo só registra o que muda (a camada). Formato estudado no
+   make-bambu-3mf.py de wilsonwaters/3d-printing (MIT). */
+const PERFIS_BAMBU = {
+  a1: { modelo: "Bambu Lab A1", altura: 256,
+    proc: { "0.2": "0.10mm Standard @BBL A1 0.2 nozzle", "0.4": "0.20mm Standard @BBL A1", "0.6": "0.30mm Strength @BBL A1 0.6 nozzle", "0.8": "0.40mm Standard @BBL A1 0.8 nozzle" },
+    fil: { "0.2": "Bambu PLA Basic @BBL A1 0.2 nozzle", outro: "Bambu PLA Basic @BBL A1" } },
+  a1mini: { modelo: "Bambu Lab A1 mini", altura: 180,
+    proc: { "0.2": "0.10mm Standard @BBL A1M 0.2 nozzle", "0.4": "0.20mm Standard @BBL A1M", "0.6": "0.30mm Standard @BBL A1M 0.6 nozzle", "0.8": "0.40mm Standard @BBL A1M 0.8 nozzle" },
+    fil: { "0.2": "Bambu PLA Basic @BBL A1M 0.2 nozzle", outro: "Bambu PLA Basic @BBL A1M" } },
+  p1s: { modelo: "Bambu Lab P1S", altura: 250,
+    proc: { "0.2": "0.10mm Standard @BBL X1C 0.2 nozzle", "0.4": "0.20mm Standard @BBL X1C", "0.6": "0.30mm Standard @BBL X1C 0.6 nozzle", "0.8": "0.40mm Standard @BBL X1C 0.8 nozzle" },
+    fil: { "0.2": "Bambu PLA Basic @BBL X1C 0.2 nozzle", "0.4": "Bambu PLA Basic @BBL P1S 0.4 nozzle", "0.6": "Bambu PLA Basic @BBL P1S 0.6 nozzle", "0.8": "Bambu PLA Basic @BBL X1C 0.8 nozzle" } },
+};
+const VERSAO_BAMBU = "02.09.00.74";
+const novoUUID = () => (crypto.randomUUID ? crypto.randomUUID()
+  : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); }));
 function gerar3MF(blocos = blocosPecas()) {
+  return PERFIS_BAMBU[S.printer] ? gerarProjetoBambu(blocos) : gerar3MFSimples(blocos);
+}
+function gerarProjetoBambu(blocos) {
+  const perfil = PERFIS_BAMBU[S.printer], noz = S.nozzle;
+  const [bw, bh] = PRINTERS[S.printer];
+  const f6 = (v) => (Math.round(v * 1e5) / 1e5).toString();
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const malhas = [], conteineres = [], itens = [], objetos = [], instancias = [];
+  let id = 1;
+  const partes = [];   // [{id, nome, slot, faces}]
+  for (const { keys } of blocos) for (const key of ELEMENTS.map(([k2]) => k2).filter((k2) => keys.includes(k2))) {
+    const m = soldar(GEOMS[key]);
+    const v = [], t = [];
+    for (let i = 0; i < m.verts.length; i += 3) v.push(`<vertex x="${f6(m.verts[i])}" y="${f6(m.verts[i + 1])}" z="${f6(m.verts[i + 2])}"/>`);
+    for (let i = 0; i < m.tris.length; i += 3) t.push(`<triangle v1="${m.tris[i]}" v2="${m.tris[i + 1]}" v3="${m.tris[i + 2]}"/>`);
+    malhas.push(`<object id="${id}" p:UUID="${novoUUID()}" type="model"><mesh><vertices>${v.join("")}</vertices><triangles>${t.join("")}</triangles></mesh></object>`);
+    partes.push({ id, key, nome: ELEMENTS.find(([k2]) => k2 === key)[1], slot: S.map[key] + 1, faces: m.tris.length / 3 });
+    id++;
+  }
+  // peças lado a lado, centradas no prato
+  const total = blocos.reduce((a, b) => a + (b.bb.max.x - b.bb.min.x), 0) + 8 * (blocos.length - 1);
+  let cursor = bw / 2 - total / 2;
+  for (const { p, keys, bb } of blocos) {
+    const minhas = partes.filter((pt) => keys.includes(pt.key));
+    const cid = id++;
+    conteineres.push(`<object id="${cid}" p:UUID="${novoUUID()}" type="model"><components>${minhas.map((pt) =>
+      `<component p:path="/3D/Objects/object_1.model" objectid="${pt.id}" p:UUID="${novoUUID()}" transform="1 0 0 0 1 0 0 0 1 0 0 0"/>`).join("")}</components></object>`);
+    const tx = cursor - bb.min.x, ty = bh / 2 - (bb.min.y + bb.max.y) / 2, tz = -bb.min.z;
+    itens.push(`<item objectid="${cid}" p:UUID="${novoUUID()}" transform="1 0 0 0 1 0 0 0 1 ${f6(tx)} ${f6(ty)} ${f6(tz)}" printable="1"/>`);
+    cursor += bb.max.x - bb.min.x + 8;
+    objetos.push(`  <object id="${cid}">
+    <metadata key="name" value="${esc(PECAS[p])}"/>
+    <metadata key="extruder" value="${minhas[0] ? minhas[0].slot : 1}"/>
+    <metadata face_count="${minhas.reduce((s, pt) => s + pt.faces, 0)}"/>
+${minhas.map((pt) => `    <part id="${pt.id}" subtype="normal_part">
+      <metadata key="name" value="${esc(pt.nome)}"/>
+      <metadata key="matrix" value="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"/>
+      <metadata key="extruder" value="${pt.slot}"/>
+      <mesh_stat face_count="${pt.faces}" edges_fixed="0" degenerate_facets="0" facets_removed="0" facets_reversed="0" backwards_edges="0"/>
+    </part>`).join("\n")}
+  </object>`);
+    instancias.push(`    <model_instance>
+      <metadata key="object_id" value="${cid}"/>
+      <metadata key="instance_id" value="0"/>
+    </model_instance>`);
+  }
+  const NS = `xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:BambuStudio="http://schemas.bambulab.com/package/2021" xmlns:p="http://schemas.microsoft.com/3dmanufacturing/production/2015/06" requiredextensions="p"`;
+  const titulo = esc(S.modo === "medalha" ? (textos().top || "Medalha") : ($("q").value || "Quadro 3D"));
+  const fil = perfil.fil[noz] || perfil.fil.outro;
+  const config = {
+    from: "project", name: "project_settings", version: VERSAO_BAMBU,
+    printer_settings_id: `${perfil.modelo} ${noz} nozzle`,
+    print_settings_id: perfil.proc[noz],
+    filament_settings_id: S.fil.map(() => fil),
+    filament_colour: S.fil.map((c) => c.toUpperCase()),
+    // iguais ao perfil; sem elas o fatiador de linha de comando do Bambu fecha ao abrir o projeto
+    filament_diameter: S.fil.map(() => "1.75"),
+    filament_is_support: S.fil.map(() => "0"),
+    printer_model: perfil.modelo, printer_variant: noz, nozzle_diameter: [noz],
+    printable_area: ["0x0", `${bw}x0`, `${bw}x${bh}`, `0x${bh}`], printable_height: String(perfil.altura),
+    curr_bed_type: "Textured PEI Plate",
+    layer_height: String(S.layer),
+    // só a camada difere do perfil; o Bambu volta ao padrão tudo o que não estiver listado aqui
+    different_settings_to_system: ["layer_height", ...S.fil.map(() => ""), ""],
+  };
+  const zip = new JSZip();
+  zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+ <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+ <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>
+ <Default Extension="png" ContentType="image/png"/>
+ <Default Extension="gcode" ContentType="text/x.gcode"/>
+</Types>`);
+  zip.file("_rels/.rels", `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+ <Relationship Target="/3D/3dmodel.model" Id="rel-1" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>
+</Relationships>`);
+  zip.file("3D/3dmodel.model", `<?xml version="1.0" encoding="UTF-8"?>
+<model unit="millimeter" xml:lang="pt-BR" ${NS}>
+ <metadata name="Application">BambuStudio-${VERSAO_BAMBU}</metadata>
+ <metadata name="BambuStudio:3mfVersion">1</metadata>
+ <metadata name="Title">${titulo}</metadata>
+ <metadata name="Designer">Chaos Arq &amp; Art</metadata>
+ <metadata name="Copyright">Dados do mapa © colaboradores do OpenStreetMap (ODbL). Relevo: Terrain Tiles (AWS Open Data / Mapzen).</metadata>
+ <resources>${conteineres.join("")}</resources>
+ <build p:UUID="${novoUUID()}">${itens.join("")}</build>
+</model>`);
+  zip.file("3D/_rels/3dmodel.model.rels", `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+ <Relationship Target="/3D/Objects/object_1.model" Id="rel-1" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>
+</Relationships>`);
+  // o <build/> vazio é obrigatório: sem ele o lib3mf recusa o pacote inteiro
+  zip.file("3D/Objects/object_1.model", `<?xml version="1.0" encoding="UTF-8"?>
+<model unit="millimeter" xml:lang="pt-BR" ${NS}>
+ <metadata name="BambuStudio:3mfVersion">1</metadata>
+ <resources>${malhas.join("")}</resources>
+ <build/>
+</model>`);
+  zip.file("Metadata/project_settings.config", JSON.stringify(config, null, 4));
+  zip.file("Metadata/model_settings.config", `<?xml version="1.0" encoding="UTF-8"?>
+<config>
+${objetos.join("\n")}
+  <plate>
+    <metadata key="plater_id" value="1"/>
+    <metadata key="plater_name" value=""/>
+    <metadata key="locked" value="false"/>
+${instancias.join("\n")}
+  </plate>
+</config>`);
+  zip.file("Metadata/slice_info.config", `<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <header>
+    <header_item key="X-BBL-Client-Type" value="slicer"/>
+    <header_item key="X-BBL-Client-Version" value="${VERSAO_BAMBU}"/>
+  </header>
+</config>`);
+  return zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } });
+}
+function gerar3MFSimples(blocos) {
   const f6 = (v) => (Math.round(v * 1e5) / 1e5).toString();
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   const res = [], itens = [], rel = [];
@@ -1902,6 +2251,7 @@ async function obterOSM(center, area) {
 }
 // Guarda o que já foi baixado para a mesma área: gerar de novo (outra forma, cor, moldura) não refaz o download
 const CACHE = new Map();
+const CACHE_RELEVO = new Map();   // sólidos de relevo já montados (ver relevoGuardado no build)
 function comCache(tipo, center, area, baixa) {
   const key = `${tipo}:${center[0].toFixed(5)},${center[1].toFixed(5)},${area}`;
   if (!CACHE.has(key)) CACHE.set(key, baixa().catch((e) => { CACHE.delete(key); throw e; }));
@@ -1945,7 +2295,17 @@ async function gerar() {
 
 /* ---------- controles ---------- */
 let timer = 0;
-function later() { clearTimeout(timer); timer = setTimeout(rebuild, 220); }
+// com relevo a montagem leva alguns segundos: avisa antes e deixa a tela se atualizar
+const AVISO_MONTANDO = "Atualizando o modelo…";
+function later() {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const pesado = S.relevo && DEM;
+    if (pesado) { setStatus(AVISO_MONTANDO); await new Promise((ok) => setTimeout(ok, 30)); }
+    rebuild();
+    if (pesado && $("status").textContent === AVISO_MONTANDO) setStatus("");
+  }, 300);
+}
 function fmt(v, d = 1) { return (+v).toFixed(d).replace(".", ","); }
 const ROTULOS = {
   area: (v) => `${v.toLocaleString("pt-BR")} m`, size: (v) => `${v} mm`, base: (v) => `${fmt(v)} mm`, margin: (v) => `${v} mm`,
@@ -2038,7 +2398,11 @@ $("logo").addEventListener("change", async (e) => {
 
 $("r-tracar").addEventListener("click", tracarRota);
 $("r-gpx").addEventListener("change", (e) => { if (e.target.files[0]) lerGPX(e.target.files[0]); });
-$("r-limpar").addEventListener("click", () => { S.rota = null; $("r-gpx").value = ""; drawRota(); atualizarRotaUI(); syncMoldura(); later(); });
+$("r-limpar").addEventListener("click", () => {
+  S.rota = null; $("r-gpx").value = "";
+  for (const id of ["r-de", "r-ate"]) { if (marcadores[id]) marcadores[id].remove(); delete marcadores[id]; }
+  drawRota(); atualizarRotaUI(); syncMoldura(); later();
+});
 
 function renderSlots() {
   $("slots").innerHTML = S.fil.map((c, i) => `<label class="slot"><input type="color" id="fil${i}" value="${c}">slot ${i + 1}</label>`).join("");
@@ -2123,6 +2487,9 @@ window.addEventListener("message", (ev) => {
   aplicaTema();
 });
 
+autocompletar($("q"), (it) => { S.center = [it.lat, it.lon]; map.setView(S.center, 15); drawArea(); stale(); });
+autocompletar($("r-de"), (it) => { marcarPonto("r-de", it.lat, it.lon, "Partida"); map.panTo([it.lat, it.lon]); });
+autocompletar($("r-ate"), (it) => { marcarPonto("r-ate", it.lat, it.lon, "Chegada"); map.panTo([it.lat, it.lon]); });
 $("go").addEventListener("click", geocode);
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") geocode(); });
 $("fetch").addEventListener("click", gerar);

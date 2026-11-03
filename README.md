@@ -86,10 +86,10 @@ Informe o CEP (ou use **Pegar dados do mapa**), escolha a fachada e clique **Ger
 
 Gera peças para imprimir na Bambu (A1, A1 mini, P1S/X1C, H2D), com bico de 0,2 a 0,8 mm e até 4 cores do AMS.
 
-- **Quadro:** escolha o local (busca ou clique no mapa), o tamanho da área e a forma (quadrado, círculo ou hexágono). Os prédios vêm do OpenStreetMap e têm três níveis de detalhe: telhado de 4 águas nas casas, casa de máquinas, caixa d'água, linhas dos pavimentos e embasamento nas torres. Clique num prédio na prévia para corrigir os pavimentos.
+- **Quadro:** escolha o local (busca com sugestões enquanto digita, ou clique no mapa), o tamanho da área e a forma (quadrado, círculo ou hexágono). Os prédios vêm do OpenStreetMap e têm três níveis de detalhe: telhado de 4 águas nas casas, casa de máquinas, caixa d'água, linhas dos pavimentos e embasamento nas torres. Clique num prédio na prévia para corrigir os pavimentos.
 - **Medalha:** trace a rota de um local a outro (a pé) ou envie o GPX do Strava/Garmin. A medalha sai com o relevo real do terreno. Distância, tempo e desnível são preenchidos sozinhos e vão na moldura, junto com o nome. A passagem pode ser para cordão, para fita ou nenhuma.
 - **Moldura separada:** a borda com os textos vira outra peça. O mapa encaixa num rebaixo, sobre uma aba de apoio, e a rota encaixa num canal aberto no mapa. Fica uma cor por peça, sem troca de filamento e sem cola. A folga pode ser justa (0,10 mm), normal (0,15 mm) ou folgada (0,25 mm).
-- **Exportar:** gera um 3MF com cada peça como um objeto e cada parte na sua cor, já no prato. Quando as peças não cabem juntas, sai um 3MF por peça. As malhas são verificadas na hora: o aviso em **Exportar** diz se todas as partes estão fechadas.
+- **Exportar:** gera um 3MF com cada peça como um objeto e cada parte na sua cor, já no prato. Na A1, A1 mini e P1S o arquivo é um projeto do Bambu Studio: abre com a impressora, o perfil, a altura de camada e as 4 cores escolhidas, e cada parte já no seu slot do AMS. A H2D recebe o 3MF comum. Quando as peças não cabem juntas, sai um 3MF por peça. As malhas são verificadas na hora: o aviso em **Exportar** diz se todas as partes estão fechadas.
 
 O Quadro 3D segue o tema do sistema e usa o logo do escritório quando ele está em SVG. Também abre sozinho em `quadro3d.html` (`?modo=medalha` abre direto na medalha).
 
@@ -140,7 +140,7 @@ Depois, suba o `mapoteca-indice.json` novo para o GitHub. Desdobros, desmembrame
 - **SISGRAN**: dados urbanísticos do lote, via ponte Apps Script
 - **ViaCEP**: localização por CEP
 - **ABNT**: links oficiais das normas
-- **OpenStreetMap**: prédios, ruas e água do Quadro 3D, lidos dos blocos vetoriais do **OpenFreeMap** (OpenMapTiles), com o **Overpass** como reserva. Busca de endereço pelo **Nominatim**. Rotas a pé pelo roteador do routing.openstreetmap.de
+- **OpenStreetMap**: prédios, ruas e água do Quadro 3D, lidos dos blocos vetoriais do **OpenFreeMap** (OpenMapTiles), com o **Overpass** como reserva. Busca de endereço e sugestões pelo **Photon** (komoot). Rotas a pé pelo roteador do routing.openstreetmap.de
 - **Terrain Tiles (AWS Open Data / Mapzen)**: relevo do terreno
 - **NBR 13531/13532** e **tabela CAU/BR**: referência para fases e honorários
 
