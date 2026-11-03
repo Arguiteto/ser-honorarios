@@ -104,8 +104,18 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .presets i{display:inline-flex}
 .presets i span{width:10px;height:10px;border-radius:50%;margin-left:-3px;box-shadow:0 0 0 1px var(--border-em)}
 
-main{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);min-height:0}
-#map{height:100%;min-height:0;background:var(--surf2);border-right:1px solid var(--border)}
+main{display:grid;grid-template-columns:minmax(0,var(--mapa,58%)) 10px minmax(0,1fr);min-height:0;position:relative}
+#map{height:100%;min-height:0;background:var(--surf2)}
+/* barra entre mapa e 3D: arrastar muda a divisão; Mapa / Os dois / 3D mostram só um lado */
+#divisor{cursor:col-resize;background:var(--border);position:relative;touch-action:none}
+#divisor::after{content:"";position:absolute;left:3px;right:3px;top:50%;height:36px;margin-top:-18px;border-radius:3px;background:var(--border-em)}
+#divisor:hover,#divisor.ativo,#divisor:focus-visible{background:var(--border-em);outline:0}
+.telas{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;display:flex;padding:3px;gap:2px}
+.telas button{border:0;background:none;padding:5px 12px;border-radius:10px;font:600 12px var(--font-body,inherit);color:var(--muted);cursor:pointer}
+.telas button[aria-pressed="true"]{background:var(--e,#1E1D1A);color:var(--surface,#fff)}
+main.so-mapa{grid-template-columns:minmax(0,1fr) 0 0}
+main.so-3d{grid-template-columns:0 0 minmax(0,1fr)}
+main.so-mapa .viewwrap,main.so-mapa #divisor,main.so-3d #map,main.so-3d #divisor{visibility:hidden}
 .viewwrap{position:relative;background:var(--surf2);min-height:0;overflow:hidden}
 #view{position:absolute;inset:0;cursor:grab}
 .cartao{background:var(--surface);border-radius:14px;box-shadow:var(--sombra)}
@@ -142,8 +152,12 @@ html.so-medalha .quadro-only{display:none!important}
 @media (max-width:900px){
   .app{grid-template-columns:1fr;height:auto}
   aside{border-right:0;order:2}
-  main{grid-template-columns:1fr;grid-template-rows:300px 440px}
-  #map{border-right:0;border-bottom:1px solid var(--border)}
+  main,main.so-mapa,main.so-3d{grid-template-columns:minmax(0,1fr);grid-template-rows:340px 0 440px}
+  main.so-mapa{grid-template-rows:520px 0 0}
+  main.so-3d{grid-template-rows:0 0 520px}
+  #divisor{visibility:hidden}   /* continua ocupando a linha do meio (0 px) da grade */
+  #map{border-bottom:1px solid var(--border)}
+  .telas{top:8px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -182,7 +196,7 @@ html.so-medalha .quadro-only{display:none!important}
         <button class="b sec" id="r-tracar">Traçar rota a pé</button>
         <button class="b sec" id="r-desenhar">Desenhar a rota no mapa</button>
         <div id="desenho-box" class="sub" hidden>
-          <p class="hint">Clique no mapa ponto a ponto, na ordem do percurso. Começa na Partida, se ela já estiver marcada.</p>
+          <p class="hint">Clique no mapa ponto a ponto, na ordem do percurso, ou arraste para desenhar à mão livre. Enquanto desenha, o mapa fica parado: aproxime com a rodinha ou com + / −. Começa na Partida, se ela já estiver marcada.</p>
           <label class="check"><input type="checkbox" id="d-ruas" checked> <span>Seguir as ruas entre os cliques</span></label>
           <p class="hint" id="d-info">0 pontos</p>
           <div class="row">
@@ -337,7 +351,7 @@ html.so-medalha .quadro-only{display:none!important}
         <div class="row">
           <div>
             <div class="lbl"><span>Largura</span><output id="o-rotaW"></output></div>
-            <input type="range" id="rotaW" min="1" max="4" step="0.1" value="2">
+            <input type="range" id="rotaW" min="1" max="4" step="0.1" value="1.2">
           </div>
           <div>
             <div class="lbl"><span>Altura acima</span><output id="o-rotaH"></output></div>
@@ -366,7 +380,9 @@ html.so-medalha .quadro-only{display:none!important}
   </aside>
 
   <main>
+    <div class="cartao telas" role="group" aria-label="O que mostrar"><button data-tela="mapa">Mapa</button><button data-tela="dois">Os dois</button><button data-tela="3d">3D</button></div>
     <div id="map"></div>
+    <div id="divisor" role="separator" aria-orientation="vertical" aria-label="Arraste para dividir mapa e 3D" tabindex="0"></div>
     <div class="viewwrap">
       <div id="view"></div>
       <div class="cartao dica" id="dica" hidden>Clique num prédio para corrigir os pavimentos</div>
@@ -466,7 +482,7 @@ const S = {
   printer: "a1", nozzle: "0.4", layer: 0.12, size: 200, base: 3, margin: 10,
   relevo: false, exagT: 2.5, predios: true, agua: true, parques: true, roads: "all",
   detail: "rico", exag: 2, casas: true, defh: 9, vary: true, minl: 5, thin: true,
-  moldura: "junto", folga: 0.15, cordao: "fita", rotaW: 2, rotaH: 1,
+  moldura: "junto", folga: 0.15, cordao: "fita", rotaW: 1.2, rotaH: 1,
   textos: { top: "", bottom: "CAMPO GRANDE · MS", ll: "", lr: "", ul: "", ur: "" },
   textosMedalha: { top: "SEU NOME", bottom: "", ll: "", lr: "", ul: "", ur: "" },
   auto: { ll: true, lr: true, bottom: true },
@@ -504,10 +520,10 @@ function drawArea() {
 function drawRota() {
   if (rotaLayer) { rotaLayer.remove(); rotaLayer = null; }
   if (!S.rota) return;
-  rotaLayer = L.polyline(S.rota.pts, { color: S.fil[S.map.route], weight: 4, opacity: 0.95 }).addTo(map);
+  rotaLayer = L.polyline(S.rota.pts, { color: S.fil[S.map.route], weight: 3, opacity: 0.95 }).addTo(map);
 }
 map.on("click", (e) => {
-  if (DESENHO) { pontoDesenho([e.latlng.lat, e.latlng.lng]); return; }
+  if (DESENHO) { if (!IGNORAR_CLIQUE) pontoDesenho([e.latlng.lat, e.latlng.lng]); return; }
   S.center = [e.latlng.lat, e.latlng.lng]; drawArea(); stale();
 });
 
@@ -516,17 +532,52 @@ map.on("click", (e) => {
 let DESENHO = null;   // { trechos: [[pontos...]], linha, pontos: L.layerGroup }
 function iniciarDesenho() {
   const p0 = marcadores["r-de"] && marcadores["r-de"].getLatLng();
-  DESENHO = { trechos: p0 ? [[[p0.lat, p0.lng]]] : [], linha: L.polyline([], { color: S.fil[S.map.route], weight: 4, dashArray: "6 6" }).addTo(map), pontos: L.layerGroup().addTo(map), ocupado: false };
+  DESENHO = { trechos: p0 ? [[[p0.lat, p0.lng]]] : [], linha: L.polyline([], { color: S.fil[S.map.route], weight: 3, dashArray: "6 5" }).addTo(map), pontos: L.layerGroup().addTo(map), ocupado: false };
   $("desenho-box").hidden = false; $("r-desenhar").hidden = true;
-  $("map").style.cursor = "crosshair";
+  // arrastar desenha à mão livre: o mapa para de se mover (zoom segue pela rodinha e pelo + / −)
+  map.dragging.disable();
+  $("map").style.cursor = "crosshair"; $("map").style.touchAction = "none";
   atualizarDesenho();
 }
 function fimDesenho() {
   if (!DESENHO) return;
   DESENHO.linha.remove(); DESENHO.pontos.remove(); DESENHO = null;
   $("desenho-box").hidden = true; $("r-desenhar").hidden = false;
-  $("map").style.cursor = "";
+  map.dragging.enable();
+  $("map").style.cursor = ""; $("map").style.touchAction = "";
 }
+// mão livre: pointer events (mouse, toque e caneta); o trecho arrastado entra como está, sem roteador
+let ARRASTO = null, IGNORAR_CLIQUE = false;
+$("map").addEventListener("pointerdown", (e) => {
+  if (!DESENHO || DESENHO.ocupado || e.button > 0 || e.target.closest(".leaflet-control")) return;
+  ARRASTO = { inicio: [e.clientX, e.clientY], ult: [e.clientX, e.clientY], pts: [], id: e.pointerId };
+});
+$("map").addEventListener("pointermove", (e) => {
+  if (!ARRASTO || e.pointerId !== ARRASTO.id) return;
+  const [x0, y0] = ARRASTO.ult;
+  if (Math.hypot(e.clientX - x0, e.clientY - y0) < 5) return;
+  if (!ARRASTO.pts.length) {
+    $("map").setPointerCapture(e.pointerId);
+    // o traço continua do último ponto; sem ponto ainda, começa onde o arraste começou
+    const ll0 = map.mouseEventToLatLng({ clientX: ARRASTO.inicio[0], clientY: ARRASTO.inicio[1] });
+    if (!DESENHO.trechos.length) ARRASTO.pts.push([ll0.lat, ll0.lng]);
+  }
+  ARRASTO.ult = [e.clientX, e.clientY];
+  const ll = map.mouseEventToLatLng(e);
+  ARRASTO.pts.push([ll.lat, ll.lng]);
+  DESENHO.linha.setLatLngs(DESENHO.trechos.flat().concat(ARRASTO.pts));
+});
+const soltar = (e) => {
+  if (!ARRASTO || e.pointerId !== ARRASTO.id) return;
+  const a = ARRASTO; ARRASTO = null;
+  if (a.pts.length < 2) return;            // foi um clique: o "click" do mapa cuida
+  IGNORAR_CLIQUE = true; setTimeout(() => { IGNORAR_CLIQUE = false; }, 50);
+  DESENHO.aviso = "";
+  DESENHO.trechos.push(a.pts);
+  atualizarDesenho();
+};
+$("map").addEventListener("pointerup", soltar);
+$("map").addEventListener("pointercancel", soltar);
 function atualizarDesenho() {
   const pts = DESENHO.trechos.flat();
   DESENHO.linha.setLatLngs(pts);
@@ -2650,7 +2701,50 @@ autocompletar($("r-de"), (it) => { marcarPonto("r-de", it.lat, it.lon, "Partida"
 autocompletar($("r-ate"), (it) => { marcarPonto("r-ate", it.lat, it.lon, "Chegada"); map.panTo([it.lat, it.lon]); });
 $("go").addEventListener("click", geocode);
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") geocode(); });
-$("fetch").addEventListener("click", gerar);
+$("fetch").addEventListener("click", async () => { await gerar(); if (TELA === "mapa") mostrarTela("dois"); });
+
+/* divisão da tela entre mapa e 3D; a escolha fica neste navegador */
+let TELA = "dois";
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* sem armazenamento */ } };
+const lerGuardado = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+function mostrarTela(t) {
+  TELA = t;
+  const m = document.querySelector("main");
+  m.classList.toggle("so-mapa", t === "mapa"); m.classList.toggle("so-3d", t === "3d");
+  document.querySelectorAll(".telas button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.tela === t));
+  guardar("quadro3d-tela", t);
+  // o Leaflet guarda o tamanho antigo quando o mapa volta de largura zero
+  map.invalidateSize({ pan: false });
+}
+function dividir(pct) {
+  pct = Math.max(20, Math.min(80, pct));
+  document.querySelector("main").style.setProperty("--mapa", pct.toFixed(1) + "%");
+  guardar("quadro3d-divisao", pct.toFixed(1));
+  map.invalidateSize({ pan: false });
+}
+document.querySelectorAll(".telas button").forEach((b) => b.addEventListener("click", () => mostrarTela(b.dataset.tela)));
+{
+  const div = $("divisor"), m = document.querySelector("main");
+  let arr = null;
+  div.addEventListener("pointerdown", (e) => { arr = e.pointerId; div.setPointerCapture(e.pointerId); div.classList.add("ativo"); });
+  div.addEventListener("pointermove", (e) => {
+    if (arr !== e.pointerId) return;
+    const r = m.getBoundingClientRect(), pct = (e.clientX - r.left) / r.width * 100;
+    // puxar até a beirada mostra só um lado
+    if (pct < 8) mostrarTela("3d"); else if (pct > 92) mostrarTela("mapa"); else { if (TELA !== "dois") mostrarTela("dois"); dividir(pct); }
+  });
+  const fim = (e) => { if (arr === e.pointerId) { arr = null; div.classList.remove("ativo"); } };
+  div.addEventListener("pointerup", fim); div.addEventListener("pointercancel", fim);
+  div.addEventListener("keydown", (e) => {
+    const atual = parseFloat(m.style.getPropertyValue("--mapa")) || 58;
+    if (e.key === "ArrowLeft") { e.preventDefault(); dividir(atual - 4); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); dividir(atual + 4); }
+  });
+  const d = parseFloat(lerGuardado("quadro3d-divisao"));
+  if (d) dividir(d);
+  const t = lerGuardado("quadro3d-tela");
+  mostrarTela(["mapa", "dois", "3d"].includes(t) ? t : "dois");
+}
 $("export").addEventListener("click", exportZip);
 $("export3mf").addEventListener("click", export3MF);
 
