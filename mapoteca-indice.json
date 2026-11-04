@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-03T17:17Z",
+ "geradoEm": "2026-11-04T17:24Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
@@ -12148,7 +12148,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/12/PARAV%C3%81-LOTEAMENTO-FOLHA-02.pdf",
      "upload": "2020-12",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "erro": "Reached maximum number of tokens per stream."
     }
    ]
   },
