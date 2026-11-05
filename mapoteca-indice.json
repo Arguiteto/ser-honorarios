@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-11-04T17:24Z",
+ "geradoEm": "2026-11-05T17:43Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
   "folhas": 594,
-  "duplicatasDescartadas": 1302,
-  "folhasLidas": 590,
-  "folhasPendentes": 4
+  "duplicatasDescartadas": 1298,
+  "folhasLidas": 589,
+  "folhasPendentes": 5
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -188,14 +188,14 @@
    ]
   },
   "AERORANCHO": {
-   "nome": "AERO RANCHO – NUC. HABIT",
+   "nome": "AERO RANCHO V – NUC. HABIT",
    "folhas": [
     {
      "folha": 1,
      "de": null,
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/AERO-RANCHO-V-NUC.-HABIT.pdf",
      "upload": "2017-01",
-     "versoes": 6,
+     "versoes": 4,
      "ruas": [],
      "quadras": [],
      "atualizada": "",
@@ -356,6 +356,78 @@
       "132",
       "86",
       "89A",
+      "R"
+     ],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
+  "AERORANCHO3": {
+   "nome": "AERO RANCHO 3",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/AERO-RANCHO-3.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "ruas": [
+      "AFONSO",
+      "ALAGOINHAS",
+      "ANHEMBI",
+      "ANHENBI",
+      "ANTONIO JOSE SANTOS",
+      "ARASSUAI",
+      "AREIA",
+      "BABACU",
+      "BARAO",
+      "BATURITE",
+      "BUENO",
+      "BUENORUA",
+      "CAJAMAR",
+      "CARLOS",
+      "CIDADE",
+      "CLEVELANDIA",
+      "COIMBRA",
+      "CONGONHA",
+      "DESD",
+      "GALEAO",
+      "GRACILIANO",
+      "GRUTA",
+      "IGUATU",
+      "INHAPIM",
+      "ITUVERAVA",
+      "LIRIO",
+      "LUZILANDIA",
+      "MADRIGAL",
+      "NISSEI",
+      "NOVA",
+      "PANTANAL",
+      "PINDOBACU",
+      "POCOS CALDAS",
+      "RACHEL",
+      "REGENCE",
+      "RUBRO",
+      "SANTA QUITERIA",
+      "TAUMATURGO",
+      "TEREZOPOLIS",
+      "VIANA",
+      "VOLTA"
+     ],
+     "quadras": [
+      "134",
+      "137",
+      "192",
+      "200",
+      "207",
+      "208",
+      "212",
+      "216",
+      "36A",
+      "36B",
+      "527",
+      "D",
       "R"
      ],
      "atualizada": "",
@@ -9615,12 +9687,10 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/08/NASCENTE-VILA.pdf",
-     "upload": "2026-08",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/10/NASCENTE-VILA.pdf",
+     "upload": "2026-10",
      "versoes": 2,
      "ruas": [
-      "01 A",
-      "21 3",
       "CELSO",
       "CHAFICA",
       "FADEL TAJHER IUNES",
@@ -9629,7 +9699,6 @@
       "JOSE",
       "JOSELITO",
       "JUDSON",
-      "JURSTINOMENDES LEAL AQUINO",
       "JUSTINO",
       "KIOTO",
       "LISE",
@@ -10976,7 +11045,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-LIMA-BAIRRO-02.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "Stream has ended unexpectedly"
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -12582,13 +12651,10 @@
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/portal-das-laranjeiras-jd.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAL-DAS-LARANJEIRAS-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": false
+     "erro": "<urlopen error timed out>"
     }
    ]
   },
@@ -13097,6 +13163,40 @@
      "quadras": [],
      "atualizada": "",
      "temTexto": false
+    }
+   ]
+  },
+  "ROQUEALVARES": {
+   "nome": "ROQUE ALVARES – RES",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2026/11/ROQUE-ALVARES-RES.pdf",
+     "upload": "2026-11",
+     "versoes": 2,
+     "ruas": [
+      "DOMINGOSAPARECIDO BISSOLI",
+      "ELISENA ALVES",
+      "GERALDO",
+      "ISIDORO",
+      "JOAO CARLOS DESOUZA GAMEIRO",
+      "LEVI",
+      "MENDOCINO",
+      "MONTEREY",
+      "PROFESSORA",
+      "PROFESSORA LEAROMILDA NEVES",
+      "RADIO MAIA",
+      "SHASTA"
+     ],
+     "quadras": [
+      "1",
+      "6",
+      "7",
+      "8"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
@@ -14074,118 +14174,134 @@
    ]
   },
   "SAOCONRADO": {
-   "nome": "SÃO CONRADO – B. JD",
+   "nome": "SÃO CONRADO – B.JD",
    "folhas": [
     {
      "folha": 1,
      "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/S%C3%83O-CONRADO-B.-JD.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": true
-    }
-   ]
-  },
-  "SAOCONRADOPC01": {
-   "nome": "SÃO CONRADO B JD PC 01",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/sao-conrado-b-jd-pc-01-1631629139.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": false
-    }
-   ]
-  },
-  "SAOCONRADOPC02": {
-   "nome": "SÃO CONRADO – B. JD. PC 02",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SAO-CONRADO-B.-JD.-PC-02.pdf",
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SAO-CONRADO-B.JD_.pdf",
      "upload": "2017-01",
      "versoes": 2,
      "ruas": [
+      "70 4X",
       "ALTINOPOLIS",
       "ANTONIO",
+      "ANTONIO IGNACIO SOUZA",
+      "ANTONIO TRAJANO",
       "ANTUERPIA",
+      "APIAI",
       "BERLIM",
       "BOANERGES",
       "BORBA",
       "BOTUMIRIMRUA",
       "BRUSQUE",
+      "CABO VERDE",
       "CAMPENORTE",
       "CAMPO",
+      "CAMPO MOURAO",
       "CANDOMBLE",
       "CAPANEMA",
       "CAPINZAL",
       "CAPITAO",
       "CARAMANDEL",
+      "CARANGOLA",
       "CARUARU",
       "CASA",
+      "CLARICIO",
       "CORONEL",
       "CORONEL JOSE HELIO MACEDO CARVALHO",
+      "CULUENE",
       "CURVELO",
+      "DIOGO ALVARES",
       "EQUINOCIO",
       "FRAMBOIAN",
       "FURQUIM",
       "GENERAL",
+      "GORUERE",
       "GUAPOREMA",
+      "GUNTER HANS",
+      "HAMILTON",
       "IBIRAMA",
+      "INTERNACIONAL",
+      "ITACAJA",
       "ITANHOMI",
+      "JANDAIA",
+      "JANGO",
+      "JAQUARUNA",
       "JARU",
       "LEAO",
+      "LEAO ZARDO",
+      "LESSA",
+      "LIVINO",
       "LOJINHA",
       "LONTRAS",
       "LUCENA",
+      "M1AM5 A1AA6 U",
+      "MAJOR",
+      "MAJOR JUAREZ LUCAS JESUS",
+      "MONALISA",
       "MORRO",
+      "NASRI SIUFI",
+      "NHAMBIQUARA",
+      "NICOLAU COELHO",
       "NOVA",
       "ORIENTAL",
+      "OURO",
+      "PAMPULHA",
+      "PAMPULHA5",
+      "PANAMBI VERA",
+      "PEDRA",
       "PERDENEIRAS",
+      "PIRAPO",
+      "PLANALTINA",
+      "PONTA",
       "PORTINARI",
+      "PORTO",
       "POUSO",
+      "PRAIA",
       "PRAIA GRANDE",
       "PRINCEZINHA",
+      "PROFESSOR",
       "REGISTRO",
+      "RIO PRATA",
       "SEARA",
       "SESQUICENTENARIA",
+      "SGTO",
       "SOBRADINHO",
+      "SOUTO MAIOR",
+      "TASSO FRAGOSO",
       "TENENTE",
       "TOLEDO",
       "TORELI",
+      "TORRES",
+      "TRES",
       "URUCUM",
       "VIDEIRA",
+      "VINICIUS",
       "VITORIA",
-      "WALTER GUSTAVO OSCHENEEK"
+      "WALTER GUSTAVO OSCHENEEK",
+      "XAVANTES",
+      "ZECA"
      ],
-     "quadras": [],
+     "quadras": [
+      "100",
+      "114",
+      "115",
+      "127",
+      "36",
+      "42",
+      "48",
+      "50",
+      "59",
+      "60",
+      "63",
+      "76",
+      "77",
+      "92",
+      "94"
+     ],
      "atualizada": "",
      "temTexto": true
-    }
-   ]
-  },
-  "SAOCONRADOPRANCHA02": {
-   "nome": "SÃO CONRADO – B. JD. prancha 02",
-   "folhas": [
-    {
-     "folha": 1,
-     "de": null,
-     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/S%C3%83O-CONRADO-B.-JD.-prancha-02.pdf",
-     "upload": "2017-01",
-     "versoes": 2,
-     "ruas": [],
-     "quadras": [],
-     "atualizada": "",
-     "temTexto": false
     }
    ]
   },
@@ -14257,6 +14373,34 @@
      "versoes": 2,
      "ruas": [],
      "quadras": [],
+     "atualizada": "",
+     "temTexto": true
+    }
+   ]
+  },
+  "SAOJORGELAGOA": {
+   "nome": "SAO JORGE DA LAGOA – B",
+   "folhas": [
+    {
+     "folha": 1,
+     "de": null,
+     "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/SAO-JORGE-DA-LAGOA-B.pdf",
+     "upload": "2017-01",
+     "versoes": 2,
+     "ruas": [
+      "A D O",
+      "A N D",
+      "A R U A",
+      "CHACARAS",
+      "I C O",
+      "I L H A N T",
+      "M O S O",
+      "O AVENIDA GUNTER HANS"
+     ],
+     "quadras": [
+      "08",
+      "21"
+     ],
      "atualizada": "",
      "temTexto": true
     }
@@ -16090,7 +16234,7 @@
      "de": null,
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/UIRAPURU-JD.pdf",
      "upload": "2017-01",
-     "versoes": 4,
+     "versoes": 2,
      "ruas": [],
      "quadras": [],
      "atualizada": "",
