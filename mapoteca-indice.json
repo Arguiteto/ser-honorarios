@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-11-05T17:43Z",
+ "geradoEm": "2026-11-06T16:56Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
   "folhas": 594,
   "duplicatasDescartadas": 1298,
-  "folhasLidas": 589,
-  "folhasPendentes": 5
+  "folhasLidas": 590,
+  "folhasPendentes": 4
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -11045,7 +11045,7 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/NOVA-LIMA-BAIRRO-02.pdf",
      "upload": "2017-01",
      "versoes": 6,
-     "erro": "<urlopen error timed out>"
+     "erro": "Stream has ended unexpectedly"
     }
    ]
   },
@@ -12654,7 +12654,27 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2017/01/PORTAL-DAS-LARANJEIRAS-JD.pdf",
      "upload": "2017-01",
      "versoes": 2,
-     "erro": "<urlopen error timed out>"
+     "ruas": [
+      "ACUA",
+      "ANDREARA",
+      "ANTONIO LUIZ FREITAS",
+      "ARAI",
+      "DELAMARE",
+      "FRANCA",
+      "MANOEL FRANCISCO LEAL",
+      "MARIA CARMO",
+      "MARIA IZABEL",
+      "NASRI SIUFI",
+      "PORTELA",
+      "SEUL",
+      "TARUMA",
+      "ZONA SUL"
+     ],
+     "quadras": [
+      "P5"
+     ],
+     "atualizada": "",
+     "temTexto": true
     }
    ]
   },
