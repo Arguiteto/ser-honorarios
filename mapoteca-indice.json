@@ -1,12 +1,12 @@
 {
- "geradoEm": "2026-11-09T20:05Z",
+ "geradoEm": "2026-11-10T17:10Z",
  "fonte": "Mapoteca SEMADES/SEMADUR — Prefeitura de Campo Grande (mídias públicas do portal)",
  "totais": {
   "loteamentos": 556,
   "folhas": 594,
   "duplicatasDescartadas": 1298,
-  "folhasLidas": 590,
-  "folhasPendentes": 4
+  "folhasLidas": 591,
+  "folhasPendentes": 3
  },
  "loteamentos": {
   "143JARDIMCOLORADO": {
@@ -12230,7 +12230,10 @@
      "url": "https://cdn.campogrande.ms.gov.br/portal/prod/uploads/sites/24/2020/10/PARIS-JD.pdf",
      "upload": "2020-10",
      "versoes": 2,
-     "erro": "Reached maximum number of tokens per stream."
+     "ruas": [],
+     "quadras": [],
+     "atualizada": "",
+     "temTexto": false
     }
    ]
   },
